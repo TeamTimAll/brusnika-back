@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 
 import { type CreateSettingsDto } from '../dtos/create-settings.dto';
 import { UserSettingsEntity } from '../user-settings.entity';
+import { Uuid } from 'boilerplate.polyfill';
 
 export class CreateSettingsCommand implements ICommand {
   constructor(

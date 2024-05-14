@@ -5,6 +5,7 @@ import { UseDto } from '../../decorators';
 import { UserEntity } from '../user/user.entity';
 import { PostDto } from './dtos/post.dto';
 import { PostTranslationEntity } from './post-translation.entity';
+import { Uuid } from 'boilerplate.polyfill';
 
 @Entity({ name: 'posts' })
 @UseDto(PostDto)

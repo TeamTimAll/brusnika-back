@@ -4,12 +4,12 @@ import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../constants';
 import { UseDto } from '../../decorators';
 import { PostEntity } from '../post/post.entity';
-import { UserDto, type UserDtoOptions } from './dtos/user.dto';
+import { UserDto} from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
-export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> {
+export class UserEntity extends AbstractEntity<UserDto> {
   @Column({ nullable: true, type: 'varchar' })
   firstName!: string | null;
 
@@ -21,6 +21,9 @@ export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> {
 
   @Column({ unique: true, nullable: true, type: 'varchar' })
   email!: string | null;
+
+  @Column({ unique: true, nullable: true, type: 'varchar' })
+  username!: string;
 
   @Column({ nullable: true, type: 'varchar' })
   password!: string | null;

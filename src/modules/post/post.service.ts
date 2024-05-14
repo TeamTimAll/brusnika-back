@@ -12,13 +12,14 @@ import { type PostPageOptionsDto } from './dtos/post-page-options.dto';
 import { type UpdatePostDto } from './dtos/update-post.dto';
 import { PostNotFoundException } from './exceptions/post-not-found.exception';
 import { PostEntity } from './post.entity';
+import { Uuid } from 'boilerplate.polyfill';
 
 @Injectable()
 export class PostService {
+  private commandBus!: CommandBus;
   constructor(
     @InjectRepository(PostEntity)
     private postRepository: Repository<PostEntity>,
-    private commandBus: CommandBus,
   ) {}
 
   @Transactional()
