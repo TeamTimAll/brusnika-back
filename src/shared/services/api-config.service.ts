@@ -10,8 +10,8 @@ import { SnakeNamingStrategy } from '../../snake-naming.strategy';
 
 @Injectable()
 export class ApiConfigService {
-  constructor(private configService: ConfigService) {}
-
+  constructor(  private configService : ConfigService ) { }
+ 
   get isDevelopment(): boolean {
     return this.nodeEnv === 'development';
   }
@@ -140,7 +140,7 @@ export class ApiConfigService {
     };
   }
 
-  private get(key: string): string {
+  private get(key: string) : string  {
     const value = this.configService.get<string>(key);
 
     if (isNil(value)) {
@@ -148,5 +148,6 @@ export class ApiConfigService {
     }
 
     return value;
+
   }
 }

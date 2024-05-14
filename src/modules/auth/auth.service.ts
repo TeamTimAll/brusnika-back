@@ -1,51 +1,118 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-
-import { validateHash } from '../../common/utils';
-import { type RoleType, TokenType } from '../../constants';
-import { UserNotFoundException } from '../../exceptions';
-import { ApiConfigService } from '../../shared/services/api-config.service';
-import { type UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { TokenPayloadDto } from './dto/token-payload.dto';
-import { type UserLoginDto } from './dto/user-login.dto';
+import { PrismaService } from  "../../prisma/prisma.service"
+import { Prisma } from  "@prisma/client"
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwtService: JwtService,
-    private configService: ApiConfigService,
-    private userService: UserService,
-  ) {}
+     constructor(   private jwt : JwtService , private prisma : PrismaService) {}
 
-  async createAccessToken(data: {
-    role: RoleType;
-    userId: Uuid;
-  }): Promise<TokenPayloadDto> {
-    return new TokenPayloadDto({
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-      accessToken: await this.jwtService.signAsync({
-        userId: data.userId,
-        type: TokenType.ACCESS_TOKEN,
-        role: data.role,
-      }),
-    });
-  }
+     async   createUser(body : Prisma.UserCreateInput)  {
+          const user = await this.prisma.user.findUnique({
+               where : { username : body.username}
+          })
 
-  async validateUser(userLoginDto: UserLoginDto): Promise<UserEntity> {
-    const user = await this.userService.findOne({
-      email: userLoginDto.email,
-    });
+          if(!body || 
+               !body.username ||
+                !body.password) {
+               throw new HttpException("Username or Password not provided" , HttpStatus.BAD_REQUEST)
+          }
 
-    const isPasswordValid = await validateHash(
-      userLoginDto.password,
-      user?.password,
-    );
 
-    if (!isPasswordValid) {
-      throw new UserNotFoundException();
+          if(user){ 
+                 throw  new HttpException("User already exists" , 409)
+          }
+         
+          const newUser = await this.prisma.user.create({
+              data : {
+                 username : body.username ,
+                 password : body.password ,
+                 email : body.email
+              }
+          })
+
+          const { password , ...result } = newUser
+
+          return result 
     }
 
-    return user!;
-  }
+
+
+
+    async  loginAccount( loginDto: LoginDto , ) {
+         const user = await this.prisma.user.findUnique({
+              where : { email : loginDto.email },
+              select : { username :true , password : true , id : true  }
+         })
+
+         if(!user) return new UnauthorizedException();
+         
+         if(user.password !== loginDto.password) return new  HttpException("Password did not match" , 403)
+         const { password , ...result } = user;
+
+         return  this.jwt.sign(result)
+
+    }
+
+    async getAllUsers(){
+       try {
+
+          const allUsers = await this.prisma.user.findMany({
+               select  :{
+                     id : true ,
+                      username : true ,
+                      password : true 
+               }
+          })
+
+          return allUsers 
+          
+       } catch (error) {
+
+          throw new HttpException("Something went wrong" , HttpStatus.INTERNAL_SERVER_ERROR)
+          
+       }
+    }
+
+
+
+    async deleteOneUser( id : string ) {
+       
+         const user = await this.prisma.user.findUnique({
+            where : { id }
+         })
+
+         if(!user) {
+              throw new HttpException("Uer not found " , HttpStatus.NOT_FOUND)
+         }
+
+         await this.prisma.user.delete({
+            where : { id }
+         })
+
+
+         return user 
+    }
+
+
+    async getUser( id : string ) {
+       const user = await  this.prisma.user.findUnique({
+            where : { id },
+            select : {
+                 username : true ,
+                 password : true ,
+                 id : true 
+            }
+       })
+
+
+       if(!user) {
+            throw new HttpException("User not found" , HttpStatus.NOT_FOUND)
+       }
+
+
+       return user 
+    }
+
 }

@@ -24,7 +24,7 @@ import { ApiConfigService } from './shared/services/api-config.service';
 import { TranslationService } from './shared/services/translation.service';
 import { SharedModule } from './shared/shared.module';
 
-export async function bootstrap(): Promise<NestExpressApplication> {
+ async function bootstrap(): Promise<NestExpressApplication> {
   initializeTransactionalContext();
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
@@ -87,8 +87,8 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     app.enableShutdownHooks();
   }
 
-  const port = configService.appConfig.port;
-  await app.listen(port);
+  // const port = configService.appConfig.port;
+  await app.listen(3001);
   console.info(`server running on ${await app.getUrl()}`);
   return app;
 }
