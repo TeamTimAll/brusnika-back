@@ -4,16 +4,15 @@ import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 import {
   BooleanFieldOptional,
+  ClassField,
   EmailFieldOptional,
   EnumFieldOptional,
-  // IsPassword,
+  IsPassword,
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
-import { ClassField } from '../../../decorators';
 
 import { type UserEntity } from '../user.entity';
-// import { ApiProperty } from '@nestjs/swagger';
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
@@ -62,7 +61,7 @@ export class UserCreateDto {
   @IsNotEmpty()
   username: string;
 
-  @IsString()
+  @IsPassword()
   @IsNotEmpty()
   @MinLength(6)
   password: string;
@@ -76,16 +75,6 @@ export class UserCreateDto {
     this.email = '';
     this.password = '';
   }
-}
-
-import { EmailField, StringField } from '../../../decorators';
-
-export class UserLoginDto {
-  @EmailField()
-  readonly email!: string;
-
-  @StringField()
-  readonly password!: string;
 }
 
 export class LoginPayloadDto {
