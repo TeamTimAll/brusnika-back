@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { Request } from 'express';
 import { UserCreateDto  , UserLoginDto } from '../../modules/user/dtos/user.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
+import { LocalGuard } from './guards/local.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -10,12 +11,12 @@ export class AuthController {
 
 
   @Post("login")
+  @UseGuards(LocalGuard)
   async userLogin(
     @Body() userLoginDto: UserLoginDto,
   ) {
       return this.authService.loginAccount(userLoginDto)
   }
-
 
   @Post() 
   createAccount( @Body() register : UserCreateDto ) {
