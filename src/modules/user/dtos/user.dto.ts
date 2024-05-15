@@ -9,6 +9,7 @@ import {
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
+import { ClassField } from '../../../decorators';
 
 import { type UserEntity } from '../user.entity';
 
@@ -78,14 +79,26 @@ export class UserCreateDto {
   
 }
 
-
+import { EmailField, StringField } from '../../../decorators';
 
 export class UserLoginDto {
-  email: string
-  password : string 
+  @EmailField()
+  readonly email!: string;
 
-  constructor(){
-    this.password = ""
-    this.email = ""
+  @StringField()
+  readonly password!: string;
 }
+
+
+
+
+
+export class LoginPayloadDto {
+  @ClassField(() => UserDto)
+  user: UserDto;
+
+ 
+  constructor(user: UserDto) {
+    this.user = user;
+  }
 }

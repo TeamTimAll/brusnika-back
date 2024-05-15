@@ -1,20 +1,21 @@
-import {  Body, Controller, Get, Post, Req, UseGuards, UsePipes, ValidationPipe ,Param } from '@nestjs/common';
+import {  Body, Controller, Get, Post, Req, UseGuards ,Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
-// import { LocalGuard } from './guards/local.guard';
 import { Request } from 'express';
-import { UserCreateDto, UserLoginDto } from '../../modules/user/dtos/user.dto';
+import { UserCreateDto  , UserLoginDto } from '../../modules/user/dtos/user.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+
   @Post("login")
-  // @UseGuards(LocalGuard)
-  @UsePipes(ValidationPipe)
-  login(@Body() loginBody : UserLoginDto) {
-       return  this.authService.loginAccount(loginBody)
+  async userLogin(
+    @Body() userLoginDto: UserLoginDto,
+  ) {
+      return this.authService.loginAccount(userLoginDto)
   }
+
 
   @Post() 
   createAccount( @Body() register : UserCreateDto ) {
@@ -26,7 +27,7 @@ export class AuthController {
         return this.authService.getUser(email)
   }
 
-  @Get() // needs to be given token to Bearer 
+  @Get() 
   @UseGuards(JwtAuthGuard)
   status(@Req() req: Request) {
     return req.user;
