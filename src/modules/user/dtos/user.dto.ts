@@ -57,3 +57,10 @@ export class UserCreateDto implements Partial<UserDto> {
   username!: string;
   email!: string;
 }
+
+
+
+export class UserLoginDto implements Partial<UserDto> {
+  email !: string
+  password !: string 
+}

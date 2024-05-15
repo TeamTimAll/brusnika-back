@@ -5,10 +5,9 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { UserCreateDto } from 'modules/user/dtos/user.dto';
+import { UserCreateDto , UserLoginDto } from 'modules/user/dtos/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -43,7 +42,7 @@ export class AuthService {
     return result;
   }
 
-  async loginAccount(loginDto: LoginDto) {
+  async loginAccount(loginDto: UserLoginDto) {
     const user = await this.userService.findOne({
       email: loginDto.email,
     });
@@ -55,6 +54,13 @@ export class AuthService {
     const { password, ...result } = user;
 
     return this.jwt.sign(result);
+
+  }
+
+
+
+  async getUser(){
+        return "Samandar"
   }
 
   // async getAllUsers() {

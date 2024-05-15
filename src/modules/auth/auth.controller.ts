@@ -24,7 +24,7 @@ export class AuthController {
 
   @Get()
   getUser(){
-        return this.authService.getUser()
+        return this.authService
   }
 
   @Get('status')
