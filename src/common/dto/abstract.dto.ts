@@ -1,3 +1,4 @@
+import { Uuid } from 'boilerplate.polyfill';
 import {
   DateField,
   DYNAMIC_TRANSLATION_DECORATOR_KEY,

@@ -11,6 +11,7 @@ import {
   type AbstractDto,
   type AbstractTranslationDto,
 } from './dto/abstract.dto';
+import { Uuid } from 'boilerplate.polyfill';
 
 
 

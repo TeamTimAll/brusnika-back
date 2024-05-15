@@ -4,6 +4,7 @@ import { AbstractTranslationEntity } from '../../common/abstract.entity';
 import { UseDto } from '../../decorators';
 import { PostTranslationDto } from './dtos/post-translation.dto';
 import { PostEntity } from './post.entity';
+import { Uuid } from 'boilerplate.polyfill';
 
 @Entity({ name: 'post_translations' })
 @UseDto(PostTranslationDto)

@@ -13,19 +13,20 @@ import { ValidatorService } from '../../shared/services/validator.service';
 // import { UserRegisterDto } from '../auth/dto/user-register.dto';
 import { CreateSettingsCommand } from './commands/create-settings.command';
 import { CreateSettingsDto } from './dtos/create-settings.dto';
-import { type UserDto } from './dtos/user.dto';
+import { UserCreateDto, type UserDto } from './dtos/user.dto';
 import { type UsersPageOptionsDto } from './dtos/users-page-options.dto';
 import { UserEntity } from './user.entity';
 import { type UserSettingsEntity } from './user-settings.entity';
+import { Uuid } from 'boilerplate.polyfill';
 
 @Injectable()
 export class UserService {
+  private validatorService!: ValidatorService;
+  private commandBus!: CommandBus;
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private validatorService: ValidatorService,
     // private awsS3Service: AwsS3Service,
-    private commandBus: CommandBus,
   ) {}
 
   /**
@@ -59,10 +60,10 @@ export class UserService {
 
   @Transactional()
   async createUser(
-    userRegisterDto: any ,
+    userRegisterDto: UserCreateDto,
     file?: IFile,
   ): Promise<UserEntity> {
-    const user : any  = this.userRepository.create(userRegisterDto);
+    const user: any = this.userRepository.create(userRegisterDto);
 
     if (file && !this.validatorService.isImage(file.mimetype)) {
       throw new FileNotImageException();

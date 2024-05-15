@@ -1,68 +1,111 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity'; 
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../user/user.service';
+import { UserCreateDto } from 'modules/user/dtos/user.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwt: JwtService,
-    @InjectRepository(User) 
-    private userRepository: Repository<User>, 
-  ) {}
+  @Inject() private jwt!: JwtService;
+  @Inject() private userService!: UserService;
+  constructor() {}
 
-  async createUser(body: User) {
-    try {
-      // Check if the user already exists
-      const existingUser = await this.userRepository.findOne({ where: { username: body.username } });
-      if (existingUser) {
-        throw new HttpException('User already exists', HttpStatus.CONFLICT);
-      }
+  async createUser(body: UserCreateDto) {
+    const user = await this.userService.findOne({
+      username: body.username,
+    });
 
-      // Create a new user
-      const newUser = await this.userRepository.save(body);
-
-      // Omit the password from the response
-      const { password, ...result } = newUser;
-
-      return result;
-    } catch (error) {
-      throw new HttpException('Failed to create user', HttpStatus.INTERNAL_SERVER_ERROR);
+    if (!body || !body.username || !body.password) {
+      throw new HttpException(
+        'Username or Password not provided',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-  }
 
-  async loginAccount(loginDto:  LoginDto) {
-    try {
-      // Find the user by email
-      const user = await this.userRepository.findOne({ where: { email: loginDto.email } });
-
-      if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-
-      // Check if the password matches
-      if (user.password !== loginDto.password) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-
-      // Omit the password from the response
-      const { password, ...result } = user;
-
-      // Sign and return the JWT token
-      return this.jwt.sign(result);
-    } catch (error) {
-      throw new UnauthorizedException('Invalid credentials');
+    if (user) {
+      throw new HttpException('User already exists', 409);
     }
+
+    const newUser = await this.userService.createUser({
+      username: body.username,
+      password: body.password,
+      email: body.email,
+    });
+
+    const { password, ...result } = newUser;
+
+    return result;
   }
 
-  // Other methods for getAllUsers, deleteOneUser, and getUser...
+  async loginAccount(loginDto: LoginDto) {
+    const user = await this.userService.findOne({
+      email: loginDto.email,
+    });
 
+    if (!user) return new UnauthorizedException();
 
+    if (user.password !== loginDto.password)
+      return new HttpException('Password did not match', 403);
+    const { password, ...result } = user;
 
-  getUser( ) {
-        return "Samandar"
+    return this.jwt.sign(result);
   }
+
+  // async getAllUsers() {
+  //   try {
+  //     const allUsers = await this.userService.findMany({
+  //       select: {
+  //         id: true,
+  //         username: true,
+  //         password: true,
+  //       },
+  //     });
+
+  //     return allUsers;
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       'Something went wrong',
+  //       HttpStatus.INTERNAL_SERVER_ERROR,
+  //     );
+  //   }
+  // }
+
+  // async deleteOneUser(id: string) {
+  //   const user = await this.prisma.user.findUnique({
+  //     where: { id },
+  //   });
+
+  //   if (!user) {
+  //     throw new HttpException('Uer not found ', HttpStatus.NOT_FOUND);
+  //   }
+
+  //   await this.prisma.user.delete({
+  //     where: { id },
+  //   });
+
+  //   return user;
+  // }
+
+  // async getUser(id: string) {
+  //   const user = await this.prisma.user.findUnique({
+  //     where: { id },
+  //     select: {
+  //       username: true,
+  //       password: true,
+  //       id: true,
+  //     },
+  //   });
+
+  //   if (!user) {
+  //     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  //   }
+
+  //   return user;
+  // }
 }

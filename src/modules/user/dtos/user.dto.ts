@@ -22,6 +22,9 @@ export class UserDto extends AbstractDto {
   @StringFieldOptional({ nullable: true })
   username!: string;
 
+  @StringFieldOptional({ nullable: true })
+  password!: string;
+
   @EnumFieldOptional(() => RoleType)
   role?: RoleType;
 
@@ -47,4 +50,10 @@ export class UserDto extends AbstractDto {
     this.phone = user.phone;
     this.isActive = options?.isActive;
   }
+}
+
+export class UserCreateDto implements Partial<UserDto> {
+  password!: string;
+  username!: string;
+  email!: string;
 }

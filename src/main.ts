@@ -1,11 +1,9 @@
 import {
-  ClassSerializerInterceptor,
   HttpStatus,
   UnprocessableEntityException,
   ValidationPipe,
 } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
 import {
   ExpressAdapter,
   type NestExpressApplication,
@@ -18,11 +16,9 @@ import { initializeTransactionalContext } from 'typeorm-transactional';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './filters/bad-request.filter';
 import { QueryFailedFilter } from './filters/query-failed.filter';
-import { TranslationInterceptor } from './interceptors/translation-interceptor.service';
+// import { TranslationInterceptor } from './interceptors/translation-interceptor.service';
 import { setupSwagger } from './setup-swagger';
-import { ApiConfigService } from './shared/services/api-config.service';
-import { TranslationService } from './shared/services/translation.service';
-import { SharedModule } from './shared/shared.module';
+// import { TranslationService } from './shared/services/translation.service';
 
  async function bootstrap(): Promise<NestExpressApplication> {
   initializeTransactionalContext();
@@ -45,12 +41,12 @@ import { SharedModule } from './shared/shared.module';
     new QueryFailedFilter(reflector),
   );
 
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(reflector),
-    new TranslationInterceptor(
-      app.select(SharedModule).get(TranslationService),
-    ),
-  );
+  // app.useGlobalInterceptors(
+  //   new ClassSerializerInterceptor(reflector),
+  //   new TranslationInterceptor(
+  //     app.select(SharedModule).get(TranslationService),
+  //   ),
+  // );
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -62,30 +58,30 @@ import { SharedModule } from './shared/shared.module';
     }),
   );
 
-  const configService = app.select(SharedModule).get(ApiConfigService);
+  // const configService = app.select(SharedModule).get(ApiConfigService);
 
-  // only start nats if it is enabled
-  if (configService.natsEnabled) {
-    const natsConfig = configService.natsConfig;
-    app.connectMicroservice({
-      transport: Transport.NATS,
-      options: {
-        url: `nats://${natsConfig.host}:${natsConfig.port}`,
-        queue: 'main_service',
-      },
-    });
+  // // only start nats if it is enabled
+  // if (configService.natsEnabled) {
+  //   const natsConfig = configService.natsConfig;
+  //   app.connectMicroservice({
+  //     transport: Transport.NATS,
+  //     options: {
+  //       url: `nats://${natsConfig.host}:${natsConfig.port}`,
+  //       queue: 'main_service',
+  //     },
+  //   });
 
-    await app.startAllMicroservices();
-  }
+  //   await app.startAllMicroservices();
+  // }
 
-  if (configService.documentationEnabled) {
+  // if (configService.documentationEnabled) {
     setupSwagger(app);
-  }
+  // }
 
   // Starts listening for shutdown hooks
-  if (!configService.isDevelopment) {
-    app.enableShutdownHooks();
-  }
+  // if (!configService.isDevelopment) {
+  //   app.enableShutdownHooks();
+  // }
 
   // const port = configService.appConfig.port;
   await app.listen(3001);
