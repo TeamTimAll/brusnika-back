@@ -57,7 +57,7 @@ export class AuthService {
       const user = await this.userService.findOne({ email: loginDto.email });
       console.log({
          user 
-      })
+      }, loginDto)
   
       if (!user) {
         throw new UnauthorizedException('Invalid email or password');
@@ -67,7 +67,7 @@ export class AuthService {
         throw new UnauthorizedException('Password not set');
       }
   
-      const passwordMatch = await compare(user.password , loginDto.password)
+      const passwordMatch = await compare(loginDto.password,user.password )
       
       if (!passwordMatch) {
         throw new UnauthorizedException('Invalid email or password');

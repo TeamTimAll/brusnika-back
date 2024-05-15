@@ -6,11 +6,13 @@ import {
   BooleanFieldOptional,
   EmailFieldOptional,
   EnumFieldOptional,
+  IsPassword,
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
 
 import { type UserEntity } from '../user.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
@@ -54,9 +56,7 @@ export class UserDto extends AbstractDto {
   }
 }
 
-
 export class UserCreateDto {
-  
   @IsString()
   @IsNotEmpty()
   username: string;
@@ -68,24 +68,25 @@ export class UserCreateDto {
 
   @IsEmail()
   @IsNotEmpty()
-  email : string 
+  email: string;
 
-  constructor(){
-       this.username = ""
-       this.email = ""       
-       this.password = ""
+  constructor() {
+    this.username = '';
+    this.email = '';
+    this.password = '';
   }
-  
 }
-
-
 
 export class UserLoginDto {
-  email: string
-  password : string 
+  @ApiProperty({ description: 'email', required: true })
+  @IsString()
+  email!: string;
+  @ApiProperty({ description: 'password', required: true })
+  @IsPassword()
+  password!: string;
 
-  constructor(){
-    this.password = ""
-    this.email = ""
-}
+  // constructor() {
+  //   this.password = '';
+  //   this.email = '';
+  // }
 }

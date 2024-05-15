@@ -20,7 +20,7 @@ import { QueryFailedFilter } from './filters/query-failed.filter';
 import { setupSwagger } from './setup-swagger';
 // import { TranslationService } from './shared/services/translation.service';
 
- async function bootstrap(): Promise<NestExpressApplication> {
+async function bootstrap(): Promise<NestExpressApplication> {
   initializeTransactionalContext();
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
@@ -75,7 +75,7 @@ import { setupSwagger } from './setup-swagger';
   // }
 
   // if (configService.documentationEnabled) {
-    setupSwagger(app);
+  setupSwagger(app);
   // }
 
   // Starts listening for shutdown hooks
@@ -84,7 +84,7 @@ import { setupSwagger } from './setup-swagger';
   // }
 
   // const port = configService.appConfig.port;
-  await app.listen(3001);
+  await app.listen(3000);
   console.info(`server running on ${await app.getUrl()}`);
   return app;
 }
