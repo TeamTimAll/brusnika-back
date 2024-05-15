@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService   } from '../user/user.service';
 import { UserCreateDto , UserLoginDto } from 'modules/user/dtos/user.dto';
 import * as bcrypt from 'bcrypt';
-import { NodeMailerService } from 'common/nodemailer/nodemailer.service';
+import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
 
 
 

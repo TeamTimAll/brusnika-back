@@ -6,8 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './startegies/local.strategy';
 import { JwtStrategy } from './startegies/jwt.strategy';
 import { UserModule } from '../user/user.module';
-import { NodemailerModule } from 'common/nodemailer/nodemailer.module';
-import { NodeMailerService } from 'common/nodemailer/nodemailer.service';
+import { NodemailerModule } from '../../common/nodemailer/nodemailer.module';
+import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
 @Module({
   imports: [
     PassportModule,
@@ -18,7 +18,7 @@ import { NodeMailerService } from 'common/nodemailer/nodemailer.service';
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  
+
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy  , NodeMailerService],
 })
