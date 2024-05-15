@@ -90,7 +90,7 @@ export class ApiConfigService {
       keepConnectionAlive: !this.isTest,
       dropSchema: this.isTest,
       type: 'postgres',
-      name: 'default',
+      name: 'defa',
       host: this.getString('DB_HOST'),
       port: this.getNumber('DB_PORT'),
       username: this.getString('DB_USERNAME'),
@@ -100,16 +100,17 @@ export class ApiConfigService {
       migrationsRun: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
       namingStrategy: new SnakeNamingStrategy(),
+      ssl : true 
     };
   }
 
-  get awsS3Config() {
-    return {
-      bucketRegion: this.getString('AWS_S3_BUCKET_REGION'),
-      bucketApiVersion: this.getString('AWS_S3_API_VERSION'),
-      bucketName: this.getString('AWS_S3_BUCKET_NAME'),
-    };
-  }
+  // get awsS3Config() {
+  //   return {
+  //     bucketRegion: this.getString('AWS_S3_BUCKET_REGION'),
+  //     bucketApiVersion: this.getString('AWS_S3_API_VERSION'),
+  //     bucketName: this.getString('AWS_S3_BUCKET_NAME'),
+  //   };
+  // }
 
   get documentationEnabled(): boolean {
     return this.getBoolean('ENABLE_DOCUMENTATION');

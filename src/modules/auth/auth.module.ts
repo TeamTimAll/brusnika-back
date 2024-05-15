@@ -5,14 +5,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './startegies/local.strategy';
 import { JwtStrategy } from './startegies/jwt.strategy';
-import { PrismaModule } from "../../prisma/prisma.module"
-
-
+import { User } from './user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports : [
     PassportModule,
-    PrismaModule,
+    TypeOrmModule.forFeature([User]),
     JwtModule.register({
       secret : "abc123",
       signOptions : { expiresIn : "1h"}

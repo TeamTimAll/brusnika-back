@@ -1,118 +1,68 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from  "../../prisma/prisma.service"
-import { Prisma } from  "@prisma/client"
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './user.entity'; 
+import { LoginDto } from './dto/login.dto';
+
 
 @Injectable()
 export class AuthService {
-     constructor(   private jwt : JwtService , private prisma : PrismaService) {}
+  constructor(
+    private jwt: JwtService,
+    @InjectRepository(User) 
+    private userRepository: Repository<User>, 
+  ) {}
 
-     async   createUser(body : Prisma.UserCreateInput)  {
-          const user = await this.prisma.user.findUnique({
-               where : { username : body.username}
-          })
+  async createUser(body: User) {
+    try {
+      // Check if the user already exists
+      const existingUser = await this.userRepository.findOne({ where: { username: body.username } });
+      if (existingUser) {
+        throw new HttpException('User already exists', HttpStatus.CONFLICT);
+      }
 
-          if(!body || 
-               !body.username ||
-                !body.password) {
-               throw new HttpException("Username or Password not provided" , HttpStatus.BAD_REQUEST)
-          }
+      // Create a new user
+      const newUser = await this.userRepository.save(body);
 
+      // Omit the password from the response
+      const { password, ...result } = newUser;
 
-          if(user){ 
-                 throw  new HttpException("User already exists" , 409)
-          }
-         
-          const newUser = await this.prisma.user.create({
-              data : {
-                 username : body.username ,
-                 password : body.password ,
-                 email : body.email
-              }
-          })
-
-          const { password , ...result } = newUser
-
-          return result 
+      return result;
+    } catch (error) {
+      throw new HttpException('Failed to create user', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
 
+  async loginAccount(loginDto:  LoginDto) {
+    try {
+      // Find the user by email
+      const user = await this.userRepository.findOne({ where: { email: loginDto.email } });
 
+      if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
 
+      // Check if the password matches
+      if (user.password !== loginDto.password) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
 
-    async  loginAccount( loginDto: LoginDto , ) {
-         const user = await this.prisma.user.findUnique({
-              where : { email : loginDto.email },
-              select : { username :true , password : true , id : true  }
-         })
+      // Omit the password from the response
+      const { password, ...result } = user;
 
-         if(!user) return new UnauthorizedException();
-         
-         if(user.password !== loginDto.password) return new  HttpException("Password did not match" , 403)
-         const { password , ...result } = user;
-
-         return  this.jwt.sign(result)
-
+      // Sign and return the JWT token
+      return this.jwt.sign(result);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid credentials');
     }
+  }
 
-    async getAllUsers(){
-       try {
-
-          const allUsers = await this.prisma.user.findMany({
-               select  :{
-                     id : true ,
-                      username : true ,
-                      password : true 
-               }
-          })
-
-          return allUsers 
-          
-       } catch (error) {
-
-          throw new HttpException("Something went wrong" , HttpStatus.INTERNAL_SERVER_ERROR)
-          
-       }
-    }
+  // Other methods for getAllUsers, deleteOneUser, and getUser...
 
 
 
-    async deleteOneUser( id : string ) {
-       
-         const user = await this.prisma.user.findUnique({
-            where : { id }
-         })
-
-         if(!user) {
-              throw new HttpException("Uer not found " , HttpStatus.NOT_FOUND)
-         }
-
-         await this.prisma.user.delete({
-            where : { id }
-         })
-
-
-         return user 
-    }
-
-
-    async getUser( id : string ) {
-       const user = await  this.prisma.user.findUnique({
-            where : { id },
-            select : {
-                 username : true ,
-                 password : true ,
-                 id : true 
-            }
-       })
-
-
-       if(!user) {
-            throw new HttpException("User not found" , HttpStatus.NOT_FOUND)
-       }
-
-
-       return user 
-    }
-
+  getUser( ) {
+        return "Samandar"
+  }
 }

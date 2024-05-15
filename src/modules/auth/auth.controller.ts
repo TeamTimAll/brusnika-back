@@ -21,6 +21,12 @@ export class AuthController {
                return this.authService.createUser(register) 
   }
 
+
+  @Get()
+  getUser(){
+        return this.authService.getUser()
+  }
+
   @Get('status')
   @UseGuards(JwtAuthGuard)
   status(@Req() req: Request) {

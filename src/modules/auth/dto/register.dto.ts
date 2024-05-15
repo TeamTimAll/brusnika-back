@@ -1,5 +1,5 @@
 // register.dto.ts
-import { IsNotEmpty, IsString, MinLength  , IsEmail} from 'class-validator';
+import { IsNotEmpty, IsString, MinLength  , IsEmail, IsBoolean} from 'class-validator';
 
 export class RegisterDto {
 
@@ -17,10 +17,16 @@ export class RegisterDto {
     @IsEmail()
     email : string 
   
+
+    @IsNotEmpty()
+    @IsBoolean()
+    isActive : boolean
+  
     constructor() {
       this.username = "";
       this.password = "";
       this.email =" "
+      this.isActive = false 
     }
   }
   
