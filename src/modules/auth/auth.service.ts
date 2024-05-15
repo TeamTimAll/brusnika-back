@@ -10,12 +10,12 @@ import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
 
 @Injectable()
 export class AuthService {
-
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
     private  nodemailer  : NodeMailerService
-  ) {}
+  ) {};
+
 
 
   async createUser(body: UserCreateDto): Promise<any> {
@@ -45,7 +45,9 @@ export class AuthService {
     
         const { password, ...result } = newUser;
 
-        await this.nodemailer.sendMail()
+       /**
+       * Todo  , We can make a url to send an email with jwt to get user 
+       */
         
         return result;
         
@@ -73,7 +75,7 @@ export class AuthService {
       if (user.password === null) {
         console.log("Users password is null")
         return  new UnauthorizedException('Password not set');
-      }
+      };
       
   
        const passwordMatch= await  bcrypt.compare( loginDto.password , user.password )
@@ -83,7 +85,8 @@ export class AuthService {
         return  new UnauthorizedException('Invalid email or password');
       };
 
-      await this.nodemailer.sendMail()
+      await this.nodemailer.sendMail();
+      
 
       const { password, ...result } = user;
       return {
@@ -113,4 +116,7 @@ export class AuthService {
       return  new HttpException(error.message , 500)
     }
   }
-}
+};
+
+
+
