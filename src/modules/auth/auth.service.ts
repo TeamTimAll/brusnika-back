@@ -4,10 +4,12 @@ import {
   Inject,
   Injectable,
   UnauthorizedException,
+
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { UserCreateDto , UserLoginDto } from 'modules/user/dtos/user.dto';
+import { UserEntity } from 'modules/user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +18,8 @@ export class AuthService {
   constructor() {}
 
   async createUser(body: UserCreateDto) {
+
+
     const user = await this.userService.findOne({
       username: body.username,
     });
@@ -58,9 +62,19 @@ export class AuthService {
   }
 
 
+  async getUser( email : string  ){
+         try {
 
-  async getUser(){
-        return "Samandar"
+          const user : UserEntity | null = await this.userService.findByUsernameOrEmail( { email })
+          return user ? user : new HttpException("User not found"  ,  404)
+
+         } catch (error : any ) {
+          console.log({
+             gettingOneUerError : error.message 
+          })
+          
+             return error
+         }
   }
 
   // async getAllUsers() {

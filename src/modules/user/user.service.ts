@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
+// import { plainToClass } from 'class-transformer';
 import { type FindOptionsWhere, Repository } from 'typeorm';
-import { Transactional } from 'typeorm-transactional';
+// import { Transactional } from 'typeorm-transactional';
 
 import { type PageDto } from '../../common/dto/page.dto';
-import { FileNotImageException, UserNotFoundException } from '../../exceptions';
-import { IFile } from '../../interfaces';
+import { UserNotFoundException } from '../../exceptions';
+// import { IFile } from '../../interfaces';
 // import { AwsS3Service } from '../../shared/services/aws-s3.service';
-import { ValidatorService } from '../../shared/services/validator.service';
+// import { ValidatorService } from '../../shared/services/validator.service';
 // import { UserRegisterDto } from '../auth/dto/user-register.dto';
 import { CreateSettingsCommand } from './commands/create-settings.command';
 import { CreateSettingsDto } from './dtos/create-settings.dto';
-import { UserCreateDto, type UserDto } from './dtos/user.dto';
+import { UserCreateDto , type UserDto } from './dtos/user.dto';
 import { type UsersPageOptionsDto } from './dtos/users-page-options.dto';
 import { UserEntity } from './user.entity';
 import { type UserSettingsEntity } from './user-settings.entity';
@@ -21,7 +21,7 @@ import { Uuid } from 'boilerplate.polyfill';
 
 @Injectable()
 export class UserService {
-  private validatorService!: ValidatorService;
+  // private validatorService!: ValidatorService;
   private commandBus!: CommandBus;
   constructor(
     @InjectRepository(UserEntity)
@@ -32,6 +32,7 @@ export class UserService {
   /**
    * Find single user
    */
+
   findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
     return this.userRepository.findOneBy(findData);
   }
@@ -58,32 +59,22 @@ export class UserService {
     return queryBuilder.getOne();
   }
 
-  @Transactional()
+  // @Transactional()
   async createUser(
     userRegisterDto: UserCreateDto,
-    file?: IFile,
-  ): Promise<UserEntity> {
-    const user: any = this.userRepository.create(userRegisterDto);
+    // file?: IFile,
+  ): Promise<any> {
 
-    if (file && !this.validatorService.isImage(file.mimetype)) {
-      throw new FileNotImageException();
-    }
+    console.log({
+      userDto : userRegisterDto
+    })
 
-    // if (file) {
-    //   user.avatar = await this.awsS3Service.uploadImage(file);
-    // }
+    const user: any =  await this.userRepository.create(userRegisterDto);
+    console.log({
+       user : user
+    })
 
-    await this.userRepository.save(user);
-
-    user.settings = await this.createSettings(
-      user.id,
-      plainToClass(CreateSettingsDto, {
-        isEmailVerified: false,
-        isPhoneVerified: false,
-      }),
-    );
-
-    return user;
+    return user 
   }
 
   async getUsers(

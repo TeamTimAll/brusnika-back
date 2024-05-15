@@ -8,6 +8,7 @@ import { UserDto} from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
 
 @Entity({ name: 'users' })
+
 @UseDto(UserDto)
 export class UserEntity extends AbstractEntity<UserDto> {
   @Column({ nullable: true, type: 'varchar' })

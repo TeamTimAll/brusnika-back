@@ -61,6 +61,7 @@
     "morgan": "^1.10.0",
     "nestjs-cls": "^3.6.0",
     "nestjs-i18n": "^10.4.0",
+    "nodemon": "^3.1.0",
     "parse-duration": "^1.1.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",

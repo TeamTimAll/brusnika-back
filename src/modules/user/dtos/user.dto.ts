@@ -1,5 +1,7 @@
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 import { RoleType } from '../../../constants';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+
 import {
   BooleanFieldOptional,
   EmailFieldOptional,
@@ -7,9 +9,9 @@ import {
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
+
 import { type UserEntity } from '../user.entity';
 
-// TODO, remove this class and use constructor's second argument's type
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
 export class UserDto extends AbstractDto {
@@ -52,15 +54,38 @@ export class UserDto extends AbstractDto {
   }
 }
 
-export class UserCreateDto implements Partial<UserDto> {
-  password!: string;
-  username!: string;
-  email!: string;
+
+export class UserCreateDto {
+  
+  @IsString()
+  @IsNotEmpty()
+  username: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  password: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email : string 
+
+  constructor(){
+       this.username = ""
+       this.email = ""       
+       this.password = ""
+  }
+  
 }
 
 
 
-export class UserLoginDto implements Partial<UserDto> {
-  email !: string
-  password !: string 
+export class UserLoginDto {
+  email: string
+  password : string 
+
+  constructor(){
+    this.password = ""
+    this.email = ""
+}
 }
