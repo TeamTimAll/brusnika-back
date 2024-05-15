@@ -21,17 +21,13 @@ import { Uuid } from 'boilerplate.polyfill';
 
 @Injectable()
 export class UserService {
-  // private validatorService!: ValidatorService;
   private commandBus!: CommandBus;
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    // private awsS3Service: AwsS3Service,
   ) {}
 
-  /**
-   * Find single user
-   */
+
 
   findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
     return this.userRepository.findOneBy(findData);
@@ -59,37 +55,36 @@ export class UserService {
     return queryBuilder.getOne();
   }
 
-  // @Transactional()
-  async createUser(
-    userRegisterDto: UserCreateDto,
-    // file?: IFile,
-  ): Promise<any> {
-
-    console.log({
-      userDto : userRegisterDto
-    })
-
-    const user: any =  await this.userRepository.create(userRegisterDto);
-    console.log({
-       user : user
-    })
-
-    return user 
+  async createUser(userRegisterDto: UserCreateDto): Promise<UserEntity> {
+    try {
+      console.log({ userDto: userRegisterDto });
+  
+      const user: UserEntity = this.userRepository.create(userRegisterDto);
+      const savedUser: UserEntity = await this.userRepository.save(user);
+  
+      console.log({ user: savedUser });
+  
+      return savedUser;
+    } catch (error : any ) {
+      // Handle any potential errors (e.g., database errors)
+      throw new Error('Failed to create user: ' + error.message);
+    }
   }
+  
 
   async getUsers(
     pageOptionsDto: UsersPageOptionsDto,
   ): Promise<PageDto<UserDto>> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    const queryBuilder = await  this.userRepository.createQueryBuilder('user');
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
 
     return items.toPageDto(pageMetaDto);
   }
 
   async getUser(userId: Uuid): Promise<UserDto> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    const queryBuilder =  await this.userRepository.createQueryBuilder('user');
 
-    queryBuilder.where('user.id = :userId', { userId });
+    await  queryBuilder.where('user.id = :userId', { userId });
 
     const userEntity = await queryBuilder.getOne();
 
@@ -105,7 +100,8 @@ export class UserService {
     createSettingsDto: CreateSettingsDto,
   ): Promise<UserSettingsEntity> {
     return this.commandBus.execute<CreateSettingsCommand, UserSettingsEntity>(
-      new CreateSettingsCommand(userId, createSettingsDto),
+         new CreateSettingsCommand(userId, createSettingsDto),
     );
   }
+  
 }
