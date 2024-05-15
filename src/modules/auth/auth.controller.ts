@@ -20,14 +20,14 @@ export class AuthController {
       return this.authService.loginAccount(userLoginDto)
   }
 
-  @Post() 
-  createAccount( @Body() register : UserCreateDto ) {
-               return  this.authService.createUser(register)
+  @Post()
+  createAccount(@Body() register: UserCreateDto) {
+    return this.authService.createUser(register);
   }
 
-  @Get(":email")
-  getUser(@Param("email")  email : string ){
-        return this.authService.getUser(email)
+  @Get(':email')
+  getUser(@Param('email') email: string) {
+    return this.authService.getUser(email);
   }
 
   @Get() 

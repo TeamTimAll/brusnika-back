@@ -63,9 +63,8 @@ export class AuthService {
     try {
       const user = await this.userService.findOne({ email: loginDto.email });
       console.log({
-         loginDto 
-      });
-
+         user 
+      }, loginDto)
   
       if (!user) {
         console.log("User not found ")
