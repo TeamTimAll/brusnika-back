@@ -5,6 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
 import { config } from 'dotenv';
 import { CommentsModule } from './modules/comments/comments.module';
+import { NewsModule } from './modules/news/news.module';
+import { NewsController } from './modules/news/news.controller';
+import { NewsModule } from './modules/news/news.module';
 import * as AppDataSource from './data-source';
 
 config()
@@ -41,9 +44,10 @@ config()
 
 @Module({
   imports: [SecuredModule, 
-    TypeOrmModule.forRoot(AppDataSource), CommentsModule,
+    TypeOrmModule.forRoot(AppDataSource), CommentsModule, NewsModule,
   ],
   providers: [],
+  controllers: [NewsController],
 })
 
 export class AppModule {}

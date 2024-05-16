@@ -14,7 +14,7 @@ import { Uuid } from 'boilerplate.polyfill';
 export class EventsService {
   constructor(
     @InjectRepository(EventsEntity)
-    private eventsRepository: Repository<EventsEntity>,
+    private eventsRepository: Repository<EventsEntity>
   ) {}
 
   async  createEvents(

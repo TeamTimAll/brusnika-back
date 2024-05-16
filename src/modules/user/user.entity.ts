@@ -7,7 +7,7 @@ import { UserDto } from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
 import { EventsEntity } from '../events/events.entity';
 import { CommentEntity } from '../../modules/comments/comment.entity';
-
+import { NewsEntity } from 'modules/news/news.entity.dto';
 
 
 @Entity({ name: 'users' })
@@ -58,6 +58,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
   @OneToMany(() => CommentEntity, (comment) => comment.user)
   comments?: CommentEntity[]; 
+
+  @OneToMany(() => NewsEntity , ( news ) => news.user)
+  news ? : NewsEntity[]
 
 }
 
