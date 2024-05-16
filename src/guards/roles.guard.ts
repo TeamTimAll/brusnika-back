@@ -1,28 +1,21 @@
-import {
-  type CanActivate,
-  type ExecutionContext,
-  Injectable,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import _ from 'lodash';
-
-import { type RoleType } from '../constants';
-import { type UserEntity } from '../modules/user/user.entity';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Request } from 'express';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor() {}
 
-  canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.get<RoleType[]>('roles', context.getHandler());
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    const http = context.switchToHttp();
+    const request = http.getRequest<Request>();
 
-    if (_.isEmpty(roles)) {
-      return true;
+    const role = request.headers['role']; 
+
+    if (role && role === 'ADMIN') {
+      return true; 
     }
 
-    const request = context.switchToHttp().getRequest();
-    const user = <UserEntity>request.user;
-
-    return roles.includes(user.role);
+    return false; 
   }
 }

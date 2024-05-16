@@ -2,76 +2,48 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
-  HttpStatus,
   Post,
-  UploadedFile,
-  Version,
+  Req,
+  UseGuards,
+  Param,
+  HttpStatus,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-
-import { RoleType } from '../../constants';
-import { ApiFile, Auth, AuthUser } from '../../decorators';
-import { IFile } from '../../interfaces';
-import { UserDto } from '../user/dtos/user.dto';
-import { UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { LoginPayloadDto } from './dto/login-payload.dto';
-import { UserLoginDto } from './dto/user-login.dto';
-import { UserRegisterDto } from './dto/user-register.dto';
+import { Request } from 'express';
+import { UserCreateDto } from '../../modules/user/dtos/user.dto';
+import { JwtAuthGuard } from './guards/jwt.guard';
+import { LocalGuard } from './guards/local.guard';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { LoginSuccess, UserLoginDto } from './dtos/user-login.dto';
 
 @Controller('auth')
-@ApiTags('auth')
 export class AuthController {
-  constructor(
-    private userService: UserService,
-    private authService: AuthService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
-  @Post('login')
-  @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({
-    type: LoginPayloadDto,
-    description: 'User info with access token',
+  @ApiOperation({ summary: 'login' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: LoginSuccess,
   })
-  async userLogin(
-    @Body() userLoginDto: UserLoginDto,
-  ): Promise<LoginPayloadDto> {
-    const userEntity = await this.authService.validateUser(userLoginDto);
-
-    const token = await this.authService.createAccessToken({
-      userId: userEntity.id,
-      role: userEntity.role,
-    });
-
-    return new LoginPayloadDto(userEntity.toDto(), token);
+  @Post('login')
+  @UseGuards(LocalGuard)
+  async userLogin(@Body() userLoginDto: UserLoginDto) {
+    return this.authService.loginAccount(userLoginDto);
   }
 
-  @Post('register')
-  @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: UserDto, description: 'Successfully Registered' })
-  @ApiFile({ name: 'avatar' })
-  async userRegister(
-    @Body() userRegisterDto: UserRegisterDto,
-    @UploadedFile() file?: IFile,
-  ): Promise<UserDto> {
-    const createdUser = await this.userService.createUser(
-      userRegisterDto,
-      file,
-    );
-
-    return createdUser.toDto({
-      isActive: true,
-    });
+  @Post()
+  createAccount(@Body() register: UserCreateDto) {
+    return this.authService.createUser(register);
   }
 
-  @Version('1')
-  @Get('me')
-  @HttpCode(HttpStatus.OK)
-  @Auth([RoleType.USER, RoleType.ADMIN])
-  @ApiOkResponse({ type: UserDto, description: 'current user info' })
-  getCurrentUser(@AuthUser() user: UserEntity): UserDto {
-    return user.toDto();
+  @Get(':email')
+  getUser(@Param('email') email: string) {
+    return this.authService.getUser(email);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  status(@Req() req: Request) {
+    return req.user;
   }
 }

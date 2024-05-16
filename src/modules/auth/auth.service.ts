@@ -1,51 +1,122 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UserService   } from '../user/user.service';
+import { UserCreateDto  } from 'modules/user/dtos/user.dto';
+import * as bcrypt from 'bcrypt';
+import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
+import { UserLoginDto } from './dtos/user-login.dto';
 
-import { validateHash } from '../../common/utils';
-import { type RoleType, TokenType } from '../../constants';
-import { UserNotFoundException } from '../../exceptions';
-import { ApiConfigService } from '../../shared/services/api-config.service';
-import { type UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { TokenPayloadDto } from './dto/token-payload.dto';
-import { type UserLoginDto } from './dto/user-login.dto';
+
+
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private configService: ApiConfigService,
     private userService: UserService,
-  ) {}
+    private  nodemailer  : NodeMailerService
+  ) {};
 
-  async createAccessToken(data: {
-    role: RoleType;
-    userId: Uuid;
-  }): Promise<TokenPayloadDto> {
-    return new TokenPayloadDto({
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-      accessToken: await this.jwtService.signAsync({
-        userId: data.userId,
-        type: TokenType.ACCESS_TOKEN,
-        role: data.role,
-      }),
-    });
+
+
+  async createUser(body: UserCreateDto): Promise<any> {
+       try {
+        if (!body.username || !body.password || !body.email) {
+          return  new HttpException(
+            'Username or Password not provided',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+    
+        const existingUser = await this.userService.findOne({
+          username: body.username,
+        });
+    
+        if (existingUser) {
+          return  new HttpException('User already exists', HttpStatus.CONFLICT);
+        }
+    
+        const hashedPassword = await bcrypt.hash(body.password, 10);
+
+        const newUser = await this.userService.createUser({
+          username: body.username,
+          password: hashedPassword,
+          email: body.email,
+        });
+    
+        const { password, ...result } = newUser;
+
+       /**
+       * Todo  , We can make a url to send an email with jwt to get user 
+       */
+        
+        return result;
+        
+       } catch (error) {
+        console.log("Account creating error")
+        return new HttpException("Something went wrong", 500)
+       }
   }
 
-  async validateUser(userLoginDto: UserLoginDto): Promise<UserEntity> {
-    const user = await this.userService.findOne({
-      email: userLoginDto.email,
-    });
 
-    const isPasswordValid = await validateHash(
-      userLoginDto.password,
-      user?.password,
-    );
+  async loginAccount(loginDto: UserLoginDto): Promise<any> {
 
-    if (!isPasswordValid) {
-      throw new UserNotFoundException();
+    try {
+      const user = await this.userService.findOne({ email: loginDto.email });
+      console.log({
+         user 
+      }, loginDto)
+  
+      if (!user) {
+        console.log("User not found ")
+        return  new UnauthorizedException('User not found');
+      }
+  
+      if (user.password === null) {
+        console.log("Users password is null")
+        return  new UnauthorizedException('Password not set');
+      };
+      
+  
+       const passwordMatch= await  bcrypt.compare( loginDto.password , user.password )
+      
+      if (!passwordMatch) {
+        console.log("Password did not match")
+        return  new UnauthorizedException('Invalid email or password');
+      };
+
+      await this.nodemailer.sendMail();
+      
+
+      const { password, ...result } = user;
+      return {
+        accessToken: this.jwtService.sign(result),
+      };
+
+    } catch (error : any )  {
+      console.error('Login error:', error.message);
+      return  new  HttpException(error.message ,500)
+
     }
-
-    return user!;
   }
-}
+  
+
+  async getUser(email: string): Promise<any> {
+    try {
+      const user = await this.userService.findByUsernameOrEmail({ email });
+      if (!user) {
+        return  new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      return user;
+
+    } catch (error : any ) {
+      console.log({
+        errroGettingUser : error
+      })
+      return  new HttpException(error.message , 500)
+    }
+  }
+};
+
+
+

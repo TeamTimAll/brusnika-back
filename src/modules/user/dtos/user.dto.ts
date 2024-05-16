@@ -1,15 +1,19 @@
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 import { RoleType } from '../../../constants';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+
 import {
   BooleanFieldOptional,
+  ClassField,
   EmailFieldOptional,
   EnumFieldOptional,
+  IsPassword,
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
+
 import { type UserEntity } from '../user.entity';
 
-// TODO, remove this class and use constructor's second argument's type
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
 export class UserDto extends AbstractDto {
@@ -21,6 +25,9 @@ export class UserDto extends AbstractDto {
 
   @StringFieldOptional({ nullable: true })
   username!: string;
+
+  @StringFieldOptional({ nullable: true })
+  password!: string;
 
   @EnumFieldOptional(() => RoleType)
   role?: RoleType;
@@ -46,5 +53,35 @@ export class UserDto extends AbstractDto {
     this.avatar = user.avatar;
     this.phone = user.phone;
     this.isActive = options?.isActive;
+  }
+}
+
+export class UserCreateDto {
+  @IsString()
+  @IsNotEmpty()
+  username: string;
+
+  @IsPassword()
+  @IsNotEmpty()
+  @MinLength(6)
+  password: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  constructor() {
+    this.username = '';
+    this.email = '';
+    this.password = '';
+  }
+}
+
+export class LoginPayloadDto {
+  @ClassField(() => UserDto)
+  user: UserDto;
+
+  constructor(user: UserDto) {
+    this.user = user;
   }
 }

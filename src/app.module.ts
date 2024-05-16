@@ -1,89 +1,104 @@
 import './boilerplate.polyfill';
 
-import path from 'node:path';
-
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClsModule } from 'nestjs-cls';
-import {
-  AcceptLanguageResolver,
-  HeaderResolver,
-  I18nModule,
-  QueryResolver,
-} from 'nestjs-i18n';
+import { SecuredModule } from './modules/secured.module';
+import { config } from 'dotenv';
+import { CommentsModule } from './modules/comments/comments.module';
+import { NewsModule } from './modules/news/news.module';
+import * as AppDataSource from './data-source';
 
-import { DataSource } from 'typeorm';
-import { addTransactionalDataSource } from 'typeorm-transactional';
+config()
 
-import { AuthModule } from './modules/auth/auth.module';
-import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
-import { PostModule } from './modules/post/post.module';
-import { UserModule } from './modules/user/user.module';
-import { ApiConfigService } from './shared/services/api-config.service';
-import { SharedModule } from './shared/shared.module';
+
+// const sql: object = {
+//   type: process.env.DB_TYPE,
+//   host: process.env.DB_HOST,
+//   port: process.env.DB_PORT,
+//   username: process.env.DB_USERNAME,
+//   password: process.env.DB_PASSWORD,
+//   database:process.env.DB_DATABASE,
+//   ssl: true
+  
+// };
+
+ 
+
+
+// const sql: object = {
+//   type: "postgres",
+//   host: "ep-nameless-shadow-a5y0kz4v-pooler.us-east-2.aws.neon.tech",
+//   port: 5432,
+//   username: "brustnika-backend_owner",
+//   password: "F3hVBAbmWUY6",
+//   database: "brustnika-backend",
+//   ssl: true,
+//   migrations: [ "../src/database/migrations"],
+
+// };
+
+
+
 
 @Module({
-  imports: [
-    AuthModule,
-    UserModule,
-    PostModule,
-    ClsModule.forRoot({
-      global: true,
-      middleware: {
-        mount: true,
-      },
-    }),
-    ThrottlerModule.forRootAsync({
-      imports: [SharedModule],
-      useFactory: (configService: ApiConfigService) => ({
-        throttlers: [configService.throttlerConfigs],
-      }),
-      inject: [ApiConfigService],
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [SharedModule],
-      useFactory: (configService: ApiConfigService) =>
-        configService.postgresConfig,
-      inject: [ApiConfigService],
-      dataSourceFactory: (options) => {
-        if (!options) {
-          throw new Error('Invalid options passed');
-        }
 
-        return Promise.resolve(
-          addTransactionalDataSource(new DataSource(options)),
-        );
-      },
-    }),
-
-    I18nModule.forRootAsync({
-      useFactory: (configService: ApiConfigService) => ({
-        fallbackLanguage: configService.fallbackLanguage,
-        loaderOptions: {
-          path: path.join(__dirname, '/i18n/'),
-          watch: configService.isDevelopment,
-        },
-        resolvers: [
-          { use: QueryResolver, options: ['lang'] },
-          AcceptLanguageResolver,
-          new HeaderResolver(['x-lang']),
-        ],
-      }),
-      imports: [SharedModule],
-      inject: [ApiConfigService],
-    }),
-
-    HealthCheckerModule,
+  imports: [SecuredModule, 
+    TypeOrmModule.forRoot(AppDataSource), CommentsModule, NewsModule,
   ],
-  
+
   providers: [],
+  controllers: [],
 })
 
-
 export class AppModule {}
+
+// ClsModule.forRoot({
+//   global: true,
+//   middleware: {
+//     mount: true,
+//   },
+// }),
+
+
+// ThrottlerModule.forRootAsync({
+//   imports: [SharedModule],
+//   useFactory: (configService: ApiConfigService) => ({
+//     throttlers: [configService.throttlerConfigs],
+//   }),
+//   inject: [ApiConfigService],
+// }),
+// ConfigModule.forRoot({
+//   isGlobal: true,
+//   envFilePath: '.env',
+// })
+// TypeOrmModule.forRootAsync({
+//   imports: [SharedModule],
+//   useFactory: (configService: ApiConfigService) =>
+//     configService.postgresConfig,
+//   inject: [ApiConfigService],
+//   dataSourceFactory: (options) => {
+//     if (!options) {
+//       throw new Error('Invalid options passed');
+//     }
+//     return Promise.resolve(
+//       addTransactionalDataSource(new DataSource(options)),
+//     );
+//   },
+// })
+
+// I18nModule.forRootAsync({
+//   useFactory: (configService: ApiConfigService) => ({
+//     fallbackLanguage: configService.fallbackLanguage,
+//     loaderOptions: {
+//       path: path.join(__dirname, '/i18n/'),
+//       watch: configService.isDevelopment,
+//     },
+//     resolvers: [
+//       { use: QueryResolver, options: ['lang'] },
+//       AcceptLanguageResolver,
+//       new HeaderResolver(['x-lang']),
+//     ],
+//   }),
+//   imports: [SharedModule],
+//   inject: [ApiConfigService],
+// }),

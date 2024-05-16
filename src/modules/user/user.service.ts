@@ -1,36 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { plainToClass } from 'class-transformer';
 import { type FindOptionsWhere, Repository } from 'typeorm';
-import { Transactional } from 'typeorm-transactional';
 
 import { type PageDto } from '../../common/dto/page.dto';
-import { FileNotImageException, UserNotFoundException } from '../../exceptions';
-import { IFile } from '../../interfaces';
-import { AwsS3Service } from '../../shared/services/aws-s3.service';
-import { ValidatorService } from '../../shared/services/validator.service';
-import { UserRegisterDto } from '../auth/dto/user-register.dto';
+import { UserNotFoundException } from '../../exceptions';
+
 import { CreateSettingsCommand } from './commands/create-settings.command';
 import { CreateSettingsDto } from './dtos/create-settings.dto';
-import { type UserDto } from './dtos/user.dto';
+import { UserCreateDto , type UserDto } from './dtos/user.dto';
 import { type UsersPageOptionsDto } from './dtos/users-page-options.dto';
 import { UserEntity } from './user.entity';
 import { type UserSettingsEntity } from './user-settings.entity';
+import { Uuid } from 'boilerplate.polyfill';
 
 @Injectable()
 export class UserService {
+  private commandBus!: CommandBus;
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private validatorService: ValidatorService,
-    private awsS3Service: AwsS3Service,
-    private commandBus: CommandBus,
   ) {}
 
-  /**
-   * Find single user
-   */
+
+
   findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
     return this.userRepository.findOneBy(findData);
   }
@@ -57,47 +50,36 @@ export class UserService {
     return queryBuilder.getOne();
   }
 
-  @Transactional()
-  async createUser(
-    userRegisterDto: UserRegisterDto,
-    file?: IFile,
-  ): Promise<UserEntity> {
-    const user = this.userRepository.create(userRegisterDto);
-
-    if (file && !this.validatorService.isImage(file.mimetype)) {
-      throw new FileNotImageException();
+  async createUser(userRegisterDto: UserCreateDto): Promise<UserEntity> {
+    try {
+      console.log({ userDto: userRegisterDto });
+  
+      const user: UserEntity = this.userRepository.create(userRegisterDto);
+      const savedUser: UserEntity = await this.userRepository.save(user);
+  
+      console.log({ user: savedUser });
+  
+      return savedUser;
+    } catch (error : any ) {
+      // Handle any potential errors (e.g., database errors)
+      throw new Error('Failed to create user: ' + error.message);
     }
-
-    if (file) {
-      user.avatar = await this.awsS3Service.uploadImage(file);
-    }
-
-    await this.userRepository.save(user);
-
-    user.settings = await this.createSettings(
-      user.id,
-      plainToClass(CreateSettingsDto, {
-        isEmailVerified: false,
-        isPhoneVerified: false,
-      }),
-    );
-
-    return user;
   }
+  
 
   async getUsers(
     pageOptionsDto: UsersPageOptionsDto,
   ): Promise<PageDto<UserDto>> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    const queryBuilder = await  this.userRepository.createQueryBuilder('user');
     const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
 
     return items.toPageDto(pageMetaDto);
   }
 
   async getUser(userId: Uuid): Promise<UserDto> {
-    const queryBuilder = this.userRepository.createQueryBuilder('user');
+    const queryBuilder =  await this.userRepository.createQueryBuilder('user');
 
-    queryBuilder.where('user.id = :userId', { userId });
+    await  queryBuilder.where('user.id = :userId', { userId });
 
     const userEntity = await queryBuilder.getOne();
 
@@ -113,7 +95,8 @@ export class UserService {
     createSettingsDto: CreateSettingsDto,
   ): Promise<UserSettingsEntity> {
     return this.commandBus.execute<CreateSettingsCommand, UserSettingsEntity>(
-      new CreateSettingsCommand(userId, createSettingsDto),
+         new CreateSettingsCommand(userId, createSettingsDto),
     );
   }
+  
 }
