@@ -47,6 +47,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
     query: (alias) =>
       `SELECT CONCAT(${alias}.first_name, ' ', ${alias}.last_name)`,
   })
+
   fullName!: string;
 
   @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)

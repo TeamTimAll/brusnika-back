@@ -7,15 +7,17 @@ export class CommentDto extends AbstractDto {
   userId: string;
 
   @ApiPropertyOptional()
-  commentId: string;
+  eventId: string;
 
   @ApiPropertyOptional()
   comment: string;
 
+  
+
   constructor(commentEntity: CommentEntity) {
     super(commentEntity);
     this.userId = commentEntity.userId;
-    this.commentId = String(commentEntity.commentId);
+    this.eventId = String(commentEntity.eventId);
     this.comment = String(commentEntity.comment);
   }
 }
