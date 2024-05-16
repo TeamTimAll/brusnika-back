@@ -6,7 +6,10 @@ import { UseDto } from '../../decorators';
 import { UserDto } from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
 import { EventsEntity } from '../events/events.entity';
-import { CommentEntity } from 'modules/comments/comment.entity';
+import { CommentEntity } from '../../modules/comments/comment.entity';
+
+
+
 @Entity({ name: 'users' })
 @UseDto(UserDto)
 export class UserEntity extends AbstractEntity<UserDto> {

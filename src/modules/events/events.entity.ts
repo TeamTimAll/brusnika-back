@@ -1,3 +1,4 @@
+
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { UseDto } from '../../decorators';
@@ -41,10 +42,10 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
   type!: EVENT_TYPES;
 
   @Column({ default: 0 })
-  likeCount!: number; // New likeCount field
+  likeCount!: number;
 
   @Column({ default: 0 })
-  views!: number; // New views field
+  views!: number; 
 
   @OneToMany(() => CommentEntity, (comment) => comment.event)
   comments?: CommentEntity[]; // One-to-many relationship with comments

@@ -31,9 +31,11 @@ export class EventsService {
   ): Promise<PageDto<EventsDto>> {
     const queryBuilder = this.eventsRepository.createQueryBuilder(
       'Events',
-    ).leftJoinAndSelect('Events.translations', 'EventsTranslation');
+    );
+
     const [items, pageMetaDto] =
       await queryBuilder.paginate(EventsPageOptionsDto);
+
 
     return items.toPageDto(pageMetaDto);
   }

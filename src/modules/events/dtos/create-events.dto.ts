@@ -18,6 +18,7 @@ export class CreateEventsDto {
     maxLength: 1000,
     minLength: 3,
   })
+  
   description!: string;
   userId: Uuid | undefined;
 
@@ -27,5 +28,6 @@ export class CreateEventsDto {
     enum: EVENT_TYPES,
     required: true,
   })
+  
   type!: EVENT_TYPES;
 }
