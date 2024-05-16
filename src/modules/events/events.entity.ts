@@ -20,6 +20,7 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+
   @JoinColumn({ name: 'user_id' })
   user!: UserEntity;
 

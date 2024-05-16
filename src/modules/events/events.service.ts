@@ -17,12 +17,13 @@ export class EventsService {
     private eventsRepository: Repository<EventsEntity>,
   ) {}
 
-  createEvents(
+  async  createEvents(
     userId: Uuid,
     createEventsDto: CreateEventsDto,
   ): Promise<EventsEntity> {
     createEventsDto.userId = userId
-    return this.eventsRepository.save(createEventsDto);
+    const createdEvent : EventsEntity  = await this.eventsRepository.save(createEventsDto)
+    return  createdEvent
   }
 
   async getAllEvents(
@@ -65,7 +66,7 @@ export class EventsService {
       throw new EventsNotFoundException();
     }
 
-    this.eventsRepository.merge(EventsEntity, updateEventsDto);
+    await this.eventsRepository.merge(EventsEntity, updateEventsDto);
 
     await this.eventsRepository.save(updateEventsDto);
   }

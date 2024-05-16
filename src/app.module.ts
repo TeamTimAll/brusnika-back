@@ -4,6 +4,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
 import { config } from 'dotenv';
+import { CommentsModule } from './modules/comments/comments.module';
 import * as AppDataSource from './data-source';
 
 config()
@@ -40,7 +41,7 @@ config()
 
 @Module({
   imports: [SecuredModule, 
-    TypeOrmModule.forRoot(AppDataSource),
+    TypeOrmModule.forRoot(AppDataSource), CommentsModule,
   ],
   providers: [],
 })

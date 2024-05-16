@@ -3,11 +3,10 @@ import { Column, Entity, OneToMany, OneToOne, VirtualColumn } from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../constants';
 import { UseDto } from '../../decorators';
-import { PostEntity } from '../post/post.entity';
 import { UserDto } from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
 import { EventsEntity } from '../events/events.entity';
-
+import { CommentEntity } from 'modules/comments/comment.entity';
 @Entity({ name: 'users' })
 @UseDto(UserDto)
 export class UserEntity extends AbstractEntity<UserDto> {
@@ -50,9 +49,12 @@ export class UserEntity extends AbstractEntity<UserDto> {
   @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)
   settings?: UserSettingsEntity;
 
-  @OneToMany(() => PostEntity, (postEntity) => postEntity.user)
-  posts?: PostEntity[];
-
   @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user)
   events?: EventsEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.user)
+  comments?: CommentEntity[]; 
+
 }
+
+

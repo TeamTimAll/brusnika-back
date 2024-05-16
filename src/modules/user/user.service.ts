@@ -1,16 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-// import { plainToClass } from 'class-transformer';
 import { type FindOptionsWhere, Repository } from 'typeorm';
-// import { Transactional } from 'typeorm-transactional';
 
 import { type PageDto } from '../../common/dto/page.dto';
 import { UserNotFoundException } from '../../exceptions';
-// import { IFile } from '../../interfaces';
-// import { AwsS3Service } from '../../shared/services/aws-s3.service';
-// import { ValidatorService } from '../../shared/services/validator.service';
-// import { UserRegisterDto } from '../auth/dto/user-register.dto';
+
 import { CreateSettingsCommand } from './commands/create-settings.command';
 import { CreateSettingsDto } from './dtos/create-settings.dto';
 import { UserCreateDto , type UserDto } from './dtos/user.dto';
