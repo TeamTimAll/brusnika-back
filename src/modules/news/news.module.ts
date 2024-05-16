@@ -1,19 +1,11 @@
 import { Module } from '@nestjs/common';
 import { NewsController } from './news.controller';
 import { NewsService } from './news.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { NewsEntity } from './news.entity.dto';
 
-
-
-/**
- *  • 1-yangilik toifalarini tanlash
-    • Yangiliklarning 2-toifasini tanlash (har bir yangilik 
-      2 toifaga tegishli bo'lishi mumkin - bir ro'yxatning birinchi toifasi, 
-      ikkinchi toifasi boshqasi)
-    • Shaharni tanlang
-    • Yangilikni "yoqtirish" yoki "maxsus yoqtirish" qobiliyati
-
- */
 @Module({
+  imports : [ TypeOrmModule.forFeature([NewsEntity])],
   controllers: [NewsController],
   providers: [NewsService]
 })

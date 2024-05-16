@@ -1,12 +1,9 @@
-
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { NEWS_CATEGORIES } from "../news.entity.dto"
-import { AbstractDto } from '../../../common/dto/abstract.dto';
 
 
-
-export class NewsDto extends AbstractDto {
+export class CreateNewsDto {
   @IsString()
   @IsNotEmpty()
   title!: string;

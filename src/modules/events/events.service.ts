@@ -10,6 +10,7 @@ import { EventsNotFoundException } from './exceptions/events-not-found.exception
 import { EventsEntity } from './events.entity';
 import { Uuid } from 'boilerplate.polyfill';
 
+
 @Injectable()
 export class EventsService {
   constructor(
@@ -104,6 +105,8 @@ export class EventsService {
 
     event.likeCount++; 
     await this.eventsRepository.save(event);
+
+    
   }
 
 
