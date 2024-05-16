@@ -13,6 +13,20 @@ export class CommentsService {
     async getAllComments(): Promise<CommentEntity[]> {
         return this.commentRepository.find();
     }
+
+
+    async addComment () : Promise<any> {}
+
+
+    async getPostComments ( ) : Promise<any> {}
+
+
+    async  deleteComment() : Promise <any> {}
+
+
+    async updateComment () : Promise<any> {}
+
+
 };
 
 

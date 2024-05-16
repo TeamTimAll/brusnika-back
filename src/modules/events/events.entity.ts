@@ -1,9 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { UseDto } from '../../decorators';
 import { UserEntity } from '../user/user.entity';
 import { EventsDto } from './dtos/events.dto';
 import { Uuid } from 'boilerplate.polyfill';
+import { CommentEntity } from "../comments/comment.entity"
 
 export enum EVENT_TYPES {
   Banner = 'BANNER',
@@ -20,7 +21,6 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-
   @JoinColumn({ name: 'user_id' })
   user!: UserEntity;
 
@@ -39,4 +39,13 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
     nullable: false,
   })
   type!: EVENT_TYPES;
+
+  @Column({ default: 0 })
+  likeCount!: number; // New likeCount field
+
+  @Column({ default: 0 })
+  views!: number; // New views field
+
+  @OneToMany(() => CommentEntity, (comment) => comment.event)
+  comments?: CommentEntity[]; // One-to-many relationship with comments
 }

@@ -53,8 +53,10 @@ export class EventsService {
   }
 
   async updateEvents(
+
     id: Uuid,
     updateEventsDto: UpdateEventsDto,
+
   ): Promise<void> {
     const queryBuilder = this.eventsRepository.createQueryBuilder(
       'Events',
@@ -83,5 +85,41 @@ export class EventsService {
     }
 
     await this.eventsRepository.remove(EventsEntity);
+  };
+
+  async updateEventLike(id: Uuid): Promise<void> {
+    const queryBuilder =  await this.eventsRepository.createQueryBuilder(
+      'Events',
+    ).where('Events.id = :id', { id });
+
+    const event = await queryBuilder.getOne();
+
+
+    if (!event) {
+      throw new EventsNotFoundException();
+    };
+
+
+    event.likeCount++; 
+    await this.eventsRepository.save(event);
+  }
+
+
+    async updateEventView(id: Uuid): Promise<void> {
+      const queryBuilder =  await this.eventsRepository.createQueryBuilder(
+        'Events',
+      ).where('Events.id = :id', { id });
+
+      const event = await queryBuilder.getOne();
+
+    if (!event) {
+      throw new EventsNotFoundException();
+    }
+    
+    event.views++; // Increment view count
+    await this.eventsRepository.save(event);
   }
 }
+
+
+
