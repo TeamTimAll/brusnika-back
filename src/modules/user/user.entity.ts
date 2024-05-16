@@ -7,7 +7,7 @@ import { UserDto } from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
 import { EventsEntity } from '../events/events.entity';
 import { CommentEntity } from '../../modules/comments/comment.entity';
-import { NewsEntity } from '../../modules/news/news.entity.dto';
+import { NewsEntity } from '../news/news.entity';
 
 
 @Entity({ name: 'users' })

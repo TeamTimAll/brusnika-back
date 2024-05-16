@@ -1,7 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NewsEntity } from './news.entity.dto';
+import { NewsEntity } from './news.entity';
 import { Uuid } from 'boilerplate.polyfill';
 import { CreateNewsDto } from './dto/news.create.dto';
 import { UpdateNewsDto } from './dto/news.update.dto';

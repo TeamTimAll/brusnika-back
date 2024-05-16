@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { NEWS_CATEGORIES } from "../news.entity.dto"
+import { NEWS_CATEGORIES } from "../news.entity"
 
 
 export class CreateNewsDto {
