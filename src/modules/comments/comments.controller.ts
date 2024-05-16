@@ -1,27 +1,40 @@
 import
  { 
     Controller ,
-    HttpCode ,
-    HttpStatus,
-    Get
-
-
+//     HttpCode ,
+//     HttpStatus,
+    Get,
+    Body, 
+    Put,
+//     Param,
+    Post,
 } from '@nestjs/common';
 
 import { CommentsService } from './comments.service';
+import { AddCommentDto } from './dtos/comment.create.dto';
+import { CommentUpdateDto } from './dtos/comment.update.dto';
+
 @Controller('comments')
 
 export class CommentsController {
 
      constructor( private  commentsService : CommentsService) {};
-
       
-     @Get("comments")
-     @HttpCode(HttpStatus.OK)
-
+     @Get()
+//      @HttpCode(HttpStatus.OK)
      async  getAll(){
            return  this.commentsService.getAllComments()
      }
 
+      @Post()
+      async createComment( @Body() commentBody : AddCommentDto){
+          return this.commentsService.addComment(commentBody)
+     }
+    
+     @Put()
+     async updateComment( @Body() commentUpdate : CommentUpdateDto) {
+         return this.commentsService.updateComment(commentUpdate)
+     };
+};
 
-}
+

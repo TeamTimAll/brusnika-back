@@ -10,6 +10,7 @@ export class CreateEventsDto {
     maxLength: 1000,
     minLength: 3,
   })
+  
   title!: string;
 
   @IsString()
