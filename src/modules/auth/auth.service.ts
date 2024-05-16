@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService   } from '../user/user.service';
-import { UserCreateDto , UserLoginDto } from 'modules/user/dtos/user.dto';
+import { UserCreateDto  } from 'modules/user/dtos/user.dto';
 import * as bcrypt from 'bcrypt';
 import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
+import { UserLoginDto } from './dtos/user-login.dto';
 
 
 
@@ -63,9 +64,8 @@ export class AuthService {
     try {
       const user = await this.userService.findOne({ email: loginDto.email });
       console.log({
-         loginDto 
-      });
-
+         user 
+      }, loginDto)
   
       if (!user) {
         console.log("User not found ")

@@ -4,11 +4,11 @@ import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../constants';
 import { UseDto } from '../../decorators';
 import { PostEntity } from '../post/post.entity';
-import { UserDto} from './dtos/user.dto';
+import { UserDto } from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
+import { EventsEntity } from '../events/events.entity';
 
 @Entity({ name: 'users' })
-
 @UseDto(UserDto)
 export class UserEntity extends AbstractEntity<UserDto> {
   @Column({ nullable: true, type: 'varchar' })
@@ -33,6 +33,12 @@ export class UserEntity extends AbstractEntity<UserDto> {
   phone!: string | null;
 
   @Column({ nullable: true, type: 'varchar' })
+  verification_code!: string | null;
+
+  @Column({ nullable: true, type: 'timestamp' })
+  verification_code_sent_date!: Date | null;
+
+  @Column({ nullable: true, type: 'varchar' })
   avatar!: string | null;
 
   @VirtualColumn({
@@ -46,4 +52,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
   @OneToMany(() => PostEntity, (postEntity) => postEntity.user)
   posts?: PostEntity[];
+
+  @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user)
+  events?: EventsEntity[];
 }

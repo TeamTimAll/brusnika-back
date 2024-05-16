@@ -20,7 +20,7 @@ module.exports = {
   port: process.env.DB_PORT,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE, 
+  database: process.env.DB_DATABASE,
   ssl: true,
   logging: true,
   synchronize: true,
@@ -28,7 +28,6 @@ module.exports = {
     join(__dirname, '/**/*.entity{.ts,.js}'),
     join(__dirname, '/**/*.view-entity{.ts,.js}'),
   ],
-
   migrations: [join(__dirname, 'src/database/migrations/*{.ts,.js}')],
   
 };

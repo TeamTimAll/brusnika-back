@@ -4,12 +4,13 @@ import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 import {
   BooleanFieldOptional,
+  ClassField,
   EmailFieldOptional,
   EnumFieldOptional,
+  IsPassword,
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
-import { ClassField } from '../../../decorators';
 
 import { type UserEntity } from '../user.entity';
 
@@ -55,49 +56,31 @@ export class UserDto extends AbstractDto {
   }
 }
 
-
 export class UserCreateDto {
-  
   @IsString()
   @IsNotEmpty()
   username: string;
 
-  @IsString()
+  @IsPassword()
   @IsNotEmpty()
   @MinLength(6)
   password: string;
 
   @IsEmail()
   @IsNotEmpty()
-  email : string 
+  email: string;
 
-  constructor(){
-       this.username = ""
-       this.email = ""       
-       this.password = ""
+  constructor() {
+    this.username = '';
+    this.email = '';
+    this.password = '';
   }
-  
 }
-
-import { EmailField, StringField } from '../../../decorators';
-
-export class UserLoginDto {
-  @EmailField()
-  readonly email!: string;
-
-  @StringField()
-  readonly password!: string;
-}
-
-
-
-
 
 export class LoginPayloadDto {
   @ClassField(() => UserDto)
   user: UserDto;
 
- 
   constructor(user: UserDto) {
     this.user = user;
   }
