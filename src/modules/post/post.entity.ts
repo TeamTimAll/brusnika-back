@@ -24,5 +24,6 @@ export class PostEntity extends AbstractEntity<PostDto> {
     () => PostTranslationEntity,
     (postTranslationEntity) => postTranslationEntity.post,
   )
+  
   declare translations?: PostTranslationEntity[];
 }

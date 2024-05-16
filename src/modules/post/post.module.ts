@@ -7,11 +7,10 @@ import { PostEntity } from './post.entity';
 import { PostService } from './post.service';
 import { GetPostHandler } from './queries/get-post.query';
 
-const handlers = [CreatePostHandler, GetPostHandler];
 
 @Module({
   imports: [TypeOrmModule.forFeature([PostEntity])],
-  providers: [PostService, ...handlers],
+  providers: [PostService, CreatePostHandler, GetPostHandler],
   controllers: [PostController],
 })
 export class PostModule {}
