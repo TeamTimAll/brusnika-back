@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Put,
   Query,
+  Post,
 } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
@@ -16,8 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { type PageDto } from '../../common/dto/page.dto';
 import { RoleType } from '../../constants';
-import { ApiPageOkResponse, Auth, AuthUser, UUIDParam } from '../../decorators';
-import { UseLanguageInterceptor } from '../../interceptors/language-interceptor.service';
+import { Auth, AuthUser, UUIDParam } from '../../decorators';
 import { UserEntity } from '../user/user.entity';
 import { CreateEventsDto } from './dtos/create-events.dto';
 import { EventsDto } from './dtos/events.dto';
@@ -25,7 +25,7 @@ import { EventsPageOptionsDto } from './dtos/events-page-options.dto';
 import { UpdateEventsDto } from './dtos/update-events.dto';
 import { EventsService } from './events.service';
 import { Uuid } from 'boilerplate.polyfill';
-
+import { ApiPageOkResponse } from '../../decorators';
 @Controller('/events')
 @ApiTags('events')
 export class EventsController {
@@ -34,6 +34,7 @@ export class EventsController {
   @Auth([RoleType.USER])
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({ type: EventsDto })
+  @Post()
   async createEvents(
     @Body() createEventsDto: CreateEventsDto,
     @AuthUser() user: UserEntity,
@@ -48,7 +49,6 @@ export class EventsController {
 
   @Get()
   @Auth([RoleType.USER])
-  @UseLanguageInterceptor()
   @ApiPageOkResponse({ type: EventsDto })
   async getEvents(
     @Query() EventsPageOptionsDto: EventsPageOptionsDto,
@@ -62,7 +62,6 @@ export class EventsController {
   @ApiOkResponse({ type: EventsDto })
   async getSingleEvents(@UUIDParam('id') id: Uuid): Promise<EventsDto> {
     const entity = await this.eventsService.getSingleEvents(id);
-
     return entity.toDto();
   }
 

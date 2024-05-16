@@ -1,6 +1,13 @@
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 import { RoleType } from '../../../constants';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 import {
   BooleanFieldOptional,
@@ -11,8 +18,6 @@ import {
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
-
-import { type UserEntity } from '../user.entity';
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
@@ -44,16 +49,22 @@ export class UserDto extends AbstractDto {
   @BooleanFieldOptional()
   isActive?: boolean;
 
-  constructor(user: UserEntity, options?: UserDtoOptions) {
-    super(user);
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
-    this.role = user.role;
-    this.email = user.email;
-    this.avatar = user.avatar;
-    this.phone = user.phone;
-    this.isActive = options?.isActive;
-  }
+  @IsNumber()
+  verification_code?: number | null;
+
+  @IsDate()
+  verification_code_sent_date?: Date | null;
+
+  // constructor(user: UserEntity, options?: UserDtoOptions) {
+  //   super(user);
+  //   this.firstName = user.firstName;
+  //   this.lastName = user.lastName;
+  //   this.role = user.role;
+  //   this.email = user.email;
+  //   this.avatar = user.avatar;
+  //   this.phone = user.phone;
+  //   this.isActive = options?.isActive;
+  // }
 }
 
 export class UserCreateDto {

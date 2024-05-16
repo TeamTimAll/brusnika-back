@@ -17,20 +17,21 @@ export class EventsService {
     private eventsRepository: Repository<EventsEntity>,
   ) {}
 
-  createEvents(
+  async createEvents(
     userId: Uuid,
     createEventsDto: CreateEventsDto,
   ): Promise<EventsEntity> {
-    createEventsDto.userId = userId
-    return this.eventsRepository.save(createEventsDto);
+    createEventsDto.userId = userId;
+    const createdEvent: EventsEntity =
+      await this.eventsRepository.save(createEventsDto);
+    return createdEvent;
   }
 
   async getAllEvents(
     EventsPageOptionsDto: EventsPageOptionsDto,
   ): Promise<PageDto<EventsDto>> {
-    const queryBuilder = this.eventsRepository.createQueryBuilder(
-      'Events',
-    ).leftJoinAndSelect('Events.translations', 'EventsTranslation');
+    const queryBuilder = this.eventsRepository.createQueryBuilder('Events');
+
     const [items, pageMetaDto] =
       await queryBuilder.paginate(EventsPageOptionsDto);
 
@@ -38,9 +39,9 @@ export class EventsService {
   }
 
   async getSingleEvents(id: Uuid): Promise<EventsEntity> {
-    const queryBuilder = this.eventsRepository.createQueryBuilder(
-      'Events',
-    ).where('Events.id = :id', { id });
+    const queryBuilder = this.eventsRepository
+      .createQueryBuilder('Events')
+      .where('Events.id = :id', { id });
 
     const EventsEntity = await queryBuilder.getOne();
 
@@ -55,9 +56,9 @@ export class EventsService {
     id: Uuid,
     updateEventsDto: UpdateEventsDto,
   ): Promise<void> {
-    const queryBuilder = this.eventsRepository.createQueryBuilder(
-      'Events',
-    ).where('Events.id = :id', { id });
+    const queryBuilder = this.eventsRepository
+      .createQueryBuilder('Events')
+      .where('Events.id = :id', { id });
 
     const EventsEntity = await queryBuilder.getOne();
 
@@ -65,15 +66,15 @@ export class EventsService {
       throw new EventsNotFoundException();
     }
 
-    this.eventsRepository.merge(EventsEntity, updateEventsDto);
+    await this.eventsRepository.merge(EventsEntity, updateEventsDto);
 
     await this.eventsRepository.save(updateEventsDto);
   }
 
   async deleteEvents(id: Uuid): Promise<void> {
-    const queryBuilder = this.eventsRepository.createQueryBuilder(
-      'Events',
-    ).where('Events.id = :id', { id });
+    const queryBuilder = this.eventsRepository
+      .createQueryBuilder('Events')
+      .where('Events.id = :id', { id });
 
     const EventsEntity = await queryBuilder.getOne();
 
@@ -82,5 +83,35 @@ export class EventsService {
     }
 
     await this.eventsRepository.remove(EventsEntity);
+  }
+
+  async updateEventLike(id: Uuid): Promise<void> {
+    const queryBuilder = await this.eventsRepository
+      .createQueryBuilder('Events')
+      .where('Events.id = :id', { id });
+
+    const event = await queryBuilder.getOne();
+
+    if (!event) {
+      throw new EventsNotFoundException();
+    }
+
+    event.likeCount++;
+    await this.eventsRepository.save(event);
+  }
+
+  async updateEventView(id: Uuid): Promise<void> {
+    const queryBuilder = await this.eventsRepository
+      .createQueryBuilder('Events')
+      .where('Events.id = :id', { id });
+
+    const event = await queryBuilder.getOne();
+
+    if (!event) {
+      throw new EventsNotFoundException();
+    }
+
+    event.views++; // Increment view count
+    await this.eventsRepository.save(event);
   }
 }

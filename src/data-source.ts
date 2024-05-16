@@ -2,10 +2,7 @@ import './boilerplate.polyfill';
 import { join } from 'path';
 import dotenv from 'dotenv';
 
-
-
 dotenv.config();
-
 
 // DB_TYPE=postgres
 // DB_HOST=ep-nameless-shadow-a5y0kz4v-pooler.us-east-2.aws.neon.tech
@@ -28,10 +25,7 @@ module.exports = {
     join(__dirname, '/**/*.entity{.ts,.js}'),
     join(__dirname, '/**/*.view-entity{.ts,.js}'),
   ],
-
   migrations: [join(__dirname, 'src/database/migrations/*{.ts,.js}')],
-  
 };
-
 
 // dataSource.initialize();

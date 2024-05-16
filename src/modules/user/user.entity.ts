@@ -3,14 +3,15 @@ import { Column, Entity, OneToMany, OneToOne, VirtualColumn } from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../constants';
 import { UseDto } from '../../decorators';
-import { PostEntity } from '../post/post.entity';
 import { UserDto } from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
 import { EventsEntity } from '../events/events.entity';
+import { CommentEntity } from '../../modules/comments/comment.entity';
+import { NewsEntity } from '../news/news.entity';
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
-export class UserEntity extends AbstractEntity<UserDto> {
+export class UserEntity extends AbstractEntity {
   @Column({ nullable: true, type: 'varchar' })
   firstName!: string | null;
 
@@ -27,13 +28,13 @@ export class UserEntity extends AbstractEntity<UserDto> {
   username!: string;
 
   @Column({ nullable: true, type: 'varchar' })
-  password!: string | null;
+  password!: string;
 
   @Column({ nullable: true, type: 'varchar' })
   phone!: string | null;
 
   @Column({ nullable: true, type: 'varchar' })
-  verification_code!: string | null;
+  verification_code!: number | null;
 
   @Column({ nullable: true, type: 'timestamp' })
   verification_code_sent_date!: Date | null;
@@ -50,9 +51,12 @@ export class UserEntity extends AbstractEntity<UserDto> {
   @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)
   settings?: UserSettingsEntity;
 
-  @OneToMany(() => PostEntity, (postEntity) => postEntity.user)
-  posts?: PostEntity[];
-
   @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user)
   events?: EventsEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.user)
+  comments?: CommentEntity[];
+
+  @OneToMany(() => NewsEntity, (news) => news.user)
+  news?: NewsEntity[];
 }

@@ -9,7 +9,6 @@ export function AuthUser() {
     if (user?.[Symbol.for('isPublic')]) {
       return;
     };
-    
 
     return user;
   })();
