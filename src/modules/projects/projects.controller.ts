@@ -1,4 +1,4 @@
-import { Controller , Delete, Get, HttpCode, HttpStatus , Param, Post, Put   } from '@nestjs/common';
+import { Body, Controller , Delete, Get, HttpCode, HttpStatus , Param, Post, Put   } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Uuid } from 'boilerplate.polyfill';
 import { CreateProjectDto } from './dto/project.create.dto';
@@ -16,14 +16,17 @@ export class ProjectsController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    async createProject( projectDto : CreateProjectDto ){
+    async createProject( @Body()  projectDto : CreateProjectDto ){
+        console.log({
+            projectDto
+        })
           return this.projectsService.createProjects(projectDto)
     };
 
 
     @Put()
     @HttpCode(HttpStatus.OK) 
-    async updateProject ( projectDto : UpdateProjectDto ){
+    async updateProject ( @Body()  projectDto : UpdateProjectDto ){
         return this.projectsService.updateProject(projectDto)
     };
    

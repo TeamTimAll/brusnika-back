@@ -7,6 +7,7 @@ import { HttpException } from '@nestjs/common';
 import { ProjectSDto } from './dto/projects.dto';
 import { CreateProjectDto } from './dto/project.create.dto';
 import { UpdateProjectDto } from './dto/projects.update.dto';
+
 @Injectable()
 export class ProjectsService {
 
@@ -22,13 +23,18 @@ export class ProjectsService {
 
 
     async createProjects ( createProjectDto : CreateProjectDto ) : Promise<CreateProjectDto>{
+
+        console.log({
+              createProjectDto
+        });
+
         return  await this.projectsRepository.save(createProjectDto)
     }
 
 
     async getOneProject( id : Uuid) : Promise<ProjectEntity | null>{
           const queryBuilder = await this.projectsRepository.createQueryBuilder("Projects")
-          .where("Projects.id :=id" , { id })
+          .where('Projects.id = :id', { id });
 
           const project = await queryBuilder.getOne();
           return project

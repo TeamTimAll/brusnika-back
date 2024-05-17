@@ -14,6 +14,7 @@ export enum EVENT_TYPES {
 
 @Entity({ name: 'events' })
 @UseDto(EventsDto)
+
 export class EventsEntity extends AbstractEntity<EventsDto> {
   @Column({ type: 'uuid' })
   userId!: Uuid;

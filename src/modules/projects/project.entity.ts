@@ -1,34 +1,32 @@
-import { AbstractDto } from "common/dto/abstract.dto";
-import { UseDto } from "decorators";
-import { Entity } from "typeorm";
+import { UseDto } from "../../decorators";
+import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import { ProjectSDto } from "./dto/projects.dto";
-import { ManyToOne , JoinColumn  , Column} from "typeorm";
 import { Uuid } from "boilerplate.polyfill";
-import { UserEntity } from "modules/user/user.entity";
+import { UserEntity } from "../../modules/user/user.entity";
+import { AbstractEntity } from "../../common/abstract.entity";
 
-
-@Entity("projects")
+@Entity( { name : "projects"})
 @UseDto(ProjectSDto)
 
-export class ProjectEntity extends AbstractDto {
+export class ProjectEntity extends AbstractEntity<ProjectSDto> {
 
     @Column({ type: 'uuid' })
     userId!: Uuid;
 
-    @ManyToOne( ( ) => UserEntity  , ( user ) => user.projects , { 
+    @ManyToOne(() => UserEntity, (user) => user.projects, { 
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
 
-
     @JoinColumn({ name: 'user_id' })
     user!: UserEntity; 
       
-    @Column({ nullable : false  })
-    title !: string 
+    @Column({ nullable: false })
+    title!: string 
+
+    @Column({ nullable: false }) 
+    description!: string 
 
 
-    @Column({ nullable : false }) 
-    description  !: string 
 
 }

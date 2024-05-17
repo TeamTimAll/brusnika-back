@@ -1,8 +1,9 @@
 
 import { IsString , IsNotEmpty  } from "class-validator"
 import { Uuid } from "boilerplate.polyfill"
+import { AbstractDto } from "../../../common/dto/abstract.dto"
 
-export class ProjectSDto {
+export class ProjectSDto  extends  AbstractDto{
 
     @IsNotEmpty()
     @IsString()
@@ -15,6 +16,5 @@ export class ProjectSDto {
     @IsNotEmpty()
     @IsString()
     userId !: Uuid
+};
 
-
-}
