@@ -5,13 +5,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
 import * as AppDataSource from './data-source';
 import { config } from 'dotenv';
-
+import { ClientsModule } from "./modules/clients/clients.module"
+import { ProjectsModule } from "./modules/projects/projects.module"
 config()
 
 
 @Module({
   imports: [SecuredModule, 
-    TypeOrmModule.forRoot(AppDataSource)
+    TypeOrmModule.forRoot(AppDataSource),  ClientsModule,
+    ProjectsModule
   ],
   providers: [],
 })

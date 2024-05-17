@@ -1,9 +1,8 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsDateString, IsUUID, IsPhoneNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum, IsDateString, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PinningType } from './client.dto';
-import { AbstractDto } from '../../../common/dto/abstract.dto';
 
-export class CreateClientDto extends AbstractDto {
+export class CreateClientDto  {
   @IsNotEmpty()
   @IsString()
   fullName!: string;
@@ -13,7 +12,6 @@ export class CreateClientDto extends AbstractDto {
   comment?: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber()
   phoneNumber!: string;
 
   @IsOptional()
@@ -47,4 +45,5 @@ export class CreateClientDto extends AbstractDto {
   @IsNotEmpty()
   @IsUUID()
   userId!: string;
-}
+};
+

@@ -24,12 +24,12 @@ export class ClientsService {
           return await this.clientRepository.save(clientCreateDto)
     }
 
-    async updateClient ( updateClientDto : UpdateClientDto ) : Promise<ClientDto | HttpException>{
+    async updateClient ( clientUpdateDto : UpdateClientDto ) : Promise<ClientDto | HttpException>{
 
-        const client = await this.getOneClient(updateClientDto.id)
+        const client = await this.getOneClient(clientUpdateDto.clientId)
         if(!client) return new HttpException("Client not found" , 404)
        
-        const updatedClient = await this.clientRepository.merge(client , updateClientDto)
+        const updatedClient = await this.clientRepository.merge(client , clientUpdateDto)
         return updatedClient
           
     }

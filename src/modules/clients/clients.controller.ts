@@ -8,7 +8,6 @@ import { UpdateClientDto } from './dto/client.update.dto';
 export class ClientsController {
     constructor(  private clientService : ClientsService) {}
 
-
     @Get()
     @HttpCode(HttpStatus.OK)
     async getAllClients(){
@@ -23,14 +22,14 @@ export class ClientsController {
 
     @Put()
     @HttpCode(HttpStatus.OK)
-    async updateClient(@Body() updateClientDto : UpdateClientDto ){
-           return this.updateClient(updateClientDto)
+    async updateClient(@Body() clientUpdateDto : UpdateClientDto ){
+           return this.clientService.updateClient(clientUpdateDto)
     }
 
     @Delete(":id")
     @HttpCode(HttpStatus.OK)
     async deleteClient( @Param("id") id : Uuid) {
-          return id 
+          return this.clientService.deleteClient(id)
     }
 
 
