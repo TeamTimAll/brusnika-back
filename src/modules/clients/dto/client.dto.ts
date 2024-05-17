@@ -1,6 +1,7 @@
 import { IsString, IsNotEmpty, IsOptional, IsEnum, IsDateString, IsUUID, IsPhoneNumber } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AbstractDto } from 'common/dto/abstract.dto';
+import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { Uuid } from 'boilerplate.polyfill';
 
 enum PinningType {
   LEAD_VERIFICATION = 'lead verification',
@@ -9,7 +10,7 @@ enum PinningType {
   STRONG_FIXATION = 'strong fixation',
 }
 
-class ClientDto  extends AbstractDto {
+class ClientDto extends AbstractDto {
   @IsNotEmpty()
   @IsString()
   fullName!: string;
@@ -24,7 +25,7 @@ class ClientDto  extends AbstractDto {
 
   @IsOptional()
   @IsUUID()
-  projectId?: string; 
+  projectId?: string;
 
   @IsOptional()
   @IsString()
@@ -49,6 +50,10 @@ class ClientDto  extends AbstractDto {
   @IsOptional()
   @IsString()
   managerNote?: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  userId!: Uuid;
 }
 
 export { ClientDto, PinningType };

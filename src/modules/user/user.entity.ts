@@ -7,12 +7,15 @@ import { UserDto } from './dtos/user.dto';
 import { UserSettingsEntity } from './user-settings.entity';
 import { EventsEntity } from '../events/events.entity';
 import { CommentEntity } from '../../modules/comments/comment.entity';
-
+import { ProjectEntity } from '../../modules/projects/project.entity';
+import { ClientEntity } from '../../modules/clients/client.entity';
 
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
+
 export class UserEntity extends AbstractEntity<UserDto> {
+
   @Column({ nullable: true, type: 'varchar' })
   firstName!: string | null;
 
@@ -58,6 +61,14 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
   @OneToMany(() => CommentEntity, (comment) => comment.user)
   comments?: CommentEntity[]; 
+
+
+  @OneToMany(() => ProjectEntity ,( project ) => project.user)
+  projects ?: ProjectEntity[]
+
+
+  @OneToMany(() => ClientEntity , ( client ) => client.user)
+  clients ? : ClientEntity[]
 
 }
 
