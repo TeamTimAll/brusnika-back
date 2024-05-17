@@ -6,7 +6,7 @@ import { Uuid } from 'boilerplate.polyfill';
 import { HttpException } from '@nestjs/common';
 import { ProjectSDto } from './dto/projects.dto';
 import { CreateProjectDto } from './dto/project.create.dto';
-import { UpdateProjectDto } from './dto/projects.update.dto';
+import { UpdateProjectDto } from "./dto/projects.update.dto"
 
 @Injectable()
 export class ProjectsService {
