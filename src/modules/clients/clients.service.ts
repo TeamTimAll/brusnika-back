@@ -4,7 +4,8 @@ import { ClientEntity } from './client.entity';
 import { Repository } from 'typeorm';
 import { Uuid } from 'boilerplate.polyfill';
 import { ClientDto } from './dto/client.dto';
-
+import { CreateClientDto } from './dto/create.client.dto';
+import { UpdateClientDto } from './dto/client.update.dto';
 
 @Injectable()
 export class ClientsService {
@@ -19,11 +20,11 @@ export class ClientsService {
     }
 
 
-    async createClient( clientCreateDto : any )  : Promise<ClientDto>{
+    async createClient( clientCreateDto : CreateClientDto )  : Promise<ClientDto>{
           return await this.clientRepository.save(clientCreateDto)
     }
 
-    async updateClient ( updateClientDto : any ) : Promise<ClientDto | HttpException>{
+    async updateClient ( updateClientDto : UpdateClientDto ) : Promise<ClientDto | HttpException>{
 
         const client = await this.getOneClient(updateClientDto.id)
         if(!client) return new HttpException("Client not found" , 404)
@@ -42,10 +43,10 @@ export class ClientsService {
         const client = await queryBuilder.getOne();
         return client;
       }
-      
 
 
-    async deleteClient( id : Uuid) {
+
+    async deleteClient( id : Uuid) : Promise<ClientDto | HttpException> {
           const client = await this.getOneClient(id)
 
           if(!client) return new HttpException("Client not found " , 404);

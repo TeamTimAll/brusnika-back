@@ -1,6 +1,8 @@
 import { Body, Controller ,Get, Post , Put , HttpCode ,HttpStatus, Delete, Param } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { Uuid } from 'boilerplate.polyfill';
+import { CreateClientDto } from './dto/create.client.dto';
+import { UpdateClientDto } from './dto/client.update.dto';
 
 @Controller('clients')
 export class ClientsController {
@@ -15,13 +17,13 @@ export class ClientsController {
 
    @Post()
    @HttpCode(HttpStatus.CREATED)
-    async createClient( @Body() clientCreate : any ) {
+    async createClient( @Body() clientCreate : CreateClientDto ) {
         return this.clientService.createClient(clientCreate)
     }
 
     @Put()
     @HttpCode(HttpStatus.OK)
-    async updateClient(@Body() updateClientDto : any ){
+    async updateClient(@Body() updateClientDto : UpdateClientDto ){
            return this.updateClient(updateClientDto)
     }
 
@@ -30,8 +32,6 @@ export class ClientsController {
     async deleteClient( @Param("id") id : Uuid) {
           return id 
     }
-
-
 
 
 
