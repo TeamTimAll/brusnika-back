@@ -1,14 +1,17 @@
-import { AbstractEntity } from '../../common/abstract.entity';
-import { Entity, Column, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, JoinColumn, ManyToOne  } from 'typeorm';
 import { UseDto } from '../../decorators';
 import { ClientDto, PinningType } from './dto/client.dto';
 import { UserEntity } from '../../modules/user/user.entity';
 import { Uuid } from 'boilerplate.polyfill';
 import { ProjectEntity } from '../projects/project.entity';
+import { AbstractEntity } from '../../common/abstract.entity';
+
+
+
 
 @Entity({ name: 'clients' })
 @UseDto(ClientDto)
-export class ClientEntity extends AbstractEntity {
+export class ClientEntity  extends AbstractEntity <ClientDto>  {
   
   @Column({ type: 'varchar', length: 255 })
   fullName!: string;

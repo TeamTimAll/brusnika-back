@@ -37,8 +37,6 @@ export class EventsController {
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({ type: EventsDto })
   @Post()
-
-
   async createEvents(
     @Body() createEventsDto: CreateEventsDto,
     @AuthUser() user: UserEntity,

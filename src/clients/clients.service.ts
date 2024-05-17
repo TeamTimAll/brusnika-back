@@ -1,11 +1,11 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ClientEntity } from './client.entity';
+import { ClientEntity } from '../modules/clients/client.entity';
 import { Repository } from 'typeorm';
 import { Uuid } from 'boilerplate.polyfill';
-import { ClientDto } from './dto/client.dto';
-import { CreateClientDto } from './dto/create.client.dto';
-import { UpdateClientDto } from './dto/client.update.dto';
+import { ClientDto } from "../modules/clients/dto/client.dto"
+import { CreateClientDto } from "../modules/clients/dto/create.client.dto"
+import { UpdateClientDto } from "../modules/clients/dto/client.update.dto"
 
 @Injectable()
 export class ClientsService {
