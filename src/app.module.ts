@@ -6,6 +6,7 @@ import { SecuredModule } from './modules/secured.module';
 import { config } from 'dotenv';
 import { CommentsModule } from './modules/comments/comments.module';
 import { ClientsModule } from './modules/clients/clients.module';
+import { ClientsModule } from './modules/clients/clients.module';
 import * as AppDataSource from './data-source';
 
 config()
