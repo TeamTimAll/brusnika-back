@@ -3,53 +3,15 @@ import './boilerplate.polyfill';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
-import { config } from 'dotenv';
-import { CommentsModule } from './modules/comments/comments.module';
-import { NewsModule } from './modules/news/news.module';
 import * as AppDataSource from './data-source';
-
-config()
-
-
-// const sql: object = {
-//   type: process.env.DB_TYPE,
-//   host: process.env.DB_HOST,
-//   port: process.env.DB_PORT,
-//   username: process.env.DB_USERNAME,
-//   password: process.env.DB_PASSWORD,
-//   database:process.env.DB_DATABASE,
-//   ssl: true
-  
-// };
-
- 
-
-
-// const sql: object = {
-//   type: "postgres",
-//   host: "ep-nameless-shadow-a5y0kz4v-pooler.us-east-2.aws.neon.tech",
-//   port: 5432,
-//   username: "brustnika-backend_owner",
-//   password: "F3hVBAbmWUY6",
-//   database: "brustnika-backend",
-//   ssl: true,
-//   migrations: [ "../src/database/migrations"],
-
-// };
-
-
-
+import { config } from 'dotenv';
+config();
 
 @Module({
-
-  imports: [SecuredModule, 
-    TypeOrmModule.forRoot(AppDataSource), CommentsModule, NewsModule,
-  ],
-
+  imports: [SecuredModule, TypeOrmModule.forRoot(AppDataSource)],
   providers: [],
   controllers: [],
 })
-
 export class AppModule {}
 
 // ClsModule.forRoot({
@@ -58,7 +20,6 @@ export class AppModule {}
 //     mount: true,
 //   },
 // }),
-
 
 // ThrottlerModule.forRootAsync({
 //   imports: [SharedModule],
