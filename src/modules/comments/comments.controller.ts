@@ -13,8 +13,10 @@ import
 import { CommentsService } from './comments.service';
 import { AddCommentDto } from './dtos/comment.create.dto';
 import { CommentUpdateDto } from './dtos/comment.update.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('comments')
+@ApiTags('comments')
 
 export class CommentsController {
 

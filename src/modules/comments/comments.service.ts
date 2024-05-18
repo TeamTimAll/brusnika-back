@@ -55,9 +55,15 @@ export class CommentsService {
         }
     }
 
-    private async findOneComment(commentId: any ): Promise<any> {
+    private async findOneComment(commentId: any ): Promise<CommentEntity> {
         try {
-            const comment = await this.commentRepository.find(commentId)
+
+
+            const queryBuilder = await this.commentRepository.createQueryBuilder("Comments")
+            .where('Comments.id = :id', { commentId })
+
+            const comment  : CommentEntity | null  = await queryBuilder.getOne()
+
             if (!comment) {
                 throw new HttpException('Comment not found', 404);
             };

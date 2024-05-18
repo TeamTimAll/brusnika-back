@@ -5,19 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
 import * as AppDataSource from './data-source';
 import { config } from 'dotenv';
-import { ClientsModule } from "./modules/clients/clients.module"
-import { ProjectsModule } from "./modules/projects/projects.module"
-config()
-
+config();
 
 @Module({
-  imports: [SecuredModule, 
-    TypeOrmModule.forRoot(AppDataSource),  ClientsModule,
-    ProjectsModule
-  ],
+  imports: [SecuredModule, TypeOrmModule.forRoot(AppDataSource)],
   providers: [],
+  controllers: [],
 })
-
 export class AppModule {}
 
 // ClsModule.forRoot({
@@ -26,7 +20,6 @@ export class AppModule {}
 //     mount: true,
 //   },
 // }),
-
 
 // ThrottlerModule.forRootAsync({
 //   imports: [SharedModule],

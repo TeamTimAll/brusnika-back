@@ -14,8 +14,6 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiTags,
-
-  
 } from '@nestjs/swagger';
 import { type PageDto } from '../../common/dto/page.dto';
 import { RoleType } from '../../constants';
@@ -62,7 +60,6 @@ export class EventsController {
   @Auth([])
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: EventsDto })
-
   async getSingleEvents(@UUIDParam('id') id: Uuid): Promise<EventsDto> {
     const entity = await this.eventsService.getSingleEvents(id);
     return entity.toDto();

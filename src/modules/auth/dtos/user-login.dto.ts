@@ -1,5 +1,10 @@
-import { EmailField, Roles, StringField } from '../../../decorators';
-import { IsEnum, IsString } from 'class-validator';
+import {
+  EmailField,
+  IsPassword,
+  Roles,
+  StringField,
+} from '../../../decorators';
+import { IsEnum, IsMobilePhone, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleType } from '../../../constants';
 
@@ -11,10 +16,25 @@ export class UserLoginDto {
   readonly password!: string;
 }
 
+export class AgentLoginDto {
+  @IsMobilePhone()
+  @ApiProperty({
+    required: true,
+  })
+  readonly phone!: string;
+
+  @IsPassword()
+  @ApiProperty({
+    required: true,
+  })
+  readonly password!: string;
+}
+
 export class LoginSuccess {
   @IsString()
   @ApiProperty({ description: 'access token identity' })
   access_token_id: string | undefined;
+
   @IsEnum(Roles)
   @ApiProperty({ description: 'role' })
   @IsString()
