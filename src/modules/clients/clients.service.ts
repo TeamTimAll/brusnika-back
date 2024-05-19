@@ -6,7 +6,7 @@ import { Uuid } from 'boilerplate.polyfill';
 import { ClientDto } from './dto/client.dto';
 import { CreateClientDto } from './dto/create.client.dto';
 import { UpdateClientDto } from './dto/client.update.dto';
-
+import { ClientSearchDto } from './dto/client.search.dto';
 @Injectable()
 export class ClientsService {
 
@@ -54,7 +54,27 @@ export class ClientsService {
           await this.clientRepository.remove(client)
 
           return client
-    }
+    };
+
+
+
+    /*
+     Data could be a phone  ( anything that a client has )
+     and there should be a identfier to search
+     */
+
+
+     async findClientBy(data: ClientSearchDto) {
+      const searchData = data.data;
+      const identifier = data.identifier;
+  
+      const queryBuilder = this.clientRepository.createQueryBuilder("clients")
+          .where(`clients.${identifier} LIKE :searchData`, { searchData: `%${searchData}%` });
+  
+      const clients = await queryBuilder.getMany();
+      return clients;
+  }
+
 
 
 }  

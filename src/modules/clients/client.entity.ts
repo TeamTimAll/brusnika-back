@@ -58,6 +58,7 @@ export class ClientEntity  extends AbstractEntity <ClientDto>  {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+
   @JoinColumn({ name: 'project_id' })
   project!: ProjectEntity;
 }
