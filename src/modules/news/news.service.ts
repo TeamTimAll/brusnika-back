@@ -24,7 +24,6 @@ export class NewsService {
                 const createdNews : NewsEntity = await this.newsRepository.save(newsCreateDto)
                 return createdNews;
                 
-                
             } catch (error : any ) {
                 console.log(error.message)
                 throw  new HttpException("Something went wrong" , 500)
