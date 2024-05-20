@@ -18,3 +18,12 @@ import { ClientStatusModule } from '../../modules/client-status/client-status.mo
 })
 
 export class ClientModule {}
+
+
+/*
+  What should be changed  | added 
+  1 : Sending request to BpmSoft 
+  2 : Assign clients to agents ( logic should be discussed)
+  3 : Getting client info ( such as pinning type from CRM  BRUSTSNIKA ) should be added
+*/
+

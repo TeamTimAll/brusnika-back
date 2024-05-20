@@ -10,6 +10,7 @@ import { CommentsModule } from './comments/comments.module';
 import { ProjectsModule } from './projects/projects.module';
 import { ClientModule } from './client/client.module';
 import { ClientStatusModule } from './client-status/client-status.module';
+import { TrainingModule } from './training/training.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { ClientStatusModule } from './client-status/client-status.module';
     HealthCheckerModule,
     TypeOrmModule.forFeature([UserEntity]),
     ClientModule,
-    ClientStatusModule
+    ClientStatusModule,
+    TrainingModule
   ],
   
   exports: [],

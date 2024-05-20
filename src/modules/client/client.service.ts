@@ -147,7 +147,8 @@ export class ClientService {
 
         if (clients.length === 0) {
             throw new HttpException('No clients found',404);
-        }
+        };
+        
 
          return clients 
       }
