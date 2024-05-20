@@ -12,40 +12,40 @@ export class ClientController {
     constructor( private clientService : ClientService) {}
 
     @Get()
-    // @Auth([RoleType.ADMIN , RoleType.USER]) // should be deleted later 
+    @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
     async  getAllCLients(){
           return this.clientService.getAllClients()
     }
 
 
     @Post()
-    // @Auth([RoleType.ADMIN , RoleType.USER]) // should be deleted later 
+    @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
     async createClient(@Body() creatClientDto : ClientCreateDto) {
         return this.clientService.createClient(creatClientDto)
     }
 
 
     @Put()
-    @Auth([RoleType.ADMIN , RoleType.USER]) // should be deleted later 
+    @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
     async updateClient( @Body() updateClientDto : UpdateClientDto ){
              return this.clientService.updateClient( updateClientDto)
     };
 
 
     @Delete(":id")
-    @Auth([RoleType.ADMIN , RoleType.USER]) // should be deleted later 
+    @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
     async deleteClient( @Param("id") id : Uuid){
           return this.clientService.deleteClient(id)
     }   
 
     @Get(":id") 
-    // @Auth([RoleType.ADMIN , RoleType.USER]) // should be deleted later 
+    @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
     async getOneClient( @Param("id") id : Uuid){  
         return this.clientService.getOneClient(id)
     } 
 
     @Get("search")
-    @Auth([RoleType.ADMIN , RoleType.USER]) // should be deleted later 
+    @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
     async filterClients( @Body() filterSearch : ClientFilterDto){
           return this.filterClients(filterSearch)
     }
