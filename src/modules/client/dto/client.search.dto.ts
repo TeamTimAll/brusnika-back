@@ -1,14 +1,37 @@
-import { IsNotEmpty , IsString } from "class-validator"
+import { IsOptional, IsString, IsUUID, IsDateString } from 'class-validator';
+import { Type } from 'class-transformer';
 
+export class ClientFilterDto {
+  @IsOptional()
+  @IsString()
+  fullName?: string;
 
-export class ClientSearchDto {
-     @IsNotEmpty()
-     @IsString()
-      data !: string 
+  @IsOptional()
+  @IsString()
+  phoneNumber?: string;
 
-      @IsNotEmpty()
-      @IsString()
-      identifier !: string
-};
+  @IsOptional()
+  @IsUUID()
+  projectId?: string;
 
+  @IsOptional()
+  @IsDateString()
+  @Type(() => Date)
+  establishmentDateFrom?: Date;
 
+  @IsOptional()
+  @IsDateString()
+  @Type(() => Date)
+  establishmentDateTo?: Date;
+
+  @IsOptional()
+  @IsString()
+  transactionStatus?: string;
+
+  @IsOptional()
+  @IsString()
+  transactionStage?: string;
+
+  @IsOptional()
+  active?: boolean;
+}

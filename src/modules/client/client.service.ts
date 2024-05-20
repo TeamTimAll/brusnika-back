@@ -6,7 +6,7 @@ import { Uuid } from 'boilerplate.polyfill';
 import { ClientDto } from './dto/client.dto';
 import { CreateClientDto } from './dto/create.client.dto';
 import { UpdateClientDto } from './dto/client.update.dto';
-import { ClientSearchDto } from './dto/client.search.dto';
+import { ClientFilterDto } from './dto/client.search.dto';
 
 @Injectable()
 export class ClientService {
@@ -74,32 +74,57 @@ export class ClientService {
 
 
 
-    /*
-     Data could be a phone  ( anything that a client has )
-     and there should be a identfier to search
-     */
+   
 
      
 
-     async findClientBy(data: ClientSearchDto) : Promise<ClientEntity[] | HttpException> {
-          try {
-
-            const searchData = data.data;
-            const identifier = data.identifier;
-        
-            const queryBuilder = this.clientRepository.createQueryBuilder("clients")
-                .where(`clients.${identifier} LIKE :searchData`, { searchData: `%${searchData}%` });
-        
-            const clients = await queryBuilder.getMany();
-            return clients;
-            
-          } catch (error : any ) {
-               console.log({
-                  error 
-               })
-
-               return new HttpException(error.message , 500)
+     async findClients(filterDto: ClientFilterDto): Promise<ClientEntity[]> {
+        const queryBuilder = this.clientRepository.createQueryBuilder('clients');
+    
+        if (filterDto.fullName) {
+          queryBuilder.andWhere('clients.fullName LIKE :fullName', { fullName: `%${filterDto.fullName}%` });
+        }
+    
+        if (filterDto.phoneNumber) {
+          queryBuilder.andWhere('clients.phoneNumber LIKE :phoneNumber', { phoneNumber: `%${filterDto.phoneNumber}%` });
+        }
+    
+        if (filterDto.projectId) {
+          queryBuilder.andWhere('clients.projectId = :projectId', { projectId: filterDto.projectId });
+        }
+    
+        if (filterDto.establishmentDateFrom) {
+          queryBuilder.andWhere('clients.establishmentDate >= :establishmentDateFrom', { establishmentDateFrom: filterDto.establishmentDateFrom });
+        }
+    
+        if (filterDto.establishmentDateTo) {
+          queryBuilder.andWhere('clients.establishmentDate <= :establishmentDateTo', { establishmentDateTo: filterDto.establishmentDateTo });
+        }
+    
+        if (filterDto.transactionStatus) {
+          queryBuilder.andWhere('clients.transactionStatus = :transactionStatus', { transactionStatus: filterDto.transactionStatus });
+        }
+    
+        if (filterDto.transactionStage) {
+          queryBuilder.andWhere('clients.transactionStage = :transactionStage', { transactionStage: filterDto.transactionStage });
+        }
+    
+        if (filterDto.active !== undefined) {
+          if (filterDto.active) {
+            queryBuilder.andWhere('clients.transactionStatus NOT IN (:...inactiveStatuses)', { inactiveStatuses: ['paused', 'lost'] });
+          } else {
+            queryBuilder.andWhere('clients.transactionStatus IN (:...inactiveStatuses)', { inactiveStatuses: ['paused', 'lost'] });
           }
-  }
+        }
+    
+          const clients = await queryBuilder.getMany();
 
-}  
+        if (clients.length === 0) {
+            throw new HttpException('No clients found',404);
+        }
+
+         return clients 
+      }
+    }
+
+

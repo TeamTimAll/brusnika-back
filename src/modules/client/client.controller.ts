@@ -3,6 +3,7 @@ import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create.client.dto';
 import { UpdateClientDto } from './dto/client.update.dto';
 import { Uuid } from 'boilerplate.polyfill';
+import { ClientFilterDto } from './dto/client.search.dto';
 // import { ClientSearchDto } from './dto/client.search.dto';
 
 @Controller('client')
@@ -38,14 +39,7 @@ export class ClientController {
     } 
 
     @Get("search")
-    async filterClients(){
-        const dummy : any = {
-            data :"34",
-            identifier :"daysUntilEndOfAssignment"
-          }
-          
-        return this.clientService.findClientBy(dummy)
+    async filterClients( @Body() filterSearch : ClientFilterDto){
+          return this.filterClients(filterSearch)
     }
-
-
 }
