@@ -3,28 +3,48 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ClientEntity } from  "./client.entity"
 import { Repository } from 'typeorm';
 import { Uuid } from 'boilerplate.polyfill';
-import { ClientDto } from './dto/client.dto';
-import { CreateClientDto } from './dto/create.client.dto';
 import { UpdateClientDto } from './dto/client.update.dto';
 import { ClientFilterDto } from './dto/client.search.dto';
+import { ClientStatusService } from '../../modules/client-status/client-status.service';
+import { IClientStatusCreatedType } from "../../types/client.types"
+import { ClientCreateDto } from './dto/create.client.dto';
+
 
 @Injectable()
 export class ClientService {
 
     constructor( 
           @InjectRepository(ClientEntity)
-           private clientRepository : Repository<ClientEntity>
+           private clientRepository : Repository<ClientEntity>,
+           private clientStatusService : ClientStatusService
     ){};
 
-    async getAllClients() : Promise<ClientDto[]>{
+    async getAllClients() : Promise<any[]>{
           return await  this.clientRepository.find()
     }
 
-
-    async createClient( clientCreateDto : CreateClientDto )  : Promise<ClientDto | HttpException>{
+    async createClient( clientCreateDto : ClientCreateDto  )  : Promise<ClientEntity | HttpException>{
            try{
- 
-           return await this.clientRepository.save(clientCreateDto)
+               
+               const newClient =  await this.clientRepository.save(clientCreateDto)
+
+               console.log({
+                  id : newClient.id
+               })
+
+
+               if(!newClient) return new HttpException("Cannot create client " , 500)
+         
+               const clientStatusType  : IClientStatusCreatedType  = await this.clientStatusService.createClientStatus({
+                clientId : newClient.id,
+                type : "lead verification"
+               })
+
+               if(clientStatusType.success === false  ) {
+                console.log(clientStatusType?.error_reason)
+                 return new  HttpException("Cannot create client status " , 500)
+               };
+               return newClient 
 
            }catch ( error : any ){
              console.log({
@@ -35,10 +55,11 @@ export class ClientService {
            }
     }
 
-    async updateClient ( clientUpdateDto : UpdateClientDto ) : Promise<ClientDto | HttpException>{
+    async updateClient ( clientUpdateDto : UpdateClientDto ) : Promise<ClientEntity | HttpException>{
 
         const client = await this.getOneClient(clientUpdateDto.clientId)
         if(!client) return new HttpException("Client not found" , 404)
+            
        
         const updatedClient = await this.clientRepository.merge(client , clientUpdateDto)
         
@@ -46,19 +67,19 @@ export class ClientService {
           
     }
 
-
-
     async getOneClient(id: Uuid): Promise<ClientEntity | null> {
-        const queryBuilder = this.clientRepository.createQueryBuilder('client')
-          .where('client.id = :id', { id });
+      const queryBuilder = this.clientRepository 
+      .createQueryBuilder('client')
+       .leftJoinAndSelect('client.pinningType', 'clientStatus')
+      .where('client.id = :id', { id })
+      .select(['client', 'clientStatus'])
     
-        const client = await queryBuilder.getOne();
+        const client = await queryBuilder.getOne()
+        console.log(client)
         return client;
       }
 
-
-
-    async deleteClient( id : Uuid) : Promise<ClientDto | HttpException> {
+    async deleteClient( id : Uuid) : Promise<ClientEntity | HttpException> {
            try {
             const client = await this.getOneClient(id)
 
@@ -72,11 +93,6 @@ export class ClientService {
            }
     };
 
-
-
-   
-
-     
 
      async findClients(filterDto: ClientFilterDto): Promise<ClientEntity[]> {
         const queryBuilder = this.clientRepository.createQueryBuilder('clients');

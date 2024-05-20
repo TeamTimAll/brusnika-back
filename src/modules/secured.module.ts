@@ -9,6 +9,7 @@ import { NewsModule } from './news/news.module';
 import { CommentsModule } from './comments/comments.module';
 import { ProjectsModule } from './projects/projects.module';
 import { ClientModule } from './client/client.module';
+import { ClientStatusModule } from './client-status/client-status.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ClientModule } from './client/client.module';
     HealthCheckerModule,
     TypeOrmModule.forFeature([UserEntity]),
     ClientModule,
+    ClientStatusModule
   ],
   
   exports: [],

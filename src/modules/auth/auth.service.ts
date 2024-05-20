@@ -103,7 +103,7 @@ export class AuthService {
     }
   }
 
-  async agentLogin(agentLoginDto: AgentLoginDto): Promise<LoginSuccess | any> {
+  async agentLogin(agentLoginDto: AgentLoginDto): Promise<LoginSuccess | any > {
     try {
       const user = await this.userService.findOne({
         phone: agentLoginDto.phone,

@@ -1,17 +1,15 @@
-import { Entity, Column, JoinColumn, ManyToOne  , DeleteDateColumn } from 'typeorm';
+import { Entity, Column, JoinColumn, OneToOne, ManyToOne, DeleteDateColumn } from 'typeorm';
 import { UseDto } from '../../decorators';
-import { ClientDto, PinningType } from './dto/client.dto';
+import { ClientDto } from './dto/client.dto';
 import { UserEntity } from '../user/user.entity';
 import { Uuid } from 'boilerplate.polyfill';
 import { ProjectEntity } from '../projects/project.entity';
 import { AbstractEntity } from '../../common/abstract.entity';
-
-
-
+import { ClientStatusEntity } from '../../modules/client-status/client-status.entity';
 
 @Entity({ name: 'clients' })
 @UseDto(ClientDto)
-export class ClientEntity  extends AbstractEntity <ClientDto>  {
+export class ClientEntity extends AbstractEntity<ClientDto> {
   
   @Column({ type: 'varchar', length: 255 })
   fullName!: string;
@@ -31,8 +29,9 @@ export class ClientEntity  extends AbstractEntity <ClientDto>  {
   @Column({ type: 'timestamp' })
   establishmentDate!: Date;
 
-  @Column({ type: 'enum', enum: PinningType })
-  pinningType!: PinningType;
+  @OneToOne(() => ClientStatusEntity, clientStatus => clientStatus.client)
+  @JoinColumn({ name: 'client_status_id' }) 
+  pinningType!: ClientStatusEntity;
 
   @Column({ type: 'int' })
   daysUntilEndOfAssignment!: number;
@@ -43,22 +42,20 @@ export class ClientEntity  extends AbstractEntity <ClientDto>  {
   @Column({ type: 'uuid' })
   userId!: Uuid;
 
-  @ManyToOne(() => UserEntity, (user) => user.projects, {
+  @ManyToOne(() => UserEntity, user => user.projects, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  
   @JoinColumn({ name: 'user_id' })
   user!: UserEntity;
 
   @Column({ type: 'uuid', nullable: true })
   projectId!: Uuid;
 
-  @ManyToOne(() => ProjectEntity, (project) => project.clients, {
+  @ManyToOne(() => ProjectEntity, project => project.clients, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-
   @JoinColumn({ name: 'project_id' })
   project!: ProjectEntity;
 
