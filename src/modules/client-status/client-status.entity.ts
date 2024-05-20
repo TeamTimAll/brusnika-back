@@ -16,4 +16,5 @@ export class ClientStatusEntity extends AbstractEntity<ClientStatusDto> {
   @OneToOne(() => ClientEntity, client => client.pinningType)
   @JoinColumn({ name: 'client_id' })
   client!: ClientEntity;
+  
 }

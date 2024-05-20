@@ -24,7 +24,7 @@ export class ClientStatusService {
 
                 const response :   IClientStatusCreatedType  = {
                            success : true,
-                           clientStatusId : newStatus.id
+                           clientStatus: newStatus
                 } 
 
                 return response 

@@ -79,7 +79,7 @@ export class AuthService {
       if (user.password === null) {
         console.log('Users password is null');
         return new UnauthorizedException('Password not set');
-      }
+      };
 
       const passwordMatch = await bcrypt.compare(
         loginDto.password,
@@ -103,7 +103,7 @@ export class AuthService {
     }
   }
 
-  async agentLogin(agentLoginDto: AgentLoginDto): Promise<LoginSuccess | any > {
+  async agentLogin(agentLoginDto: AgentLoginDto): Promise<LoginSuccess | any> {
     try {
       const user = await this.userService.findOne({
         phone: agentLoginDto.phone,
@@ -137,12 +137,12 @@ export class AuthService {
 
       if (user.settings?.isPhoneVerified) {
         // todo send code to phone number
-        const randomNumber = Math.floor(100000 + Math.random() * 900000)
+        const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
         await this.userService.updateUser(user.id, {
           verification_code: randomNumber,
-          verification_code_sent_date: new Date()
-        })
+          verification_code_sent_date: new Date(),
+        });
 
         const { password, ...result } = user;
         return {

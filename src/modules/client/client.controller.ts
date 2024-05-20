@@ -12,14 +12,14 @@ export class ClientController {
     constructor( private clientService : ClientService) {}
 
     @Get()
-    @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
+    // @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
     async  getAllCLients(){
           return this.clientService.getAllClients()
     }
 
 
     @Post()
-    @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
+    // @Auth([RoleType.ADMIN , RoleType.USER]) // should be changed later 
     async createClient(@Body() creatClientDto : ClientCreateDto) {
         return this.clientService.createClient(creatClientDto)
     }

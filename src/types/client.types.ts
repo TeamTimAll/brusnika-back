@@ -1,9 +1,10 @@
 import { Uuid } from "boilerplate.polyfill"
+import { ClientStatusEntity } from "modules/client-status/client-status.entity"
 
 export type IClientStatusCreatedType = {
     success : boolean ,
     error_reason ? : string  ,
-    clientStatusId ? : string 
+    clientStatus ? : ClientStatusEntity
 }
 
 

@@ -20,31 +20,41 @@ export class ClientService {
     ){};
 
     async getAllClients() : Promise<any[]>{
-          return await  this.clientRepository.find()
+          return await  this.clientRepository.find({
+              relations : {
+                  pinningType : true
+              }
+          })
     }
 
     async createClient( clientCreateDto : ClientCreateDto  )  : Promise<ClientEntity | HttpException>{
            try{
                
                const newClient =  await this.clientRepository.save(clientCreateDto)
-
-               console.log({
-                  id : newClient.id
-               })
-
-
+              
                if(!newClient) return new HttpException("Cannot create client " , 500)
          
                const clientStatusType  : IClientStatusCreatedType  = await this.clientStatusService.createClientStatus({
                 clientId : newClient.id,
                 type : "lead verification"
                })
+              
 
                if(clientStatusType.success === false  ) {
                 console.log(clientStatusType?.error_reason)
                  return new  HttpException("Cannot create client status " , 500)
                };
-               return newClient 
+
+
+               if(!clientStatusType.clientStatus) {
+                console.log("Cannot get client status")
+                return new HttpException("Something went wrong" , 500);
+               }
+
+
+               newClient.pinningType = clientStatusType.clientStatus
+
+               return await  this.clientRepository.save(newClient)
 
            }catch ( error : any ){
              console.log({
@@ -85,7 +95,7 @@ export class ClientService {
 
             if(!client) return new HttpException("Client not found " , 404);
   
-            await this.clientRepository.softDelete(id)
+            await this.clientRepository.softDelete(id);
   
             return client
            } catch (error : any ) {
