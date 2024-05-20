@@ -42,7 +42,7 @@ export class ClientService {
 
                if(clientStatusType.success === false  ) {
                 console.log(clientStatusType?.error_reason)
-                 return new  HttpException("Cannot create client status " , 500)
+                 return new  HttpException("Cannot create client status" , 500)
                };
 
 
