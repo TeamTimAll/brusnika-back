@@ -54,6 +54,9 @@ class ClientDto extends AbstractDto {
   @IsNotEmpty()
   @IsUUID()
   userId!: Uuid;
+
+ 
+
 }
 
 export { ClientDto, PinningType };

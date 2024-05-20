@@ -1,7 +1,7 @@
-import { Entity, Column, JoinColumn, ManyToOne  } from 'typeorm';
+import { Entity, Column, JoinColumn, ManyToOne  , DeleteDateColumn } from 'typeorm';
 import { UseDto } from '../../decorators';
 import { ClientDto, PinningType } from './dto/client.dto';
-import { UserEntity } from '../../modules/user/user.entity';
+import { UserEntity } from '../user/user.entity';
 import { Uuid } from 'boilerplate.polyfill';
 import { ProjectEntity } from '../projects/project.entity';
 import { AbstractEntity } from '../../common/abstract.entity';
@@ -61,4 +61,7 @@ export class ClientEntity  extends AbstractEntity <ClientDto>  {
 
   @JoinColumn({ name: 'project_id' })
   project!: ProjectEntity;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

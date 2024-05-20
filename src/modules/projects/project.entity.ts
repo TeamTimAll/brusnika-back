@@ -4,7 +4,7 @@ import { ProjectSDto } from "./dto/projects.dto";
 import { Uuid } from "boilerplate.polyfill";
 import { UserEntity } from "../../modules/user/user.entity";
 import { AbstractEntity } from "../../common/abstract.entity";
-import { ClientEntity } from "../clients/client.entity"
+import { ClientEntity } from "../client/client.entity"
 
 @Entity( { name : "projects"})
 @UseDto(ProjectSDto)

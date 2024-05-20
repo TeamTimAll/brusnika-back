@@ -9,6 +9,6 @@ export class ClientSearchDto {
       @IsNotEmpty()
       @IsString()
       identifier !: string
-}
+};
 
 
