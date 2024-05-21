@@ -6,6 +6,7 @@ import { HealthCheckerModule } from './health-checker/health-checker.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/user.entity';
 import { EventsModule } from './events/events.module';
+import { PremisesModule } from './premises/premises.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EventsModule } from './events/events.module';
     // PostModule,
     HealthCheckerModule,
     TypeOrmModule.forFeature([UserEntity]),
+    PremisesModule,
   ],
   exports: [],
 })

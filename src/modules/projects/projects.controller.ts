@@ -1,8 +1,11 @@
-import { Body, Controller , Delete, Get, HttpCode, HttpStatus , Param, Post, Put   } from '@nestjs/common';
+import { Body, Controller , Delete, Get, HttpCode, HttpStatus , Param, Post, Put, UploadedFile   } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Uuid } from 'boilerplate.polyfill';
 import { CreateProjectDto } from './dto/project.create.dto';
 import { UpdateProjectDto } from  "./dto/projects.update.dto"
+// import { UseInterceptors } from '@nestjs/common';
+// import { FileInterceptor } from '@nestjs/platform-express';
+
 @Controller('projects')
 export class ProjectsController {
 
@@ -15,11 +18,16 @@ export class ProjectsController {
     }
 
     @Post()
+    // @UseInterceptors(FileInterceptor("file" , {
+             
+    // }))
     @HttpCode(HttpStatus.CREATED)
-    async createProject( @Body()  projectDto : CreateProjectDto ){
-        console.log({
-            projectDto
-        })
+    async createProject( 
+        @UploadedFile() file : Express.Multer.File,
+
+        @Body()  projectDto : CreateProjectDto ){
+            console.log(file);
+
           return this.projectsService.createProjects(projectDto)
     };
 

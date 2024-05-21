@@ -24,6 +24,7 @@ export class CommentEntity extends AbstractEntity<CommentDto> {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+  
   @JoinColumn({ name: 'event_id' })
   event!: EventsEntity;
 

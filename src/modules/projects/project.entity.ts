@@ -5,10 +5,11 @@ import { Uuid } from "boilerplate.polyfill";
 import { UserEntity } from "../../modules/user/user.entity";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { ClientEntity } from "../clients/client.entity"
+import { PremisesEntity } from "../../modules/premises/premise.entity";
+
 
 @Entity( { name : "projects"})
 @UseDto(ProjectSDto)
-
 export class ProjectEntity extends AbstractEntity<ProjectSDto> {
 
     @Column({ type: 'uuid' })
@@ -21,15 +22,25 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
 
     @JoinColumn({ name: 'user_id' })
     user!: UserEntity; 
-      
+    
     @Column({ nullable: false })
-    title!: string 
+    name !: string 
 
     @Column({ nullable: false }) 
-    description!: string 
+    detailedDescription!: string 
+
+    @Column({ nullable: false }) 
+    briefDescription!: string 
+
+
+    @Column({ nullable :false })
+    photo !: string 
 
 
     @OneToMany(()=> ClientEntity , (  client ) => client.project )
-    clients ? : ClientEntity[] // project clients 
+    clients ? : ClientEntity[] 
+
+    @OneToMany(() => PremisesEntity, premises => premises.project)
+    premises ?: PremisesEntity[];
 
 }
