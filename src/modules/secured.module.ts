@@ -11,6 +11,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { ClientModule } from './client/client.module';
 import { ClientStatusModule } from './client-status/client-status.module';
 import { TrainingModule } from './training/training.module';
+import { DealsModule } from './deals/deals.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { TrainingModule } from './training/training.module';
     TypeOrmModule.forFeature([UserEntity]),
     ClientModule,
     ClientStatusModule,
-    TrainingModule
+    TrainingModule,
+    DealsModule
   ],
   
   exports: [],
