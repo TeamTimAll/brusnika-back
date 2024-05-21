@@ -23,17 +23,17 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
     @JoinColumn({ name: 'user_id' })
     user!: UserEntity; 
     
-    @Column({ nullable: false })
+    @Column({ nullable: true  })
     name !: string 
 
-    @Column({ nullable: false }) 
+    @Column({ nullable: true  }) 
     detailedDescription!: string 
 
-    @Column({ nullable: false }) 
+    @Column({ nullable: true  }) 
     briefDescription!: string 
 
 
-    @Column({ nullable :false })
+    @Column({ nullable :true  })
     photo !: string 
 
 

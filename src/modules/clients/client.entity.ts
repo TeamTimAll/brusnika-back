@@ -13,13 +13,13 @@ import { AbstractEntity } from '../../common/abstract.entity';
 @UseDto(ClientDto)
 export class ClientEntity  extends AbstractEntity <ClientDto>  {
   
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255 , nullable : true  })
   fullName!: string;
 
   @Column({ type: 'text', nullable: true })
   comment?: string;
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'varchar', length: 15 , nullable : true  })
   phoneNumber!: string;
 
   @Column({ type: 'varchar', nullable: true })
@@ -28,19 +28,19 @@ export class ClientEntity  extends AbstractEntity <ClientDto>  {
   @Column({ type: 'varchar', nullable: true })
   transactionStage?: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp' , nullable : true  })
   establishmentDate!: Date;
 
-  @Column({ type: 'enum', enum: PinningType })
-  pinningType!: PinningType;
+  @Column({ type: 'enum', enum: PinningType , nullable : true  })
+  pinningType ? : PinningType;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int' , nullable : true  })
   daysUntilEndOfAssignment!: number;
 
   @Column({ type: 'text', nullable: true })
   managerNote?: string;
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid' , nullable : true  })
   userId!: Uuid;
 
   @ManyToOne(() => UserEntity, (user) => user.projects, {
@@ -48,7 +48,7 @@ export class ClientEntity  extends AbstractEntity <ClientDto>  {
     onUpdate: 'CASCADE',
   })
   
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn()
   user!: UserEntity;
 
   @Column({ type: 'uuid', nullable: true })
@@ -58,6 +58,7 @@ export class ClientEntity  extends AbstractEntity <ClientDto>  {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'project_id' })
+  
+  @JoinColumn()
   project!: ProjectEntity;
 }

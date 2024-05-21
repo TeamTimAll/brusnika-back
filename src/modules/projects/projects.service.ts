@@ -7,13 +7,15 @@ import { HttpException } from '@nestjs/common';
 import { ProjectSDto } from './dto/projects.dto';
 import { CreateProjectDto } from './dto/project.create.dto';
 import { UpdateProjectDto } from "./dto/projects.update.dto"
+import { PremisesService } from '../../modules/premises/premises.service';
 
 @Injectable()
 export class ProjectsService {
 
     constructor(
             @InjectRepository(ProjectEntity)
-            private projectsRepository : Repository<ProjectEntity>
+            private projectsRepository : Repository<ProjectEntity>,
+            private  premiseService : PremisesService
     ){}
 
 
@@ -28,7 +30,9 @@ export class ProjectsService {
               createProjectDto
         });
 
-        return  await this.projectsRepository.save(createProjectDto)
+        const newProject =   await this.projectsRepository.save(createProjectDto)
+         
+        return newProject
     }
 
 
@@ -64,5 +68,27 @@ export class ProjectsService {
 
           await this.projectsRepository.remove(project)
           return true 
+    }
+
+
+    async addPremiseToProject ( projectId : Uuid , premiseBody : any ){
+            
+        try {
+
+            const project = await this.getOneProject(projectId);
+
+
+            if(!project) return new HttpException("Project  not found " , 404);
+
+            const newPremise = await this.premiseService.createPremise({
+                ...premiseBody , projectId
+            })
+
+            return newPremise
+            
+        } catch (error) {
+            return new HttpException("Something went wrong ", 500)
+            
+        }
     }
 }

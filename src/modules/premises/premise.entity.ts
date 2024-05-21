@@ -1,11 +1,12 @@
-import { AbstractEntity } from "common/abstract.entity";
+import { AbstractEntity } from "../../common/abstract.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
 import { ManyToOne , Column, Entity  } from "typeorm";
+import { Uuid } from "boilerplate.polyfill";
 
 
 
 
-@Entity()
+@Entity( { name : "premises"})
 export class PremisesEntity extends AbstractEntity {
 
   @Column({
@@ -26,6 +27,9 @@ export class PremisesEntity extends AbstractEntity {
 
   @ManyToOne(() => ProjectEntity, project => project.premises)
   project !: ProjectEntity;
+
+  @Column({ type: 'uuid' })
+  projectId !: Uuid;
 
 
 }

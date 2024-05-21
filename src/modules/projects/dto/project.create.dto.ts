@@ -1,19 +1,26 @@
-import { IsNotEmpty , IsString } from "class-validator"
+import { IsNotEmpty , IsString  , IsUUID} from "class-validator"
 import { Uuid } from "boilerplate.polyfill"
 
 export class CreateProjectDto {
+    @IsUUID()
+    @IsNotEmpty()
+    userId!: Uuid;
 
-    @IsNotEmpty()
     @IsString()
-    title !: string 
+    @IsNotEmpty()
+    name!: string;
 
-    @IsNotEmpty()
     @IsString()
-    description !: string 
-    
     @IsNotEmpty()
+    detailedDescription!: string;
+
     @IsString()
-    userId !: Uuid
+    @IsNotEmpty()
+    briefDescription!: string;
+
+    @IsString()
+    @IsNotEmpty()
+    photo!: string;
 }
 
 
