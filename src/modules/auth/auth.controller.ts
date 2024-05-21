@@ -5,7 +5,7 @@ import {
   Post,
   Req,
   UseGuards,
-  Param,
+  // Param,
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -18,6 +18,8 @@ import {
   AgentLoginDto,
   LoginSuccess,
   UserLoginDto,
+  UserLoginResendCodeDto,
+  UserLoginVerifyCodeDto,
 } from './dtos/user-login.dto';
 
 @Controller('auth')
@@ -52,8 +54,18 @@ export class AuthController {
     type: LoginSuccess,
   })
   @Post('/login/agent/verify')
-  async agentLoginVerify(@Body() agentLoginDto: AgentLoginDto) {
-    return this.authService.agentLogin(agentLoginDto);
+  async agentLoginVerify(@Body() userLoginVerifyCodeDto: UserLoginVerifyCodeDto) {
+    return this.authService.verifySmsCode(userLoginVerifyCodeDto);
+  }
+
+  @ApiOperation({ summary: 'agent login resend' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: LoginSuccess,
+  })
+  @Post('/login/agent/resend')
+  async agentLoginResendSmsCode(@Body() dto: UserLoginResendCodeDto) {
+    return this.authService.agentLoginResendSmsCode(dto);
   }
 
   @Post()
@@ -61,10 +73,10 @@ export class AuthController {
     return this.authService.createUser(register);
   }
 
-  @Get(':email')
-  getUser(@Param('email') email: string) {
-    return this.authService.getUser(email);
-  }
+  // @Get(':email')
+  // getUser(@Param('email') email: string) {
+  //   return this.authService.getUser(email);
+  // }
 
   @Get()
   @UseGuards(JwtAuthGuard)

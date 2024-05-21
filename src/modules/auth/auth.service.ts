@@ -13,6 +13,8 @@ import {
   AgentLoginDto,
   LoginSuccess,
   UserLoginDto,
+  UserLoginResendCodeDto,
+  UserLoginVerifyCodeDto,
 } from './dtos/user-login.dto';
 
 @Injectable()
@@ -22,6 +24,13 @@ export class AuthService {
     private userService: UserService,
     private nodemailer: NodeMailerService,
   ) {}
+
+  hasOneMinutePassed(startTime: Date): boolean {
+    const oneMinute = 60 * 1000; // 60 seconds * 1000 milliseconds
+    const currentTime = new Date();
+    const elapsedTime = currentTime.getTime() - startTime.getTime();
+    return elapsedTime >= oneMinute;
+  }
 
   async createUser(body: UserCreateDto): Promise<any> {
     try {
@@ -79,7 +88,7 @@ export class AuthService {
       if (user.password === null) {
         console.log('Users password is null');
         return new UnauthorizedException('Password not set');
-      };
+      }
 
       const passwordMatch = await bcrypt.compare(
         loginDto.password,
@@ -116,36 +125,39 @@ export class AuthService {
       );
 
       if (!user) {
-        console.log('User not found ');
-        return new UnauthorizedException('User not found');
+        // send request crm backend and find user
+        // if(user) {
+        // save this user
+        // } else {
+        return new HttpException('User not found', HttpStatus.NOT_FOUND);
+        // }
       }
 
-      if (user.password === null) {
-        console.log('Users password is null');
-        return new UnauthorizedException('Password not set');
-      }
+      // const passwordMatch = await bcrypt.compare(
+      //   agentLoginDto.password,
+      //   user.password,
+      // );
 
-      const passwordMatch = await bcrypt.compare(
-        agentLoginDto.password,
-        user.password,
-      );
-
-      if (!passwordMatch) {
-        console.log('Password did not match');
-        return new UnauthorizedException('Invalid email or password');
-      }
+      // if (!passwordMatch) {
+      //   console.log('Password did not match');
+      //   return new UnauthorizedException('Invalid email or password');
+      // }
 
       if (user.settings?.isPhoneVerified) {
         // todo send code to phone number
         const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
-        console.log(randomNumber, user.id);;
+        console.log(randomNumber, user.id);
 
         await this.userService.updateUser(user.id, {
           verification_code: randomNumber,
-          verification_code_sent_date: new Date()
-        })
+          verification_code_sent_date: new Date(),
+        });
 
+        return new HttpException(
+          { userId: user.id, message: 'sms sent' },
+          HttpStatus.OK,
+        );
         // const { password, ...result } = user;
         // return {
         //   accessToken: this.jwtService.sign(result),
@@ -156,6 +168,113 @@ export class AuthService {
     } catch (error: any) {
       console.error('Login error:', error.message);
       return new HttpException(error.message, 500);
+    }
+  }
+
+  async verifySmsCode(
+    dto: UserLoginVerifyCodeDto,
+  ): Promise<LoginSuccess | any> {
+    try {
+      const user = await this.userService.findOne({
+        id: dto.user_id,
+      });
+      console.log(
+        {
+          user,
+        },
+        dto,
+      );
+
+      if (!user) {
+        return new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      if (user.settings?.isPhoneVerified) {
+        if (user.verification_code_sent_date) {
+
+          if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
+            return new HttpException(
+              {
+                error: 'verification code expired',
+              },
+              HttpStatus.GONE,
+            );
+          } else {
+            if (user.verification_code === dto.code) {
+              return {
+                accessToken: this.jwtService.sign({
+                  user_id: user.id,
+                  role: user.role,
+                }),
+              };
+            } else {
+              return new HttpException(
+                {
+                  error: 'Verification code is not correct',
+                },
+                HttpStatus.BAD_REQUEST,
+              );
+            }
+          }
+        }
+      } else {
+        // todo
+      }
+    } catch (error: any) {
+      console.error('Login error:', error.message);
+      return new HttpException(error.message, 500);
+    }
+  }
+
+  async agentLoginResendSmsCode(
+    dto: UserLoginResendCodeDto,
+  ): Promise<LoginSuccess | any> {
+    try {
+      const user = await this.userService.findOne({
+        phone: dto.user_id,
+      });
+      console.log(
+        {
+          user,
+        },
+        dto,
+      );
+
+      if (!user) {
+        return new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      if (user.settings?.isPhoneVerified) {
+        // todo send code to phone number
+        if (user.verification_code_sent_date) {
+          
+          if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
+            const randomNumber = Math.floor(100000 + Math.random() * 900000);
+
+            console.log(randomNumber, user.id);
+
+            await this.userService.updateUser(user.id, {
+              verification_code: randomNumber,
+              verification_code_sent_date: new Date(),
+            });
+
+            return new HttpException(
+              { userId: user.id, message: 'sms sent' },
+              HttpStatus.OK,
+            );
+          } else {
+            return new HttpException(
+              { error: 'A valid verification code already exists or wait till expire' },
+              HttpStatus.CONFLICT,
+            );
+          }
+        }
+      } else {
+        // todo
+      }
+    } catch (error: any) {
+      console.error('Login error:', error.message);
+      return new HttpException({ error: 'internal server error' }, 500);
     }
   }
 
