@@ -1,12 +1,14 @@
+import { EmailField, Roles, StringField } from '../../../decorators';
 import {
-  EmailField,
-  IsPassword,
-  Roles,
-  StringField,
-} from '../../../decorators';
-import { IsEnum, IsMobilePhone, IsString } from 'class-validator';
+  IsEnum,
+  IsMobilePhone,
+  IsNumber,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleType } from '../../../constants';
+import { Uuid } from 'boilerplate.polyfill';
 
 export class UserLoginDto {
   @EmailField()
@@ -22,12 +24,28 @@ export class AgentLoginDto {
     required: true,
   })
   readonly phone!: string;
+}
 
-  @IsPassword()
+export class UserLoginVerifyCodeDto {
+  @IsNumber()
   @ApiProperty({
     required: true,
   })
-  readonly password!: string;
+  readonly code!: number;
+
+  @IsUUID()
+  @ApiProperty({
+    required: true,
+  })
+  readonly user_id!: Uuid;
+}
+
+export class UserLoginResendCodeDto {
+  @IsUUID()
+  @ApiProperty({
+    required: true,
+  })
+  readonly user_id!: Uuid;
 }
 
 export class LoginSuccess {
