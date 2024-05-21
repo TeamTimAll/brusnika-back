@@ -137,17 +137,21 @@ export class AuthService {
 
       if (user.settings?.isPhoneVerified) {
         // todo send code to phone number
-        const randomNumber = Math.floor(100000 + Math.random() * 900000)
+        const randomNumber = Math.floor(100000 + Math.random() * 900000);
+
+        console.log(randomNumber, user.id);
 
         await this.userService.updateUser(user.id, {
           verification_code: randomNumber,
-          verification_code_sent_date: new Date()
-        })
+          verification_code_sent_date: new Date(),
+        });
 
-        const { password, ...result } = user;
-        return {
-          accessToken: this.jwtService.sign(result),
-        };
+        return 'verification sent';
+
+        // const { password, ...result } = user;
+        // return {
+        //   accessToken: this.jwtService.sign(result),
+        // };
       } else {
         // todo
       }

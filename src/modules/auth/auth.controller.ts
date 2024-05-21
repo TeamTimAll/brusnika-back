@@ -46,6 +46,16 @@ export class AuthController {
     return this.authService.agentLogin(agentLoginDto);
   }
 
+  @ApiOperation({ summary: 'agent login verify' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: LoginSuccess,
+  })
+  @Post('/login/agent/verify')
+  async agentLoginVerify(@Body() agentLoginDto: AgentLoginDto) {
+    return this.authService.agentLogin(agentLoginDto);
+  }
+
   @Post()
   createAccount(@Body() register: UserCreateDto) {
     return this.authService.createUser(register);
