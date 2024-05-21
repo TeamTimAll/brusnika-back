@@ -5,12 +5,25 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
 import * as AppDataSource from './data-source';
 import { config } from 'dotenv';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 config();
 
 @Module({
   imports: [
     SecuredModule,
-    TypeOrmModule.forRoot(AppDataSource)
+    TypeOrmModule.forRoot(AppDataSource),
+    MulterModule.register({
+       dest : "../media"
+    }),
+
+    ServeStaticModule.forRoot({
+      rootPath : join(__dirname, '..' , 'media'),
+      serveRoot : "/media"
+    })
+
   ],
   providers: [],
   controllers: [],

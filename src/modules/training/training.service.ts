@@ -19,24 +19,19 @@ export class TrainingService {
           return this.trainingRepo.find()
     };
 
-    async createTraining( trainingCreate : TrainingCreateDto ) 
+    async createTraining( trainingCreate : TrainingCreateDto , fileName : string ) 
     : Promise<HttpException | TrainingEntity>
 
     {
 
           try {
-            return await this.trainingRepo.save(trainingCreate)
-            
+               
+            return await this.trainingRepo.save({
+                    ...trainingCreate, imageUrl : fileName
+            })
           } catch (error : any ) {
-              console.log({
-                  trainingError : error 
-              })    
-              
-              
               return new HttpException(error.message , 500)
           }
-
-
     }
 
 

@@ -27,5 +27,10 @@ export class TrainingEntity extends AbstractEntity <TraningDto>{
 
     @Column({ nullable : false , type : "varchar"})
     description !: string 
+
+    @Column({ nullable : false , type : "varchar"})
+    imageUrl !: string 
+
+
 }
 

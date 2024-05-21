@@ -10,6 +10,7 @@ import { CommentEntity } from '../../modules/comments/comment.entity';
 import { ProjectEntity } from '../../modules/projects/project.entity';
 import { ClientEntity } from '../client/client.entity';
 import { NewsEntity } from '../news/news.entity';
+import { TrainingEntity } from '../../modules/training/training.entity';
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
@@ -50,23 +51,47 @@ export class UserEntity extends AbstractEntity {
   })
   fullName!: string;
 
-  @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)
+  @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user  , {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+})
   settings?: UserSettingsEntity;
 
-  @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user)
+  @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user  , {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+})
   events?: EventsEntity[];
 
-  @OneToMany(() => CommentEntity, (comment) => comment.user)
+  @OneToMany(() => CommentEntity, (comment) => comment.user  , {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+})
   comments?: CommentEntity[];
 
-  @OneToMany(() => NewsEntity, (news) => news.user)
+  @OneToMany(() => NewsEntity, (news) => news.user  , {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+})
   news?: NewsEntity[];
 
-  @OneToMany(() => ProjectEntity ,( project ) => project.user)
+  @OneToMany(() => ProjectEntity ,( project ) => project.user , {
+      onDelete : "CASCADE",
+      onUpdate : "CASCADE"
+  })
   projects ?: ProjectEntity[]
 
 
-  @OneToMany(() => ClientEntity , ( client ) => client.user)
+  @OneToMany(() => ClientEntity , ( client ) => client.user ,  {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+ })
   clients ? : ClientEntity[]
+
+  @OneToMany(() => TrainingEntity , ( train ) => train.user , {
+     onDelete : "CASCADE",
+     onUpdate : "CASCADE"
+  })
+  trainings ? :  TrainingEntity[]
 
 }

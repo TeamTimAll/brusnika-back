@@ -5,10 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TrainingEntity } from './training.entity';
 
 @Module({
+  
   imports : [ TypeOrmModule.forFeature([ TrainingEntity])],
   controllers: [TrainingController],
   providers: [TrainingService]
 })
+
 export class TrainingModule {}
 
 
