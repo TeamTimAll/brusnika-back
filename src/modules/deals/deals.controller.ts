@@ -8,10 +8,10 @@ import { UpdateDealsDto } from './dtos/deals.update.dto';
 export class DealsController {
     constructor ( private dealsService : DealsService){}
 
-    @Get()
-    async getAllDeals () {
-        return this.dealsService.getAllDeals()
-    }
+    // @Get()
+    // async getAllDeals () {
+    //     return this.dealsService.getAllDeals()
+    // }
 
 
     @Get(":id")
@@ -25,6 +25,11 @@ export class DealsController {
           return  this.dealsService.createDeals(dealsBody)
     }
 
+
+    @Get()
+    async getDealsByStatus(){
+        return this.dealsService.dealsStatusFilter()
+    }
 
     @Put(":id")
     async updateDeal ( @Body() updateBodyDeal : UpdateDealsDto, 

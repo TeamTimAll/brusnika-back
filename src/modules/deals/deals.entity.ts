@@ -21,7 +21,7 @@ export class DealsEntity extends AbstractEntity  {
           onUpdate : "CASCADE"
     })
 
-    @JoinColumn()
+    @JoinColumn( { name : "project_id"})
     project !: ProjectEntity;
 
 
@@ -51,10 +51,10 @@ export class DealsEntity extends AbstractEntity  {
     transactionNumber !: string;
   
     @Column()
-    transactionStatus !: string; // E.g., 'pending', 'won', 'lost'
+    transactionStatus !: string; 
   
     @Column()
-    transactionStage !: string; // E.g., 'negotiation', 'contract signing'
+    transactionStage !: string;
   
     @CreateDateColumn()
     transactionDate !: Date;
