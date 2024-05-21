@@ -79,7 +79,7 @@ export class AuthService {
       if (user.password === null) {
         console.log('Users password is null');
         return new UnauthorizedException('Password not set');
-      }
+      };
 
       const passwordMatch = await bcrypt.compare(
         loginDto.password,
@@ -139,14 +139,12 @@ export class AuthService {
         // todo send code to phone number
         const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
-        console.log(randomNumber, user.id);
+        console.log(randomNumber, user.id);;
 
         await this.userService.updateUser(user.id, {
           verification_code: randomNumber,
-          verification_code_sent_date: new Date(),
-        });
-
-        return 'verification sent';
+          verification_code_sent_date: new Date()
+        })
 
         // const { password, ...result } = user;
         // return {

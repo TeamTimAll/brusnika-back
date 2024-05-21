@@ -8,12 +8,32 @@ import { config } from 'dotenv';
 config();
 
 @Module({
-  imports: [SecuredModule, TypeOrmModule.forRoot(AppDataSource)],
+  imports: [
+    SecuredModule,
+    TypeOrmModule.forRoot(AppDataSource)
+  ],
   providers: [],
   controllers: [],
 })
+
 export class AppModule {}
 
+
+// @Module({
+//   imports: [
+//       ConfigModule.forRoot({
+//           load: [configuration],
+//           isGlobal: true,
+//       }),
+//       SharedModule,
+//       DatabaseModule,
+//       AgencyModule, //ADD HERE
+     
+//   ],
+//   controllers: [AppController],
+//   providers: [AppService],
+// })
+// export class AppModule {}
 // ClsModule.forRoot({
 //   global: true,
 //   middleware: {

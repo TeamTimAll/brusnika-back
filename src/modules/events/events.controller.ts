@@ -15,6 +15,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
 import { type PageDto } from '../../common/dto/page.dto';
 import { RoleType } from '../../constants';
 import { Auth, AuthUser, UUIDParam } from '../../decorators';
@@ -26,8 +27,10 @@ import { UpdateEventsDto } from './dtos/update-events.dto';
 import { EventsService } from './events.service';
 import { Uuid } from 'boilerplate.polyfill';
 import { ApiPageOkResponse } from '../../decorators';
+
 @Controller('/events')
 @ApiTags('events')
+
 export class EventsController {
   constructor(private eventsService: EventsService) {}
 

@@ -8,20 +8,25 @@ import { EventsModule } from './events/events.module';
 import { NewsModule } from './news/news.module';
 import { CommentsModule } from './comments/comments.module';
 import { ProjectsModule } from './projects/projects.module';
-import { ClientsModule } from '@nestjs/microservices';
+import { ClientModule } from './client/client.module';
+import { ClientStatusModule } from './client-status/client-status.module';
+import { TrainingModule } from './training/training.module';
 
 @Module({
   imports: [
     UserModule,
     EventsModule,
     AuthModule,
-    ClientsModule,
     NewsModule,
     CommentsModule,
     ProjectsModule,
     HealthCheckerModule,
     TypeOrmModule.forFeature([UserEntity]),
+    ClientModule,
+    ClientStatusModule,
+    TrainingModule
   ],
+  
   exports: [],
 })
 export class SecuredModule {}

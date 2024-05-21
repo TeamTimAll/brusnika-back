@@ -42,6 +42,7 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
     enum: NEWS_CATEGORIES,
     nullable: false,
   })
+  
   category!: NEWS_CATEGORIES;
 
   @Column({ default: 0 })

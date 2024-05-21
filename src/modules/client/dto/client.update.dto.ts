@@ -1,6 +1,5 @@
-import { IsString, IsOptional, IsEnum, IsDateString, IsUUID, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsDateString, IsUUID, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PinningType } from './client.dto';
 
 import { Uuid } from 'boilerplate.polyfill';
 
@@ -33,8 +32,7 @@ export class UpdateClientDto {
   establishmentDate?: Date;
 
   @IsOptional()
-  @IsEnum(PinningType)
-  pinningType?: PinningType;
+  pinningTypeId !: Uuid;
 
   @IsOptional()
   @Type(() => Number)

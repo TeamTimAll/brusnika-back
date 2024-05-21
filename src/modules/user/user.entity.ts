@@ -8,7 +8,7 @@ import { UserSettingsEntity } from './user-settings.entity';
 import { EventsEntity } from '../events/events.entity';
 import { CommentEntity } from '../../modules/comments/comment.entity';
 import { ProjectEntity } from '../../modules/projects/project.entity';
-import { ClientEntity } from '../../modules/clients/client.entity';
+import { ClientEntity } from '../client/client.entity';
 import { NewsEntity } from '../news/news.entity';
 
 @Entity({ name: 'users' })
