@@ -5,6 +5,7 @@ import { Uuid } from "boilerplate.polyfill";
 import { UserEntity } from "../../modules/user/user.entity";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { ClientEntity } from "../client/client.entity"
+import { DealsEntity } from "../../modules/deals/deals.entity";
 
 @Entity( { name : "projects"})
 @UseDto(ProjectSDto)
@@ -31,5 +32,9 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
 
     @OneToMany(()=> ClientEntity , (  client ) => client.project )
     clients ? : ClientEntity[] // project clients 
+
+
+    @OneToMany(() => DealsEntity , ( deal ) => deal.project)
+    deals ? : DealsEntity[]  
 
 }

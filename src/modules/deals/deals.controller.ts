@@ -2,25 +2,35 @@ import { Body, Controller , Delete, Get, Param, Post, Put  } from '@nestjs/commo
 import { DealsService } from './deals.service';
 import { DealsCreateDto } from './dtos/deals.create.dto';
 import { Uuid } from 'boilerplate.polyfill';
+import { UpdateDealsDto } from './dtos/deals.update.dto';
 
 @Controller('deals')
 export class DealsController {
     constructor ( private dealsService : DealsService){}
-
 
     @Get()
     async getAllDeals () {
         return this.dealsService.getAllDeals()
     }
 
-    @Post()
-    async createDeal ( @Body() dealsBody : DealsCreateDto ) {
-          return await this.dealsService.createDeals(dealsBody)
+
+    @Get(":id")
+    async getOneDeal(@Param("id") id : Uuid) {
+           return this.dealsService.getOneDeal(id)  
     }
 
-    @Put()
-    async updateDeal ( @Body() updateBodyDeal : any ) {
-          return this.dealsService.updateDeals(updateBodyDeal)
+
+    @Post()
+    async createDeal ( @Body() dealsBody : DealsCreateDto ) {
+          return  this.dealsService.createDeals(dealsBody)
+    }
+
+
+    @Put(":id")
+    async updateDeal ( @Body() updateBodyDeal : UpdateDealsDto, 
+     @Param("id") id : Uuid ) 
+    {
+          return this.dealsService.updateDeals(updateBodyDeal , id )
     }
 
     @Delete(":id")

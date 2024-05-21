@@ -1,4 +1,4 @@
-import { Entity, Column, JoinColumn, OneToOne, ManyToOne, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, JoinColumn, OneToOne, ManyToOne, DeleteDateColumn, OneToMany } from 'typeorm';
 import { UseDto } from '../../decorators';
 import { ClientDto } from './dto/client.dto';
 import { UserEntity } from '../user/user.entity';
@@ -6,6 +6,7 @@ import { Uuid } from 'boilerplate.polyfill';
 import { ProjectEntity } from '../projects/project.entity';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { ClientStatusEntity } from '../../modules/client-status/client-status.entity';
+import { DealsEntity } from '../../modules/deals/deals.entity';
 
 @Entity({ name: 'clients' })
 @UseDto(ClientDto)
@@ -61,6 +62,13 @@ export class ClientEntity extends AbstractEntity<ClientDto> {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+
+  @OneToMany(() => DealsEntity , ( deal ) => deal.client , {
+      onDelete : "CASCADE",
+      onUpdate : "CASCADE"
+  })
+  deals ?: DealsEntity[]
+
 
   @JoinColumn({ name: 'project_id' })
   project!: ProjectEntity;

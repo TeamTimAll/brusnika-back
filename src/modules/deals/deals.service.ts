@@ -4,20 +4,21 @@ import { DealsEntity } from './deals.entity';
 import { Repository } from 'typeorm';
 import { DealsCreateDto } from './dtos/deals.create.dto';
 import { Uuid } from 'boilerplate.polyfill';
-// import { DealsUpdateDto } from './dtos/deals.update.dto';
-
+import { UpdateDealsDto } from './dtos/deals.update.dto';
+import { ClientService } from '../../modules/client/client.service';
 
 @Injectable()
 export class DealsService {
 
     constructor(
-               @InjectRepository(DealsEntity)
-              private   dealsRepo :  Repository<DealsEntity>
+             @InjectRepository(DealsEntity)
+              private   dealsRepo :  Repository<DealsEntity>,
+              private readonly  clientService :  ClientService
     ){}
 
-
+ 
     async getAllDeals() : Promise<DealsEntity[]>{
-             return  this.dealsRepo.find()
+             return  await  this.dealsRepo.find()
     }
 
 
@@ -25,28 +26,40 @@ export class DealsService {
     : Promise<DealsEntity | HttpException> {
         try {
             
-            return await  this.dealsRepo.save(dealsCreateDto)
+            
 
-        } catch (error) {
+            const client  = await this.clientService.getOneClient(dealsCreateDto.clientId)
 
-            console.log({
-                  dealsBug : error 
+            if(!client) return new HttpException("Client not found " , 404)
+              
+            
+
+                console.log({
+                      dealsCreateDto
+                });
+
+            return await  this.dealsRepo.save({
+                  ...dealsCreateDto ,  
+                  clientFullName : client.fullName,
+                   clientPhoneNumber : client.phoneNumber
             })
 
+        } catch (error) {
             return new HttpException("Something went wrong" , 500)
             
         }
       }
 
-      async updateDeals( dealsUpdate : any  ) 
+      async updateDeals( dealsUpdate : UpdateDealsDto , id : Uuid  ) 
       : Promise<DealsEntity | HttpException>{
       
         try {
 
-            const deals = await this.getOneDeal(dealsUpdate.id)
+            const deals = await this.getOneDeal(id)
             if(!deals) return new HttpException("Cannot find the deal" , 404)
             
             const updatedDeal = await this.dealsRepo.merge(deals, dealsUpdate)
+            await this.dealsRepo.save(updatedDeal)
             return updatedDeal
             
         } catch (error) {
@@ -73,18 +86,15 @@ export class DealsService {
             return new HttpException("Something went wrong " , 500)
             
           }
-
-
-
       }
 
 
-      async getOneDeal( id : Uuid)  : Promise<null | DealsEntity>{
-          const query = await this.dealsRepo.createQueryBuilder("Deals")
-          .where("deal.id = :id" , { id })
-
-          const deal = await query.getOne();
-          return deal
+      async getOneDeal(id: Uuid): Promise<null | DealsEntity> {
+        const deal = await this.dealsRepo.findOne({
+            where: { id },
+            relations: ["project", "client"] 
+          });
+        return deal;
       }
 
 }
