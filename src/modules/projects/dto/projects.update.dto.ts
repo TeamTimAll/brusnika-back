@@ -37,14 +37,6 @@ export class UpdateProjectDto {
     })
     briefDescription?: string;
 
-    @IsString()
-    @IsOptional()
-    @ApiProperty({
-        type: File ,
-        required: true,
-        description: 'Project photo file',
-    })
-    photo?: string;
 
     @IsNotEmpty()
     @IsString()
@@ -53,5 +45,5 @@ export class UpdateProjectDto {
           example : "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
     })
     projectId !:Uuid
-
 }
+

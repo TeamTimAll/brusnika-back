@@ -2,7 +2,8 @@ import {
        Body, Controller 
      , Delete, Get, HttpCode, 
        HttpStatus , Param, Post,
-       Put , UploadedFile  
+       Put, 
+       UploadedFile
      } from '@nestjs/common';
 
 import { ProjectsService } from './projects.service';
@@ -16,7 +17,7 @@ import {v4 as uuidv4  } from "uuid"
 import { CreatePremisesDto } from '../../modules/premises/dtos/premise.create.dto';
 import { UpdatePremiseDto } from '../../modules/premises/dtos/premise.update.dto';
 import { ApiTags } from '@nestjs/swagger';
-
+import path from 'path';
 
 
 
@@ -33,25 +34,27 @@ export class ProjectsController {
     }
 
     @Post()
-    @UseInterceptors(
-        FileInterceptor('file', {
-            storage: diskStorage({
-              destination: './media',
-              filename: (_, file, cb) => {
-                const filename: string = uuidv4() + '-' + file.originalname;
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: path.join(__dirname, '..', 'media'),
+            filename: (_, file, cb) => {
+                const uniqueId = uuidv4();
+                const filename = `${uniqueId}-${file.originalname}`;
                 cb(null, filename);
-              },
-            }),
-          }),
-    )
-
+            }
+        }),
+    }))
     @HttpCode(HttpStatus.CREATED)
-    async createProject( 
-        @UploadedFile() fileName : string ,
-        @Body()  projectDto : CreateProjectDto 
-    ){
-          return this.projectsService.createProjects(projectDto , fileName)
-    };
+    
+    async createProject(
+        @Body() projectDto: CreateProjectDto,
+        @UploadedFile()  file : Express.Multer.File 
+    ) {
+        console.log({
+              file 
+        })
+        return this.projectsService.createProjects(projectDto, file.filename);
+    }
 
 
 

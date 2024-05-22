@@ -16,7 +16,7 @@ import { ProjectsModule } from './projects/projects.module';
     HealthCheckerModule,
     TypeOrmModule.forFeature([UserEntity]),
     PremisesModule,
-    ProjectsModule
+    ProjectsModule,
   ],
   exports: [],
 })
