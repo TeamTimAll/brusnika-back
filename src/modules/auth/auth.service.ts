@@ -85,9 +85,10 @@ export class AuthService {
         // send brunsika crm to get user
         // if(user) {
         // user.create(user)
-        // user = newUser 
-        // }
+        // user = newUser
+        // } else {
         return new UnauthorizedException('User not found');
+        // }
       }
 
       // if (user.password === null) {
@@ -196,7 +197,6 @@ export class AuthService {
 
       if (user.settings?.isPhoneVerified) {
         if (user.verification_code_sent_date) {
-
           if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
             return new HttpException(
               {
@@ -252,7 +252,6 @@ export class AuthService {
       if (user.settings?.isPhoneVerified) {
         // todo send code to phone number
         if (user.verification_code_sent_date) {
-          
           if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
             const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
@@ -269,7 +268,10 @@ export class AuthService {
             );
           } else {
             return new HttpException(
-              { error: 'A valid verification code already exists or wait till expire' },
+              {
+                error:
+                  'A valid verification code already exists or wait till expire',
+              },
               HttpStatus.CONFLICT,
             );
           }
