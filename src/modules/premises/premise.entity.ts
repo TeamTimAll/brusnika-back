@@ -9,21 +9,41 @@ import { Uuid } from "boilerplate.polyfill";
 @Entity( { name : "premises"})
 export class PremisesEntity extends AbstractEntity {
 
-  @Column({
-    type: 'enum',
-    enum: ['apartment', 'parking', 'storage', 'commercial'],
-  })
-  
-  type !: 'apartment' | 'parking' | 'storage' | 'commercial';
-
   @Column()
   name !: string; 
 
-  @Column()
-  total !: number;
+  // storage 
+  @Column( { nullable : true })
+  totalStorage !: number 
 
-  @Column()
-  totalVacant !: number;
+  // vacant storage 
+  @Column({ nullable : true })
+  totalVacantStorage !: number 
+
+  // apartment 
+  @Column( { nullable : true } )
+  totalApartment !: number 
+
+  // vacant apartment 
+  @Column( { nullable : true } )
+  totalVacantApartment !: number 
+
+  // total parking space 
+  @Column( { nullable : true } )
+  totalParkingSpace !: number 
+
+  // total vacant parking space 
+  @Column( { nullable : true } )
+  totalVacantParkingSpace !: number 
+
+
+  // commercial
+  @Column( { nullable : true } )
+  totalCommercial !: number 
+
+  // vacant commercail
+  @Column( { nullable : true } )
+  totalVacantCommercial !: number 
 
   @ManyToOne(() => ProjectEntity, project => project.premises)
   project !: ProjectEntity;

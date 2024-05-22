@@ -109,11 +109,11 @@ export class ProjectsService {
     }
 
 
-    async addPremiseToProject ( premiseBody : CreatePremisesDto , projectId : Uuid   ){
+    async addPremiseToProject ( premiseBody : CreatePremisesDto ){
             
         try {
 
-            const project = await this.getOneProject(projectId);
+            const project = await this.getOneProject(premiseBody.projectId);
 
 
             if(!project) return new HttpException("Project  not found " , 404);

@@ -1,18 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Uuid } from 'boilerplate.polyfill';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePremisesDto {
-  @ApiProperty({
-     examples : ['apartment', 'parking', 'storage', 'commercial'],
-     required : true ,
-     description : "should be one of the example as showed above",
-     type : String
-  })
 
-  @IsNotEmpty()
-  @IsEnum(['apartment', 'parking', 'storage', 'commercial'])
-  type !: 'apartment' | 'parking' | 'storage' | 'commercial';
 
   @IsNotEmpty()
   @IsString()
@@ -21,34 +12,97 @@ export class CreatePremisesDto {
       required : true ,
       type : String 
   })
+
   name !: string;
 
-  @IsNotEmpty()
+ 
+  // storage 
   @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    example : 22,
+    description : "Total storage for the premise",
+    type : Number 
+  })
+  totalStorage !: number 
+
+  // vacant storage 
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    example : 12,
+    description : "Total  vacant storage for the premise",
+    type : Number 
+  })
+  totalVacantStorage !: number 
+
+  // apartment 
+  @IsNumber()
+  @IsNotEmpty()
   @ApiProperty({
       example : 22,
-      description : "Total  ",
-      type : Number,
-      required : true 
+      description : "Total apartments",
+      type : Number 
   })
-  total !: number;
+  totalApartment !: number 
 
+  // vacant apartment 
   @IsNotEmpty()
   @IsNumber()
   @ApiProperty({
-     example : 33,
-     required : true ,
-     type : Number ,
-     description : "Available"
+    example : 12,
+    description : "Total vacant apartment",
+    type : Number 
   })
-  
-  totalVacant !: number;
+  totalVacantApartment !: number 
+
+  // total parking space 
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    example : 33,
+    description : "Total parking space",
+    type : Number 
+  })
+  totalParkingSpace !: number 
+
+  // total vacant parking space 
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    example : 44,
+    description : "Total vacant parking space ",
+    type : Number 
+  })
+  totalVacantParkingSpace !: number 
+
+
+  // commercial
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    example : 3,
+    description : "Total commercial",
+    type : Number 
+  })
+  totalCommercial !: number 
+
+  // vacant commercail
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+     example : 1,
+     description : "Total vacant commercial",
+     type : Number 
+  })
+  totalVacantCommercial !: number 
 
   @IsNotEmpty()
   @ApiProperty({
       required : true ,
       example : "a949e0ad-97cc-4dfa-81bb-efe191eb903b"
   })
+
   projectId !: Uuid
   
 }

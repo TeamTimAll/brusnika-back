@@ -47,6 +47,10 @@ export class PremisesService {
            const updatedPremise =   await this.premiseRepo.merge(premise , updatePremiseDto)
             await this.premiseRepo.save(updatedPremise)
 
+            console.log({
+                updatedPremise
+            })
+
             return updatedPremise 
             
           } catch (error) {

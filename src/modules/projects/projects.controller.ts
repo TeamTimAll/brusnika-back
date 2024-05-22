@@ -78,8 +78,10 @@ export class ProjectsController {
 
     @Post("premise")
     @HttpCode(HttpStatus.CREATED)
-    async createPremise ( @Body() premiseBody : CreatePremisesDto , @Param("id") id : Uuid  ) {
-          return this.projectsService.addPremiseToProject(premiseBody, id )
+    async createPremise (
+         @Body() premiseBody : CreatePremisesDto ,
+        ) {
+          return this.projectsService.addPremiseToProject(premiseBody)
     }
 
 
