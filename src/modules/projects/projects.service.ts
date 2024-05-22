@@ -10,6 +10,7 @@ import { UpdateProjectDto } from "./dto/projects.update.dto"
 import { PremisesService } from '../../modules/premises/premises.service';
 import { CreatePremisesDto } from '../../modules/premises/dtos/premise.create.dto';
 import { UpdatePremiseDto } from '../../modules/premises/dtos/premise.update.dto';
+import { PremisesEntity } from 'modules/premises/premise.entity';
 
 @Injectable()
 export class ProjectsService {
@@ -26,15 +27,22 @@ export class ProjectsService {
     }
 
 
-    async createProjects ( createProjectDto : CreateProjectDto ) : Promise<CreateProjectDto>{
+    async createProjects ( createProjectDto : CreateProjectDto , fileName : string  )
+     : Promise<CreateProjectDto | HttpException>{
+        try {
 
-        console.log({
-              createProjectDto
-        });
+            const newProject =   await this.projectsRepository.save({
+                ...createProjectDto, photo : fileName
+           })
+            
+           return newProject
 
-        const newProject =   await this.projectsRepository.save(createProjectDto)
-         
-        return newProject
+            
+        } catch (error) {
+
+            return new HttpException("Something went wrong" , 500)
+            
+        }
     }
 
 
@@ -42,14 +50,23 @@ export class ProjectsService {
           ;
 
           const project = await  this.projectsRepository.findOne({
-              where : { id }
+              where : { id },
+              relations : {
+                clients : true ,
+                premises : true ,
+                user : true 
+              }
           });
 
           return project
     };
 
 
-    async updateProject( updateProjectDto : UpdateProjectDto ){
+    async updateProject( updateProjectDto : UpdateProjectDto )
+    : Promise<HttpException | ProjectEntity>
+    {
+         try {
+
 
         const project = await this.getOneProject(updateProjectDto.projectId);
 
@@ -60,18 +77,35 @@ export class ProjectsService {
         await this.projectsRepository.save(updatedProject)
 
         return updatedProject
+
+            
+         } catch (error) {
+            return new HttpException("Something went wrong" , 500)
+            
+         }
         
 
     }
 
 
-    async deleteProject( id : Uuid ) {
-          const project = await this.getOneProject(id);
+    async deleteProject( id : Uuid ) 
+      : Promise<ProjectEntity | HttpException>
+    {
+             try {
 
-          if(!project) return new HttpException("Project not found " , 404);
+                const project = await this.getOneProject(id);
 
-          await this.projectsRepository.remove(project)
-          return true 
+                if(!project) return new HttpException("Project not found " , 404);
+
+                await this.projectsRepository.remove(project)
+                return project
+
+                
+             } catch (error) {
+
+                return  new HttpException("Something went wrong" , 500)
+                
+             } 
     }
 
 
@@ -98,12 +132,20 @@ export class ProjectsService {
 
 
 
-    async getOnePremise ( id : Uuid) {
-          const premise = await this.premiseService.getPremise(id);
+    async getOnePremise ( id : Uuid)
+      : Promise<PremisesEntity | HttpException>
+     {
+           try {
+            
+            const premise = await this.premiseService.getPremise(id);
 
-          if(!premise ) return new HttpException("Premise not found ", 404);
+            if(!premise ) return new HttpException("Premise not found ", 404);
+  
+            return premise 
 
-          return premise 
+           } catch (error) {
+            return new HttpException("Something went wrong" , 500)
+           }
 
     }
 
@@ -131,7 +173,7 @@ export class ProjectsService {
             if(!premise) return new HttpException("Premise not found " , 404);
             const deletedPremise =    await this.premiseService.deletePremise(id)
             return deletedPremise 
-            
+
           } catch (error) {
             return new HttpException("Something went wrong " , 500)
             

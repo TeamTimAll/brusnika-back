@@ -42,11 +42,10 @@ export class ProjectsController {
 
     @HttpCode(HttpStatus.CREATED)
     async createProject( 
-        @UploadedFile() file : Express.Multer.File,
+        @UploadedFile() fileName : string ,
         @Body()  projectDto : CreateProjectDto 
     ){
-          console.log(file)
-          return this.projectsService.createProjects(projectDto)
+          return this.projectsService.createProjects(projectDto , fileName)
     };
 
 
@@ -92,7 +91,6 @@ export class ProjectsController {
 
     @Delete("premise/:id")
     @HttpCode(HttpStatus.OK)
-
     async deletePremise( @Param("id") id : Uuid) {
         return this.projectsService.deletePremise(id)
     }

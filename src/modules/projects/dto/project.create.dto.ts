@@ -18,9 +18,6 @@ export class CreateProjectDto {
     @IsNotEmpty()
     briefDescription!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    photo!: string;
 }
 
 

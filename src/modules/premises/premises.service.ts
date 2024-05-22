@@ -7,6 +7,7 @@ import { CreatePremisesDto } from './dtos/premise.create.dto';
 import { UpdatePremiseDto } from './dtos/premise.update.dto';
 
 @Injectable()
+
 export class PremisesService {
     constructor(
         @InjectRepository(PremisesEntity)
@@ -61,7 +62,6 @@ export class PremisesService {
     }
 
 
-
     async getPremise ( id : Uuid ) {
             const premise = await this.premiseRepo.findOne({
                  where : { id },
@@ -80,7 +80,6 @@ export class PremisesService {
 
                 const premise = await this.getPremise(id);
                 if(!premise) return false 
-
 
                 await this.premiseRepo.remove(premise)
 
