@@ -4,7 +4,7 @@ import { UseDto } from '../../decorators';
 import { CitiesDto } from './dtos/cities.dto';
 import { UserEntity } from '../../modules/user/user.entity';
 
-@Entity({ name: 'Cities' })
+@Entity({ name: 'cities' })
 @UseDto(CitiesDto)
 export class CitiesEntity extends AbstractEntity<CitiesDto> {
   @Column({ nullable: true, type: 'varchar' })

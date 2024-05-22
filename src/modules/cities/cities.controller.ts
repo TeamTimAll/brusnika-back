@@ -1,79 +1,100 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
-  HttpCode,
   HttpStatus,
   Put,
-  Query,
   Post,
+  Delete,
+  InternalServerErrorException,
+  HttpException,
 } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
-  ApiCreatedResponse,
-  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
-import { type PageDto } from '../../common/dto/page.dto';
-import { RoleType } from '../../constants';
-import { Auth, UUIDParam } from '../../decorators';
+import { UUIDParam } from '../../decorators';
 import { CreateCitiesDto } from './dtos/create-cities.dto';
 import { CitiesDto } from './dtos/cities.dto';
-import { CitiesPageOptionsDto } from './dtos/cities-page-options.dto';
 import { UpdateCitiesDto } from './dtos/update-cities.dto';
 import { CitiesService } from './cities.service';
 import { Uuid } from 'boilerplate.polyfill';
-import { ApiPageOkResponse } from '../../decorators';
 
-@Controller('/Cities')
+@Controller('/cities')
 @ApiTags('Cities')
 export class CitiesController {
-  constructor(private CitiesService: CitiesService) {}
+  constructor(private citiesService: CitiesService) {}
 
-  @Auth([RoleType.USER])
-  @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({ type: CitiesDto })
+  @ApiOperation({ summary: 'Create a city' })
+  @ApiResponse({ status: HttpStatus.CREATED, type: CitiesDto })
   @Post()
-  async createCities(@Body() createCitiesDto: CreateCitiesDto) {
-    const CitiesEntity = await this.CitiesService.createCities(createCitiesDto);
-
-    return CitiesEntity.toDto();
+  async createCity(@Body() createCitiesDto: CreateCitiesDto): Promise<any> {
+    try {
+      return await this.citiesService.create(createCitiesDto);
+    } catch (error: any) {
+      throw this.handleException(error);
+    }
   }
 
+  @ApiOperation({ summary: 'Get all cities' })
+  @ApiResponse({ status: HttpStatus.OK, type: CitiesDto, isArray: true })
   @Get()
-  @Auth([RoleType.USER])
-  @ApiPageOkResponse({ type: CitiesDto })
-  async getCities(
-    @Query() CitiesPageOptionsDto: CitiesPageOptionsDto,
-  ): Promise<PageDto<CitiesDto>> {
-    return this.CitiesService.getAllCities(CitiesPageOptionsDto);
+  async getCities(): Promise<any> {
+    try {
+      return await this.citiesService.findAll();
+    } catch (error: any) {
+      throw this.handleException(error);
+    }
   }
 
+  @ApiOperation({ summary: 'Get a single city by ID' })
+  @ApiResponse({ status: HttpStatus.OK, type: CitiesDto })
   @Get(':id')
-  @Auth([])
-  @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({ type: CitiesDto })
-  async getSingleCities(@UUIDParam('id') id: Uuid): Promise<CitiesDto> {
-    const entity = await this.CitiesService.getSingleCities(id);
-    return entity.toDto();
+  async getSingleCity(@UUIDParam('id') id: Uuid): Promise<any> {
+    try {
+      return await this.citiesService.findOne(id);
+    } catch (error: any) {
+      throw this.handleException(error);
+    }
   }
 
-  @Put(':id')
-  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiOperation({ summary: 'Update a city by ID' })
   @ApiAcceptedResponse()
-  updateCities(
+  @Put(':id')
+  async updateCity(
     @UUIDParam('id') id: Uuid,
     @Body() updateCitiesDto: UpdateCitiesDto,
-  ): Promise<void> {
-    return this.CitiesService.updateCities(id, updateCitiesDto);
+  ): Promise<any> {
+    try {
+      await this.citiesService.update(id, updateCitiesDto);
+    } catch (error: any) {
+      throw this.handleException(error);
+    }
   }
 
-  @Delete(':id')
-  @HttpCode(HttpStatus.ACCEPTED)
+  @ApiOperation({ summary: 'Delete a city by ID' })
   @ApiAcceptedResponse()
-  async deleteCities(@UUIDParam('id') id: Uuid): Promise<void> {
-    await this.CitiesService.deleteCities(id);
+  @Delete(':id')
+  async deleteCity(@UUIDParam('id') id: Uuid): Promise<any> {
+    try {
+      await this.citiesService.remove(id);
+    } catch (error: any) {
+      throw this.handleException(error);
+    }
+  }
+
+  private handleException(error: any): HttpException {
+    if (error.status) {
+      return new HttpException(
+        error.message ? error.message : error.response,
+        error.status,
+      );
+    } else {
+      console.error(error.message);
+      return new InternalServerErrorException('Internal server error');
+    }
   }
 }
