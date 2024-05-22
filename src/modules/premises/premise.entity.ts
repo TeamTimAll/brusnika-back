@@ -20,7 +20,7 @@ export class PremisesEntity extends AbstractEntity {
   name !: string; 
 
   @Column()
-  totalAvailable !: number;
+  total !: number;
 
   @Column()
   totalVacant !: number;
