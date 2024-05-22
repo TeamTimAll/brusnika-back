@@ -1,3 +1,4 @@
+import { Uuid } from 'boilerplate.polyfill';
 import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePremisesDto {
@@ -16,5 +17,8 @@ export class CreatePremisesDto {
   @IsNotEmpty()
   @IsNumber()
   totalVacant !: number;
+
+  @IsNotEmpty()
+  projectId !: Uuid
   
 }

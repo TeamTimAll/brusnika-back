@@ -8,6 +8,8 @@ import { ProjectSDto } from './dto/projects.dto';
 import { CreateProjectDto } from './dto/project.create.dto';
 import { UpdateProjectDto } from "./dto/projects.update.dto"
 import { PremisesService } from '../../modules/premises/premises.service';
+import { CreatePremisesDto } from '../../modules/premises/dtos/premise.create.dto';
+import { UpdatePremiseDto } from '../../modules/premises/dtos/premise.update.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -37,10 +39,12 @@ export class ProjectsService {
 
 
     async getOneProject( id : Uuid) : Promise<ProjectEntity | null>{
-          const queryBuilder = await this.projectsRepository.createQueryBuilder("project")
-          .where('project.id = :id', { id });
+          ;
 
-          const project = await queryBuilder.getOne();
+          const project = await  this.projectsRepository.findOne({
+              where : { id }
+          });
+
           return project
     };
 
@@ -71,7 +75,7 @@ export class ProjectsService {
     }
 
 
-    async addPremiseToProject ( projectId : Uuid , premiseBody : any ){
+    async addPremiseToProject ( premiseBody : CreatePremisesDto , projectId : Uuid   ){
             
         try {
 
@@ -80,9 +84,9 @@ export class ProjectsService {
 
             if(!project) return new HttpException("Project  not found " , 404);
 
-            const newPremise = await this.premiseService.createPremise({
-                ...premiseBody , projectId
-            })
+            const newPremise = await this.premiseService.createPremise(premiseBody)
+
+            if(!newPremise) return new HttpException("Something went wrong when creating premises" , 500)
 
             return newPremise
             
@@ -91,4 +95,48 @@ export class ProjectsService {
             
         }
     }
+
+
+
+    async getOnePremise ( id : Uuid) {
+          const premise = await this.premiseService.getPremise(id);
+
+          if(!premise ) return new HttpException("Premise not found ", 404);
+
+          return premise 
+
+    }
+
+
+
+
+    async updateOnePremise( premiseUpdateBody : UpdatePremiseDto , id : Uuid){
+           try {
+            
+            const isPremiseUpdated = 
+             await  this.premiseService.updatePremise(premiseUpdateBody ,id );
+
+             if(!isPremiseUpdated) return new HttpException("Something went wrong" , 500)
+
+             return  isPremiseUpdated
+           } catch (error) {
+            return  new HttpException("Something went wrong " , 500)
+           }
+    }
+
+      async  deletePremise ( id :Uuid) {
+          try {
+
+            const premise = await this.premiseService.getPremise(id)
+            if(!premise) return new HttpException("Premise not found " , 404);
+            const deletedPremise =    await this.premiseService.deletePremise(id)
+            return deletedPremise 
+            
+          } catch (error) {
+            return new HttpException("Something went wrong " , 500)
+            
+          }
+      }
+
+
 }

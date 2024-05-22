@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PremisesEntity } from './premise.entity';
 import { Repository } from 'typeorm';
 import { Uuid } from 'boilerplate.polyfill';
+import { CreatePremisesDto } from './dtos/premise.create.dto';
+import { UpdatePremiseDto } from './dtos/premise.update.dto';
 
 @Injectable()
 export class PremisesService {
@@ -16,32 +18,35 @@ export class PremisesService {
     }
 
 
-    async createPremise( premise  : any ) {
+    async createPremise( premise  : CreatePremisesDto ) : Promise<boolean | PremisesEntity> {
              try {
 
-                 await this.premiseRepo.save(premise)
-                 return true
+               const newPremise=   await this.premiseRepo.create(premise);
+               return await this.premiseRepo.save(newPremise)
                 
              } catch (error) {
                 console.log({
                     createPremise : error 
-                })
+                });
+
                 return false
                 
              }
     }
 
-    async updatePremise ( updatePremiseDto : any ) : Promise<boolean> {
+    async updatePremise ( updatePremiseDto : UpdatePremiseDto  , id : Uuid )
+     : Promise<boolean | PremisesEntity> {
          
           try {
 
-            const premise = await this.getPremise(updatePremiseDto.id)
+            const premise = await this.getPremise(id)
 
             if(!premise) return false 
     
-            await this.premiseRepo.merge(premise , updatePremiseDto)
-    
-            return true 
+           const updatedPremise =   await this.premiseRepo.merge(premise , updatePremiseDto)
+            await this.premiseRepo.save(updatedPremise)
+
+            return updatedPremise 
             
           } catch (error) {
 
@@ -59,14 +64,18 @@ export class PremisesService {
 
     async getPremise ( id : Uuid ) {
             const premise = await this.premiseRepo.findOne({
-                 where : { id }
-            })
+                 where : { id },
+                 relations : {
+                      project : true 
+                 }
+            });
+
             return premise 
     }
 
 
 
-    async deletePremise ( id : Uuid) {
+    async deletePremise ( id : Uuid) : Promise<PremisesEntity | boolean> {
             try {
 
                 const premise = await this.getPremise(id);
@@ -75,7 +84,7 @@ export class PremisesService {
 
                 await this.premiseRepo.remove(premise)
 
-                return true 
+                return premise  
                 
             } catch (error) {
                 console.log({

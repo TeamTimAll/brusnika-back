@@ -1,4 +1,10 @@
-import { Body, Controller , Delete, Get, HttpCode, HttpStatus , Param, Post, Put  , UploadedFile  } from '@nestjs/common';
+import { 
+       Body, Controller 
+     , Delete, Get, HttpCode, 
+       HttpStatus , Param, Post,
+       Put , UploadedFile  
+     } from '@nestjs/common';
+
 import { ProjectsService } from './projects.service';
 import { Uuid } from 'boilerplate.polyfill';
 import { CreateProjectDto } from './dto/project.create.dto';
@@ -7,6 +13,8 @@ import { UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from "multer"
 import {v4 as uuidv4  } from "uuid"
+import { CreatePremisesDto } from '../../modules/premises/dtos/premise.create.dto';
+import { UpdatePremiseDto } from '../../modules/premises/dtos/premise.update.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -42,13 +50,6 @@ export class ProjectsController {
     };
 
 
-    @Post("premise")
-    @HttpCode(HttpStatus.CREATED)
-    async createPremise ( @Body() premiseBody : any , @Param("id") id : Uuid  ) {
-          return this.projectsService.addPremiseToProject(premiseBody, id )
-    }
-
-
 
     @Put()
     @HttpCode(HttpStatus.OK) 
@@ -61,6 +62,39 @@ export class ProjectsController {
     @HttpCode(HttpStatus.OK)
     async deleteProject( @Param("id") id : Uuid) {
         return this.projectsService.deleteProject(id)
+    }
+
+
+
+    //Premises request 
+
+
+    @Post("premise")
+    @HttpCode(HttpStatus.CREATED)
+    async createPremise ( @Body() premiseBody : CreatePremisesDto , @Param("id") id : Uuid  ) {
+          return this.projectsService.addPremiseToProject(premiseBody, id )
+    }
+
+
+    @Get("premise/:id")
+    @HttpCode(HttpStatus.OK)
+    async getPremise (@Param("id") id : Uuid) {
+        return this.projectsService.getOnePremise(id)
+    };
+
+    @Put("premise/:id")
+    @HttpCode(HttpStatus.OK)
+    async updatePremise (
+        @Param("id") id : Uuid,
+       @Body() premiseUpdateBody : UpdatePremiseDto) {
+        return this.projectsService.updateOnePremise(premiseUpdateBody, id )
+    };
+
+    @Delete("premise/:id")
+    @HttpCode(HttpStatus.OK)
+
+    async deletePremise( @Param("id") id : Uuid) {
+        return this.projectsService.deletePremise(id)
     }
 
 }
