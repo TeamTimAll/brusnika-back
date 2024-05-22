@@ -6,11 +6,16 @@ import { UserEntity } from "../../modules/user/user.entity";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { ClientEntity } from "../clients/client.entity"
 import { PremisesEntity } from "../../modules/premises/premise.entity";
-
+import { StorageEntity } from "../../modules/storage/storage.entity";
+import { ApartmentEntity } from "modules/apartments/apartment.entity";
+import { CarParkingEntity } from "modules/car-parkings/carParking.entity";
+import { CommercialBuildingsEntity } from "modules/commercial-buildings/commercial-buildings.entity";
 
 @Entity( { name : "projects"})
 @UseDto(ProjectSDto)
 export class ProjectEntity extends AbstractEntity<ProjectSDto> {
+
+   
 
     @Column({ type: 'uuid' })
     userId!: Uuid;
@@ -42,5 +47,41 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
 
     @OneToMany(() => PremisesEntity, premises => premises.project)
     premises ?: PremisesEntity[];
+
+    //new added
+
+    //price 
+    @Column({ nullable : true })
+    price !:string 
+
+    //location
+    @Column( { nullable : true })
+    location !:true 
+
+    //end date 
+    @Column({ nullable : true })
+    endDate !: Date 
+
+    // apartments 
+    @OneToMany(() => ApartmentEntity , apartment => apartment.project)
+    apartments  ?: ApartmentEntity[]
+
+    // storage places 
+    @OneToMany(() => StorageEntity , storage => storage.project)
+    storages ? : StorageEntity[]
+
+
+
+    // car parking places 
+    @OneToMany(() =>  CarParkingEntity , carParking => carParking.project)
+    carParkings ? : CarParkingEntity[]
+
+
+
+    //commercial premises 
+    @OneToMany(() => CommercialBuildingsEntity , ( buildings )  => buildings.project )
+    commercialBuildings ? : CommercialBuildingsEntity
+
+    
 
 }

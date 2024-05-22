@@ -23,7 +23,11 @@ export class ProjectsService {
 
 
     async getAllProjects() : Promise<ProjectSDto[]> {
-         return  await this.projectsRepository.find()
+         return  await this.projectsRepository.find({
+            relations : {
+                premises : true ,
+            }
+         })
     }
 
 
