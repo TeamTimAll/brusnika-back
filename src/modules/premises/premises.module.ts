@@ -4,7 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PremisesEntity } from './premise.entity';
 
 @Module({
+
   imports : [
+   
      TypeOrmModule.forFeature([ PremisesEntity ])
     ],
   providers: [PremisesService],
