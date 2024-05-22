@@ -19,6 +19,7 @@ import { QueryFailedFilter } from './filters/query-failed.filter';
 // import { TranslationInterceptor } from './interceptors/translation-interceptor.service';
 import { setupSwagger } from './setup-swagger';
 // import { TranslationService } from './shared/services/translation.service';
+import { join } from 'path';
 
 async function bootstrap(): Promise<NestExpressApplication> {
   initializeTransactionalContext();
@@ -33,6 +34,7 @@ async function bootstrap(): Promise<NestExpressApplication> {
   app.use(compression());
   app.use(morgan('combined'));
   app.enableVersioning();
+  app.useStaticAssets(join(__dirname, '..', 'src/modules/media'));
 
   const reflector = app.get(Reflector);
 
