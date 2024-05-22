@@ -1,6 +1,6 @@
 
 
-import { IsString , IsUUID , IsOptional, IsNotEmpty } from "class-validator";
+import { IsString , IsUUID , IsOptional, IsNotEmpty , IsNumber } from "class-validator";
 import { Uuid } from "boilerplate.polyfill";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -45,5 +45,20 @@ export class UpdateProjectDto {
           example : "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
     })
     projectId !:Uuid
+
+
+
+    @IsNumber()
+    @IsOptional()
+    price !: number
+
+    @IsOptional()
+    @IsString()
+    location !: string 
+     
+    @IsOptional()
+    @IsString()
+    endDate !: Date 
+    
 }
 

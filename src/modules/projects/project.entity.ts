@@ -14,7 +14,6 @@ import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/co
 @Entity( { name : "projects"})
 @UseDto(ProjectSDto)
 export class ProjectEntity extends AbstractEntity<ProjectSDto> {
-
    
 
     @Column({ type: 'uuid' })
@@ -52,11 +51,11 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
 
     //price 
     @Column({ nullable : true })
-    price !:string 
+    price !:number 
 
     //location
     @Column( { nullable : true })
-    location !:true 
+    location !: string  
 
     //end date 
     @Column({ nullable : true })
