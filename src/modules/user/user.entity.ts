@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne, VirtualColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, VirtualColumn } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../constants';
@@ -11,6 +11,8 @@ import { ProjectEntity } from '../../modules/projects/project.entity';
 import { ClientEntity } from '../client/client.entity';
 import { NewsEntity } from '../news/news.entity';
 import { TrainingEntity } from '../../modules/training/training.entity';
+import { CitiesEntity } from '../cities/cities.entity';
+import { Uuid } from 'boilerplate.polyfill';
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
@@ -93,5 +95,11 @@ export class UserEntity extends AbstractEntity {
      onUpdate : "CASCADE"
   })
   trainings ? :  TrainingEntity[]
+
+  @ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
+    onDelete: 'SET NULL',
+    onUpdate: 'NO ACTION',
+  })
+  cityId?: Uuid;
 
 }

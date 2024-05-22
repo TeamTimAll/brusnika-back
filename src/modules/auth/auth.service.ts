@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { UserCreateDto } from 'modules/user/dtos/user.dto';
-import * as bcrypt from 'bcrypt';
+// import * as bcrypt from 'bcrypt';
 // import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
 import {
   AgentLoginDto,
@@ -34,36 +34,28 @@ export class AuthService {
 
   async createUser(body: UserCreateDto): Promise<any> {
     try {
-      if (!body.username || !body.email) {
-        return new HttpException(
-          'Username or Password not provided',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      // if (!body.username || !body.email) {
+      //   return new HttpException(
+      //     'Username or Password not provided',
+      //     HttpStatus.BAD_REQUEST,
+      //   );
+      // }
 
       const existingUser = await this.userService.findOne({
-        username: body.username,
+        email: body.email,
       });
 
       if (existingUser) {
         return new HttpException('User already exists', HttpStatus.CONFLICT);
       }
 
-      const hashedPassword = await bcrypt.hash(body.password, 10);
-
-      const newUser = await this.userService.createUser({
-        username: body.username,
-        password: hashedPassword,
-        email: body.email,
-      });
-
-      const { password, ...result } = newUser;
+      const newUser = await this.userService.createUser(body);
 
       /**
        * Todo  , We can make a url to send an email with jwt to get user
        */
 
-      return result;
+      return newUser;
     } catch (error) {
       console.log('Account creating error');
       return new HttpException('Something went wrong', 500);
