@@ -12,6 +12,8 @@ import { ClientModule } from './client/client.module';
 import { ClientStatusModule } from './client-status/client-status.module';
 import { TrainingModule } from './training/training.module';
 import { DealsModule } from './deals/deals.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -26,9 +28,12 @@ import { DealsModule } from './deals/deals.module';
     ClientModule,
     ClientStatusModule,
     TrainingModule,
-    DealsModule
+    DealsModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/api/files',
+    }),
   ],
-  
   exports: [],
 })
 export class SecuredModule {}
