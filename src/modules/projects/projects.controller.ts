@@ -16,7 +16,7 @@ import { diskStorage } from "multer"
 import {v4 as uuidv4  } from "uuid"
 import { CreatePremisesDto } from '../../modules/premises/dtos/premise.create.dto';
 import { UpdatePremiseDto } from '../../modules/premises/dtos/premise.update.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import path from 'path';
 
 
@@ -34,6 +34,7 @@ export class ProjectsController {
     }
 
     @Post()
+    @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
             destination: path.join(__dirname, '..', 'media'),

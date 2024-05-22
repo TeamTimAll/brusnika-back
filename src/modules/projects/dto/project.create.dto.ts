@@ -36,8 +36,12 @@ export class CreateProjectDto {
     })
     briefDescription!: string;
 
-  
-   
+    @ApiProperty({
+      type: 'string',
+      format: 'binary', 
+      description: 'Image of the premise (from file upload)'
+    })
+    file !: Express.Multer.File;
 }
 
 
