@@ -35,12 +35,12 @@ export class CreateProjectDto {
     briefDescription!: string;
 
     @ApiProperty({
-        example : "Project image should be given from nultipart form data ",
-        type : FormData,
-        required : true 
+        type: File ,
+        required: true,
+        description: 'Project photo file',
     })
     @IsNotEmpty()
-    photo !: string 
+    photo?: string;
 }
 
 

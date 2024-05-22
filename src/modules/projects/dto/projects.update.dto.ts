@@ -40,8 +40,7 @@ export class UpdateProjectDto {
     @IsString()
     @IsOptional()
     @ApiProperty({
-        type: FormData,
-        format: 'binary',
+        type: File ,
         required: true,
         description: 'Project photo file',
     })
