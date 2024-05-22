@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { UserCreateDto } from 'modules/user/dtos/user.dto';
 import * as bcrypt from 'bcrypt';
-import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
+// import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
 import {
   AgentLoginDto,
   LoginSuccess,
@@ -22,7 +22,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
-    private nodemailer: NodeMailerService,
+    // private nodemailer: NodeMailerService,
   ) {}
 
   hasOneMinutePassed(startTime: Date): boolean {
@@ -34,7 +34,7 @@ export class AuthService {
 
   async createUser(body: UserCreateDto): Promise<any> {
     try {
-      if (!body.username || !body.password || !body.email) {
+      if (!body.username || !body.email) {
         return new HttpException(
           'Username or Password not provided',
           HttpStatus.BAD_REQUEST,
@@ -82,25 +82,30 @@ export class AuthService {
 
       if (!user) {
         console.log('User not found ');
+        // send brunsika crm to get user
+        // if(user) {
+        // user.create(user)
+        // user = newUser 
+        // }
         return new UnauthorizedException('User not found');
       }
 
-      if (user.password === null) {
-        console.log('Users password is null');
-        return new UnauthorizedException('Password not set');
-      }
+      // if (user.password === null) {
+      //   console.log('Users password is null');
+      //   return new UnauthorizedException('Password not set');
+      // }
 
-      const passwordMatch = await bcrypt.compare(
-        loginDto.password,
-        user.password,
-      );
+      // const passwordMatch = await bcrypt.compare(
+      //   loginDto.password,
+      //   user.password,
+      // );
 
-      if (!passwordMatch) {
-        console.log('Password did not match');
-        return new UnauthorizedException('Invalid email or password');
-      }
+      // if (!passwordMatch) {
+      //   console.log('Password did not match');
+      //   return new UnauthorizedException('Invalid email or password');
+      // }
 
-      await this.nodemailer.sendMail();
+      // await this.nodemailer.sendMail();
 
       const { password, ...result } = user;
       return {
@@ -108,7 +113,7 @@ export class AuthService {
       };
     } catch (error: any) {
       console.error('Login error:', error.message);
-      return new HttpException(error.message, 500);
+      return new HttpException('internal server error', 500);
     }
   }
 

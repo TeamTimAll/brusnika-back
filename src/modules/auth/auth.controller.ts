@@ -68,9 +68,9 @@ export class AuthController {
     return this.authService.agentLoginResendSmsCode(dto);
   }
 
-  @Post()
-  createAccount(@Body() register: UserCreateDto) {
-    return this.authService.createUser(register);
+  @Post('/agent/create')
+  createAccount(@Body() dao: UserCreateDto) {
+    return this.authService.createUser(dao);
   }
 
   // @Get(':email')
