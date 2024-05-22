@@ -5,13 +5,15 @@ import { Repository } from 'typeorm';
 import { Uuid } from 'boilerplate.polyfill';
 import { CreatePremisesDto } from './dtos/premise.create.dto';
 import { UpdatePremiseDto } from './dtos/premise.update.dto';
+import { ApartmentsService } from '../../modules/apartments/apartments.service';
 
 @Injectable()
 
 export class PremisesService {
     constructor(
         @InjectRepository(PremisesEntity)
-        private premiseRepo : Repository<PremisesEntity>
+        private premiseRepo : Repository<PremisesEntity>,
+        private apartmentService : ApartmentsService
     ){}
 
     async getAllpremises(){
@@ -70,7 +72,8 @@ export class PremisesService {
             const premise = await this.premiseRepo.findOne({
                  where : { id },
                  relations : {
-                      project : true 
+                      project : true ,
+                      apartments : true 
                  }
             });
 
@@ -99,4 +102,8 @@ export class PremisesService {
             }
     }
 
+    async addApartment( apartmentBody : any  ) {
+          return  await this.apartmentService.createNewApartment(apartmentBody)
+    }
+ 
 }

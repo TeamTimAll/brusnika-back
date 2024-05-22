@@ -7,7 +7,6 @@ import { AbstractEntity } from "../../common/abstract.entity";
 import { ClientEntity } from "../clients/client.entity"
 import { PremisesEntity } from "../../modules/premises/premise.entity";
 import { StorageEntity } from "../../modules/storage/storage.entity";
-import { ApartmentEntity } from "../../modules/apartments/apartment.entity";
 import { CarParkingEntity } from "../../modules/car-parkings/carParking.entity";
 import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/commercial-buildings.entity";
 
@@ -36,10 +35,8 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
     @Column({ nullable: true  }) 
     briefDescription!: string 
 
-
     @Column({ nullable :true  })
     photo !: string 
-
 
     @OneToMany(()=> ClientEntity , (  client ) => client.project )
     clients ? : ClientEntity[] 
@@ -60,10 +57,6 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
     //end date 
     @Column({ nullable : true })
     endDate !: Date 
-
-    // apartments 
-    @OneToMany(() => ApartmentEntity , apartment => apartment.project)
-    apartments  ?: ApartmentEntity[]
 
     // storage places 
     @OneToMany(() => StorageEntity , storage => storage.project)

@@ -26,7 +26,6 @@ export class ProjectsService {
          return  await this.projectsRepository.find({
             relations : {
                 premises : true ,
-                apartments : true ,
                 commercialBuildings : true ,
                 storages : true ,
                 carParkings : true 
@@ -62,7 +61,6 @@ export class ProjectsService {
               relations : {
                 clients : true ,
                 premises : true ,
-                apartments : true ,
                 commercialBuildings : true ,
                 storages : true ,
                 carParkings : true 
