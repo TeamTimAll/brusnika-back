@@ -10,7 +10,7 @@ import { UpdateProjectDto } from "./dto/projects.update.dto"
 import { PremisesService } from '../../modules/premises/premises.service';
 import { CreatePremisesDto } from '../../modules/premises/dtos/premise.create.dto';
 import { UpdatePremiseDto } from '../../modules/premises/dtos/premise.update.dto';
-import { PremisesEntity } from 'modules/premises/premise.entity';
+import { PremisesEntity } from '../../modules/premises/premise.entity';
 
 @Injectable()
 export class ProjectsService {
@@ -26,6 +26,10 @@ export class ProjectsService {
          return  await this.projectsRepository.find({
             relations : {
                 premises : true ,
+                apartments : true ,
+                commercialBuildings : true ,
+                storages : true ,
+                carParkings : true 
             }
          })
     }
@@ -58,10 +62,12 @@ export class ProjectsService {
               relations : {
                 clients : true ,
                 premises : true ,
-                user : true 
+                apartments : true ,
+                commercialBuildings : true ,
+                storages : true ,
+                carParkings : true 
               }
           });
-
           return project
     };
 
@@ -81,7 +87,6 @@ export class ProjectsService {
         await this.projectsRepository.save(updatedProject)
 
         return updatedProject
-
             
          } catch (error) {
             return new HttpException("Something went wrong" , 500)

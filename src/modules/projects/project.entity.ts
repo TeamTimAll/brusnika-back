@@ -7,9 +7,9 @@ import { AbstractEntity } from "../../common/abstract.entity";
 import { ClientEntity } from "../clients/client.entity"
 import { PremisesEntity } from "../../modules/premises/premise.entity";
 import { StorageEntity } from "../../modules/storage/storage.entity";
-import { ApartmentEntity } from "modules/apartments/apartment.entity";
-import { CarParkingEntity } from "modules/car-parkings/carParking.entity";
-import { CommercialBuildingsEntity } from "modules/commercial-buildings/commercial-buildings.entity";
+import { ApartmentEntity } from "../../modules/apartments/apartment.entity";
+import { CarParkingEntity } from "../../modules/car-parkings/carParking.entity";
+import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/commercial-buildings.entity";
 
 @Entity( { name : "projects"})
 @UseDto(ProjectSDto)
