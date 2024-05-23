@@ -54,8 +54,3 @@ export class ApartmentEntity extends AbstractEntity {
 
 
 
-
-
-
-
-

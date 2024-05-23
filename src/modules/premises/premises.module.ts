@@ -11,6 +11,7 @@ import { PremisesController } from './premises.controller';
   ],
   providers: [PremisesService],
   controllers: [PremisesController],
+  exports : [ PremisesService ]
 })
 
 export class PremisesModule {}

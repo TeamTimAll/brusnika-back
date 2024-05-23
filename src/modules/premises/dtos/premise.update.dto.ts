@@ -1,7 +1,7 @@
 
 
 import { ApiProperty } from '@nestjs/swagger';
-import {  IsNumber, IsOptional, IsString  } from 'class-validator';
+import {  IsOptional, IsString  } from 'class-validator';
 
 export class UpdatePremiseDto {
 
@@ -10,7 +10,7 @@ export class UpdatePremiseDto {
   @IsString()
   @ApiProperty({
       example : "Premise name ",
-      required : true ,
+      required : false ,
       type : String 
   })
 
@@ -18,83 +18,91 @@ export class UpdatePremiseDto {
 
  
   // storage 
-  @IsNumber()
+  // @IsNumber()
   @IsOptional()
   @ApiProperty({
     example : 22,
     description : "Total storage for the premise",
-    type : Number 
+    type : Number ,
+    required : false 
   })
   totalStorage !: number 
 
   // vacant storage 
-  @IsNumber()
+  // @IsNumber()
   @IsOptional()
   @ApiProperty({
     example : 12,
     description : "Total  vacant storage for the premise",
-    type : Number 
+    type : Number ,
+    required : false 
   })
   totalVacantStorage !: number 
 
   // apartment 
-  @IsNumber()
+  // @IsNumber()
   @IsOptional()
   @ApiProperty({
       example : 22,
       description : "Total apartments",
-      type : Number 
+      type : Number ,
+      required : false 
   })
   totalApartment !: number 
 
   // vacant apartment 
   @IsOptional()
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty({
     example : 12,
     description : "Total vacant apartment",
-    type : Number 
+    type : Number ,
+    required : false 
   })
   totalVacantApartment !: number 
 
   // total parking space 
   @IsOptional()
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty({
     example : 33,
     description : "Total parking space",
-    type : Number 
+    type : Number ,
+    required :false 
   })
   totalParkingSpace !: number 
 
   // total vacant parking space 
   @IsOptional()
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty({
     example : 44,
     description : "Total vacant parking space ",
-    type : Number 
+    type : Number ,
+    required : false 
   })
   totalVacantParkingSpace !: number 
 
 
   // commercial
-  @IsNumber()
+  // @IsNumber()
   @IsOptional()
   @ApiProperty({
     example : 3,
     description : "Total commercial",
-    type : Number 
+    type : Number ,
+    required : false 
   })
   totalCommercial !: number 
 
   // vacant commercail
   @IsOptional()
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty({
      example : 1,
      description : "Total vacant commercial",
-     type : Number  
+     type : Number ,
+     required : false  
   })
   totalVacantCommercial !: number  
 
@@ -104,20 +112,30 @@ export class UpdatePremiseDto {
   @ApiProperty({
     example : "Somewhere for premise address",
     type : String,
-    required : true 
+    required : false 
   })
   address ?: string 
 
   @IsOptional()
-  @IsNumber()
+  // @IsNumber()
   @ApiProperty({
     example : 6,
     type : Number,
-    required : true ,
-    description : "Number of floors for a building"
+    description : "Number of floors for a building",
+    required : false 
   })
   numberOfFloors ?: number 
 
-  
+  @IsOptional()
+  @ApiProperty({
+    type: 'array',
+    items: {
+        type: 'string',
+        format: 'binary', 
+    },
+    description: 'Images of the premise (from multiple file uploads)',
+    required : false 
+   })
+    photos ?: Array<Express.Multer.File>  | any 
 }
 

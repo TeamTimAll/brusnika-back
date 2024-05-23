@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional , IsArray, IsNumber  } from "class-validator";
+import { Uuid } from "boilerplate.polyfill";
+import { IsString, IsOptional   } from "class-validator";
 
 
 
@@ -13,8 +14,7 @@ export class ApartmentUpdateDto {
       })
       @IsOptional()
       @IsString()
-      premiseId !: string 
-
+      premiseId !: Uuid 
 
       @IsOptional()
       @IsString()
@@ -36,9 +36,8 @@ export class ApartmentUpdateDto {
       price ?: string 
   
       @IsOptional()
-      @IsNumber()
       @ApiProperty({
-          example : "4" ,
+          example : 4 ,
           description : "Apartment floor",
           type : Number  
       })
@@ -47,25 +46,24 @@ export class ApartmentUpdateDto {
       @IsOptional()
       @ApiProperty({
             example : 1 ,
-            description : "Such apartments",
+            description : "Similiar apartments",
             type : Number  ,
-            required : true 
+            required : false  
       })
       similiarApartmentCount !: number  
   
       @IsOptional()
       @IsString()
       @ApiProperty({
-            required : true ,
+            required : false  ,
             example  :" Name of apartment",
             type : String ,
       })
       title ?: string 
   
       @IsOptional()
-      @IsNumber()
       @ApiProperty({
-          example : "2",
+          example : 2,
           description : "Rooms for an apartment",
           type : Number  
       })
@@ -85,20 +83,22 @@ export class ApartmentUpdateDto {
 
 
     @IsOptional()
-    @IsArray()
     @ApiProperty({
-        type: String,
-        description: 'Images of the premise (from multiple file uploads)',
-    })
-  
-    photos ? : string[]
+      type: 'array',
+      items: {
+          type: 'string',
+          format: 'binary', 
+      },
+      description: 'Images of the premise (from multiple file uploads)',
+      required : false 
+     })
+      photos ?: Array<Express.Multer.File>  | any 
 
 
     @IsOptional()
-    @IsNumber()
     @ApiProperty({
         description : "Apartment number",
-        example : "22",
+        example :22,
         type : Number 
     })
     apartmentNumber ?: number  

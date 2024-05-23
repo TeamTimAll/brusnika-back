@@ -1,4 +1,4 @@
-import { Body, Controller , Get, Post , Param , Put, Delete , UploadedFiles } from '@nestjs/common';
+import { Body, Controller , Get, Post , Param , Put, Delete , UploadedFiles, } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { PremisesService } from './premises.service';
 import { CreatePremisesDto } from './dtos/premise.create.dto';
@@ -51,11 +51,28 @@ export class PremisesController {
 
 
       @Put(":id")
+      @ApiConsumes('multipart/form-data')
+      @UseInterceptors(
+       AnyFilesInterceptor({
+           storage: diskStorage({
+             destination: path.join(__dirname, '..', 'media'),
+             filename: (_, file, cb) => {
+                 const uniqueId = uuidv4();
+                 const filename = `${uniqueId}-${file.originalname}`;
+                 cb(null, filename);
+             }
+            }),
+         }
+       )
+     )
       async updatePremise (
          @Body() updatePremise : UpdatePremiseDto,
-         @Param("id") id : Uuid
+         @Param("id") id : Uuid,
+         @UploadedFiles() files ?: Array<Express.Multer.File>,
          ) {
-          return this.premiseService.updatePremise(updatePremise , id )
+            const fileNames  : string[] | undefined  = files?.map((each )=> each.filename)
+            
+          return this.premiseService.updatePremise(updatePremise , id  , fileNames)
       }
 
       @Delete(":id")

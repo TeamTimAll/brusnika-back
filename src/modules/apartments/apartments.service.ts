@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {  HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApartmentEntity } from './apartment.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { Uuid } from 'boilerplate.polyfill';
 import { ApartmentDto } from './dtos/apartment.dto';
 import { ApartmentCreateDto } from './dtos/apartment.create.dto';
 import { ApartmentUpdateDto } from './dtos/apartment.update.dto';
+import { PremisesService } from '../../modules/premises/premises.service';
 
 
 @Injectable()
@@ -13,7 +14,8 @@ export class ApartmentsService {
 
     constructor(
           @InjectRepository(ApartmentEntity)
-          private apartmentsRepo : Repository<ApartmentEntity>
+          private apartmentsRepo : Repository<ApartmentEntity>,
+          private premiseService : PremisesService
     ){}
 
 
@@ -45,14 +47,29 @@ export class ApartmentsService {
           }
     }
 
-    async updateNewApartment( apartment : ApartmentUpdateDto , apartmentId : Uuid )
+    async updateNewApartment( apartment : ApartmentUpdateDto , apartmentId : Uuid , fileNames ? : string[] )
       : Promise<ApartmentDto | HttpException> {
                try {
                  
+                    let updated ;
+
+
+                    const premise = await this.premiseService.getPremise(apartment.premiseId)
+
+             if(!premise) return new HttpException("Premise not found", HttpStatus.NOT_FOUND)
+
                     const foundApartment = await this.getOneApartment(apartmentId)
                     if(!foundApartment) return new HttpException("Cannot find apartment" , 404)
                     
-                    const updated = await this.apartmentsRepo.merge(foundApartment , apartment)
+                    if(fileNames?.length === 0 ){
+                         updated = await this.apartmentsRepo.merge(foundApartment , {
+                              ...apartment , photos : foundApartment.photos
+                         })
+                    } else {
+                         updated = await this.apartmentsRepo.merge(foundApartment , {
+                              ...apartment , photos : fileNames
+                         })
+                    }
 
                     return updated 
                 

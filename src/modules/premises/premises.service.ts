@@ -43,16 +43,27 @@ export class PremisesService {
              }
     }
 
-    async updatePremise ( updatePremiseDto : UpdatePremiseDto  , id : Uuid )
+    async updatePremise ( updatePremiseDto : UpdatePremiseDto  , id : Uuid  , fileNames ? : string[])
      : Promise<HttpException | PremisesEntity> {
          
           try {
 
+
+            let updatedPremise : PremisesEntity;
             const premise = await this.getPremise(id)
 
             if(!premise) return new HttpException("Cannot find premise", 404)  
-    
-           const updatedPremise =   await this.premiseRepo.merge(premise , updatePremiseDto)
+
+           if(fileNames?.length === 0 ){
+               updatedPremise =   await this.premiseRepo.merge( premise , {
+                  ...updatePremiseDto , photos : premise.photos
+               });  
+           } else {
+                updatedPremise =   await this.premiseRepo.merge(premise , {
+                ...updatePremiseDto ,  photos : fileNames
+                });
+           }
+ 
             await this.premiseRepo.save(updatedPremise)
 
             return updatedPremise 

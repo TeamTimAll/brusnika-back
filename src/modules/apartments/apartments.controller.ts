@@ -24,7 +24,6 @@ export class ApartmentsController {
 
      @Post()
      @ApiConsumes('multipart/form-data')
-     @ApiConsumes('multipart/form-data')
      @UseInterceptors(
       AnyFilesInterceptor({
           storage: diskStorage({
@@ -48,11 +47,27 @@ export class ApartmentsController {
 
 
      @Put(":id")
+     @ApiConsumes('multipart/form-data')
+     @UseInterceptors(
+      AnyFilesInterceptor({
+          storage: diskStorage({
+            destination: path.join(__dirname, '..', 'media'),
+            filename: (_, file, cb) => {
+                const uniqueId = uuidv4();
+                const filename = `${uniqueId}-${file.originalname}`;
+                cb(null, filename);
+            }
+           }),
+        }
+      )
+    )
      async updateApartment ( 
         @Body()  apartment : ApartmentUpdateDto , 
-        @Param("id") id : Uuid
+        @Param("id") id : Uuid,
+        @UploadedFiles() files ? :  Array<Express.Multer.File>
     )  {
-            return this.apartmentService.updateNewApartment(apartment , id)
+            const fileNames : string[] | undefined = files?.map((each ) => each.filename)
+            return this.apartmentService.updateNewApartment(apartment , id , fileNames )
        }
 
     @Get("one/:id")
