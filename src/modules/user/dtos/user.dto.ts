@@ -1,23 +1,23 @@
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 import { RoleType } from '../../../constants';
 import {
-  IsDate,
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsPhoneNumber,
   IsString,
+  MinLength,
 } from 'class-validator';
 
 import {
   BooleanFieldOptional,
-  ClassField,
   EmailFieldOptional,
   EnumFieldOptional,
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
-import { ApiProperty } from '@nestjs/swagger';
+import { ClassField } from '../../../decorators';
+
+import { type UserEntity } from '../user.entity';
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
@@ -49,51 +49,32 @@ export class UserDto extends AbstractDto {
   @BooleanFieldOptional()
   isActive?: boolean;
 
-  @IsNumber()
-  verification_code?: number | null;
-
-  @IsDate()
-  verification_code_sent_date?: Date | null;
-
-  // constructor(user: UserEntity, options?: UserDtoOptions) {
-  //   super(user);
-  //   this.firstName = user.firstName;
-  //   this.lastName = user.lastName;
-  //   this.role = user.role;
-  //   this.email = user.email;
-  //   this.avatar = user.avatar;
-  //   this.phone = user.phone;
-  //   this.isActive = options?.isActive;
-  // }
+  constructor(user: UserEntity, options?: UserDtoOptions) {
+    super(user);
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
+    this.role = user.role;
+    this.email = user.email;
+    this.avatar = user.avatar;
+    this.phone = user.phone;
+    this.isActive = options?.isActive;
+  }
 }
 
 export class UserCreateDto {
-  @IsString()
-  @ApiProperty({
-    required: true
-  })
-  @IsNotEmpty()
-  first_name!: string;
-
-  @IsString()
-  @ApiProperty({
-    required: true
-  })
-  @IsNotEmpty()
-  last_name!: string;
-
   @IsPhoneNumber()
-  @ApiProperty({
-    required: true
-  })
-  phone!: string;
-
-  @IsEmail()
-  @ApiProperty({
-    required: true
-  })
   @IsNotEmpty()
-  email!: string;
+  phone!: string;
+}
+
+import { EmailField, StringField } from '../../../decorators';
+
+export class UserLoginDto {
+  @EmailField()
+  readonly email!: string;
+
+  @StringField()
+  readonly password!: string;
 }
 
 export class LoginPayloadDto {

@@ -42,7 +42,7 @@ export class AuthService {
       // }
 
       const existingUser = await this.userService.findOne({
-        email: body.email,
+        phone: body.phone,
       });
 
       if (existingUser) {
