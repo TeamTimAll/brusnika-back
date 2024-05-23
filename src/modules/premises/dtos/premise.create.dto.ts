@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Uuid } from 'boilerplate.polyfill';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {  IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePremisesDto {
 
@@ -17,7 +17,7 @@ export class CreatePremisesDto {
 
  
   // storage 
-  @IsNumber()
+
   @IsNotEmpty()
   @ApiProperty({
     example : 22,
@@ -27,7 +27,7 @@ export class CreatePremisesDto {
   totalStorage !: number 
 
   // vacant storage 
-  @IsNumber()
+
   @IsNotEmpty()
   @ApiProperty({
     example : 12,
@@ -37,7 +37,7 @@ export class CreatePremisesDto {
   totalVacantStorage !: number 
 
   // apartment 
-  @IsNumber()
+
   @IsNotEmpty()
   @ApiProperty({
       example : 22,
@@ -48,7 +48,7 @@ export class CreatePremisesDto {
 
   // vacant apartment 
   @IsNotEmpty()
-  @IsNumber()
+
   @ApiProperty({
     example : 12,
     description : "Total vacant apartment",
@@ -58,7 +58,7 @@ export class CreatePremisesDto {
 
   // total parking space 
   @IsNotEmpty()
-  @IsNumber()
+
   @ApiProperty({
     example : 33,
     description : "Total parking space",
@@ -68,7 +68,7 @@ export class CreatePremisesDto {
 
   // total vacant parking space 
   @IsNotEmpty()
-  @IsNumber()
+
   @ApiProperty({
     example : 44,
     description : "Total vacant parking space ",
@@ -78,7 +78,6 @@ export class CreatePremisesDto {
 
 
   // commercial
-  @IsNumber()
   @IsNotEmpty()
   @ApiProperty({
     example : 3,
@@ -89,13 +88,43 @@ export class CreatePremisesDto {
 
   // vacant commercail
   @IsNotEmpty()
-  @IsNumber()
   @ApiProperty({
      example : 1,
      description : "Total vacant commercial",
-     type : Number 
+     type : Number  ,
+     required : true 
   })
-  totalVacantCommercial !: number 
+  totalVacantCommercial !: number  
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    example : "Somewhere for premise address",
+    type : String,
+    required : true 
+  })
+  address !: string 
+
+  @IsNotEmpty()
+  @IsNumber()
+  @ApiProperty({
+    example : 6,
+    type : Number,
+    required : true ,
+    description : "Number of floors for a building"
+  })
+  numberOfFloors !: number 
+
+  @ApiProperty({
+        type: 'array',
+        items: {
+            type: 'string',
+            format: 'binary', 
+        },
+        description: 'Images of the premise (from multiple file uploads)',
+        required : true 
+    })
+    photos !: Array<Express.Multer.File>
 
   @IsNotEmpty()
   @ApiProperty({
@@ -106,3 +135,4 @@ export class CreatePremisesDto {
   projectId !: Uuid
   
 }
+

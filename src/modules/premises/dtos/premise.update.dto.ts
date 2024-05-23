@@ -1,9 +1,7 @@
 
-// import { ApiProperty } from '@nestjs/swagger';
-// import { IsEnum, IsOptional, IsNumber, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
-import {  IsNumber, IsOptional, IsString } from 'class-validator';
+import {  IsNumber, IsOptional, IsString  } from 'class-validator';
 
 export class UpdatePremiseDto {
 
@@ -96,9 +94,30 @@ export class UpdatePremiseDto {
   @ApiProperty({
      example : 1,
      description : "Total vacant commercial",
-     type : Number 
+     type : Number  
   })
-  totalVacantCommercial !: number 
+  totalVacantCommercial !: number  
+
+
+ @IsOptional()
+  @IsString()
+  @ApiProperty({
+    example : "Somewhere for premise address",
+    type : String,
+    required : true 
+  })
+  address ?: string 
+
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({
+    example : 6,
+    type : Number,
+    required : true ,
+    description : "Number of floors for a building"
+  })
+  numberOfFloors ?: number 
+
   
 }
 

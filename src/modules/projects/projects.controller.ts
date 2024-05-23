@@ -14,8 +14,6 @@ import { UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from "multer"
 import {v4 as uuidv4  } from "uuid"
-import { CreatePremisesDto } from '../../modules/premises/dtos/premise.create.dto';
-import { UpdatePremiseDto } from '../../modules/premises/dtos/premise.update.dto';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import path from 'path';
 
@@ -45,15 +43,12 @@ export class ProjectsController {
             }
         }),
     }))
-    @HttpCode(HttpStatus.CREATED)
     
+    @HttpCode(HttpStatus.CREATED)
     async createProject(
         @Body() projectDto: CreateProjectDto,
         @UploadedFile()  file : Express.Multer.File 
     ) {
-        console.log({
-              file 
-        })
         return this.projectsService.createProjects(projectDto, file.filename);
     }
 
@@ -73,38 +68,6 @@ export class ProjectsController {
     }
 
 
-
-    //Premises request 
-
-
-    @Post("premise")
-    @HttpCode(HttpStatus.CREATED)
-    async createPremise (
-         @Body() premiseBody : CreatePremisesDto ,
-        ) {
-          return this.projectsService.addPremiseToProject(premiseBody)
-    }
-
-
-    @Get("premise/:id")
-    @HttpCode(HttpStatus.OK)
-    async getPremise (@Param("id") id : Uuid) {
-        return this.projectsService.getOnePremise(id)
-    };
-
-    @Put("premise/:id")
-    @HttpCode(HttpStatus.OK)
-    async updatePremise (
-        @Param("id") id : Uuid,
-       @Body() premiseUpdateBody : UpdatePremiseDto) {
-        return this.projectsService.updateOnePremise(premiseUpdateBody, id )
-    };
-
-    @Delete("premise/:id")
-    @HttpCode(HttpStatus.OK)
-    async deletePremise( @Param("id") id : Uuid) {
-        return this.projectsService.deletePremise(id)
-    }
 
 }
 

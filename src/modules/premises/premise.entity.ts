@@ -21,13 +21,6 @@ export class PremisesEntity extends AbstractEntity {
   @Column({ nullable : true })
   totalVacantStorage !: number 
 
-  // apartment 
-  @Column( { nullable : true } )
-  totalApartment !: number 
-
-  // vacant apartment 
-  @Column( { nullable : true } )
-  totalVacantApartment !: number 
 
   // total parking space 
   @Column( { nullable : true } )
@@ -44,18 +37,31 @@ export class PremisesEntity extends AbstractEntity {
 
   // vacant commercail
   @Column( { nullable : true } )
-  totalVacantCommercial !: number 
+  totalVacantCommercial !: number  
 
-  @ManyToOne(() => ProjectEntity, project => project.premises)
+  @Column( { nullable : true } )
+  address !: string 
+
+  @Column( { nullable : true } )
+  numberOfFloors !: number 
+
+  @Column({type: 'text', array: true, nullable: true })
+  photos: string[] = [];
+
+  @ManyToOne(() => ProjectEntity, project => project.premises , {
+      onDelete :"CASCADE",
+      onUpdate : "CASCADE"
+  })
   project !: ProjectEntity;
 
   @Column({ type: 'uuid' })
   projectId !: Uuid;
 
 
-  @OneToMany(() => ApartmentEntity , ( apartment ) => apartment.premise )
+  @OneToMany(() => ApartmentEntity , ( apartment ) => apartment.premise , {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+  } )
   apartments ? : ApartmentEntity[]
-
-
 
 }
