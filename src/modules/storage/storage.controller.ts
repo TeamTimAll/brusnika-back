@@ -11,6 +11,7 @@ import path from 'path';
 import { Uuid } from 'boilerplate.polyfill';
 import { StorageCreateDto } from './dtos/storage.create.dto';
 import { UpdateStorageDto } from './dtos/storage.update.dto';
+import { FilterStorageDto } from './dtos/storage.filter.dto';
 
 @Controller('storage')
 @ApiTags("Storages")
@@ -76,6 +77,11 @@ export class StorageController {
     async deleteStorage ( @Param("id") id : Uuid){
           return   this.storageService.deleteOneStorage(id)
     };
+
+    @Post("filter")
+    async filterStorage ( @Body()  filterBody : FilterStorageDto ){
+          return this.storageService.filterStorages(filterBody)
+    }
 };
 
 

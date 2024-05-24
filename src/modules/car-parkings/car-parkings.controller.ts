@@ -11,6 +11,7 @@ import {v4 as uuidv4  } from "uuid"
 import { HttpCode , HttpStatus } from '@nestjs/common';
 import { UpdateCarParkingDto } from './dtos/car-parking.update.dto';
 import { Uuid } from 'boilerplate.polyfill';
+import { FilterCarParking } from './dtos/car-parking.space.filter.dto';
 
 @Controller('car-parkings')
 @ApiTags("Car Parking")
@@ -70,6 +71,14 @@ export class CarParkingsController {
     async deleteCarParking ( @Param("id") id : Uuid) {
          return this.carParkingService.deleteOneParking(id)
     };
+
+
+    @Post("filter")
+    @ApiConsumes('multipart/form-data')
+    @HttpCode(200)
+    async filterCarParking ( @Body() parkingBody : FilterCarParking) {
+          return this.carParkingService.filterCarParkings(parkingBody)
+    }
     
 };
 

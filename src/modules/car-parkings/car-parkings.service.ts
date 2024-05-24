@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { CreateCarParkingDto } from './dtos/car-parking.create.dto';
 import { Uuid } from 'boilerplate.polyfill';
 import { UpdateCarParkingDto } from './dtos/car-parking.update.dto';
+import { FilterCarParking } from "./dtos/car-parking.space.filter.dto"
+
 @Injectable()
 export class CarParkingsService {
     constructor(
@@ -100,6 +102,27 @@ export class CarParkingsService {
                 return new HttpException("Something went wrong" , 500)
              }
     }
+
+
+
+    async filterCarParkings(filterDto: FilterCarParking): Promise<CarParkingEntity[]> {
+        const queryBuilder = this.carParkingRepo.createQueryBuilder('parking_space'); 
+      
+        if (filterDto.status) {
+          queryBuilder.andWhere('parking_space.status IN (:...statuses)', { statuses: [filterDto.status] });
+        }
+      
+        if (filterDto.floor) {
+          queryBuilder.andWhere('parking_space.floor = :floor', { floor: filterDto.floor });
+        }
+      
+        if (filterDto.price) {
+          queryBuilder.andWhere('parking_space.price LIKE :price', { price: `%${filterDto.price}%` });
+        }
+      
+        return queryBuilder.getMany();
+      }
+      
 } 
 
 

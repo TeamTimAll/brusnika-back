@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { StorageCreateDto } from './dtos/storage.create.dto';
 import { StorageDto } from './dtos/storage.dto';
 import { UpdateStorageDto } from './dtos/storage.update.dto';
-
+import { FilterStorageDto } from './dtos/storage.filter.dto';
 
 import { Uuid } from 'boilerplate.polyfill';
 
@@ -75,7 +75,7 @@ export class StorageService {
             return new HttpException("Something went wrong" , 500)
            };
 
-           
+
     }
 
     async getOneStorage( id : Uuid) {
@@ -105,6 +105,32 @@ export class StorageService {
             
         }
     }
+
+
+    async filterStorages(filterDto: FilterStorageDto): Promise<StorageEntity[]> {
+        const queryBuilder = this.storageRepo.createQueryBuilder('storage');
+        
+        // Handle status with In operator
+        if (filterDto.status) {
+          queryBuilder.andWhere('storage.status IN (:...statuses)', { statuses: [filterDto.status] });
+        }
+      
+        // Handle floor
+        if (filterDto.floor) {
+          queryBuilder.andWhere('storage.floor = :floor', { floor: filterDto.floor });
+        }
+      
+        // Handle other fields dynamically
+        const otherFields = ['price', 'size', 'storageNumber'];
+        otherFields.forEach((field) => {
+          if (filterDto[field]) {
+            queryBuilder.andWhere(`storage.${field} LIKE :${field}`, { [field]: `%${filterDto[field]}%` });
+          }
+        });
+      
+        return queryBuilder.getMany();
+      }
+      
 }
 
 
