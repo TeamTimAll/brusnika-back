@@ -3,6 +3,12 @@ import { Column  , Entity, ManyToOne} from "typeorm";
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 
 
+export enum StorageStatus {
+    FREE = 'free',
+    TAKEN = 'taken',
+  }
+
+
 @Entity({ name : "storages"})
 export class StorageEntity extends AbstractEntity {
 
@@ -13,11 +19,26 @@ export class StorageEntity extends AbstractEntity {
          onDelete : "CASCADE",
          onUpdate : "CASCADE"
     })
-
     building !: BuildingsEntity
 
-    @Column()
-    title !: string 
+
+    @Column({ nullable : true })
+    price !: string 
+
+    @Column({ nullable : true })
+     size !: string 
+
+    @Column({ nullable :true })
+    status !:  StorageStatus
+
+    @Column({ nullable : true })
+    storageNumber !: string 
+
+    @Column({ nullable : true })
+    floor !: number 
+
+    @Column({ nullable : true })
+    photo !: string 
 }
 
 

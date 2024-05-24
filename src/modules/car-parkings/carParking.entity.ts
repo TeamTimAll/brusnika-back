@@ -11,8 +11,6 @@ export enum ParkingSpaceStatus {
     TAKEN = 'taken',
   }
 
-
-
 @Entity({ name : "parking_space"})
 @UseDto(CarParkingDto)
 export class CarParkingEntity extends AbstractEntity {
@@ -38,12 +36,10 @@ export class CarParkingEntity extends AbstractEntity {
         default: ParkingSpaceStatus.FREE, 
     })
     status!: ParkingSpaceStatus; 
-   
-
 
     @Column( { nullable : true })
     photo !: string 
+};
 
-    
-}
+
 
