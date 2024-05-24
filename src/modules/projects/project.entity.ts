@@ -5,7 +5,7 @@ import { Uuid } from "boilerplate.polyfill";
 import { UserEntity } from "../../modules/user/user.entity";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { ClientEntity } from "../clients/client.entity"
-import { PremisesEntity } from "../../modules/premises/premise.entity";
+import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import { StorageEntity } from "../../modules/storage/storage.entity";
 import { CarParkingEntity } from "../../modules/car-parkings/carParking.entity";
 import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/commercial-buildings.entity";
@@ -41,8 +41,8 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
     @OneToMany(()=> ClientEntity , (  client ) => client.project )
     clients ? : ClientEntity[] 
 
-    @OneToMany(() => PremisesEntity, premises => premises.project)
-    premises ?: PremisesEntity[];
+    @OneToMany(() => BuildingsEntity, buildings => buildings.project)
+    premises ?: BuildingsEntity[];
 
     //new added
 

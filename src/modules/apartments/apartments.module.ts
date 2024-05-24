@@ -3,14 +3,12 @@ import { ApartmentsService } from './apartments.service';
 import { ApartmentsController } from './apartments.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApartmentEntity } from './apartment.entity';
-import { PremisesModule } from '../../modules/premises/premises.module';
+import { BuildingsModule } from '../../modules/buildings/buildings.module';
 
 @Module({
-  
-  imports : [ TypeOrmModule.forFeature([ ApartmentEntity ]) , PremisesModule],
+  imports : [ TypeOrmModule.forFeature([ ApartmentEntity ])  , BuildingsModule],
   providers: [ApartmentsService],
   controllers: [ApartmentsController],
-  exports : [ ApartmentsService]
 })
 
 export class ApartmentsModule {}

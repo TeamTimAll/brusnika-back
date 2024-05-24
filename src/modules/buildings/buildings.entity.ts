@@ -7,8 +7,8 @@ import { ApartmentEntity } from "../../modules/apartments/apartment.entity";
 
 
 
-@Entity( { name : "premises"})
-export class PremisesEntity extends AbstractEntity {
+@Entity( { name : "buildings"})
+export class BuildingsEntity extends AbstractEntity {
 
   @Column()
   name !: string; 
@@ -58,7 +58,7 @@ export class PremisesEntity extends AbstractEntity {
   projectId !: Uuid;
 
 
-  @OneToMany(() => ApartmentEntity , ( apartment ) => apartment.premise , {
+  @OneToMany(() => ApartmentEntity , ( apartment ) => apartment.building , {
     onDelete : "CASCADE",
     onUpdate : "CASCADE"
   } )

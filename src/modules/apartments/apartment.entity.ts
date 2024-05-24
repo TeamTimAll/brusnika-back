@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne } from "typeorm";
 import { AbstractEntity } from "../../common/abstract.entity";
-import { PremisesEntity } from "../../modules/premises/premise.entity";
 import { UseDto } from "../../decorators";
 import { ApartmentDto } from "./dtos/apartment.dto";
+import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 
 
 
@@ -11,14 +11,14 @@ import { ApartmentDto } from "./dtos/apartment.dto";
 @UseDto(ApartmentDto)
 export class ApartmentEntity extends AbstractEntity {
 
-       @Column()
-       premiseId !: string 
+       @Column( { nullable : true })
+       buildingId !: string 
 
-       @ManyToOne(() => PremisesEntity , premise => premise.apartments , {
+       @ManyToOne(() => BuildingsEntity , building => building.apartments , {
           onDelete :'CASCADE',
           onUpdate : "CASCADE"
        })
-       premise  !: PremisesEntity
+       building  !: BuildingsEntity
 
        @Column( { nullable : true })
        size !: string 

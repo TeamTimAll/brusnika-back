@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Uuid } from 'boilerplate.polyfill';
-import {  IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {  IsNotEmpty , IsString } from 'class-validator';
 
-export class CreatePremisesDto {
-
+export class CreateBuilding {
 
   @IsNotEmpty()
   @IsString()
@@ -48,7 +47,6 @@ export class CreatePremisesDto {
 
   // vacant apartment 
   @IsNotEmpty()
-
   @ApiProperty({
     example : 12,
     description : "Total vacant apartment",
@@ -58,7 +56,6 @@ export class CreatePremisesDto {
 
   // total parking space 
   @IsNotEmpty()
-
   @ApiProperty({
     example : 33,
     description : "Total parking space",
@@ -106,9 +103,8 @@ export class CreatePremisesDto {
   address !: string 
 
   @IsNotEmpty()
-  @IsNumber()
   @ApiProperty({
-    example : 6,
+    example : 3,
     type : Number,
     required : true ,
     description : "Number of floors for a building"

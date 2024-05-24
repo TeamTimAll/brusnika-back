@@ -6,7 +6,7 @@ import { Uuid } from 'boilerplate.polyfill';
 import { ApartmentDto } from './dtos/apartment.dto';
 import { ApartmentCreateDto } from './dtos/apartment.create.dto';
 import { ApartmentUpdateDto } from './dtos/apartment.update.dto';
-import { PremisesService } from '../../modules/premises/premises.service';
+import { BuildingsService } from '../../modules/buildings/buildings.service';
 
 
 @Injectable()
@@ -15,14 +15,14 @@ export class ApartmentsService {
     constructor(
           @InjectRepository(ApartmentEntity)
           private apartmentsRepo : Repository<ApartmentEntity>,
-          private premiseService : PremisesService
+          private buildingService  : BuildingsService
     ){}
 
 
     async getAllApartments() : Promise<ApartmentDto[]> {
           return  await this.apartmentsRepo.find( {
               relations : {
-                  premise : true 
+                  building : true 
               }
           })
     }
@@ -54,7 +54,7 @@ export class ApartmentsService {
                     let updated ;
 
 
-                    const premise = await this.premiseService.getPremise(apartment.premiseId)
+                    const premise = await this.buildingService.getbuilding(apartment.buildingId)
 
              if(!premise) return new HttpException("Premise not found", HttpStatus.NOT_FOUND)
 
@@ -85,7 +85,7 @@ export class ApartmentsService {
       const apartment =    await this.apartmentsRepo.findOne({
              where : { id },
              relations : {
-                  premise : true 
+                  building : true 
              }
         })
 

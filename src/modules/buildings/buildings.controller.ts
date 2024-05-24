@@ -1,8 +1,7 @@
 import { Body, Controller , Get, Post , Param , Put, Delete , UploadedFiles, } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { PremisesService } from './premises.service';
-import { CreatePremisesDto } from './dtos/premise.create.dto';
-import { UpdatePremiseDto } from './dtos/premise.update.dto';
+import { CreateBuilding } from '../buildings/dtos/building.create.dto';
+import { UpdateBuilding } from '../buildings/dtos/building.update.dto';
 import { Uuid } from 'boilerplate.polyfill';
 import { ApiConsumes } from '@nestjs/swagger';
 import path from 'path';
@@ -10,17 +9,18 @@ import { diskStorage } from "multer"
 import {v4 as uuidv4  } from "uuid"
 import { UseInterceptors  } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { BuildingsService } from './buildings.service';
 
-@Controller('premises')
-@ApiTags("premises")
-export class PremisesController {
+@Controller('buildings')
+@ApiTags("Buildings")
+export class BuildingsController {
     constructor (
-          private premiseService : PremisesService
+          private premiseService : BuildingsService
     ){}
 
       @Get()
       async getAllPremises(){
-          return this.premiseService.getAllpremises()
+          return this.premiseService.getAllBuildings()
       }
 
 
@@ -41,12 +41,12 @@ export class PremisesController {
     )
     
     async createNewPremise(
-        @Body() newApartment: CreatePremisesDto, 
+        @Body() newApartment: CreateBuilding, 
         @UploadedFiles() files: Array<Express.Multer.File>, 
     ){
              
               const fileNames  : string[] = files.map(file => file.filename);
-               return this.premiseService.createPremise(newApartment , fileNames )
+               return this.premiseService.createBuilding(newApartment , fileNames )
      }
 
 
@@ -66,18 +66,18 @@ export class PremisesController {
        )
      )
       async updatePremise (
-         @Body() updatePremise : UpdatePremiseDto,
+         @Body() updatePremise : UpdateBuilding,
          @Param("id") id : Uuid,
          @UploadedFiles() files ?: Array<Express.Multer.File>,
          ) {
             const fileNames  : string[] | undefined  = files?.map((each )=> each.filename)
             
-          return this.premiseService.updatePremise(updatePremise , id  , fileNames)
+          return this.premiseService.updateBuilding(updatePremise , id  , fileNames)
       }
 
       @Delete(":id")
       async deletePremise( @Param("id") id : Uuid) {
-           return this.premiseService.deletePremise(id)
+           return this.premiseService.deleteBuilding(id)
       }
 
 }

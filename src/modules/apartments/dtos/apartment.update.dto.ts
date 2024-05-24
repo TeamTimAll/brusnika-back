@@ -9,12 +9,12 @@ export class ApartmentUpdateDto {
       @ApiProperty({
           example : "a8dde602-d4e4-4dce-83b4-353e1941bd3c",
           type : String ,
-          description : "Premise id to find  a  premise",
+          description : "Building id to find  a  Building",
           required : true 
       })
       @IsOptional()
       @IsString()
-      premiseId !: Uuid 
+      buildingId !: Uuid 
 
       @IsOptional()
       @IsString()
@@ -89,7 +89,7 @@ export class ApartmentUpdateDto {
           type: 'string',
           format: 'binary', 
       },
-      description: 'Images of the premise (from multiple file uploads)',
+      description: 'Images of the Building (from multiple file uploads)',
       required : false 
      })
       photos ?: Array<Express.Multer.File>  | any 

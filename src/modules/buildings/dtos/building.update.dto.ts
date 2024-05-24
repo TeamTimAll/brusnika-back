@@ -3,13 +3,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {  IsOptional, IsString  } from 'class-validator';
 
-export class UpdatePremiseDto {
-
-
+export class UpdateBuilding{
   @IsOptional()
   @IsString()
   @ApiProperty({
-      example : "Premise name ",
+      example : "Building name ",
       required : false ,
       type : String 
   })
@@ -22,7 +20,7 @@ export class UpdatePremiseDto {
   @IsOptional()
   @ApiProperty({
     example : 22,
-    description : "Total storage for the premise",
+    description : "Total storage for the building",
     type : Number ,
     required : false 
   })
@@ -33,7 +31,7 @@ export class UpdatePremiseDto {
   @IsOptional()
   @ApiProperty({
     example : 12,
-    description : "Total  vacant storage for the premise",
+    description : "Total  vacant storage for the building",
     type : Number ,
     required : false 
   })
@@ -110,7 +108,7 @@ export class UpdatePremiseDto {
  @IsOptional()
   @IsString()
   @ApiProperty({
-    example : "Somewhere for premise address",
+    example : "Somewhere for building address",
     type : String,
     required : false 
   })
@@ -133,7 +131,7 @@ export class UpdatePremiseDto {
         type: 'string',
         format: 'binary', 
     },
-    description: 'Images of the premise (from multiple file uploads)',
+    description: 'Images of the building (from multiple file uploads)',
     required : false 
    })
     photos ?: Array<Express.Multer.File>  | any 

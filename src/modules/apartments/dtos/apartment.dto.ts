@@ -1,7 +1,7 @@
 
 import { ApiProperty } from "@nestjs/swagger"
 import { IsString , IsNotEmpty  , IsArray   } from "class-validator"
-import { PremisesEntity } from "../../../modules/premises/premise.entity"
+import { BuildingsEntity } from "../../../modules/buildings/buildings.entity"
 
 
 export class ApartmentDto {
@@ -10,13 +10,13 @@ export class ApartmentDto {
     @IsNotEmpty()
     @ApiProperty({
         example : "a8dde602-d4e4-4dce-83b4-353e1941bd3c",
-        description : "Premise id to connect",
+        description : "Building id to connect",
         type : String 
     })
-    premiseId !: string 
+    buildingId !: string 
 
 
-    premise !: PremisesEntity
+    building !: BuildingsEntity
     
     @IsString()
     @ApiProperty({

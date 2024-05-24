@@ -10,11 +10,11 @@ export class ApartmentCreateDto {
     @IsNotEmpty()
     @ApiProperty({
         example : "a8dde602-d4e4-4dce-83b4-353e1941bd3c",
-        description : "Premise id to connect",
+        description : "Building id to connect",
         type : String,
         required : true  
     })
-    premiseId !: string 
+    buildingId !: string 
     
    
     @IsNotEmpty()
@@ -95,7 +95,7 @@ export class ApartmentCreateDto {
             type: 'string',
             format: 'binary', 
         },
-        description: 'Images of the premise (from multiple file uploads)',
+        description: 'Images of the building (from multiple file uploads)',
         required : true 
     })
     photos !: Array<Express.Multer.File>
