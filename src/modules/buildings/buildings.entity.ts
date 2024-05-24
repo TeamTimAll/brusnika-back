@@ -4,7 +4,7 @@ import { ManyToOne , Column, Entity, OneToMany  } from "typeorm";
 import { Uuid } from "boilerplate.polyfill";
 import { ApartmentEntity } from "../../modules/apartments/apartment.entity";
 import { StorageEntity } from "../../modules/storage/storage.entity";
-import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/commercial-buildings.entity";
+import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/commercial.entity";
 import { CarParkingEntity } from "../../modules/car-parkings/carParking.entity";
 import { UseDto } from "../../decorators";
 import { CreateBuilding } from "./dtos/building.create.dto";
