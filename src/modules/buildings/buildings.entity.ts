@@ -6,8 +6,12 @@ import { ApartmentEntity } from "../../modules/apartments/apartment.entity";
 import { StorageEntity } from "../../modules/storage/storage.entity";
 import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/commercial-buildings.entity";
 import { CarParkingEntity } from "../../modules/car-parkings/carParking.entity";
+import { UseDto } from "../../decorators";
+import { CreateBuilding } from "./dtos/building.create.dto";
 
 @Entity( { name : "buildings"})
+@UseDto(CreateBuilding)
+
 export class BuildingsEntity extends AbstractEntity {
 
   @Column()
@@ -48,14 +52,15 @@ export class BuildingsEntity extends AbstractEntity {
   @Column({type: 'text', array: true, nullable: true })
   photos: string[] = [];
 
+  @Column({ type: 'uuid' })
+  projectId !: Uuid;
+  
   @ManyToOne(() => ProjectEntity, project => project.buildings , {
       onDelete :"CASCADE",
       onUpdate : "CASCADE"
   })
   project !: ProjectEntity;
 
-  @Column({ type: 'uuid' })
-  projectId !: Uuid;
 
 
 
