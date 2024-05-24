@@ -6,9 +6,7 @@ import { UserEntity } from "../../modules/user/user.entity";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { ClientEntity } from "../clients/client.entity"
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
-import { StorageEntity } from "../../modules/storage/storage.entity";
-import { CarParkingEntity } from "../../modules/car-parkings/carParking.entity";
-import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/commercial-buildings.entity";
+
 
 @Entity( { name : "projects"})
 @UseDto(ProjectSDto)
@@ -42,7 +40,7 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
     clients ? : ClientEntity[] 
 
     @OneToMany(() => BuildingsEntity, buildings => buildings.project)
-    premises ?: BuildingsEntity[];
+    buildings ?: BuildingsEntity[];
 
     //new added
 
@@ -58,21 +56,7 @@ export class ProjectEntity extends AbstractEntity<ProjectSDto> {
     @Column({ nullable : true })
     endDate !: Date 
 
-    // storage places 
-    @OneToMany(() => StorageEntity , storage => storage.project)
-    storages ? : StorageEntity[]
-
-
-
-    // car parking places 
-    @OneToMany(() =>  CarParkingEntity , carParking => carParking.project)
-    carParkings ? : CarParkingEntity[]
-
-
-
-    //commercial premises 
-    @OneToMany(() => CommercialBuildingsEntity , ( buildings )  => buildings.project )
-    commercialBuildings ? : CommercialBuildingsEntity
+   
 
     
 

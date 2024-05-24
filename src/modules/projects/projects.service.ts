@@ -21,10 +21,7 @@ export class ProjectsService {
     async getAllProjects() : Promise<ProjectSDto[]> {
          return  await this.projectsRepository.find({
             relations : {
-                premises : true ,
-                commercialBuildings : true ,
-                storages : true ,
-                carParkings : true 
+                buildings : true ,
             }
          })
     }
@@ -55,10 +52,7 @@ export class ProjectsService {
               where : { id },
               relations : {
                 clients : true ,
-                premises : true ,
-                commercialBuildings : true ,
-                storages : true ,
-                carParkings : true 
+                buildings : true ,
               }
           });
           return project
@@ -84,10 +78,7 @@ export class ProjectsService {
             return new HttpException("Something went wrong" , 500)
             
          }
-        
-
     }
-
 
     async deleteProject( id : Uuid ) 
       : Promise<ProjectEntity | HttpException>
@@ -108,7 +99,7 @@ export class ProjectsService {
                 
              } 
     }
+};
 
 
 
-}

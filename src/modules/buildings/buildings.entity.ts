@@ -3,9 +3,9 @@ import { ProjectEntity } from "../../modules/projects/project.entity";
 import { ManyToOne , Column, Entity, OneToMany  } from "typeorm";
 import { Uuid } from "boilerplate.polyfill";
 import { ApartmentEntity } from "../../modules/apartments/apartment.entity";
-
-
-
+import { StorageEntity } from "../../modules/storage/storage.entity";
+import { CommercialBuildingsEntity } from "../../modules/commercial-buildings/commercial-buildings.entity";
+import { CarParkingEntity } from "../../modules/car-parkings/carParking.entity";
 
 @Entity( { name : "buildings"})
 export class BuildingsEntity extends AbstractEntity {
@@ -48,7 +48,7 @@ export class BuildingsEntity extends AbstractEntity {
   @Column({type: 'text', array: true, nullable: true })
   photos: string[] = [];
 
-  @ManyToOne(() => ProjectEntity, project => project.premises , {
+  @ManyToOne(() => ProjectEntity, project => project.buildings , {
       onDelete :"CASCADE",
       onUpdate : "CASCADE"
   })
@@ -58,10 +58,38 @@ export class BuildingsEntity extends AbstractEntity {
   projectId !: Uuid;
 
 
+
+  //Apartments
   @OneToMany(() => ApartmentEntity , ( apartment ) => apartment.building , {
     onDelete : "CASCADE",
     onUpdate : "CASCADE"
   } )
   apartments ? : ApartmentEntity[]
+
+
+   // storage places 
+   @OneToMany(() => StorageEntity , storage => storage.building , {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+   })
+   storages ? : StorageEntity[]
+
+
+   // car parking places 
+   @OneToMany(() =>  CarParkingEntity , carParking => carParking.building , {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+   })
+   carParkings ? : CarParkingEntity[]
+
+
+
+   //commercial places 
+   @OneToMany(() => CommercialBuildingsEntity , ( commercial )  => commercial.building , {
+    onDelete : "CASCADE",
+    onUpdate : "CASCADE"
+   })
+
+   commercialBuildings ? : CommercialBuildingsEntity
 
 }
