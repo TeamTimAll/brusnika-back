@@ -8,12 +8,14 @@ import { JwtStrategy } from './startegies/jwt.strategy';
 import { UserModule } from '../user/user.module';
 import { NodemailerModule } from '../../common/nodemailer/nodemailer.module';
 import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
+import { AgenciesModule } from '../agencies/agencies.module';
 
 @Module({
   imports: [
     PassportModule,
     NodemailerModule,
     UserModule,
+    AgenciesModule,
     JwtModule.register({
       secret: 'abc123',
       signOptions: { expiresIn: '1h' },
@@ -21,7 +23,6 @@ import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
   ],
 
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy  , NodeMailerService],
+  providers: [AuthService, LocalStrategy, JwtStrategy, NodeMailerService],
 })
-
 export class AuthModule {}

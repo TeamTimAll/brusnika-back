@@ -1,7 +1,3 @@
+import { AbstractDto } from '../../../common/dto/abstract.dto';
 
-
-
-
-
-export class DealsDto {}
-
+export class DealsDto extends AbstractDto {}

@@ -1,20 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { type FindOptionsWhere, Repository } from 'typeorm';
 import { type PageDto } from '../../common/dto/page.dto';
 import { UserNotFoundException } from '../../exceptions';
-import { CreateSettingsCommand } from './commands/create-settings.command';
-import { CreateSettingsDto } from './dtos/create-settings.dto';
 import { UserCreateDto, type UserDto } from './dtos/user.dto';
 import { type UsersPageOptionsDto } from './dtos/users-page-options.dto';
 import { UserEntity } from './user.entity';
-import { type UserSettingsEntity } from './user-settings.entity';
 import { Uuid } from 'boilerplate.polyfill';
 
 @Injectable()
 export class UserService {
-  private commandBus!: CommandBus;
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
@@ -27,9 +22,7 @@ export class UserService {
   async findByUsernameOrEmail(
     options: Partial<{ username: string; email: string }>,
   ): Promise<UserEntity | null> {
-    const queryBuilder = this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect<UserEntity, 'user'>('user.settings', 'settings');
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
 
     if (options.email) {
       queryBuilder.orWhere('user.email = :email', {
@@ -48,12 +41,8 @@ export class UserService {
 
   async createUser(userRegisterDto: UserCreateDto): Promise<UserEntity> {
     try {
-      console.log({ userDto: userRegisterDto });
-
       const user: UserEntity = this.userRepository.create(userRegisterDto);
       const savedUser: UserEntity = await this.userRepository.save(user);
-
-      console.log({ user: savedUser });
 
       return savedUser;
     } catch (error: any) {
@@ -79,6 +68,7 @@ export class UserService {
       where: {
         id: userId,
       },
+      relations: ['city', 'agency'],
     });
     // const userEntity = await queryBuilder.getOne();
 
@@ -98,14 +88,5 @@ export class UserService {
     }
 
     return await this.userRepository.update(id, updateEventsDto);
-  }
-
-  async createSettings(
-    userId: Uuid,
-    createSettingsDto: CreateSettingsDto,
-  ): Promise<UserSettingsEntity> {
-    return this.commandBus.execute<CreateSettingsCommand, UserSettingsEntity>(
-      new CreateSettingsCommand(userId, createSettingsDto),
-    );
   }
 }
