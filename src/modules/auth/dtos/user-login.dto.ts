@@ -76,13 +76,13 @@ export class UserLoginVerifyCodeDto {
   @ApiProperty({
     required: true,
   })
-  readonly code!: number;
+  code!: number;
 
   @IsUUID()
   @ApiProperty({
     required: true,
   })
-  readonly user_id!: Uuid;
+  user_id!: Uuid;
 }
 
 export class UserLoginResendCodeDto {

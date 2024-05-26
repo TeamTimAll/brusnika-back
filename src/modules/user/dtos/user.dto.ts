@@ -29,7 +29,7 @@ import { Uuid } from 'boilerplate.polyfill';
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
-export class UserDto extends AbstractDto{
+export class UserDto extends AbstractDto {
   @StringFieldOptional({ nullable: true })
   firstName?: string | null;
 
@@ -55,6 +55,9 @@ export class UserDto extends AbstractDto{
 
   @PhoneFieldOptional({ nullable: true })
   phone?: string | null;
+
+  @PhoneFieldOptional({ nullable: true })
+  temporaryNumber?: string | null;
 
   @BooleanFieldOptional()
   isActive?: boolean;
@@ -117,6 +120,7 @@ export class UserDto extends AbstractDto{
     this.avatar = user.avatar;
     this.register_status = user.register_status;
     this.isPhoneVerified = user.isPhoneVerified;
+    this.temporaryNumber = user.temporaryNumber;
     this.status = user.status;
     this.city_id = user.city?.id;
     this.agency_id = user.agency?.id;
@@ -130,7 +134,41 @@ export class UserCreateDto {
   phone!: string;
 }
 
-// @UseDto(UserDto)
+export class UserChangePhoneVerifyCodeDto {
+  @IsNumber()
+  @ApiProperty({
+    required: true,
+  })
+  code!: number;
+}
+
+export class UserUpdateDto extends AbstractDto {
+  @StringFieldOptional({ nullable: true })
+  firstName?: string | null;
+
+  @StringFieldOptional({ nullable: true })
+  lastName?: string | null;
+
+  @IsEmail()
+  @IsOptional()
+  @ApiProperty({ required: false })
+  email?: string;
+
+  @StringFieldOptional({ nullable: true })
+  avatar?: string;
+
+  @IsDateString()
+  @IsOptional()
+  @ApiProperty({ required: false })
+  birthDate?: Date;
+
+  @IsUUID()
+  @ApiProperty({
+    required: false,
+  })
+  city_id?: Uuid;
+}
+
 export class UserFillDataDto {
   @IsUUID()
   @ApiProperty({

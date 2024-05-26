@@ -81,6 +81,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
   @Column({ default: false })
   isPhoneVerified?: boolean;
 
+  @Column({ nullable: true, type: 'varchar' })
+  temporaryNumber!: string | null;
+
   @Column({ default: true })
   status!: boolean;
 
