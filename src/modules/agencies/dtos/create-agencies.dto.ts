@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Uuid } from 'boilerplate.polyfill';
-import { IsEnum, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateAgenciesDto {
   @IsString()

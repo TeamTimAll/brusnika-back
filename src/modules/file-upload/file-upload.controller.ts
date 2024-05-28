@@ -51,7 +51,7 @@ export class FileUploadController {
   }
 
   private static imageFileFilter(
-    req: any,
+    _req: any,
     file: Express.Multer.File,
     callback: (error: Error | null, acceptFile: boolean) => void,
   ): void {
