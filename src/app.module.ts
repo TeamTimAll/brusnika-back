@@ -44,13 +44,7 @@ export class AppModule {}
 //   },
 // }),
 
-// ThrottlerModule.forRootAsync({
-//   imports: [SharedModule],
-//   useFactory: (configService: ApiConfigService) => ({
-//     throttlers: [configService.throttlerConfigs],
-//   }),
-//   inject: [ApiConfigService],
-// }),
+
 // ConfigModule.forRoot({
 //   isGlobal: true,
 //   envFilePath: '.env',

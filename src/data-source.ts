@@ -1,7 +1,7 @@
 import './boilerplate.polyfill';
 import { join } from 'path';
 import dotenv from 'dotenv';
-
+import fs from 'fs'
 dotenv.config();
 
 
@@ -12,7 +12,10 @@ module.exports = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  // ssl: true,
+  ssl: {
+    ca: fs.readFileSync('postgresql.pem').toString(),
+    rejectUnauthorized: true,
+  },
   logging: true,
   synchronize: true,
   entities: [
