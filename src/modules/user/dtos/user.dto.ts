@@ -5,8 +5,8 @@ import {
   IsEmail,
   IsNotEmpty,
   IsNumber,
+  IsPhoneNumber,
   IsString,
-  MinLength,
 } from 'class-validator';
 
 import {
@@ -14,10 +14,10 @@ import {
   ClassField,
   EmailFieldOptional,
   EnumFieldOptional,
-  IsPassword,
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
+import { ApiProperty } from '@nestjs/swagger';
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
@@ -69,23 +69,31 @@ export class UserDto extends AbstractDto {
 
 export class UserCreateDto {
   @IsString()
+  @ApiProperty({
+    required: true
+  })
   @IsNotEmpty()
-  username: string;
+  first_name!: string;
 
-  @IsPassword()
+  @IsString()
+  @ApiProperty({
+    required: true
+  })
   @IsNotEmpty()
-  @MinLength(6)
-  password: string;
+  last_name!: string;
+
+  @IsPhoneNumber()
+  @ApiProperty({
+    required: true
+  })
+  phone!: string;
 
   @IsEmail()
+  @ApiProperty({
+    required: true
+  })
   @IsNotEmpty()
-  email: string;
-
-  constructor() {
-    this.username = '';
-    this.email = '';
-    this.password = '';
-  }
+  email!: string;
 }
 
 export class LoginPayloadDto {

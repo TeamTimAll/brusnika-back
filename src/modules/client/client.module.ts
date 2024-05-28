@@ -9,11 +9,11 @@ import { ClientStatusModule } from '../../modules/client-status/client-status.mo
 @Module({
   imports : [
     ClientStatusModule,
-    TypeOrmModule.forFeature([ClientEntity]) ,
-
-    ],
+    TypeOrmModule.forFeature([ClientEntity]),
+  ],
+  exports : [ ClientService ],
   controllers: [ClientController],
-  providers: [ClientService]
+  providers: [ClientService],
 
 })
 

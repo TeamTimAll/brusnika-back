@@ -5,19 +5,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
 import * as AppDataSource from './data-source';
 import { config } from 'dotenv';
+import { MulterModule } from '@nestjs/platform-express';
+
 config();
 
 @Module({
   imports: [
     SecuredModule,
-    TypeOrmModule.forRoot(AppDataSource)
+    TypeOrmModule.forRoot(AppDataSource),
+    MulterModule.register({
+      dest: '../media',
+    }),
   ],
   providers: [],
   controllers: [],
 })
-
 export class AppModule {}
-
 
 // @Module({
 //   imports: [
@@ -28,7 +31,7 @@ export class AppModule {}
 //       SharedModule,
 //       DatabaseModule,
 //       AgencyModule, //ADD HERE
-     
+
 //   ],
 //   controllers: [AppController],
 //   providers: [AppService],

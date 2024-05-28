@@ -18,10 +18,13 @@ export class NewsService {
            return this.newsRepository.find()
     };
 
-    async createNews( newsCreateDto :  CreateNewsDto ) : Promise<NewsEntity > {
+    async createNews( newsCreateDto :  CreateNewsDto , fileName : string  ) : Promise<NewsEntity > {
             try {
 
-                const createdNews : NewsEntity = await this.newsRepository.save(newsCreateDto)
+                const createdNews : NewsEntity = await this.newsRepository.save({
+                    ... newsCreateDto , coverImage : fileName
+                });
+                
                 return createdNews;
                 
             } catch (error : any ) {

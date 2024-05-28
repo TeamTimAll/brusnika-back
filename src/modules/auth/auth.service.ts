@@ -7,8 +7,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { UserCreateDto } from 'modules/user/dtos/user.dto';
-import * as bcrypt from 'bcrypt';
-import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
+// import * as bcrypt from 'bcrypt';
+// import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
 import {
   AgentLoginDto,
   LoginSuccess,
@@ -22,7 +22,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
-    private nodemailer: NodeMailerService,
+    // private nodemailer: NodeMailerService,
   ) {}
 
   hasOneMinutePassed(startTime: Date): boolean {
@@ -34,36 +34,28 @@ export class AuthService {
 
   async createUser(body: UserCreateDto): Promise<any> {
     try {
-      if (!body.username || !body.password || !body.email) {
-        return new HttpException(
-          'Username or Password not provided',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      // if (!body.username || !body.email) {
+      //   return new HttpException(
+      //     'Username or Password not provided',
+      //     HttpStatus.BAD_REQUEST,
+      //   );
+      // }
 
       const existingUser = await this.userService.findOne({
-        username: body.username,
+        email: body.email,
       });
 
       if (existingUser) {
         return new HttpException('User already exists', HttpStatus.CONFLICT);
       }
 
-      const hashedPassword = await bcrypt.hash(body.password, 10);
-
-      const newUser = await this.userService.createUser({
-        username: body.username,
-        password: hashedPassword,
-        email: body.email,
-      });
-
-      const { password, ...result } = newUser;
+      const newUser = await this.userService.createUser(body);
 
       /**
        * Todo  , We can make a url to send an email with jwt to get user
        */
 
-      return result;
+      return newUser;
     } catch (error) {
       console.log('Account creating error');
       return new HttpException('Something went wrong', 500);
@@ -82,25 +74,31 @@ export class AuthService {
 
       if (!user) {
         console.log('User not found ');
+        // send brunsika crm to get user
+        // if(user) {
+        // user.create(user)
+        // user = newUser
+        // } else {
         return new UnauthorizedException('User not found');
+        // }
       }
 
-      if (user.password === null) {
-        console.log('Users password is null');
-        return new UnauthorizedException('Password not set');
-      }
+      // if (user.password === null) {
+      //   console.log('Users password is null');
+      //   return new UnauthorizedException('Password not set');
+      // }
 
-      const passwordMatch = await bcrypt.compare(
-        loginDto.password,
-        user.password,
-      );
+      // const passwordMatch = await bcrypt.compare(
+      //   loginDto.password,
+      //   user.password,
+      // );
 
-      if (!passwordMatch) {
-        console.log('Password did not match');
-        return new UnauthorizedException('Invalid email or password');
-      }
+      // if (!passwordMatch) {
+      //   console.log('Password did not match');
+      //   return new UnauthorizedException('Invalid email or password');
+      // }
 
-      await this.nodemailer.sendMail();
+      // await this.nodemailer.sendMail();
 
       const { password, ...result } = user;
       return {
@@ -108,7 +106,7 @@ export class AuthService {
       };
     } catch (error: any) {
       console.error('Login error:', error.message);
-      return new HttpException(error.message, 500);
+      return new HttpException('internal server error', 500);
     }
   }
 
@@ -191,7 +189,6 @@ export class AuthService {
 
       if (user.settings?.isPhoneVerified) {
         if (user.verification_code_sent_date) {
-
           if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
             return new HttpException(
               {
@@ -247,7 +244,6 @@ export class AuthService {
       if (user.settings?.isPhoneVerified) {
         // todo send code to phone number
         if (user.verification_code_sent_date) {
-          
           if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
             const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
@@ -264,7 +260,10 @@ export class AuthService {
             );
           } else {
             return new HttpException(
-              { error: 'A valid verification code already exists or wait till expire' },
+              {
+                error:
+                  'A valid verification code already exists or wait till expire',
+              },
               HttpStatus.CONFLICT,
             );
           }
