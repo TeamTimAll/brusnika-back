@@ -5,17 +5,19 @@ import {
   Post,
   Req,
   UseGuards,
-  // Param,
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request } from 'express';
-import { UserCreateDto } from '../../modules/user/dtos/user.dto';
+import { UserCreateDto, UserFillDataDto } from '../../modules/user/dtos/user.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
 import { LocalGuard } from './guards/local.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
+  AgentChooseAgencyDto,
   AgentLoginDto,
+  AgentRegisterAgencyDto,
+  AgentRequestAgencyDto,
   LoginSuccess,
   UserLoginDto,
   UserLoginResendCodeDto,
@@ -68,9 +70,34 @@ export class AuthController {
     return this.authService.agentLoginResendSmsCode(dto);
   }
 
-  @Post('/agent/create')
+  @Post('/agent/register')
   createAccount(@Body() dao: UserCreateDto) {
     return this.authService.createUser(dao);
+  }
+
+  @Post('/agent/register/fill_data')
+  agentFillDate(@Body() dao: UserFillDataDto) {
+    return this.authService.agentFillData(dao);
+  }
+
+  @Post('/agent/register/choose_agency')
+  agentChooseAgency(@Body() dao: AgentChooseAgencyDto) {
+    return this.authService.agentChooseAgency(dao);
+  }
+
+  @Post('/agent/register/register_agency')
+  agentRegisterAgency(@Body() dao: AgentRegisterAgencyDto) {
+    return this.authService.agentRegisterAgency(dao);
+  }
+
+  @Post('/agent/register/request_agency')
+  agentRequestAgency(@Body() dao: AgentRequestAgencyDto) {
+    return this.authService.agentRequestAgency(dao);
+  }
+
+  @Get('/city')
+  getCity() {
+    return this.authService.getCity();
   }
 
   // @Get(':email')

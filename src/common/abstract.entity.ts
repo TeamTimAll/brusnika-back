@@ -1,60 +1,42 @@
-import {
-  CreateDateColumn,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-import { type Constructor } from '../types';
-import {
-  type AbstractDto,
-} from './dto/abstract.dto';
-import { Uuid } from 'boilerplate.polyfill';
+// src/types/constructor.type.ts
+export type Constructor<T, Args extends any[] = any[]> = new (...args: Args) => T;
 
 
+// src/decorators/use-dto.decorator.ts
+import { SetMetadata } from '@nestjs/common';
+import { AbstractDto } from './dto/abstract.dto';
 
-export abstract class AbstractEntity<
-  DTO extends AbstractDto = AbstractDto,
-  O = never,
-> {
+export const DTO_CLASS_KEY = 'dtoClass';
+
+export const UseDto = <T>(dtoClass: Constructor<T>): ClassDecorator => {
+  return SetMetadata(DTO_CLASS_KEY, dtoClass);
+};
+
+export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto, O = never> {
   @PrimaryGeneratedColumn('uuid')
-  id!: Uuid;
+  id!: string;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-  })
-
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-  })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
 
-  // translations?: AbstractTranslationEntity[];
 
-  private dtoClass?: Constructor<DTO, [AbstractEntity, O?]>;
+  protected static dtoClass?: Constructor<AbstractDto, [AbstractEntity]>;
+
+  static getDtoClass(): Constructor<AbstractDto, [AbstractEntity]> {
+    if (!this.dtoClass) {
+      throw new Error(`DTO class not set for ${this.name}`);
+    }
+    return this.dtoClass;
+  }
 
   toDto(options?: O): DTO {
-    const dtoClass = this.dtoClass;
-
-    if (!dtoClass) {
-      throw new Error(
-        `You need to use @UseDto on class (${this.constructor.name}) be able to call toDto function`,
-      );
-    }
+    const dtoClass = (this.constructor as typeof AbstractEntity).getDtoClass() as Constructor<DTO, [AbstractEntity, O?]>;
 
     return new dtoClass(this, options);
   }
 }
-
-// export class AbstractTranslationEntity<
-//   DTO extends AbstractTranslationDto = AbstractTranslationDto,
-//   O = never,
-// > extends AbstractEntity<DTO, O> {
-//   @Column({ type: 'enum', enum: LanguageCode })
-//   languageCode!: LanguageCode;
-// };
-
-
-
-

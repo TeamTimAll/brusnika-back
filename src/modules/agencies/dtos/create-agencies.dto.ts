@@ -1,22 +1,64 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Uuid } from 'boilerplate.polyfill';
-import { IsString } from 'class-validator';
+import {
+  IsUUID,
+  IsString,
+  IsEmail,
+  IsPhoneNumber,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateAgenciesDto {
+  @ApiProperty({ description: 'The title of the agency' })
   @IsString()
-  @ApiProperty({
-    required: true,
-    maxLength: 1000,
-    minLength: 3,
-  })
   title!: string;
 
+  @ApiProperty({ description: 'The UUID of the city' })
+  @IsUUID()
+  city_id!: string;
+
+  @ApiProperty({ description: 'The legal name of the agency' })
   @IsString()
+  legalName?: string | null;
+
   @ApiProperty({
-    required: true,
-    maxLength: 1000,
-    minLength: 3,
+    description: 'The tax identification number of the agency',
   })
-  description!: string;
-  userId: Uuid | undefined;
+  @IsString()
+  inn?: string | null;
+
+  @ApiProperty({ description: 'The phone number of the agency' })
+  @IsPhoneNumber()
+  phone?: string | null;
+
+  @ApiProperty({ description: 'The email address of the agency' })
+  @IsEmail()
+  email?: string | null;
+
+  @ApiProperty({ description: 'The full name of the owner' ,required:false })
+  @IsOptional()
+  @IsString()
+  ownerFullName?: string;
+
+  @ApiProperty({ description: 'The phone number of the owner',required:false })
+  @IsOptional()
+  @IsPhoneNumber()
+  ownerPhone?: string;
+}
+
+export class CreateExistentAgenciesDto {
+  @ApiProperty({ description: 'The title of the agency' })
+  @IsString()
+  title!: string;
+
+  @ApiProperty({ description: 'The UUID of the city' })
+  @IsUUID()
+  city_id!: string;
+
+  @ApiProperty({ description: 'The full name of the owner' })
+  @IsString()
+  ownerFullName!: string;
+
+  @ApiProperty({ description: 'The phone number of the owner' })
+  @IsPhoneNumber()
+  ownerPhone!: string;
 }

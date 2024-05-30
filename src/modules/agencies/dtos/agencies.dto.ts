@@ -1,24 +1,57 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
-
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsUUID,
+  IsString,
+  IsOptional,
+  IsEmail,
+  IsPhoneNumber,
+} from 'class-validator';
 import { AbstractDto } from '../../../common/dto/abstract.dto';
-import { DynamicTranslate, StaticTranslate } from '../../../decorators';
-import { type AgenciesEntity } from '../agencies.entity';
 
 export class AgenciesDto extends AbstractDto {
-  @ApiPropertyOptional()
-  @DynamicTranslate()
+  @ApiProperty({ description: 'The UUID of the user' })
+  @IsUUID()
+  userId!: string;
+
+  @ApiPropertyOptional({ description: 'The title of the agency' })
+  @IsOptional()
+  @IsString()
   title?: string;
 
-  @ApiPropertyOptional()
-  description?: string;
+  @ApiPropertyOptional({ description: 'The UUID of the city' })
+  @IsOptional()
+  @IsUUID()
+  city_id?: string;
 
-  @ApiPropertyOptional()
-  @StaticTranslate()
-  info: string;
+  @ApiPropertyOptional({ description: 'The legal name of the agency' })
+  @IsOptional()
+  @IsString()
+  legalName?: string;
 
-  constructor(AgenciesEntity: AgenciesEntity) {
-    super(AgenciesEntity);
+  @ApiPropertyOptional({
+    description: 'The tax identification number of the agency',
+  })
+  @IsOptional()
+  @IsString()
+  inn?: string;
 
-    this.info = 'keywords.admin';
-  }
+  @ApiPropertyOptional({ description: 'The phone number of the agency' })
+  @IsOptional()
+  @IsPhoneNumber()
+  phone?: string | null;
+
+  @ApiPropertyOptional({ description: 'The email address of the agency' })
+  @IsOptional()
+  @IsEmail()
+  email?: string | null;
+
+  @ApiPropertyOptional({ description: 'The full name of the owner' })
+  @IsOptional()
+  @IsString()
+  ownerFullName?: string;
+
+  @ApiPropertyOptional({ description: 'The phone number of the owner' })
+  @IsOptional()
+  @IsPhoneNumber()
+  ownerPhone?: string;
 }

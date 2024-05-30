@@ -10,6 +10,6 @@ export class CitiesEntity extends AbstractEntity<CitiesDto> {
   @Column({ nullable: true, type: 'varchar' })
   name!: string;
 
-  @OneToMany(() => UserEntity, (user) => user.cityId)
+  @OneToMany(() => UserEntity, (user) => user.city)
   users?: UserEntity[];
 }
