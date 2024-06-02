@@ -1,139 +1,128 @@
-
-
 import { ApiProperty } from '@nestjs/swagger';
-import {  IsOptional, IsString  } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
-export class UpdateBuilding{
+export class UpdateBuilding {
   @IsOptional()
   @IsString()
   @ApiProperty({
-      example : "Building name ",
-      required : false ,
-      type : String 
+    example: 'Building name ',
+    required: false,
+    type: String,
   })
+  name!: string;
 
-  name !: string;
-
- 
-  // storage 
+  // storage
   // @IsNumber()
   @IsOptional()
   @ApiProperty({
-    example : 22,
-    description : "Total storage for the building",
-    type : Number ,
-    required : false 
+    example: 22,
+    description: 'Total storage for the building',
+    type: Number,
+    required: false,
   })
-  totalStorage !: number 
+  totalStorage!: number;
 
-  // vacant storage 
+  // vacant storage
   // @IsNumber()
   @IsOptional()
   @ApiProperty({
-    example : 12,
-    description : "Total  vacant storage for the building",
-    type : Number ,
-    required : false 
+    example: 12,
+    description: 'Total  vacant storage for the building',
+    type: Number,
+    required: false,
   })
-  totalVacantStorage !: number 
+  totalVacantStorage!: number;
 
-  // apartment 
+  // apartment
   // @IsNumber()
   @IsOptional()
   @ApiProperty({
-      example : 22,
-      description : "Total apartments",
-      type : Number ,
-      required : false 
+    example: 22,
+    description: 'Total apartments',
+    type: Number,
+    required: false,
   })
-  totalApartment !: number 
+  totalApartment!: number;
 
-  // vacant apartment 
+  // vacant apartment
   @IsOptional()
   // @IsNumber()
   @ApiProperty({
-    example : 12,
-    description : "Total vacant apartment",
-    type : Number ,
-    required : false 
+    example: 12,
+    description: 'Total vacant apartment',
+    type: Number,
+    required: false,
   })
-  totalVacantApartment !: number 
+  totalVacantApartment!: number;
 
-  // total parking space 
+  // total parking space
   @IsOptional()
   // @IsNumber()
   @ApiProperty({
-    example : 33,
-    description : "Total parking space",
-    type : Number ,
-    required :false 
+    example: 33,
+    description: 'Total parking space',
+    type: Number,
+    required: false,
   })
-  totalParkingSpace !: number 
+  totalParkingSpace!: number;
 
-  // total vacant parking space 
+  // total vacant parking space
   @IsOptional()
   // @IsNumber()
   @ApiProperty({
-    example : 44,
-    description : "Total vacant parking space ",
-    type : Number ,
-    required : false 
+    example: 44,
+    description: 'Total vacant parking space ',
+    type: Number,
+    required: false,
   })
-  totalVacantParkingSpace !: number 
-
+  totalVacantParkingSpace!: number;
 
   // commercial
   // @IsNumber()
   @IsOptional()
   @ApiProperty({
-    example : 3,
-    description : "Total commercial",
-    type : Number ,
-    required : false 
+    example: 3,
+    description: 'Total commercial',
+    type: Number,
+    required: false,
   })
-  totalCommercial !: number 
+  totalCommercial!: number;
 
   // vacant commercail
   @IsOptional()
   // @IsNumber()
   @ApiProperty({
-     example : 1,
-     description : "Total vacant commercial",
-     type : Number ,
-     required : false  
+    example: 1,
+    description: 'Total vacant commercial',
+    type: Number,
+    required: false,
   })
-  totalVacantCommercial !: number  
+  totalVacantCommercial!: number;
 
-
- @IsOptional()
+  @IsOptional()
   @IsString()
   @ApiProperty({
-    example : "Somewhere for building address",
-    type : String,
-    required : false 
+    example: 'Somewhere for building address',
+    type: String,
+    required: false,
   })
-  address ?: string 
+  address?: string;
 
   @IsOptional()
   // @IsNumber()
   @ApiProperty({
-    example : 6,
-    type : Number,
-    description : "Number of floors for a building",
-    required : false 
+    example: 6,
+    type: Number,
+    description: 'Number of floors for a building',
+    required: false,
   })
-  numberOfFloors ?: number 
+  numberOfFloors?: number;
 
   @IsOptional()
   @ApiProperty({
     type: 'array',
-    items: {
-        type: 'string',
-        format: 'binary', 
-    },
     description: 'Images of the building (from multiple file uploads)',
-    required : false 
-   })
-    photos ?: Array<Express.Multer.File>  | any 
+    required: false,
+  })
+  photos?: string[];
 }
-

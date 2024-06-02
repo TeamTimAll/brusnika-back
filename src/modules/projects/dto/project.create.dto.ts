@@ -1,61 +1,58 @@
-import { IsNotEmpty , IsString  , IsUUID , IsNumber} from "class-validator"
-import { ApiProperty } from "@nestjs/swagger";
-import { Uuid } from "boilerplate.polyfill";
-
+import { IsNotEmpty, IsString, IsNumber, IsDateString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProjectDto {
-    @ApiProperty({
-        example : "84895621-615d-4a18-b076-d9dc71a5b0f7",
-        required : true 
-    })
-    @IsUUID()
-    @IsNotEmpty()
-    userId!: Uuid;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 'Name',
+    required: true,
+  })
+  name!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @ApiProperty( {
-          example : "Name",
-          required : true 
-    })
-    name!: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 'Something deatiled about the project',
+    required: true,
+  })
+  detailedDescription!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @ApiProperty({
-          example : "Something deatiled about the project",
-          required : true 
-    })
-    detailedDescription!: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 'Brief description about the project',
+    required: true,
+  })
+  briefDescription!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @ApiProperty({
-          example : "Brief description about the project",
-          required : true 
-    })
-    briefDescription!: string;
+  @IsNumber()
+  @IsNotEmpty()
+  @ApiProperty({
+    required: true,
+    type: Number,
+  })
+  price!: number;
 
-    @IsNumber()
-    @IsNotEmpty()
-    price !: number
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    example: 'Brief description about the project',
+    required: true,
+  })
+  location!: string;
 
-    @IsNotEmpty()
-    @IsString()
-    location !: string 
-     
-    @IsNotEmpty()
-    @IsString()
-    endDate !: Date 
+  @IsNotEmpty()
+  @IsDateString()
+  @ApiProperty({
+    example: '2022-03-07',
+    required: true,
+  })
+  end_date!: Date;
 
-    @ApiProperty({
-      type: 'string',
-      format: 'binary', 
-      description: 'Image of the premise (from file upload)'
-    })
-    file !: Express.Multer.File;
+  @IsString()
+  @ApiProperty({
+    required: true,
+  })
+  photo!: string;
 }
-
-
-
-

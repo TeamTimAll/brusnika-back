@@ -51,5 +51,5 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
   views!: number; 
 
   @OneToMany(() => CommentEntity, (comment) => comment.event)
-  comments?: CommentEntity[]; // One-to-many relationship with comments
+  comments?: CommentEntity[];
 }

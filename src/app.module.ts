@@ -5,19 +5,30 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
 import * as AppDataSource from './data-source';
 import { config } from 'dotenv';
-config()
-
+config();
 
 @Module({
-  imports: [
-    SecuredModule, 
-    TypeOrmModule.forRoot(AppDataSource)
-  ],
+  imports: [SecuredModule, TypeOrmModule.forRoot(AppDataSource)],
   providers: [],
+  controllers: [],
 })
-
 export class AppModule {}
 
+// @Module({
+//   imports: [
+//       ConfigModule.forRoot({
+//           load: [configuration],
+//           isGlobal: true,
+//       }),
+//       SharedModule,
+//       DatabaseModule,
+//       AgencyModule, //ADD HERE
+
+//   ],
+//   controllers: [AppController],
+//   providers: [AppService],
+// })
+// export class AppModule {}
 // ClsModule.forRoot({
 //   global: true,
 //   middleware: {
@@ -25,14 +36,6 @@ export class AppModule {}
 //   },
 // }),
 
-
-// ThrottlerModule.forRootAsync({
-//   imports: [SharedModule],
-//   useFactory: (configService: ApiConfigService) => ({
-//     throttlers: [configService.throttlerConfigs],
-//   }),
-//   inject: [ApiConfigService],
-// }),
 // ConfigModule.forRoot({
 //   isGlobal: true,
 //   envFilePath: '.env',

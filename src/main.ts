@@ -84,9 +84,8 @@ async function bootstrap(): Promise<NestExpressApplication> {
   // if (!configService.isDevelopment) {
   //   app.enableShutdownHooks();
   // }
-
-  // const port = configService.appConfig.port;
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
   console.info(`server running on ${await app.getUrl()}`);
   return app;
 }

@@ -12,7 +12,7 @@ import { type PageOptionsDto } from './common/dto/page-options.dto';
 import { type LanguageCode } from './constants/language-code';
 import { type KeyOfType } from './types';
 
-export type Uuid = string & { _uuidBrand: undefined };
+export type Uuid = string;
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-redundant-type-constituents
   export type Todo = any & { _todoBrand: undefined };

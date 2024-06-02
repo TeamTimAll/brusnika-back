@@ -87,3 +87,7 @@ db-data
 .history
 node_modules
 .env
+
+tsconfig.build.tsbuildinfo
+
+#

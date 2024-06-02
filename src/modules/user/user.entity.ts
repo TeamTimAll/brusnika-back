@@ -1,21 +1,33 @@
-import { Column, Entity, OneToMany, OneToOne, VirtualColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  VirtualColumn,
+} from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../constants';
-import { UseDto } from '../../decorators';
-import { UserDto } from './dtos/user.dto';
-import { UserSettingsEntity } from './user-settings.entity';
 import { EventsEntity } from '../events/events.entity';
 import { CommentEntity } from '../../modules/comments/comment.entity';
-import { ProjectEntity } from '../../modules/projects/project.entity';
-import { ClientEntity } from '../../modules/clients/client.entity';
+import { ClientEntity } from '../client/client.entity';
+import { NewsEntity } from '../news/news.entity';
+import { TrainingEntity } from '../../modules/training/training.entity';
+import { CitiesEntity } from '../cities/cities.entity';
+import { AgenciesEntity } from '../../modules/agencies/agencies.entity';
+import { UserDto } from './dtos/user.dto';
+import { UseDto } from '../../decorators';
 
+export enum UserRegisterStatus {
+  CREATED = 'start',
+  FILLED = 'filled',
+  FINISHED = 'finished',
+}
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
-
 export class UserEntity extends AbstractEntity<UserDto> {
-
   @Column({ nullable: true, type: 'varchar' })
   firstName!: string | null;
 
@@ -32,13 +44,19 @@ export class UserEntity extends AbstractEntity<UserDto> {
   username!: string;
 
   @Column({ nullable: true, type: 'varchar' })
-  password!: string | null;
+  password!: string;
 
   @Column({ nullable: true, type: 'varchar' })
   phone!: string | null;
 
-  @Column({ nullable: true, type: 'varchar' })
-  verification_code!: string | null;
+  @Column({ nullable: true, type: 'date' })
+  birthDate!: Date | null;
+
+  @Column({ nullable: true, type: 'date' })
+  workStartDate!: Date | null;
+
+  @Column({ nullable: true, type: 'int' })
+  verification_code!: number | null;
 
   @Column({ nullable: true, type: 'timestamp' })
   verification_code_sent_date!: Date | null;
@@ -46,30 +64,78 @@ export class UserEntity extends AbstractEntity<UserDto> {
   @Column({ nullable: true, type: 'varchar' })
   avatar!: string | null;
 
+  @Column({
+    type: 'enum',
+    enum: UserRegisterStatus,
+    default: null,
+  })
+  register_status!: UserRegisterStatus | null;
+
   @VirtualColumn({
     query: (alias) =>
       `SELECT CONCAT(${alias}.first_name, ' ', ${alias}.last_name)`,
   })
-
   fullName!: string;
 
-  @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)
-  settings?: UserSettingsEntity;
+  @Column({ default: false })
+  isPhoneVerified?: boolean;
 
-  @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user)
+  @Column({ nullable: true, type: 'varchar' })
+  temporaryNumber!: string | null;
+
+  @Column({ default: true })
+  status!: boolean;
+
+  @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   events?: EventsEntity[];
 
-  @OneToMany(() => CommentEntity, (comment) => comment.user)
-  comments?: CommentEntity[]; 
+  @OneToMany(() => CommentEntity, (comment) => comment.user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  comments?: CommentEntity[];
 
+  @OneToMany(() => NewsEntity, (news) => news.user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  news?: NewsEntity[];
 
-  @OneToMany(() => ProjectEntity ,( project ) => project.user)
-  projects ?: ProjectEntity[]
+  // @OneToMany(() => ProjectEntity, (project) => project.user, {
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE',
+  // })
+  // projects?: ProjectEntity[];
 
+  @OneToMany(() => ClientEntity, (client) => client.user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  clients?: ClientEntity[];
 
-  @OneToMany(() => ClientEntity , ( client ) => client.user)
-  clients ? : ClientEntity[]
+  @OneToMany(() => TrainingEntity, (train) => train.user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  trainings?: TrainingEntity[];
 
+  @ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
+    onDelete: 'SET NULL',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinColumn({ name: 'city_id' })
+  city!: CitiesEntity;
+
+  @Column({ nullable: true })
+  city_id?: string;
+
+  @ManyToOne(() => AgenciesEntity, (agency) => agency.user)
+  @JoinColumn({ name: 'agency_id' })
+  agency!: AgenciesEntity;
+
+  @Column({ nullable: true })
+  agency_id?: string;
 }
-
-
