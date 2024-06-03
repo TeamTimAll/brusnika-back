@@ -1,9 +1,10 @@
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, Like } from 'typeorm';
 import { UpdateAgenciesDto } from './dtos/update-agencies.dto';
 import { AgenciesEntity } from './agencies.entity';
 import { BasicService } from '../../generic/service';
 import { CreateAgenciesDto } from './dtos/create-agencies.dto';
+import { CGeneric } from '../../interfaces/res.generic.interface';
 
 export class AgenciesService extends BasicService<
   AgenciesEntity,
@@ -12,6 +13,18 @@ export class AgenciesService extends BasicService<
 > {
   constructor(@InjectDataSource() dataSource: DataSource) {
     super('agencies', AgenciesEntity, dataSource);
+  }
+
+  async findAllWithName(name: string): Promise<CGeneric> {
+    const findAllData = await this.repository.findBy({
+      title: Like(name)
+    });
+
+    if (!findAllData.length) {
+      return new CGeneric([`agencies not found`], 204, findAllData);
+    }
+
+    return new CGeneric([`agencies all data`], 200, findAllData);
   }
 }
 // @Injectable()

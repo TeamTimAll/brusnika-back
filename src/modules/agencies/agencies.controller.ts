@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Put,
   Post,
+  Query,
 } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
@@ -42,12 +43,13 @@ export class AgenciesController {
   }
 
   @Get()
-  @Auth([RoleType.USER])
   @ApiPageOkResponse({ type: AgenciesDto })
-  async getAgencies(
-    // @Query() AgenciesPageOptionsDto: AgenciesPageOptionsDto,
-  ): Promise<any> {
-    return this.service.findAll();
+  async getAgencies(@Query() name: string): Promise<any> {
+    if (name) {
+      return this.service.findAllWithName(name);
+    } else {
+      return this.service.findAll();
+    }
   }
 
   @Get(':id')

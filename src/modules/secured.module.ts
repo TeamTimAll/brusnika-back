@@ -15,6 +15,7 @@ import { DealsModule } from './deals/deals.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CitiesModule } from './cities/cities.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CitiesModule } from './cities/cities.module';
     TrainingModule,
     DealsModule,
     CitiesModule,
+    FileUploadModule,
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/api/files',
