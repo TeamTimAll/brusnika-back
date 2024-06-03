@@ -11,7 +11,6 @@ import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../constants';
 import { EventsEntity } from '../events/events.entity';
 import { CommentEntity } from '../../modules/comments/comment.entity';
-import { ProjectEntity } from '../../modules/projects/project.entity';
 import { ClientEntity } from '../client/client.entity';
 import { NewsEntity } from '../news/news.entity';
 import { TrainingEntity } from '../../modules/training/training.entity';
@@ -105,11 +104,11 @@ export class UserEntity extends AbstractEntity<UserDto> {
   })
   news?: NewsEntity[];
 
-  @OneToMany(() => ProjectEntity, (project) => project.user, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  projects?: ProjectEntity[];
+  // @OneToMany(() => ProjectEntity, (project) => project.user, {
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE',
+  // })
+  // projects?: ProjectEntity[];
 
   @OneToMany(() => ClientEntity, (client) => client.user, {
     onDelete: 'CASCADE',

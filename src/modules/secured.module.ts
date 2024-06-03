@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthCheckerModule } from './health-checker/health-checker.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './user/user.entity';
 import { EventsModule } from './events/events.module';
 import { NewsModule } from './news/news.module';
 import { CommentsModule } from './comments/comments.module';
@@ -16,27 +14,32 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { CitiesModule } from './cities/cities.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { BuildingsModule } from './buildings/buildings.module';
+import { SectionsModule } from './sections/sections.module';
+import { PremisesModule } from './premises/premises.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/api/files',
+    }),
     UserModule,
     EventsModule,
     AuthModule,
-    NewsModule,
-    CommentsModule,
-    ProjectsModule,
     HealthCheckerModule,
-    TypeOrmModule.forFeature([UserEntity]),
     ClientModule,
     ClientStatusModule,
     TrainingModule,
     DealsModule,
     CitiesModule,
     FileUploadModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'),
-      serveRoot: '/api/files',
-    }),
+    NewsModule,
+    CommentsModule,
+    ProjectsModule,
+    BuildingsModule,
+    PremisesModule,
+    SectionsModule,
   ],
   exports: [],
 })

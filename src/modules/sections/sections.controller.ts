@@ -8,65 +8,54 @@ import {
   Delete,
   InternalServerErrorException,
   HttpException,
-  Query,
 } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
 import { UUIDParam } from '../../decorators';
-import { CreateCitiesDto } from './dtos/create-cities.dto';
-import { CitiesDto } from './dtos/cities.dto';
-import { UpdateCitiesDto } from './dtos/update-cities.dto';
-import { CitiesService } from './cities.service';
+import { CreateSectionsDto } from './dtos/create-sections.dto';
+import { SectionsDto } from './dtos/sections.dto';
+import { UpdateSectionsDto } from './dtos/update-sections.dto';
+import { SectionsService } from './sections.service';
 import { Uuid } from 'boilerplate.polyfill';
 
-@Controller('/cities')
-@ApiTags('Cities')
-export class CitiesController {
-  constructor(private service: CitiesService) {}
+@Controller('/sections')
+@ApiTags('Sections')
+export class SectionsController {
+  constructor(private SectionsService: SectionsService) {}
 
   @ApiOperation({ summary: 'Create a city' })
-  @ApiResponse({ status: HttpStatus.CREATED, type: CitiesDto })
+  @ApiResponse({ status: HttpStatus.CREATED, type: SectionsDto })
   @Post()
-  async createCity(@Body() createCitiesDto: CreateCitiesDto): Promise<any> {
+  async createCity(@Body() createSectionsDto: CreateSectionsDto): Promise<any> {
     try {
-      return await this.service.create(createCitiesDto);
+      return await this.SectionsService.create(createSectionsDto);
     } catch (error: any) {
       throw this.handleException(error);
     }
   }
 
+  @ApiOperation({ summary: 'Get all Sections' })
+  @ApiResponse({ status: HttpStatus.OK, type: SectionsDto, isArray: true })
   @Get()
-  @ApiQuery({
-    name: 'name',
-    description: ' city Name (optional if not provided  or empty)',
-    required: false,
-  })
-  @ApiOperation({ summary: 'Get all cities' })
-  @ApiResponse({ status: HttpStatus.OK })
-  async getCities(@Query('name') name: string): Promise<any> {
+  async getSections(): Promise<any> {
     try {
-      if (name) {
-        return this.service.findAllWithName(name);
-      } else {
-        return await this.service.findAll();
-      }
+      return await this.SectionsService.findAll();
     } catch (error: any) {
       throw this.handleException(error);
     }
   }
 
   @ApiOperation({ summary: 'Get a single city by ID' })
-  @ApiResponse({ status: HttpStatus.OK, type: CitiesDto })
+  @ApiResponse({ status: HttpStatus.OK, type: SectionsDto })
   @Get(':id')
   async getSingleCity(@UUIDParam('id') id: Uuid): Promise<any> {
     try {
-      return await this.service.findOne(id);
+      return await this.SectionsService.findOne(id);
     } catch (error: any) {
       throw this.handleException(error);
     }
@@ -77,10 +66,10 @@ export class CitiesController {
   @Put(':id')
   async updateCity(
     @UUIDParam('id') id: Uuid,
-    @Body() updateCitiesDto: UpdateCitiesDto,
+    @Body() updateSectionsDto: UpdateSectionsDto,
   ): Promise<any> {
     try {
-      await this.service.update(id, updateCitiesDto);
+      await this.SectionsService.update(id, updateSectionsDto);
     } catch (error: any) {
       throw this.handleException(error);
     }
@@ -91,7 +80,7 @@ export class CitiesController {
   @Delete(':id')
   async deleteCity(@UUIDParam('id') id: Uuid): Promise<any> {
     try {
-      await this.service.remove(id);
+      await this.SectionsService.remove(id);
     } catch (error: any) {
       throw this.handleException(error);
     }

@@ -1,8 +1,7 @@
-import { EmailField, Roles, StringField } from '../../../decorators';
+import { EmailField, StringField } from '../../../decorators';
 import {
   IsBoolean,
   IsDateString,
-  IsEnum,
   IsMobilePhone,
   IsNumber,
   IsString,
@@ -11,7 +10,10 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleType } from '../../../constants';
 import { Uuid } from 'boilerplate.polyfill';
-import { CreateAgenciesDto, CreateExistentAgenciesDto } from '../../agencies/dtos/create-agencies.dto';
+import {
+  CreateAgenciesDto,
+  CreateExistentAgenciesDto,
+} from '../../agencies/dtos/create-agencies.dto';
 
 export class UserLoginDto {
   @EmailField()
@@ -98,8 +100,11 @@ export class LoginSuccess {
   @ApiProperty({ description: 'access token identity' })
   access_token_id: string | undefined;
 
-  @IsEnum(Roles)
-  @ApiProperty({ description: 'role' })
+  @ApiProperty({
+    type: 'enum',
+    enum: RoleType,
+    enumName: 'RoleType',
+  })
   @IsString()
   role: RoleType | undefined;
 }

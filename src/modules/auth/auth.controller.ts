@@ -100,11 +100,6 @@ export class AuthController {
     return this.authService.getCity();
   }
 
-  // @Get(':email')
-  // getUser(@Param('email') email: string) {
-  //   return this.authService.getUser(email);
-  // }
-
   @Get()
   @UseGuards(JwtAuthGuard)
   status(@Req() req: Request) {

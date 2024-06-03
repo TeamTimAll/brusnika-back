@@ -48,6 +48,18 @@ export class AgenciesEntity extends AbstractEntity<AgenciesDto> {
   @Column({ nullable: true, type: 'varchar' })
   ownerPhone!: string | null;
 
+  @Column({ nullable: true, type: 'varchar' })
+  entry_doc!: string | null;
+
+  @Column({ nullable: true, type: 'varchar' })
+  company_card_doc!: string | null;
+
+  @Column({ nullable: true, type: 'varchar' })
+  tax_registration_doc!: string | null;
+
+  @Column({ nullable: true, type: 'varchar' })
+  authority_signatory_doc!: string | null;
+
   // @Column({ nullable: true, type: 'varchar' })
   // description!: string;
 

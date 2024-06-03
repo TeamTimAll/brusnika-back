@@ -123,7 +123,8 @@ export class UserService {
       );
     }
 
-    const randomNumber = Math.floor(100000 + Math.random() * 900000);
+    // const randomNumber = Math.floor(100000 + Math.random() * 900000);
+    const randomNumber = 111111;
 
     console.log(randomNumber, user.id);
 
@@ -200,7 +201,8 @@ export class UserService {
 
       if (user.verification_code_sent_date) {
         if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
-          const randomNumber = Math.floor(100000 + Math.random() * 900000);
+          // const randomNumber = Math.floor(100000 + Math.random() * 900000);
+          const randomNumber = 111111;
 
           console.log(randomNumber, user.id);
           // todo send sms

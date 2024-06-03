@@ -5,18 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SecuredModule } from './modules/secured.module';
 import * as AppDataSource from './data-source';
 import { config } from 'dotenv';
-import { MulterModule } from '@nestjs/platform-express';
-
 config();
 
 @Module({
-  imports: [
-    SecuredModule,
-    TypeOrmModule.forRoot(AppDataSource),
-    MulterModule.register({
-      dest: '../media',
-    }),
-  ],
+  imports: [SecuredModule, TypeOrmModule.forRoot(AppDataSource)],
   providers: [],
   controllers: [],
 })
@@ -43,7 +35,6 @@ export class AppModule {}
 //     mount: true,
 //   },
 // }),
-
 
 // ConfigModule.forRoot({
 //   isGlobal: true,

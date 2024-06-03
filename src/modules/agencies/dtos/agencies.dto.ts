@@ -54,4 +54,30 @@ export class AgenciesDto extends AbstractDto {
   @IsOptional()
   @IsPhoneNumber()
   ownerPhone?: string;
+
+  @ApiProperty({ description: 'Document for entry', required: false })
+  @IsOptional()
+  @IsString()
+  entry_doc?: string;
+
+  @ApiProperty({ description: 'Document for company card', required: false })
+  @IsOptional()
+  @IsString()
+  company_card_doc?: string;
+
+  @ApiProperty({
+    description: 'Document for tax registration',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  tax_registration_doc?: string;
+
+  @ApiProperty({
+    description: 'Document for authority signatory',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  authority_signatory_doc?: string;
 }

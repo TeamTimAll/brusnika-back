@@ -87,7 +87,8 @@ export class AuthService {
         );
       }
 
-      const randomNumber = Math.floor(100000 + Math.random() * 900000);
+      // const randomNumber = Math.floor(100000 + Math.random() * 900000);
+      const randomNumber = 111111;
 
       console.log(randomNumber, user.id);
 
@@ -232,11 +233,7 @@ export class AuthService {
           city_id: body.city_id,
           ownerFullName: body.ownerFullName,
           ownerPhone: body.ownerPhone,
-          legalName: null,
-          phone: null,
           title: body.title,
-          inn: null,
-          email: null
         });
         await this.userService.updateUser(user.id, {
           register_status: UserRegisterStatus.FINISHED,
@@ -326,7 +323,8 @@ export class AuthService {
         user.register_status === UserRegisterStatus.FINISHED
       ) {
         // todo send code to phone number
-        const randomNumber = Math.floor(100000 + Math.random() * 900000);
+        // const randomNumber = Math.floor(100000 + Math.random() * 900000);
+        const randomNumber = 111111;
 
         console.log(randomNumber, user.id);
 
@@ -451,7 +449,8 @@ export class AuthService {
       // todo send code to phone number
       if (user.verification_code_sent_date) {
         if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
-          const randomNumber = Math.floor(100000 + Math.random() * 900000);
+          // const randomNumber = Math.floor(100000 + Math.random() * 900000);
+          const randomNumber = 111111
 
           console.log(randomNumber, user.id);
 

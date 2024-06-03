@@ -13,10 +13,10 @@ import {
   ApiAcceptedResponse,
   ApiCreatedResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 
-import { RoleType } from '../../constants';
 import { Auth, AuthUser, UUIDParam } from '../../decorators';
 import { CreateAgenciesDto } from './dtos/create-agencies.dto';
 import { AgenciesDto } from './dtos/agencies.dto';
@@ -26,12 +26,11 @@ import { Uuid } from 'boilerplate.polyfill';
 import { ApiPageOkResponse } from '../../decorators';
 import { ICurrentUser } from 'interfaces/current-user.interface';
 
-@Controller('/Agencies')
+@Controller('/agencies')
 @ApiTags('Agencies')
 export class AgenciesController {
   constructor(private service: AgenciesService) {}
 
-  @Auth([RoleType.USER])
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({ type: AgenciesDto })
   @Post()
@@ -43,8 +42,13 @@ export class AgenciesController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'name',
+    description: ' Agencies Name (optional if not provided  or empty)',
+    required: false,
+  })
   @ApiPageOkResponse({ type: AgenciesDto })
-  async getAgencies(@Query() name: string): Promise<any> {
+  async getAgencies(@Query('name') name: string): Promise<any> {
     if (name) {
       return this.service.findAllWithName(name);
     } else {

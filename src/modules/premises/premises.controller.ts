@@ -13,56 +13,46 @@ import {
 import {
   ApiAcceptedResponse,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
 import { UUIDParam } from '../../decorators';
-import { CreateCitiesDto } from './dtos/create-cities.dto';
-import { CitiesDto } from './dtos/cities.dto';
-import { UpdateCitiesDto } from './dtos/update-cities.dto';
-import { CitiesService } from './cities.service';
+import { CreatePremisesDto } from './dtos/create-premises.dto';
+import { PremisesDto, PremisesFilterDto } from './dtos/premises.dto';
+import { UpdatePremisesDto } from './dtos/update-premises.dto';
+import { PremisesService } from './premises.service';
 import { Uuid } from 'boilerplate.polyfill';
 
-@Controller('/cities')
-@ApiTags('Cities')
-export class CitiesController {
-  constructor(private service: CitiesService) {}
+@Controller('/premises')
+@ApiTags('Premises')
+export class PremisesController {
+  constructor(private service: PremisesService) {}
 
   @ApiOperation({ summary: 'Create a city' })
-  @ApiResponse({ status: HttpStatus.CREATED, type: CitiesDto })
+  @ApiResponse({ status: HttpStatus.CREATED, type: PremisesDto })
   @Post()
-  async createCity(@Body() createCitiesDto: CreateCitiesDto): Promise<any> {
+  async createCity(@Body() createPremisesDto: CreatePremisesDto): Promise<any> {
     try {
-      return await this.service.create(createCitiesDto);
+      return await this.service.create(createPremisesDto);
     } catch (error: any) {
       throw this.handleException(error);
     }
   }
 
+  @ApiOperation({ summary: 'Get all Premises' })
+  @ApiResponse({ status: HttpStatus.OK, type: PremisesDto, isArray: true })
   @Get()
-  @ApiQuery({
-    name: 'name',
-    description: ' city Name (optional if not provided  or empty)',
-    required: false,
-  })
-  @ApiOperation({ summary: 'Get all cities' })
-  @ApiResponse({ status: HttpStatus.OK })
-  async getCities(@Query('name') name: string): Promise<any> {
+  async getPremises(@Query() filterDto: PremisesFilterDto): Promise<any> {
     try {
-      if (name) {
-        return this.service.findAllWithName(name);
-      } else {
-        return await this.service.findAll();
-      }
+      return await this.service.getPremisesFiltered(filterDto);
     } catch (error: any) {
       throw this.handleException(error);
     }
   }
 
   @ApiOperation({ summary: 'Get a single city by ID' })
-  @ApiResponse({ status: HttpStatus.OK, type: CitiesDto })
+  @ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
   @Get(':id')
   async getSingleCity(@UUIDParam('id') id: Uuid): Promise<any> {
     try {
@@ -77,10 +67,10 @@ export class CitiesController {
   @Put(':id')
   async updateCity(
     @UUIDParam('id') id: Uuid,
-    @Body() updateCitiesDto: UpdateCitiesDto,
+    @Body() updatePremisesDto: UpdatePremisesDto,
   ): Promise<any> {
     try {
-      await this.service.update(id, updateCitiesDto);
+      await this.service.update(id, updatePremisesDto);
     } catch (error: any) {
       throw this.handleException(error);
     }

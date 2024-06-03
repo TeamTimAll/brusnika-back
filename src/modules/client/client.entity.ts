@@ -47,10 +47,10 @@ export class ClientEntity extends AbstractEntity<ClientDto> {
   @Column({ type: 'uuid' })
   userId !: Uuid;
 
-  @ManyToOne(() => UserEntity, user => user.projects, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
+  // @ManyToOne(() => UserEntity, user => user.projects, {
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE',
+  // })
 
   @JoinColumn({ name: 'user_id' })
   user !: UserEntity;

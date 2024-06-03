@@ -1,40 +1,54 @@
-import { UseDto } from "../../decorators";
-import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { ProjectSDto } from "./dto/projects.dto";
-import { Uuid } from "boilerplate.polyfill";
-import { UserEntity } from "../../modules/user/user.entity";
-import { AbstractEntity } from "../../common/abstract.entity";
-import { ClientEntity } from "../client/client.entity"
-import { DealsEntity } from "../../modules/deals/deals.entity";
+import { UseDto } from '../../decorators';
+import { Entity, Column, OneToMany } from 'typeorm';
+import { ProjectSDto } from './dto/projects.dto';
+import { AbstractEntity } from '../../common/abstract.entity';
+import { BuildingsEntity } from '../../modules/buildings/buildings.entity';
+import { ClientEntity } from '../client/client.entity';
+import { DealsEntity } from '../deals/deals.entity';
+import { SectionsEntity } from '../sections/sections.entity';
 
-@Entity( { name : "projects"})
+@Entity({ name: 'projects' })
 @UseDto(ProjectSDto)
-
 export class ProjectEntity extends AbstractEntity<ProjectSDto> {
+  @Column({ nullable: true })
+  name!: string;
 
-    @Column({ type: 'uuid' })
-    userId!: Uuid;
+  @Column({ nullable: true })
+  detailedDescription!: string;
 
-    @ManyToOne(() => UserEntity, (user) => user.projects, { 
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-    })
+  @Column({ nullable: true })
+  briefDescription!: string;
 
-    @JoinColumn({ name: 'user_id' })
-    user!: UserEntity; 
-      
-    @Column({ nullable: false })
-    title!: string 
+  @Column({ nullable: true })
+  photo!: string;
 
-    @Column({ nullable: false }) 
-    description!: string 
+  @OneToMany(() => ClientEntity, (client) => client.project)
+  clients?: ClientEntity[];
 
+  @OneToMany(() => BuildingsEntity, (buildings) => buildings.project)
+  buildings?: BuildingsEntity[];
 
-    @OneToMany(()=> ClientEntity , (  client ) => client.project )
-    clients ? : ClientEntity[] // project clients 
+  @Column({ nullable: true })
+  price!: number;
 
+  @Column({ nullable: true })
+  location!: string;
 
-    @OneToMany(() => DealsEntity , ( deal ) => deal.project)
-    deals ? : DealsEntity[]  
+  @Column({ nullable: true, type: 'varchar' })
+  long!: string;
 
+  @Column({ nullable: true, type: 'varchar' })
+  lat!: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  link!: string;
+
+  @Column({ nullable: true, type: 'date' })
+  end_date!: Date;
+
+  @OneToMany(() => DealsEntity, (deal) => deal.project)
+  deals?: DealsEntity[];
+
+  @OneToMany(() => SectionsEntity, (SectionsEntity) => SectionsEntity.project)
+  sections?: SectionsEntity[];
 }

@@ -1,5 +1,5 @@
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource, Like } from 'typeorm';
+import { DataSource, ILike } from 'typeorm';
 import { UpdateAgenciesDto } from './dtos/update-agencies.dto';
 import { AgenciesEntity } from './agencies.entity';
 import { BasicService } from '../../generic/service';
@@ -16,8 +16,10 @@ export class AgenciesService extends BasicService<
   }
 
   async findAllWithName(name: string): Promise<CGeneric> {
-    const findAllData = await this.repository.findBy({
-      title: Like(name)
+    const findAllData = await this.repository.find({
+      where: {
+        title: ILike(`%${name}%`),
+      },
     });
 
     if (!findAllData.length) {
