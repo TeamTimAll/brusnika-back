@@ -6,10 +6,9 @@ import {
   IsDateString,
   IsEmail,
   IsEnum,
-  IsNotEmpty,
+  IsMobilePhone,
   IsNumber,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   IsUUID,
 } from 'class-validator';
@@ -128,8 +127,7 @@ export class UserDto extends AbstractDto {
 }
 
 export class UserCreateDto {
-  @IsPhoneNumber()
-  @IsNotEmpty()
+  @IsMobilePhone()
   @ApiProperty({ required: true })
   phone!: string;
 }

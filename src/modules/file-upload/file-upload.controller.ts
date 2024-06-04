@@ -55,7 +55,7 @@ export class FileUploadController {
     file: Express.Multer.File,
     callback: (error: Error | null, acceptFile: boolean) => void,
   ): void {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|pdf|doc)$/)) {
       return callback(new Error('Only image files are allowed!'), false);
     }
     callback(null, true);
