@@ -272,7 +272,7 @@ export class AuthService {
         // user.create(user)
         // user = newUser
         // } else {
-        return new UnauthorizedException('User not found');
+        return new HttpException('User not found', HttpStatus.NOT_FOUND);
         // }
       }
 
@@ -438,7 +438,7 @@ export class AuthService {
   ): Promise<LoginSuccess | any> {
     try {
       const user = await this.userService.findOne({
-        phone: dto.user_id,
+        id: dto.user_id,
       });
 
       if (!user) {

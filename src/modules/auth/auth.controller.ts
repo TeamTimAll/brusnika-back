@@ -11,7 +11,6 @@ import { AuthService } from './auth.service';
 import { Request } from 'express';
 import { UserCreateDto, UserFillDataDto } from '../../modules/user/dtos/user.dto';
 import { JwtAuthGuard } from './guards/jwt.guard';
-import { LocalGuard } from './guards/local.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   AgentChooseAgencyDto,
@@ -35,7 +34,6 @@ export class AuthController {
     type: LoginSuccess,
   })
   @Post('login')
-  @UseGuards(LocalGuard)
   async userLogin(@Body() userLoginDto: UserLoginDto) {
     return this.authService.loginAccount(userLoginDto);
   }
