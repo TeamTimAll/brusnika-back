@@ -1,5 +1,3 @@
-import { AbstractDto } from '../../../common/dto/abstract.dto';
-import { RoleType } from '../../../constants';
 import {
   IsBoolean,
   IsDate,
@@ -9,22 +7,25 @@ import {
   IsMobilePhone,
   IsNumber,
   IsOptional,
+  // IsPhoneNumber,
   IsString,
-  IsUUID,
+  IsUUID
 } from 'class-validator';
+import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { RoleType } from '../../../constants';
 
 import {
   BooleanFieldOptional,
+  ClassField,
   EnumFieldOptional,
   PhoneFieldOptional,
   StringFieldOptional,
 } from '../../../decorators';
-import { ClassField } from '../../../decorators';
 
-import { EmailField, StringField } from '../../../decorators';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity, UserRegisterStatus } from '../user.entity';
 import { Uuid } from 'boilerplate.polyfill';
+import { EmailField, StringField } from '../../../decorators';
+import { UserEntity, UserRegisterStatus } from '../user.entity';
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
