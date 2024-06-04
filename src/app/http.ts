@@ -15,31 +15,32 @@ import { AppModule } from '../app.module';
 import { ConfigManager } from '../config';
 import { HttpExceptionFilter } from '../filters/bad-request.filter';
 import { QueryFailedFilter } from '../filters/query-failed.filter';
-import { SwaggerManager } from './swagger';
 
 export type HttpApplication = NestExpressApplication;
 
 export class Http {
-  static async init(): Promise<HttpApplication> {
-    const app = await NestFactory.create<NestExpressApplication>(
+  public static app: HttpApplication;
+
+  static async init(): Promise<Http> {
+    this.app = await NestFactory.create<NestExpressApplication>(
       AppModule,
       new ExpressAdapter(),
       { cors: true },
     );
-    app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
-    app.use(helmet());
-    app.use(compression());
-    app.use(morgan('combined'));
-    app.enableVersioning();
+    this.app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+    this.app.use(helmet());
+    this.app.use(compression());
+    this.app.use(morgan('combined'));
+    this.app.enableVersioning();
 
-    const reflector = app.get(Reflector);
+    const reflector = this.app.get(Reflector);
 
-    app.useGlobalFilters(
+    this.app.useGlobalFilters(
       new HttpExceptionFilter(reflector),
       new QueryFailedFilter(reflector),
     );
 
-    app.useGlobalPipes(
+    this.app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -49,12 +50,12 @@ export class Http {
       }),
     );
 
-    SwaggerManager.init(app);
+    return this;
+  }
 
+  static async listen() {
     const port = ConfigManager.config.SERVER_PORT;
-
-    await app.listen(port);
-    console.info(`server running on ${await app.getUrl()}`);
-    return app;
+    await this.app.listen(port);
+    console.info(`server running on ${await this.app.getUrl()}`);
   }
 }
