@@ -4,7 +4,7 @@ import {
   IsString,
   IsOptional,
   IsEmail,
-  IsPhoneNumber,
+  IsMobilePhone,
 } from 'class-validator';
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 
@@ -37,7 +37,7 @@ export class AgenciesDto extends AbstractDto {
 
   @ApiPropertyOptional({ description: 'The phone number of the agency' })
   @IsOptional()
-  @IsPhoneNumber()
+  @IsMobilePhone()
   phone?: string | null;
 
   @ApiPropertyOptional({ description: 'The email address of the agency' })
@@ -52,7 +52,7 @@ export class AgenciesDto extends AbstractDto {
 
   @ApiPropertyOptional({ description: 'The phone number of the owner' })
   @IsOptional()
-  @IsPhoneNumber()
+  @IsMobilePhone()
   ownerPhone?: string;
 
   @ApiProperty({ description: 'Document for entry', required: false })

@@ -3,8 +3,8 @@ import {
   IsUUID,
   IsString,
   IsEmail,
-  IsPhoneNumber,
   IsOptional,
+  IsMobilePhone,
 } from 'class-validator';
 
 export class CreateAgenciesDto {
@@ -27,7 +27,7 @@ export class CreateAgenciesDto {
   inn?: string;
 
   @ApiProperty({ description: 'The phone number of the agency' })
-  @IsPhoneNumber()
+  @IsMobilePhone()
   phone?: string;
 
   @ApiProperty({ description: 'The email address of the agency' })
@@ -44,7 +44,7 @@ export class CreateAgenciesDto {
     required: false,
   })
   @IsOptional()
-  @IsPhoneNumber()
+  @IsMobilePhone()
   ownerPhone?: string;
 
   @ApiProperty({ description: 'Document for entry', required: false })
@@ -88,6 +88,6 @@ export class CreateExistentAgenciesDto {
   ownerFullName!: string;
 
   @ApiProperty({ description: 'The phone number of the owner' })
-  @IsPhoneNumber()
+  @IsMobilePhone()
   ownerPhone!: string;
 }

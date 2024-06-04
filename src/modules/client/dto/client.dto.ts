@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsDateString, IsUUID, IsPhoneNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsDateString, IsUUID, IsMobilePhone } from 'class-validator';
 import { Type } from 'class-transformer';
 import { AbstractDto } from '../../../common/dto/abstract.dto';
 import { Uuid } from 'boilerplate.polyfill';
@@ -15,7 +15,7 @@ class ClientDto extends AbstractDto {
   comment?: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber()
+  @IsMobilePhone()
   phoneNumber!: string;
 
   @IsOptional()

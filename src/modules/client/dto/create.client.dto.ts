@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsDateString, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsDateString, IsUUID, IsMobilePhone } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Uuid } from 'boilerplate.polyfill';
 
@@ -12,7 +12,7 @@ class ClientCreateDto {
   comment?: string;
 
   @IsNotEmpty()
-  // @IsPhoneNumber()
+  @IsMobilePhone()
   phoneNumber!: string;
 
   @IsOptional()
