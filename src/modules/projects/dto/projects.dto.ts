@@ -1,22 +1,20 @@
-import { IsString, IsNotEmpty, IsNumber, IsDateString } from 'class-validator';
-import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class ProjectSDto extends AbstractDto {
-  @IsString()
-  @IsNotEmpty()
-  name!: string;
+import { Uuid } from 'boilerplate.polyfill';
+import { BaseDto } from '../../../common/dto/abstract.dto';
 
-  @IsString()
+export class ProjectSDto extends BaseDto {
   @IsNotEmpty()
-  detailedDescription!: string;
+  @IsString()
+  title!: string;
 
-  @IsString()
   @IsNotEmpty()
-  briefDescription!: string;
+  @IsString()
+  description!: string;
 
-  @IsString()
   @IsNotEmpty()
-  photo!: string;
+  @IsString()
+  userId!: Uuid;
 
   @IsNumber()
   @IsNotEmpty()

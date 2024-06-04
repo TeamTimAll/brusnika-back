@@ -1,18 +1,20 @@
-import { AbstractDto } from '../../../common/dto/abstract.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 import {
   IsDateString,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
-} from 'class-validator';
-import { PremisesType, CommercialStatus } from '../premises.entity';
-import { EnumFieldOptional } from '../../../decorators';
-import { Uuid } from 'boilerplate.polyfill';
+} from "class-validator";
 
-export class PremisesDto extends AbstractDto {
-  @ApiProperty({ example: 'Apartment 1' })
+import { Uuid } from "boilerplate.polyfill";
+
+import { BaseDto } from "../../../common/dto/abstract.dto";
+import { CommercialStatus, PremisesType } from "../premises.entity";
+
+export class PremisesDto extends BaseDto {
+  @ApiProperty({ example: "Apartment 1" })
   @IsOptional()
   @IsString()
   name?: string;
@@ -24,22 +26,22 @@ export class PremisesDto extends AbstractDto {
   @IsOptional()
   type!: PremisesType | undefined;
 
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
+  @ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
   @IsOptional()
   @IsString()
   building_id?: string;
 
-  @ApiProperty({ example: '1000' })
+  @ApiProperty({ example: "1000" })
   @IsOptional()
   @IsString()
   price?: string;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   size?: number;
 
-  @EnumFieldOptional(() => CommercialStatus)
+  @IsEnum(() => CommercialStatus)
   @IsOptional()
   status?: CommercialStatus;
 
@@ -48,7 +50,7 @@ export class PremisesDto extends AbstractDto {
   @IsNumber()
   floor?: number;
 
-  @ApiProperty({ example: 'photo.jpg' })
+  @ApiProperty({ example: "photo.jpg" })
   @IsOptional()
   @IsString()
   photo?: string;
@@ -58,7 +60,7 @@ export class PremisesDto extends AbstractDto {
   @IsNumber()
   rooms?: number;
 
-  @ApiProperty({ example: ['photo1.jpg', 'photo2.jpg'] })
+  @ApiProperty({ example: ["photo1.jpg", "photo2.jpg"] })
   @IsOptional()
   @IsString({ each: true })
   photos?: string[];
@@ -68,12 +70,12 @@ export class PremisesDto extends AbstractDto {
   @IsNumber()
   similiarApartmentCount?: number;
 
-  @ApiProperty({ example: 'Apartment for rent' })
+  @ApiProperty({ example: "Apartment for rent" })
   @IsOptional()
   @IsString()
   title?: string;
 
-  @ApiProperty({ example: '2022-01-01' })
+  @ApiProperty({ example: "2022-01-01" })
   @IsOptional()
   @IsString()
   end_date?: string;
@@ -83,7 +85,7 @@ export class PremisesDto extends AbstractDto {
   @IsNumber()
   number?: number;
 
-  @ApiProperty({ example: '1000' })
+  @ApiProperty({ example: "1000" })
   @IsOptional()
   @IsString()
   mortagePayment?: string;
@@ -103,7 +105,7 @@ export class PremisesFilterDto {
   type!: PremisesType | undefined;
 
   @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    example: "123e4567-e89b-12d3-a456-426614174000",
     required: false,
   })
   @IsOptional()
@@ -116,7 +118,7 @@ export class PremisesFilterDto {
   rooms?: number;
 
   @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    example: "123e4567-e89b-12d3-a456-426614174000",
     required: false,
   })
   @IsOptional()
@@ -124,54 +126,54 @@ export class PremisesFilterDto {
   project_id?: Uuid;
 
   @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    example: "123e4567-e89b-12d3-a456-426614174000",
     required: false,
   })
   @IsOptional()
   @IsUUID()
   building_id?: Uuid;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   min_size?: number;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   max_size?: number;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   min_price?: number;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   max_price?: number;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   min_floor?: number;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   max_floor?: number;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   min_number?: number;
 
-  @ApiProperty({ example: '50' })
+  @ApiProperty({ example: "50" })
   @IsOptional()
   @IsNumber()
   max_number?: number;
 
-  @EnumFieldOptional(() => CommercialStatus)
+  @IsEnum(() => CommercialStatus)
   @IsOptional()
   status?: CommercialStatus;
 }

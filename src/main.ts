@@ -1,4 +1,4 @@
-import { Application } from './app/Application';
+import { Application } from "./app/Application";
 
 async function main(): Promise<void> {
   await Application.init();

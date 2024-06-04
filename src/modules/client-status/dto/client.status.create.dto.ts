@@ -1,11 +1,11 @@
 import { Uuid } from "boilerplate.polyfill"
-import { AbstractDto } from "../../../common/dto/abstract.dto"
+import { BaseDto } from "../../../common/dto/abstract.dto"
 import { IStatusType } from "types/client.types"
 
 
 
 
-export class ClientStatusCreateDto extends AbstractDto {
+export class ClientStatusCreateDto extends BaseDto {
     type  !: IStatusType
     userId !: Uuid
 }

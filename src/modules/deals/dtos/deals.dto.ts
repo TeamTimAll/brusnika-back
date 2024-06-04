@@ -1,3 +1,3 @@
-import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { BaseDto } from '../../../common/dto/abstract.dto';
 
-export class DealsDto extends AbstractDto {}
+export class DealsDto extends BaseDto {}

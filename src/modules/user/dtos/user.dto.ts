@@ -7,42 +7,36 @@ import {
   IsMobilePhone,
   IsNumber,
   IsOptional,
-  // IsPhoneNumber,
   IsString,
-  IsUUID
+  IsUUID,
 } from 'class-validator';
-import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { BaseDto } from '../../../common/dto/abstract.dto';
 import { RoleType } from '../../../constants';
-
-import {
-  BooleanFieldOptional,
-  ClassField,
-  EnumFieldOptional,
-  PhoneFieldOptional,
-  StringFieldOptional,
-} from '../../../decorators';
 
 import { ApiProperty } from '@nestjs/swagger';
 import { Uuid } from 'boilerplate.polyfill';
-import { EmailField, StringField } from '../../../decorators';
 import { UserEntity, UserRegisterStatus } from '../user.entity';
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
-export class UserDto extends AbstractDto {
-  @StringFieldOptional({ nullable: true })
+export class UserDto extends BaseDto {
+  @IsString()
+  @IsOptional()
   firstName?: string | null;
 
-  @StringFieldOptional({ nullable: true })
+  @IsString()
+  @IsOptional()
   lastName?: string | null;
 
-  @StringFieldOptional({ nullable: true })
+  @IsString()
+  @IsOptional()
   username!: string;
 
-  @StringFieldOptional({ nullable: true })
+  @IsString()
+  @IsOptional()
   password!: string;
 
-  @EnumFieldOptional(() => RoleType)
+  @IsEnum(RoleType)
   role?: RoleType;
 
   @IsEmail()
@@ -50,16 +44,20 @@ export class UserDto extends AbstractDto {
   @ApiProperty({ required: false })
   email?: string | null;
 
-  @StringFieldOptional({ nullable: true })
+  @IsString()
+  @IsOptional()
   avatar?: string | null;
 
-  @PhoneFieldOptional({ nullable: true })
+  @IsMobilePhone()
+  @IsOptional()
   phone?: string | null;
 
-  @PhoneFieldOptional({ nullable: true })
+  @IsMobilePhone()
+  @IsOptional()
   temporaryNumber?: string | null;
 
-  @BooleanFieldOptional()
+  @IsBoolean()
+  @IsOptional()
   isActive?: boolean;
 
   @IsDate()
@@ -141,11 +139,13 @@ export class UserChangePhoneVerifyCodeDto {
   code!: number;
 }
 
-export class UserUpdateDto extends AbstractDto {
-  @StringFieldOptional({ nullable: true })
+export class UserUpdateDto extends BaseDto {
+  @IsString()
+  @IsOptional()
   firstName?: string | null;
 
-  @StringFieldOptional({ nullable: true })
+  @IsString()
+  @IsOptional()
   lastName?: string | null;
 
   @IsEmail()
@@ -153,7 +153,8 @@ export class UserUpdateDto extends AbstractDto {
   @ApiProperty({ required: false })
   email?: string;
 
-  @StringFieldOptional({ nullable: true })
+  @IsString()
+  @IsOptional()
   avatar?: string;
 
   @IsDateString()
@@ -203,18 +204,9 @@ export class UserFillDataDto {
 }
 
 export class UserLoginDto {
-  @EmailField()
+  @IsEmail()
   readonly email!: string;
 
-  @StringField()
+  @IsString()
   readonly password!: string;
-}
-
-export class LoginPayloadDto {
-  @ClassField(() => UserDto)
-  user: UserDto;
-
-  constructor(user: UserDto) {
-    this.user = user;
-  }
 }

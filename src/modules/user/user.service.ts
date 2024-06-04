@@ -1,17 +1,15 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { type FindOptionsWhere, Repository } from 'typeorm';
-import { type PageDto } from '../../common/dto/page.dto';
-import { UserNotFoundException } from '../../exceptions';
 import {
   UserChangePhoneVerifyCodeDto,
   UserCreateDto,
   type UserDto,
 } from './dtos/user.dto';
-import { type UsersPageOptionsDto } from './dtos/users-page-options.dto';
 import { UserEntity } from './user.entity';
 import { Uuid } from 'boilerplate.polyfill';
 import { ICurrentUser } from 'interfaces/current-user.interface';
+import { UserNotFoundError } from './errors/UserNotFound.error';
 
 @Injectable()
 export class UserService {
@@ -63,14 +61,14 @@ export class UserService {
     }
   }
 
-  async getUsers(
-    pageOptionsDto: UsersPageOptionsDto,
-  ): Promise<PageDto<UserDto>> {
-    const queryBuilder = await this.userRepository.createQueryBuilder('user');
-    const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
+  // async getUsers(
+  //   pageOptionsDto: UsersPageOptionsDto,
+  // ): Promise<PageDto<UserDto>> {
+  //   const queryBuilder = this.userRepository.createQueryBuilder('user');
+  //   const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
 
-    return items.toPageDto(pageMetaDto);
-  }
+  //   return items.toPageDto(pageMetaDto);
+  // }
 
   async getUser(userId: Uuid): Promise<UserDto> {
     // const queryBuilder = await this.userRepository.createQueryBuilder('user');
@@ -85,7 +83,7 @@ export class UserService {
     // const userEntity = await queryBuilder.getOne();
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new UserNotFoundError();
     }
     return user;
   }
@@ -96,7 +94,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new UserNotFoundError();
     }
 
     return await this.userRepository.update(id, updateEventsDto);
@@ -108,7 +106,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new UserNotFoundError();
     }
 
     if (

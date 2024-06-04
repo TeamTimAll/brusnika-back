@@ -1,8 +1,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { BaseDto } from '../../../common/dto/abstract.dto';
 import { CommentEntity } from '../comment.entity';
 
-export class CommentDto extends AbstractDto {
+export class CommentDto extends BaseDto {
   @ApiPropertyOptional()
   userId: string;
 
@@ -12,7 +12,7 @@ export class CommentDto extends AbstractDto {
   @ApiPropertyOptional()
   comment: string;
 
-  
+
 
   constructor(commentEntity: CommentEntity) {
     super(commentEntity);

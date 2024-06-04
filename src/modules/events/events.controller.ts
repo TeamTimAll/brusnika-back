@@ -5,9 +5,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Put,
-  Query,
   Post,
+  Put,
 } from '@nestjs/common';
 import {
   ApiAcceptedResponse,
@@ -16,21 +15,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { type PageDto } from '../../common/dto/page.dto';
+import { Uuid } from 'boilerplate.polyfill';
 import { RoleType } from '../../constants';
 import { Auth, AuthUser, UUIDParam } from '../../decorators';
 import { UserEntity } from '../user/user.entity';
 import { CreateEventsDto } from './dtos/create-events.dto';
 import { EventsDto } from './dtos/events.dto';
-import { EventsPageOptionsDto } from './dtos/events-page-options.dto';
 import { UpdateEventsDto } from './dtos/update-events.dto';
 import { EventsService } from './events.service';
-import { Uuid } from 'boilerplate.polyfill';
-import { ApiPageOkResponse } from '../../decorators';
 
 @Controller('/events')
 @ApiTags('events')
-
 export class EventsController {
   constructor(private eventsService: EventsService) {}
 
@@ -48,15 +43,6 @@ export class EventsController {
     );
 
     return EventsEntity.toDto();
-  }
-
-  @Get()
-  @Auth([RoleType.USER])
-  @ApiPageOkResponse({ type: EventsDto })
-  async getEvents(
-    @Query() EventsPageOptionsDto: EventsPageOptionsDto,
-  ): Promise<PageDto<EventsDto>> {
-    return this.eventsService.getAllEvents(EventsPageOptionsDto);
   }
 
   @Get(':id')

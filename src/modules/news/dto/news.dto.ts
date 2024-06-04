@@ -2,11 +2,11 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { NEWS_CATEGORIES } from "../news.entity"
-import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { BaseDto } from '../../../common/dto/abstract.dto';
 
 
 
-export class NewsDto extends AbstractDto {
+export class NewsDto extends BaseDto {
   @IsString()
   @IsNotEmpty()
   title!: string;
