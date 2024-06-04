@@ -15,6 +15,7 @@ import { AppModule } from '../app.module';
 import { ConfigManager } from '../config';
 import { HttpExceptionFilter } from '../filters/bad-request.filter';
 import { QueryFailedFilter } from '../filters/query-failed.filter';
+import { SwaggerManager } from './swagger';
 
 export type HttpApplication = NestExpressApplication;
 
@@ -48,7 +49,10 @@ export class Http {
       }),
     );
 
+    SwaggerManager.init(app);
+
     const port = ConfigManager.config.SERVER_PORT;
+
     await app.listen(port);
     console.info(`server running on ${await app.getUrl()}`);
     return app;
