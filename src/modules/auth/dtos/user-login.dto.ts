@@ -1,7 +1,7 @@
-import { EmailField, StringField } from '../../../decorators';
 import {
   IsBoolean,
   IsDateString,
+  IsEmail,
   IsMobilePhone,
   IsNumber,
   IsString,
@@ -16,10 +16,10 @@ import {
 } from '../../agencies/dtos/create-agencies.dto';
 
 export class UserLoginDto {
-  @EmailField()
+  @IsEmail()
   readonly email!: string;
 
-  @StringField()
+  @IsString()
   readonly password!: string;
 }
 

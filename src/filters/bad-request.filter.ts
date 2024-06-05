@@ -1,60 +1,102 @@
 import {
-  type ArgumentsHost,
-  Catch,
-  type ExceptionFilter,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+	Catch,
+	HttpException,
+	HttpStatus,
+	type ArgumentsHost,
+	type ExceptionFilter,
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { type Request, type Response } from "express";
 
-import { Reflector } from '@nestjs/core';
-import { type ValidationError } from 'class-validator';
-import { type Response } from 'express';
-import _ from 'lodash';
+import { BaseError } from "../common/base/baseError";
+import { BaseDto } from "../common/base/base_dto";
+import { ResponseStatusType } from "../common/enums/response_status_type_enum";
+import { InputValidationError } from "../common/errors/inputValidationError";
+import { CustomValidationError } from "../common/errors/valitationError";
+import { ApplicationPromptID } from "../lib/prompt/applicationPrompt";
 
-@Catch(UnprocessableEntityException)
-export class HttpExceptionFilter
-  implements ExceptionFilter<UnprocessableEntityException>
+@Catch(CustomValidationError)
+export class HttpValidationErrorFilter
+	implements ExceptionFilter<CustomValidationError>
 {
-  constructor(public reflector: Reflector) {}
+	constructor(public reflector: Reflector) {}
 
-  catch(exception: UnprocessableEntityException, host: ArgumentsHost): void {
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const statusCode = exception.getStatus();
-    const r = exception.getResponse() as { message: ValidationError[] };
+	catch(exception: CustomValidationError, host: ArgumentsHost): void {
+		const ctx = host.switchToHttp();
+		const response = ctx.getResponse<Response>();
+		const request = ctx.getRequest<Request>();
 
-    const validationErrors = r.message;
-    this.validationFilter(validationErrors);
+		let dto = request.body as BaseDto;
+		if (!dto) {
+			dto = new BaseDto();
+		}
+		const metaData = BaseDto.createFromDto(dto);
+		dto.meta.type = ResponseStatusType.ERROR;
+		dto.meta.prompt = new InputValidationError({
+			message: "validation error",
+			meta: exception,
+		});
 
-    response.status(statusCode).json(r);
-  }
+		response.status(HttpStatus.UNPROCESSABLE_ENTITY).json(metaData);
+	}
+}
 
-  private validationFilter(validationErrors: ValidationError[]): void {
-    for (const validationError of validationErrors) {
-      const children = validationError.children;
+@Catch(BaseError)
+export class HttpErrorFilter implements ExceptionFilter<BaseError> {
+	catch(exception: BaseError, host: ArgumentsHost) {
+		const ctx = host.switchToHttp();
+		const response = ctx.getResponse<Response>();
+		const request = ctx.getRequest<Request>();
 
-      if (children && !_.isEmpty(children)) {
-        this.validationFilter(children);
+		let dto = request.body as BaseDto;
+		if (!dto) {
+			dto = new BaseDto();
+		}
+		const metaData = BaseDto.createFromDto(dto);
+		dto.meta.type = ResponseStatusType.ERROR;
 
-        return;
-      }
+		// Setting request query to meta param
+		for (const key in request.query) {
+			if (Object.prototype.hasOwnProperty.call(request.query, key)) {
+				const element = request.query[key];
+				metaData.meta.params[key] = element;
+			}
+		}
+		metaData.meta.prompt = exception;
+		response.status(exception.status).json(metaData);
+	}
+}
 
-      delete validationError.children;
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+	catch(exception: HttpException, host: ArgumentsHost) {
+		const ctx = host.switchToHttp();
+		const response = ctx.getResponse<Response>();
+		const request = ctx.getRequest<Request>();
+		const status = exception.getStatus();
 
-      const constraints = validationError.constraints;
+		let dto = request.body as BaseDto;
+		if (!dto) {
+			dto = new BaseDto();
+		}
+		const metaData = BaseDto.createFromDto(dto);
+		dto.meta.type = ResponseStatusType.ERROR;
 
-      if (!constraints) {
-        return;
-      }
+		let id = ApplicationPromptID.INTERNAL_SERVER_ERROR;
+		if (status === HttpStatus.NOT_FOUND) {
+			id = ApplicationPromptID.METHOD_NOT_FOUND_ERROR;
+		}
+		metaData.meta.prompt = new BaseError(
+			id,
+			{
+				message: exception.message,
+				meta: {
+					exception: exception.name,
+				},
+			},
+			status,
+		);
 
-      for (const [constraintKey, constraint] of Object.entries(constraints)) {
-        // convert default messages
-        if (!constraint) {
-          // convert error message to error.fields.{key} syntax for i18n translation
-          constraints[constraintKey] = `error.fields.${_.snakeCase(
-            constraintKey,
-          )}`;
-        }
-      }
-    }
-  }
+		response.status(status).json(metaData);
+	}
 }

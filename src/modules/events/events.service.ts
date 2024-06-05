@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { type PageDto } from '../../common/dto/page.dto';
-import { CreateEventsDto } from './dtos/create-events.dto';
-import { type EventsDto } from './dtos/events.dto';
-import { type EventsPageOptionsDto } from './dtos/events-page-options.dto';
-import { type UpdateEventsDto } from './dtos/update-events.dto';
-import { EventsNotFoundException } from './exceptions/events-not-found.exception';
-import { EventsEntity } from './events.entity';
 import { Uuid } from 'boilerplate.polyfill';
+import { Repository } from 'typeorm';
+import { CreateEventsDto } from './dtos/create-events.dto';
+import { type UpdateEventsDto } from './dtos/update-events.dto';
+import { EventsEntity } from './events.entity';
+import { EventsNotFoundException } from './exceptions/events-not-found.exception';
 
 @Injectable()
 export class EventsService {
@@ -25,17 +22,6 @@ export class EventsService {
     const createdEvent: EventsEntity =
       await this.eventsRepository.save(createEventsDto);
     return createdEvent;
-  }
-
-  async getAllEvents(
-    EventsPageOptionsDto: EventsPageOptionsDto,
-  ): Promise<PageDto<EventsDto>> {
-    const queryBuilder = this.eventsRepository.createQueryBuilder('Events');
-
-    const [items, pageMetaDto] =
-      await queryBuilder.paginate(EventsPageOptionsDto);
-
-    return items.toPageDto(pageMetaDto);
   }
 
   async getSingleEvents(id: Uuid): Promise<EventsEntity> {

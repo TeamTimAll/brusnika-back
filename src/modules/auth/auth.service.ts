@@ -1,509 +1,559 @@
 import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
-import {
-  UserCreateDto,
-  UserFillDataDto,
-} from '../../modules/user/dtos/user.dto';
+	HttpException,
+	HttpStatus,
+	Injectable,
+	UnauthorizedException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+
 // import * as bcrypt from 'bcrypt';
 // import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
+
+import { AgenciesService } from "../../modules/agencies/agencies.service";
 import {
-  AgentChooseAgencyDto,
-  AgentLoginDto,
-  AgentRegisterAgencyDto,
-  AgentRequestAgencyDto,
-  LoginSuccess,
-  UserLoginDto,
-  UserLoginResendCodeDto,
-  UserLoginVerifyCodeDto,
-} from './dtos/user-login.dto';
-import { UserRegisterStatus } from '../../modules/user/user.entity';
-import { AgenciesService } from '../../modules/agencies/agencies.service';
+	UserCreateDto,
+	UserFillDataDto,
+} from "../../modules/user/dtos/user.dto";
+import { UserRegisterStatus } from "../../modules/user/user.entity";
+import { UserService } from "../user/user.service";
+import { AgenciesEntity } from "../../modules/agencies/agencies.entity";
+
+import {
+	AgentChooseAgencyDto,
+	AgentLoginDto,
+	AgentRegisterAgencyDto,
+	AgentRequestAgencyDto,
+	LoginSuccess,
+	UserLoginDto,
+	UserLoginResendCodeDto,
+	UserLoginVerifyCodeDto,
+} from "./dtos/user-login.dto";
+
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwtService: JwtService,
-    private userService: UserService,
-    private agenciesService: AgenciesService,
-    // private nodemailer: NodeMailerService,
-  ) {}
+	constructor(
+		private jwtService: JwtService,
+		private userService: UserService,
+		private agenciesService: AgenciesService,
+		// private nodemailer: NodeMailerService,
+	) {}
 
-  hasOneMinutePassed(startTime: Date): boolean {
-    const oneMinute = 60 * 1000; // 60 seconds * 1000 milliseconds
-    const currentTime = new Date();
-    const elapsedTime = currentTime.getTime() - startTime.getTime();
-    return elapsedTime >= oneMinute;
-  }
+	hasOneMinutePassed(startTime: Date): boolean {
+		const oneMinute = 60 * 1000; // 60 seconds * 1000 milliseconds
+		const currentTime = new Date();
+		const elapsedTime = currentTime.getTime() - startTime.getTime();
+		return elapsedTime >= oneMinute;
+	}
 
-  async createUser(body: UserCreateDto): Promise<any> {
-    try {
-      let user = await this.userService.findOne({
-        phone: body.phone,
-      });
+	async createUser(body: UserCreateDto): Promise<any> {
+		try {
+			let user = await this.userService.findOne({
+				phone: body.phone,
+			});
 
-      if (user) {
-        if (
-          user.register_status === UserRegisterStatus.FINISHED &&
-          user?.isPhoneVerified
-        ) {
-          return new HttpException(
-            'User already exists. Go to login page',
-            HttpStatus.CONFLICT,
-          );
-        } else if (
-          user.isPhoneVerified &&
-          user.register_status !== UserRegisterStatus.CREATED
-        ) {
-          return new HttpException(
-            {
-              message: 'user already on registiry',
-              userId: user.id,
-              register_status: user.register_status,
-            },
-            HttpStatus.BAD_REQUEST,
-          );
-        }
-      }
-      if (!user) {
-        user = await this.userService.createUser(body);
-      }
+			if (user) {
+				if (
+					user.register_status === UserRegisterStatus.FINISHED &&
+					user?.isPhoneVerified
+				) {
+					return new HttpException(
+						"User already exists. Go to login page",
+						HttpStatus.CONFLICT,
+					);
+				} else if (
+					user.isPhoneVerified &&
+					user.register_status !== UserRegisterStatus.CREATED
+				) {
+					return new HttpException(
+						{
+							message: "user already on registiry",
+							userId: user.id,
+							register_status: user.register_status,
+						},
+						HttpStatus.BAD_REQUEST,
+					);
+				}
+			}
+			if (!user) {
+				user = await this.userService.createUser(body);
+			}
 
-      if (
-        user.verification_code_sent_date &&
-        !this.hasOneMinutePassed(user.verification_code_sent_date)
-      ) {
-        return new HttpException(
-          {
-            error:
-              'A valid verification code already exists or wait till expire',
-          },
-          HttpStatus.CONFLICT,
-        );
-      }
+			if (
+				user.verification_code_sent_date &&
+				!this.hasOneMinutePassed(user.verification_code_sent_date)
+			) {
+				return new HttpException(
+					{
+						error: "A valid verification code already exists or wait till expire",
+					},
+					HttpStatus.CONFLICT,
+				);
+			}
 
-      // const randomNumber = Math.floor(100000 + Math.random() * 900000);
-      const randomNumber = 111111;
+			// const randomNumber = Math.floor(100000 + Math.random() * 900000);
+			const randomNumber = 111111;
 
-      console.log(randomNumber, user.id);
+			console.log(randomNumber, user.id);
 
-      await this.userService.updateUser(user.id, {
-        verification_code: randomNumber,
-        verification_code_sent_date: new Date(),
-      });
+			await this.userService.updateUser(user.id, {
+				verification_code: randomNumber,
+				verification_code_sent_date: new Date(),
+			});
 
-      return new HttpException(
-        { userId: user.id, message: 'sms sent' },
-        HttpStatus.OK,
-      );
-    } catch (error) {
-      console.log(error, 'Account creating error');
-      return new HttpException('Something went wrong', 500);
-    }
-  }
+			return new HttpException(
+				{ userId: user.id, message: "sms sent" },
+				HttpStatus.OK,
+			);
+		} catch (error) {
+			console.log(error, "Account creating error");
+			return new HttpException("Something went wrong", 500);
+		}
+	}
 
-  async agentFillData(body: UserFillDataDto): Promise<any> {
-    try {
-      const user = await this.userService.getUser(body.id);
+	async agentFillData(body: UserFillDataDto): Promise<any> {
+		try {
+			const user = await this.userService.getUser(body.id);
 
-      if (!user || !user.id) {
-        return new HttpException('user not found', HttpStatus.NOT_FOUND);
-      }
+			if (!user || !user.id) {
+				return new HttpException(
+					"user not found",
+					HttpStatus.NOT_FOUND,
+				);
+			}
 
-      if (user.register_status === UserRegisterStatus.CREATED) {
-        await this.userService.updateUser(user.id, {
-          register_status: UserRegisterStatus.FILLED,
-          ...body,
-        });
+			if (user.register_status === UserRegisterStatus.CREATED) {
+				await this.userService.updateUser(user.id, {
+					register_status: UserRegisterStatus.FILLED,
+					...body,
+				});
 
-        return {
-          message: 'ok',
-        };
-      } else {
-        return new HttpException(
-          {
-            message: 'user on different registiry',
-            register_status: user.register_status,
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    } catch (error) {
-      console.log('Account creating error', error);
-      return new HttpException('Something went wrong', 500);
-    }
-  }
+				return {
+					message: "ok",
+				};
+			} else {
+				return new HttpException(
+					{
+						message: "user on different registiry",
+						register_status: user.register_status,
+					},
+					HttpStatus.BAD_REQUEST,
+				);
+			}
+		} catch (error) {
+			console.log("Account creating error", error);
+			return new HttpException("Something went wrong", 500);
+		}
+	}
 
-  async agentChooseAgency(body: AgentChooseAgencyDto): Promise<any> {
-    try {
-      const user = await this.userService.getUser(body.userId);
+	async agentChooseAgency(body: AgentChooseAgencyDto): Promise<any> {
+		try {
+			const user = await this.userService.getUser(body.userId);
 
-      if (!user || !user.id) {
-        return new HttpException('user not found', HttpStatus.NOT_FOUND);
-      }
+			if (!user || !user.id) {
+				return new HttpException(
+					"user not found",
+					HttpStatus.NOT_FOUND,
+				);
+			}
 
-      if (user.register_status === UserRegisterStatus.FILLED) {
-        const agency = await this.agenciesService.findOne(body.agency_id);
-        if (!agency?.data)
-          return new HttpException('agency not found', HttpStatus.NOT_FOUND);
-        await this.userService.updateUser(user.id, {
-          register_status: UserRegisterStatus.FINISHED,
-          ...body,
-        });
+			if (user.register_status === UserRegisterStatus.FILLED) {
+				const agency = await this.agenciesService.findOne(
+					body.agency_id,
+				);
+				if (!agency?.data) {
+					return new HttpException(
+						"agency not found",
+						HttpStatus.NOT_FOUND,
+					);
+				}
+				await this.userService.updateUser(user.id, {
+					register_status: UserRegisterStatus.FINISHED,
+					...body,
+				});
 
-        return {
-          accessToken: this.jwtService.sign({
-            user_id: user.id,
-            role: user.role,
-          }),
-        };
-      } else {
-        return new HttpException(
-          {
-            message: 'user on different registiry',
-            register_status: user.register_status,
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    } catch (error) {
-      console.log('Account creating error');
-      return new HttpException('Something went wrong', 500);
-    }
-  }
+				return {
+					accessToken: this.jwtService.sign({
+						user_id: user.id,
+						role: user.role,
+					}),
+				};
+			} else {
+				return new HttpException(
+					{
+						message: "user on different registiry",
+						register_status: user.register_status,
+					},
+					HttpStatus.BAD_REQUEST,
+				);
+			}
+		} catch (error) {
+			console.log("Account creating error");
+			return new HttpException("Something went wrong", 500);
+		}
+	}
 
-  async agentRegisterAgency(body: AgentRegisterAgencyDto): Promise<any> {
-    try {
-      const user = await this.userService.getUser(body.userId);
+	async agentRegisterAgency(body: AgentRegisterAgencyDto): Promise<any> {
+		try {
+			const user = await this.userService.getUser(body.userId);
 
-      if (!user || !user.id) {
-        return new HttpException('user not found', HttpStatus.NOT_FOUND);
-      }
+			if (!user || !user.id) {
+				return new HttpException(
+					"user not found",
+					HttpStatus.NOT_FOUND,
+				);
+			}
 
-      if (user.register_status === UserRegisterStatus.FILLED) {
-        const newAgency = await this.agenciesService.create({
-          city_id: body.city_id,
-          email: body.email,
-          inn: body.email,
-          legalName: body.legalName,
-          phone: body.phone,
-          title: body.title,
-        });
-        await this.userService.updateUser(user.id, {
-          register_status: UserRegisterStatus.FINISHED,
-          agency_id: newAgency.data.id,
-        });
+			if (user.register_status === UserRegisterStatus.FILLED) {
+				const newAgency =
+					await this.agenciesService.create<AgenciesEntity>({
+						city_id: body.city_id,
+						email: body.email,
+						inn: body.email,
+						legalName: body.legalName,
+						phone: body.phone,
+						title: body.title,
+					});
+				await this.userService.updateUser(user.id, {
+					register_status: UserRegisterStatus.FINISHED,
+					agency_id: newAgency.data[0].id,
+				});
 
-        return {
-          accessToken: this.jwtService.sign({
-            user_id: user.id,
-            role: user.role,
-          }),
-        };
-      } else {
-        return new HttpException(
-          {
-            message: 'user on different registiry',
-            register_status: user.register_status,
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    } catch (error) {
-      console.log('Account creating error', error);
-      return new HttpException('Something went wrong', 500);
-    }
-  }
+				return {
+					accessToken: this.jwtService.sign({
+						user_id: user.id,
+						role: user.role,
+					}),
+				};
+			} else {
+				return new HttpException(
+					{
+						message: "user on different registiry",
+						register_status: user.register_status,
+					},
+					HttpStatus.BAD_REQUEST,
+				);
+			}
+		} catch (error) {
+			console.log("Account creating error", error);
+			return new HttpException("Something went wrong", 500);
+		}
+	}
 
-  async agentRequestAgency(body: AgentRequestAgencyDto): Promise<any> {
-    try {
-      const user = await this.userService.getUser(body.userId);
+	async agentRequestAgency(body: AgentRequestAgencyDto): Promise<any> {
+		try {
+			const user = await this.userService.getUser(body.userId);
 
-      if (!user || !user.id) {
-        return new HttpException('user not found', HttpStatus.NOT_FOUND);
-      }
+			if (!user || !user.id) {
+				return new HttpException(
+					"user not found",
+					HttpStatus.NOT_FOUND,
+				);
+			}
 
-      if (user.register_status === UserRegisterStatus.FILLED) {
-        const newAgency = await this.agenciesService.create({
-          city_id: body.city_id,
-          ownerFullName: body.ownerFullName,
-          ownerPhone: body.ownerPhone,
-          title: body.title,
-        });
-        await this.userService.updateUser(user.id, {
-          register_status: UserRegisterStatus.FINISHED,
-          agency_id: newAgency.data.id,
-        });
+			if (user.register_status === UserRegisterStatus.FILLED) {
+				const newAgency =
+					await this.agenciesService.create<AgenciesEntity>({
+						city_id: body.city_id,
+						ownerFullName: body.ownerFullName,
+						ownerPhone: body.ownerPhone,
+						title: body.title,
+					});
+				await this.userService.updateUser(user.id, {
+					register_status: UserRegisterStatus.FINISHED,
+					agency_id: newAgency.data[0].id,
+				});
 
-        return {
-          accessToken: this.jwtService.sign({
-            user_id: user.id,
-            role: user.role,
-          }),
-        };
-      } else {
-        return new HttpException(
-          {
-            message: 'user on different registiry',
-            register_status: user.register_status,
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    } catch (error) {
-      console.log('Account creating error', error);
-      return new HttpException('Something went wrong', 500);
-    }
-  }
+				return {
+					accessToken: this.jwtService.sign({
+						user_id: user.id,
+						role: user.role,
+					}),
+				};
+			} else {
+				return new HttpException(
+					{
+						message: "user on different registiry",
+						register_status: user.register_status,
+					},
+					HttpStatus.BAD_REQUEST,
+				);
+			}
+		} catch (error) {
+			console.log("Account creating error", error);
+			return new HttpException("Something went wrong", 500);
+		}
+	}
 
-  async loginAccount(loginDto: UserLoginDto): Promise<LoginSuccess | any> {
-    try {
-      const user = await this.userService.findOne({ email: loginDto.email });
+	async loginAccount(loginDto: UserLoginDto): Promise<LoginSuccess | any> {
+		try {
+			const user = await this.userService.findOne({
+				email: loginDto.email,
+			});
 
-      if (!user) {
-        console.log('User not found ');
-        // send brunsika crm to get user
-        // if(user) {
-        // user.create(user)
-        // user = newUser
-        // } else {
-        return new HttpException('User not found', HttpStatus.NOT_FOUND);
-        // }
-      }
+			if (!user) {
+				console.log("User not found ");
+				// send brunsika crm to get user
+				// if(user) {
+				// user.create(user)
+				// user = newUser
+				// } else {
+				return new UnauthorizedException("User not found");
+				// }
+			}
 
-      // if (user.password === null) {
-      //   console.log('Users password is null');
-      //   return new UnauthorizedException('Password not set');
-      // }
+			// if (user.password === null) {
+			//   console.log('Users password is null');
+			//   return new UnauthorizedException('Password not set');
+			// }
 
-      // const passwordMatch = await bcrypt.compare(
-      //   loginDto.password,
-      //   user.password,
-      // );
+			// const passwordMatch = await bcrypt.compare(
+			//   loginDto.password,
+			//   user.password,
+			// );
 
-      // if (!passwordMatch) {
-      //   console.log('Password did not match');
-      //   return new UnauthorizedException('Invalid email or password');
-      // }
+			// if (!passwordMatch) {
+			//   console.log('Password did not match');
+			//   return new UnauthorizedException('Invalid email or password');
+			// }
 
-      // await this.nodemailer.sendMail();
+			// await this.nodemailer.sendMail();
 
-      const { password, ...result } = user;
-      return {
-        accessToken: this.jwtService.sign(result),
-      };
-    } catch (error: any) {
-      console.error('Login error:', error.message);
-      return new HttpException('internal server error', 500);
-    }
-  }
+			const { password, ...result } = user;
+			return {
+				accessToken: this.jwtService.sign(result),
+			};
+		} catch (error: any) {
+			console.error("Login error:", error.message);
+			return new HttpException("internal server error", 500);
+		}
+	}
 
-  async agentLogin(agentLoginDto: AgentLoginDto): Promise<LoginSuccess | any> {
-    try {
-      const user = await this.userService.findOne({
-        phone: agentLoginDto.phone,
-      });
+	async agentLogin(
+		agentLoginDto: AgentLoginDto,
+	): Promise<LoginSuccess | any> {
+		try {
+			const user = await this.userService.findOne({
+				phone: agentLoginDto.phone,
+			});
 
-      if (!user) {
-        // send request crm backend and find user
-        // if(user) {
-        // save this user
-        // } else {
-        return new HttpException('User not found', HttpStatus.NOT_FOUND);
-        // }
-      }
+			if (!user) {
+				// send request crm backend and find user
+				// if(user) {
+				// save this user
+				// } else {
+				return new HttpException(
+					"User not found",
+					HttpStatus.NOT_FOUND,
+				);
+				// }
+			}
 
-      if (
-        user.isPhoneVerified &&
-        user.register_status === UserRegisterStatus.FINISHED
-      ) {
-        // todo send code to phone number
-        // const randomNumber = Math.floor(100000 + Math.random() * 900000);
-        const randomNumber = 111111;
+			if (
+				user.isPhoneVerified &&
+				user.register_status === UserRegisterStatus.FINISHED
+			) {
+				// todo send code to phone number
+				// const randomNumber = Math.floor(100000 + Math.random() * 900000);
+				const randomNumber = 111111;
 
-        console.log(randomNumber, user.id);
+				console.log(randomNumber, user.id);
 
-        await this.userService.updateUser(user.id, {
-          verification_code: randomNumber,
-          verification_code_sent_date: new Date(),
-        });
+				await this.userService.updateUser(user.id, {
+					verification_code: randomNumber,
+					verification_code_sent_date: new Date(),
+				});
 
-        return new HttpException(
-          { userId: user.id, message: 'sms sent' },
-          HttpStatus.OK,
-        );
-        // const { password, ...result } = user;
-        // return {
-        //   accessToken: this.jwtService.sign(result),
-        // };
-      } else {
-        return new HttpException(
-          {
-            message: 'user already on registiry',
-            userId: user.id,
-            register_status: user.register_status,
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    } catch (error: any) {
-      console.error('Login error:', error.message);
-      return new HttpException(error.message, 500);
-    }
-  }
+				return new HttpException(
+					{ userId: user.id, message: "sms sent" },
+					HttpStatus.OK,
+				);
+				// const { password, ...result } = user;
+				// return {
+				//   accessToken: this.jwtService.sign(result),
+				// };
+			} else {
+				return new HttpException(
+					{
+						message: "user already on registiry",
+						userId: user.id,
+						register_status: user.register_status,
+					},
+					HttpStatus.BAD_REQUEST,
+				);
+			}
+		} catch (error: any) {
+			console.error("Login error:", error.message);
+			return new HttpException(error.message, 500);
+		}
+	}
 
-  async verifySmsCode(
-    dto: UserLoginVerifyCodeDto,
-  ): Promise<LoginSuccess | any> {
-    try {
-      const user = await this.userService.getUser(dto.user_id);
+	async verifySmsCode(
+		dto: UserLoginVerifyCodeDto,
+	): Promise<LoginSuccess | any> {
+		try {
+			const user = await this.userService.getUser(dto.user_id);
 
-      if (!user) {
-        return new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
+			if (!user) {
+				return new HttpException(
+					"User not found",
+					HttpStatus.NOT_FOUND,
+				);
+			}
 
-      if (user.isPhoneVerified) {
-        if (user.verification_code_sent_date) {
-          if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
-            return new HttpException(
-              {
-                error: 'verification code expired',
-              },
-              HttpStatus.GONE,
-            );
-          } else {
-            if (user.verification_code === dto.code) {
-              return {
-                accessToken: this.jwtService.sign({
-                  user_id: user.id,
-                  role: user.role,
-                }),
-              };
-            } else {
-              return new HttpException(
-                {
-                  error: 'Verification code is not correct',
-                },
-                HttpStatus.BAD_REQUEST,
-              );
-            }
-          }
-        }
-      } else {
-        if (user.verification_code_sent_date) {
-          if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
-            return new HttpException(
-              {
-                error: 'verification code expired',
-              },
-              HttpStatus.GONE,
-            );
-          } else {
-            if (user.verification_code === dto.code) {
-              await this.userService.updateUser(user.id, {
-                isPhoneVerified: true,
-                register_status: UserRegisterStatus.CREATED,
-              });
-              return {
-                // accessToken: this.jwtService.sign({
-                user_id: user.id,
-                message: 'verified',
-                // role: user.role,
-                // }),
-              };
-            } else {
-              return new HttpException(
-                {
-                  error: 'Verification code is not correct',
-                },
-                HttpStatus.BAD_REQUEST,
-              );
-            }
-          }
-        }
-      }
-    } catch (error: any) {
-      console.error('Login error:', error.message);
-      return new HttpException(error.message, 500);
-    }
-  }
+			if (user.isPhoneVerified) {
+				if (user.verification_code_sent_date) {
+					if (
+						this.hasOneMinutePassed(
+							user.verification_code_sent_date,
+						)
+					) {
+						return new HttpException(
+							{
+								error: "verification code expired",
+							},
+							HttpStatus.GONE,
+						);
+					} else {
+						if (user.verification_code === dto.code) {
+							return {
+								accessToken: this.jwtService.sign({
+									user_id: user.id,
+									role: user.role,
+								}),
+							};
+						} else {
+							return new HttpException(
+								{
+									error: "Verification code is not correct",
+								},
+								HttpStatus.BAD_REQUEST,
+							);
+						}
+					}
+				}
+			} else {
+				if (user.verification_code_sent_date) {
+					if (
+						this.hasOneMinutePassed(
+							user.verification_code_sent_date,
+						)
+					) {
+						return new HttpException(
+							{
+								error: "verification code expired",
+							},
+							HttpStatus.GONE,
+						);
+					} else {
+						if (user.verification_code === dto.code) {
+							await this.userService.updateUser(user.id, {
+								isPhoneVerified: true,
+								register_status: UserRegisterStatus.CREATED,
+							});
+							return {
+								// accessToken: this.jwtService.sign({
+								user_id: user.id,
+								message: "verified",
+								// role: user.role,
+								// }),
+							};
+						} else {
+							return new HttpException(
+								{
+									error: "Verification code is not correct",
+								},
+								HttpStatus.BAD_REQUEST,
+							);
+						}
+					}
+				}
+			}
+		} catch (error: any) {
+			console.error("Login error:", error.message);
+			return new HttpException(error.message, 500);
+		}
+	}
 
-  async agentLoginResendSmsCode(
-    dto: UserLoginResendCodeDto,
-  ): Promise<LoginSuccess | any> {
-    try {
-      const user = await this.userService.findOne({
-        id: dto.user_id,
-      });
+	async agentLoginResendSmsCode(
+		dto: UserLoginResendCodeDto,
+	): Promise<LoginSuccess | any> {
+		try {
+			const user = await this.userService.findOne({
+				phone: dto.user_id,
+			});
 
-      if (!user) {
-        return new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
+			if (!user) {
+				return new HttpException(
+					"User not found",
+					HttpStatus.NOT_FOUND,
+				);
+			}
 
-      // if (user.settings?.isPhoneVerified) {
-      // todo send code to phone number
-      if (user.verification_code_sent_date) {
-        if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
-          // const randomNumber = Math.floor(100000 + Math.random() * 900000);
-          const randomNumber = 111111
+			// if (user.settings?.isPhoneVerified) {
+			// todo send code to phone number
+			if (user.verification_code_sent_date) {
+				if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
+					// const randomNumber = Math.floor(100000 + Math.random() * 900000);
+					const randomNumber = 111111;
 
-          console.log(randomNumber, user.id);
+					console.log(randomNumber, user.id);
 
-          await this.userService.updateUser(user.id, {
-            verification_code: randomNumber,
-            verification_code_sent_date: new Date(),
-          });
+					await this.userService.updateUser(user.id, {
+						verification_code: randomNumber,
+						verification_code_sent_date: new Date(),
+					});
 
-          return new HttpException(
-            { userId: user.id, message: 'sms sent' },
-            HttpStatus.OK,
-          );
-        } else {
-          return new HttpException(
-            {
-              error:
-                'A valid verification code already exists or wait till expire',
-            },
-            HttpStatus.CONFLICT,
-          );
-        }
-      }
-      // } else {
-      //   // todo
-      // }
-    } catch (error: any) {
-      console.error('Login error:', error.message);
-      return new HttpException({ error: 'internal server error' }, 500);
-    }
-  }
+					return new HttpException(
+						{ userId: user.id, message: "sms sent" },
+						HttpStatus.OK,
+					);
+				} else {
+					return new HttpException(
+						{
+							error: "A valid verification code already exists or wait till expire",
+						},
+						HttpStatus.CONFLICT,
+					);
+				}
+			}
+			// } else {
+			//   // todo
+			// }
+		} catch (error: any) {
+			console.error("Login error:", error.message);
+			return new HttpException({ error: "internal server error" }, 500);
+		}
+	}
 
-  async getUser(email: string): Promise<any> {
-    try {
-      const user = await this.userService.findByUsernameOrEmail({ email });
-      if (!user) {
-        return new HttpException('User not found', HttpStatus.NOT_FOUND);
-      }
-      return user;
-    } catch (error: any) {
-      console.log({
-        errroGettingUser: error,
-      });
-      return new HttpException(error.message, 500);
-    }
-  }
+	async getUser(email: string): Promise<any> {
+		try {
+			const user = await this.userService.findByUsernameOrEmail({
+				email,
+			});
+			if (!user) {
+				return new HttpException(
+					"User not found",
+					HttpStatus.NOT_FOUND,
+				);
+			}
+			return user;
+		} catch (error: any) {
+			console.log({
+				errroGettingUser: error,
+			});
+			return new HttpException(error.message, 500);
+		}
+	}
 
-  async getCity(): Promise<any> {
-    try {
-      // todo return city
-    } catch (error: any) {
-      console.log({
-        errroGettingUser: error,
-      });
-      return new HttpException(error.message, 500);
-    }
-  }
+	async getCity(): Promise<any> {
+		try {
+			// todo return city
+		} catch (error: any) {
+			console.log({
+				errroGettingUser: error,
+			});
+			return new HttpException(error.message, 500);
+		}
+	}
 }

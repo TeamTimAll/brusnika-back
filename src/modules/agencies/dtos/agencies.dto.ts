@@ -6,9 +6,9 @@ import {
   IsEmail,
   IsMobilePhone,
 } from 'class-validator';
-import { AbstractDto } from '../../../common/dto/abstract.dto';
+import { BaseDto } from '../../../common/dto/abstract.dto';
 
-export class AgenciesDto extends AbstractDto {
+export class AgenciesDto extends BaseDto {
   @ApiProperty({ description: 'The UUID of the user' })
   @IsUUID()
   userId!: string;

@@ -1,143 +1,189 @@
+import { HttpStatus } from "@nestjs/common";
 import {
-  DataSource,
-  DeepPartial,
-  FindOneOptions,
-  ObjectLiteral,
-  Repository,
-} from 'typeorm';
-import { ICurrentUser } from '../interfaces/current-user.interface';
-import { IFind, IFindBy, IFindOne } from '../interfaces/find.interface';
-import { CGeneric } from '../interfaces/res.generic.interface';
-import { Uuid } from 'boilerplate.polyfill';
+	DataSource,
+	DeepPartial,
+	FindOneOptions,
+	ObjectLiteral,
+	Repository,
+} from "typeorm";
+
+import { Uuid } from "boilerplate.polyfill";
+
+import { ICurrentUser } from "../interfaces/current-user.interface";
+import { IFind, IFindBy, IFindOne } from "../interfaces/find.interface";
+import { ServiceResponse } from "../interfaces/serviceResponse.interface";
 
 export class BasicService<
-  T extends ObjectLiteral,
-  CreateDto extends DeepPartial<T>,
-  UpdateDto extends DeepPartial<T>,
+	T extends ObjectLiteral,
+	CreateDto extends DeepPartial<T>,
+	UpdateDto extends DeepPartial<T>,
 > {
-  readonly repository: Repository<T>;
+	readonly repository: Repository<T>;
 
-  constructor(
-    private readonly param: string,
-    entity: { new (): T },
-    dataSource: DataSource,
-  ) {
-    this.repository = dataSource.getRepository(entity);
-  }
+	constructor(
+		private readonly param: string,
+		entity: { new (): T },
+		dataSource: DataSource,
+	) {
+		this.repository = dataSource.getRepository(entity);
+	}
 
-  async findAll(options?: IFind): Promise<CGeneric> {
-    const findAllData = await this.repository.find({
-      select: options?.select,
-      relations: options?.relations,
-      where: options?.where,
-    });
+	async findAll<T = unknown>(options?: IFind): Promise<ServiceResponse<T>> {
+		const findAllData = await this.repository.find({
+			select: options?.select,
+			relations: options?.relations,
+			where: options?.where,
+		});
 
-    if (!findAllData.length) {
-      return new CGeneric([`${this.param} not found`], 204, findAllData);
-    }
+		if (!findAllData.length) {
+			return new ServiceResponse<T>(
+				[`${this.param} not found`],
+				HttpStatus.NOT_FOUND,
+				findAllData as unknown as T[],
+			);
+		}
 
-    return new CGeneric([`${this.param} all data`], 200, findAllData);
-  }
+		return new ServiceResponse<T>(
+			[`${this.param} all data`],
+			HttpStatus.OK,
+			findAllData as unknown as T[],
+		);
+	}
 
-  async create(dto: CreateDto, currentUser?: ICurrentUser): Promise<CGeneric> {
-    let createdData = this.repository.create({
-      ...dto,
-      createdBy: currentUser?.id,
-    });
+	async r_findAll(options?: IFind) {
+		return this.repository.find({
+			select: options?.select,
+			relations: options?.relations,
+			where: options?.where,
+		});
+	}
 
-    createdData = await this.repository.save(createdData);
+	async create<T>(
+		dto: CreateDto,
+		currentUser?: ICurrentUser,
+	): Promise<ServiceResponse<T>> {
+		let createdData = this.repository.create({
+			...dto,
+			createdBy: currentUser?.id,
+		});
 
-    return new CGeneric(
-      [`${this.param} created successfully`],
-      201,
-      createdData,
-    );
-  }
+		createdData = await this.repository.save(createdData);
 
-  async update(
-    id: Uuid, // Assuming UUID is a string
-    dto: UpdateDto,
-    currentUser?: ICurrentUser,
-  ): Promise<CGeneric> {
-    const existingData = (await this.findOne(id)).data;
+		return new ServiceResponse<T>(
+			[`${this.param} created successfully`],
+			HttpStatus.CREATED,
+			[createdData as unknown as T],
+		);
+	}
 
-    if (!existingData) {
-      return new CGeneric([`${this.param} not found`], 204, null);
-    }
+	async update(
+		id: Uuid, // Assuming UUID is a string
+		dto: UpdateDto,
+		currentUser?: ICurrentUser,
+	): Promise<ServiceResponse> {
+		const [existingData] = (await this.findOne(id)).data;
 
-    Object.assign(existingData, dto, {
-      updatedAt: new Date(),
-      updatedBy: currentUser?.id,
-    });
+		if (!existingData) {
+			return new ServiceResponse(
+				[`${this.param} not found`],
+				HttpStatus.NO_CONTENT,
+			);
+		}
 
-    const updatedData = await this.repository.save(existingData);
+		Object.assign(existingData, dto, {
+			updatedAt: new Date(),
+			updatedBy: currentUser?.id,
+		});
 
-    return new CGeneric(
-      [`${this.param} updated successfully`],
-      200,
-      updatedData,
-    );
-  }
+		const updatedData = await this.repository.save(
+			existingData as DeepPartial<T>,
+		);
 
-  async remove(id: string): Promise<CGeneric> {
-    await this.repository.delete(id);
+		return new ServiceResponse(
+			[`${this.param} updated successfully`],
+			HttpStatus.OK,
+			[updatedData],
+		);
+	}
 
-    return new CGeneric([`${this.param} deleted successfully`], 200, null);
-  }
+	async remove(id: string): Promise<ServiceResponse> {
+		await this.repository.delete(id);
 
-  async removeBy(options: object): Promise<CGeneric> {
-    await this.repository.delete(options);
+		return new ServiceResponse(
+			[`${this.param} deleted successfully`],
+			HttpStatus.OK,
+		);
+	}
 
-    return new CGeneric([`${this.param} deleted successfully`], 200, null);
-  }
+	async removeBy(options: object): Promise<ServiceResponse> {
+		await this.repository.delete(options);
 
-  //   async softDelete(id: string, currentUser?: ICurrentUser): Promise<CGeneric> {
-  //     const existingData = await this.repository.findOne({ where: { id } });
+		return new ServiceResponse(
+			[`${this.param} deleted successfully`],
+			HttpStatus.OK,
+		);
+	}
 
-  //     if (!existingData) {
-  //       return new CGeneric([`${this.param} not found`], 204, null);
-  //     }
+	//   async softDelete(id: string, currentUser?: ICurrentUser): Promise<CGeneric> {
+	//     const existingData = await this.repository.findOne({ where: { id } });
 
-  //     Object.assign(existingData, {
-  //       deletedAt: new Date(),
-  //       status: false,
-  //       deletedBy: currentUser?.id,
-  //     });
+	//     if (!existingData) {
+	//       return new CGeneric([`${this.param} not found`], 204, null);
+	//     }
 
-  //     const softDeletedData = await this.repository.save(existingData);
+	//     Object.assign(existingData, {
+	//       deletedAt: new Date(),
+	//       status: false,
+	//       deletedBy: currentUser?.id,
+	//     });
 
-  //     return new CGeneric(
-  //       [`${this.param} deleted successfully`],
-  //       200,
-  //       softDeletedData,
-  //     );
-  //   }
+	//     const softDeletedData = await this.repository.save(existingData);
 
-  async findOne(id: Uuid, options?: IFindOne): Promise<CGeneric> {
-    const findOne = await this.repository.findOne({
-      select: options?.select,
-      relations: options?.relations,
-      where: { id },
-    } as unknown as FindOneOptions<T>);
+	//     return new CGeneric(
+	//       [`${this.param} deleted successfully`],
+	//       200,
+	//       softDeletedData,
+	//     );
+	//   }
 
-    if (!findOne) {
-      return new CGeneric([`${this.param} not found`], 204, null);
-    }
+	async findOne<E = unknown>(
+		id: Uuid,
+		options?: IFindOne,
+	): Promise<ServiceResponse<E>> {
+		const findOne = await this.repository.findOne({
+			select: options?.select,
+			relations: options?.relations,
+			where: { id },
+		} as unknown as FindOneOptions<T>);
 
-    return new CGeneric([`${this.param} data`], 200, findOne);
-  }
+		if (!findOne) {
+			return new ServiceResponse(
+				[`${this.param} not found`],
+				HttpStatus.NO_CONTENT,
+			);
+		}
 
-  async findOneBy(options: IFindBy): Promise<CGeneric> {
-    const findOneBy = await this.repository.findOne({
-      select: options.select,
-      relations: options.relations,
-      where: options.where,
-    } as FindOneOptions<T>);
+		return new ServiceResponse([`${this.param} data`], HttpStatus.OK, [
+			findOne as unknown as E,
+		]);
+	}
 
-    if (!findOneBy) {
-      return new CGeneric([`${this.param} not found`], 204, null);
-    }
+	async findOneBy(options: IFindBy): Promise<ServiceResponse> {
+		const findOneBy = await this.repository.findOne({
+			select: options.select,
+			relations: options.relations,
+			where: options.where,
+		} as FindOneOptions<T>);
 
-    return new CGeneric([`${this.param} data`], 200, findOneBy);
-  }
+		if (!findOneBy) {
+			return new ServiceResponse(
+				[`${this.param} not found`],
+				HttpStatus.NO_CONTENT,
+			);
+		}
+
+		return new ServiceResponse([`${this.param} data`], HttpStatus.OK, [
+			findOneBy,
+		]);
+	}
 }

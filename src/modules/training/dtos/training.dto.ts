@@ -1,26 +1,26 @@
 import { IsNotEmpty, IsString } from "class-validator";
-import { AbstractDto } from "../../../common/dto/abstract.dto";
+import { BaseDto } from "../../../common/dto/abstract.dto";
 
 
 
 
-export class TraningDto extends AbstractDto {
-
-    @IsNotEmpty()
-    @IsString()
-    title !: string 
+export class TraningDto extends BaseDto {
 
     @IsNotEmpty()
     @IsString()
-    description !: string 
+    title !: string
 
     @IsNotEmpty()
     @IsString()
-    userId !:String 
+    description !: string
 
     @IsNotEmpty()
     @IsString()
-    imageUrl !:String 
+    userId !:String
+
+    @IsNotEmpty()
+    @IsString()
+    imageUrl !:String
 }
 
 

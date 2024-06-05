@@ -1,31 +1,72 @@
-import { DataSource, ILike } from 'typeorm';
-import { CitiesEntity } from './cities.entity';
-import { BasicService } from '../../generic/service';
-import { UpdateCitiesDto } from './dtos/update-cities.dto';
-import { CreateCitiesDto } from './dtos/create-cities.dto';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { CGeneric } from '../../interfaces/res.generic.interface';
+import { InjectDataSource } from "@nestjs/typeorm";
+import { DataSource, ILike } from "typeorm";
+
+import { BasicService } from "../../generic/service";
+
+import { Uuid } from "boilerplate.polyfill";
+import { ICurrentUser } from "interfaces/current-user.interface";
+import { CitiesEntity } from "./cities.entity";
+import { CreateCitiesDto } from "./dtos/create-cities.dto";
+import { UpdateCitiesDto } from "./dtos/update-cities.dto";
+import { CityNotFoundError } from "./errors/CityNotFound.error";
 
 export class CitiesService extends BasicService<
-  CitiesEntity,
-  CreateCitiesDto,
-  UpdateCitiesDto
+	CitiesEntity,
+	CreateCitiesDto,
+	UpdateCitiesDto
 > {
-  constructor(@InjectDataSource() dataSource: DataSource) {
-    super('cities', CitiesEntity, dataSource);
-  }
+	constructor(@InjectDataSource() dataSource: DataSource) {
+		super("cities", CitiesEntity, dataSource);
+	}
 
-  async findAllWithName(name: string): Promise<CGeneric> {
-    const findAllData = await this.repository.find({
-      where: {
-        name: ILike(`%${name}%`),
-      },
-    });
+	async findAllWithName(name: string): Promise<CitiesEntity[]> {
+		const cities = await this.repository.find({
+			where: {
+				name: ILike(`%${name}%`),
+			},
+		});
+		if (!cities.length) {
+			throw new CityNotFoundError(`'${name}' city not found`);
+		}
+		return cities;
+	}
 
-    if (!findAllData.length) {
-      return new CGeneric([`agencies not found`], 204, findAllData);
-    }
+	async r_findOne(id: Uuid): Promise<CitiesEntity> {
+		const findOne = await this.repository.findOne({
+			where: { id },
+		});
 
-    return new CGeneric([`agencies all data`], 200, findAllData);
-  }
+		if (!findOne) {
+			throw new CityNotFoundError(`'${id}' city not found`);
+		}
+
+		return findOne;
+	}
+
+	async r_update(
+		id: Uuid, // Assuming UUID is a string
+		dto: UpdateCitiesDto,
+		currentUser?: ICurrentUser,
+	): Promise<CitiesEntity[]> {
+		const foundCity = await this.r_findOne(id);
+
+		if (!foundCity) {
+			throw new CityNotFoundError("city not found");
+		}
+
+		Object.assign(foundCity, dto, {
+			updatedAt: new Date(),
+			updatedBy: currentUser?.id,
+		});
+
+		const updatedData = await this.repository.save(foundCity);
+
+		return [updatedData];
+	}
+
+	async r_remove(id: string): Promise<CitiesEntity[]> {
+		const foundCity = await this.r_findOne(id);
+		await this.repository.delete(id);
+		return [foundCity];
+	}
 }

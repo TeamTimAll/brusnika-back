@@ -6,7 +6,7 @@ export type Constructor<T, Args extends any[] = any[]> = new (...args: Args) => 
 
 // src/decorators/use-dto.decorator.ts
 import { SetMetadata } from '@nestjs/common';
-import { AbstractDto } from './dto/abstract.dto';
+import { BaseDto } from './dto/abstract.dto';
 
 export const DTO_CLASS_KEY = 'dtoClass';
 
@@ -14,7 +14,7 @@ export const UseDto = <T>(dtoClass: Constructor<T>): ClassDecorator => {
   return SetMetadata(DTO_CLASS_KEY, dtoClass);
 };
 
-export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto, O = never> {
+export abstract class AbstractEntity<DTO extends BaseDto = BaseDto, O = never> {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -25,9 +25,9 @@ export abstract class AbstractEntity<DTO extends AbstractDto = AbstractDto, O = 
   updatedAt!: Date;
 
 
-  protected static dtoClass?: Constructor<AbstractDto, [AbstractEntity]>;
+  protected static dtoClass?: Constructor<BaseDto, [AbstractEntity]>;
 
-  static getDtoClass(): Constructor<AbstractDto, [AbstractEntity]> {
+  static getDtoClass(): Constructor<BaseDto, [AbstractEntity]> {
     if (!this.dtoClass) {
       throw new Error(`DTO class not set for ${this.name}`);
     }
