@@ -93,7 +93,7 @@ export class UserService {
       id,
     });
 
-    if (!user) {
+    if (user === null || typeof user === "undefined") {
       throw new UserNotFoundError();
     }
 

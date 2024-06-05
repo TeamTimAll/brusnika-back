@@ -16,13 +16,22 @@ export interface IPrompt {
 	promptLabels: string[];
 }
 
-export interface CustomPrompt<I extends number, T extends IPromptType>
-	extends IPrompt {
-	promptId: I;
-	promptType: T;
+export class DefaultPrompt implements IPrompt {
+	promptId = 0;
+	promptType = "application" as IPromptType;
+	promptCode = "default_prompt_code";
+	promptCondition = "default_prompt_condition";
+	promptLabels = [
+		"Default prompt message",
+		"Default prompt message",
+		"Default prompt message",
+	];
 }
 
-const prompts = new Map<PromptType, IPrompt[]>();
-prompts.set(PromptType.APPLICATION, ApplicationPrompts as IPrompt[]);
-prompts.set(PromptType.POSTGRES, PostgresPrompts as IPrompt[]);
+export type IPromptMap = Record<number, IPrompt>;
+
+const prompts = new Map<PromptType, IPromptMap>([
+	[PromptType.APPLICATION, ApplicationPrompts],
+	[PromptType.POSTGRES, PostgresPrompts],
+]);
 export { prompts };

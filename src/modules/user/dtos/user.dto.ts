@@ -80,7 +80,7 @@ export class UserDto extends BaseDto {
   @ApiProperty({ required: false })
   verification_code_sent_date?: Date | null;
 
-  @IsEnum(UserRegisterStatus)
+  @IsEnum(() => UserRegisterStatus)
   @IsOptional()
   @ApiProperty({ required: false })
   register_status?: UserRegisterStatus | null;
