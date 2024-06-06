@@ -6,9 +6,6 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
-// import * as bcrypt from 'bcrypt';
-// import { NodeMailerService } from '../../common/nodemailer/nodemailer.service';
-
 import { AgenciesService } from "../../modules/agencies/agencies.service";
 import {
 	UserCreateDto,
@@ -29,14 +26,12 @@ import {
 	UserLoginVerifyCodeDto,
 } from "./dtos/user-login.dto";
 
-
 @Injectable()
 export class AuthService {
 	constructor(
 		private jwtService: JwtService,
 		private userService: UserService,
 		private agenciesService: AgenciesService,
-		// private nodemailer: NodeMailerService,
 	) {}
 
 	hasOneMinutePassed(startTime: Date): boolean {
@@ -123,6 +118,17 @@ export class AuthService {
 			}
 
 			if (user.register_status === UserRegisterStatus.CREATED) {
+				const foundUser = await this.userService.findOne({
+					email: body.email,
+				});
+
+				if (foundUser) {
+					return new HttpException(
+						"This email already exists in the system",
+						HttpStatus.CONFLICT,
+					);
+				}
+
 				await this.userService.updateUser(user.id, {
 					register_status: UserRegisterStatus.FILLED,
 					...body,
@@ -169,7 +175,8 @@ export class AuthService {
 				}
 				await this.userService.updateUser(user.id, {
 					register_status: UserRegisterStatus.FINISHED,
-					...body,
+					agency_id: body.agency_id,
+					workStartDate: body.startWorkDate,
 				});
 
 				return {
@@ -188,7 +195,7 @@ export class AuthService {
 				);
 			}
 		} catch (error) {
-			console.log("Account creating error");
+			console.log("Account creating error", error);
 			return new HttpException("Something went wrong", 500);
 		}
 	}
