@@ -16,6 +16,7 @@ export enum ApplicationPromptID {
 	USER_NOT_FOUND_ERROR = 303,
 	CITY_NOT_FOUND_ERROR = 304,
 	PROJECT_NOT_FOUND_ERROR = 305,
+	BUILDING_NOT_FOUND_ERROR = 306,
 }
 
 export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
@@ -85,4 +86,15 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"Project not found error",
 		],
 	},
+	[ApplicationPromptID.BUILDING_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.BUILDING_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "building_not_found_error",
+		promptLabels: [
+			"Building not found error",
+			"Building not found error",
+			"Building not found error",
+		],
+	}
 };

@@ -24,7 +24,9 @@ export class NodeErrorFilter implements ExceptionFilter {
 		const request = ctx.getRequest<Request>();
 
 		let dto = request.body as BaseDto;
-		if (!dto) {
+		if (dto instanceof BaseDto) {
+			dto = request.body as BaseDto;
+		} else {
 			dto = new BaseDto();
 		}
 		const metaData = BaseDto.createFromDto(dto);

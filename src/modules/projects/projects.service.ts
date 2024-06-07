@@ -108,6 +108,10 @@ export class ProjectsService {
 			[],
 		);
 
+		if (!formattedResult.length) {
+			throw new ProjectNotFoundError("Projects not found");
+		}
+
 		return formattedResult;
 	}
 
