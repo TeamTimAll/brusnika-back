@@ -68,9 +68,9 @@ export class PremisesEntity extends AbstractEntity<PremisesDto> {
   @Column({ nullable: true })
   title!: string;
 
-  @Column({ nullable: true })
-  end_date!: string;
+  @Column({ nullable: true, type: 'date' })
+  end_date!: Date;
 
   @Column({ nullable: true })
-  mortagePayment!: string;
+  mortagePayment!: number;
 }

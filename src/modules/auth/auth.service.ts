@@ -357,8 +357,8 @@ export class AuthService {
 			}
 
 			if (
-				user.isPhoneVerified &&
-				user.register_status === UserRegisterStatus.FINISHED
+				user.isPhoneVerified
+				// user.register_status === UserRegisterStatus.FINISHED
 			) {
 				// todo send code to phone number
 				// const randomNumber = Math.floor(100000 + Math.random() * 900000);
@@ -382,7 +382,7 @@ export class AuthService {
 			} else {
 				return new HttpException(
 					{
-						message: "user already on registiry",
+						message: "user not verified or on different registiry",
 						userId: user.id,
 						register_status: user.register_status,
 					},
@@ -439,6 +439,15 @@ export class AuthService {
 						}
 					}
 				}
+			} else if (user.register_status === UserRegisterStatus.FILLED) {
+					return new HttpException(
+						{
+							message: "user on different registiry",
+							userId: user.id,
+							register_status: user.register_status,
+						},
+						HttpStatus.CONFLICT,
+					);
 			} else {
 				if (user.verification_code_sent_date) {
 					if (

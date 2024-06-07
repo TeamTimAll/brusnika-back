@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsEnum,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
   IsUUID,
@@ -114,8 +115,8 @@ export class PremisesFilterDto {
 
   @ApiProperty({ example: 3, required: false })
   @IsOptional()
-  @IsNumber()
-  rooms?: number;
+  @IsNumberString()
+  rooms?: string;
 
   @ApiProperty({
     example: "123e4567-e89b-12d3-a456-426614174000",
@@ -133,45 +134,45 @@ export class PremisesFilterDto {
   @IsUUID()
   building_id?: Uuid;
 
-  @ApiProperty({ example: "50" })
+  @ApiProperty({ example: "50" , required: false})
   @IsOptional()
-  @IsNumber()
-  min_size?: number;
+  @IsNumberString()
+  min_size?: string;
 
-  @ApiProperty({ example: "50" })
+  @ApiProperty({ example: "50", required: false})
   @IsOptional()
-  @IsNumber()
-  max_size?: number;
+  @IsNumberString()
+  max_size?: string;
 
-  @ApiProperty({ example: "50" })
+  @ApiProperty({ example: "50", required: false })
   @IsOptional()
-  @IsNumber()
-  min_price?: number;
+  @IsNumberString()
+  min_price?: string;
 
-  @ApiProperty({ example: "50" })
+  @ApiProperty({ example: "50" , required: false})
   @IsOptional()
-  @IsNumber()
-  max_price?: number;
+  @IsNumberString()
+  max_price?: string;
 
-  @ApiProperty({ example: "50" })
+  @ApiProperty({ example: "50" , required: false})
   @IsOptional()
-  @IsNumber()
-  min_floor?: number;
+  @IsNumberString()
+  min_floor?: string;
 
-  @ApiProperty({ example: "50" })
+  @ApiProperty({ example: "50" , required: false})
   @IsOptional()
-  @IsNumber()
-  max_floor?: number;
+  @IsNumberString()
+  max_floor?: string;
 
-  @ApiProperty({ example: "50" })
+  @ApiProperty({ example: "50" , required: false})
   @IsOptional()
-  @IsNumber()
-  min_number?: number;
+  @IsNumberString()
+  min_number?: string;
 
-  @ApiProperty({ example: "50" })
+  @ApiProperty({ example: "50", required: false })
   @IsOptional()
-  @IsNumber()
-  max_number?: number;
+  @IsNumberString()
+  max_number?: string;
 
   @IsEnum(() => CommercialStatus)
   @IsOptional()

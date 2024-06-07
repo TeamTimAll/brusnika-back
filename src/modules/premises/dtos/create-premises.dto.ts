@@ -77,7 +77,7 @@ export class CreatePremisesDto {
     @ApiProperty({ description: 'End date of the premise', required: false })
     @IsString()
     @IsOptional()
-    end_date?: string;
+    end_date?: Date;
 
     @ApiProperty({ description: 'Apartment number', required: false })
     @IsNumber()
@@ -87,5 +87,5 @@ export class CreatePremisesDto {
     @ApiProperty({ description: 'Mortgage payment', required: false })
     @IsString()
     @IsOptional()
-    mortagePayment?: string;
+    mortagePayment?: number;
 }

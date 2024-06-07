@@ -18,6 +18,8 @@ export class PremisesService extends BasicService<
   async getPremisesFiltered(
     filter?: PremisesFilterDto,
   ): Promise<PremisesEntity[]> {
+    console.log('hi');
+    
     let query = this.repository
       .createQueryBuilder('premise')
       .leftJoin('premise.building', 'building')
@@ -66,49 +68,49 @@ export class PremisesService extends BasicService<
       }
 
       if (filter.min_size) {
-        query = query.where('premise.size > :value', {
+        query = query.where('premise.size => :value', {
           value: filter.min_size,
         });
       }
 
       if (filter.max_size) {
-        query = query.where('premise.size < :value', {
+        query = query.where('premise.size <= :value', {
           value: filter.max_size,
         });
       }
 
       if (filter.min_floor) {
-        query = query.where('premise.floor > :value', {
+        query = query.where('premise.floor => :value', {
           value: filter.min_floor,
         });
       }
 
       if (filter.max_floor) {
-        query = query.where('premise.floor < :value', {
+        query = query.where('premise.floor <= :value', {
           value: filter.max_floor,
         });
       }
 
       if (filter.min_number) {
-        query = query.where('premise.number > :value', {
+        query = query.where('premise.number => :value', {
           value: filter.min_number,
         });
       }
 
       if (filter.max_number) {
-        query = query.where('premise.number < :value', {
+        query = query.where('premise.number <= :value', {
           value: filter.max_number,
         });
       }
 
       if (filter.min_price) {
-        query = query.where('premise.price > :value', {
+        query = query.where('premise.price => :value', {
           value: filter.min_price,
         });
       }
 
       if (filter.max_price) {
-        query = query.where('premise.price < :value', {
+        query = query.where('premise.price <= :value', {
           value: filter.max_price,
         });
       }
