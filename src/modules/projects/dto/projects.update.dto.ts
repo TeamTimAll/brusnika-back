@@ -1,63 +1,59 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
-  IsString,
-  IsUUID,
-  IsOptional,
-  IsNotEmpty,
-  IsNumber,
-} from 'class-validator';
-import { Uuid } from 'boilerplate.polyfill';
-import { ApiProperty } from '@nestjs/swagger';
+	IsDefined,
+	IsNotEmpty,
+	IsNotEmptyObject,
+	IsObject,
+	IsString,
+	ValidateNested
+} from "class-validator";
 
-export class UpdateProjectDto {
-  @IsUUID()
-  @IsOptional()
-  @ApiProperty({
-    example: '84895621-615d-4a18-b076-d9dc71a5b0f7',
-    required: false,
-  })
-  userId?: Uuid;
+import { Uuid } from "boilerplate.polyfill";
 
-  @IsString()
-  @IsOptional()
-  @ApiProperty({
-    example: 'Updated name ',
-    required: false,
-  })
-  name?: string;
+import { MetaDto } from "../../../common/base/base_dto";
 
-  @IsString()
-  @IsOptional()
-  @ApiProperty({
-    required: false,
-    example: 'Updated detailed description',
-  })
-  detailedDescription?: string;
+import {
+	CreateProjectDto,
+	CreateProjectMetaDataDto,
+} from "./project.create.dto";
 
-  @IsString()
-  @IsOptional()
-  @ApiProperty({
-    required: false,
-    example: 'Updated brief description',
-  })
-  briefDescription?: string;
+export class UpdateProjectMetaParams {
+	// @ApiProperty({
+	// 	required: false,
+	// 	example: "e01286e7-ebb8-419f-96f7-9895aac17b4f",
+	// })
+	// @IsOptional()
+	// @IsUUID()
+	// user_id?: Uuid;
 
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty({
-    required: true,
-    example: 'a949e0ad-97cc-4dfa-81bb-efe191eb903b',
-  })
-  projectId!: Uuid;
+	@ApiProperty({
+		required: true,
+		example: "e01286e7-ebb8-419f-96f7-9895aac17b4f",
+	})
+	@IsNotEmpty()
+	@IsString()
+	project_id!: Uuid;
+}
 
-  @IsNumber()
-  @IsOptional()
-  price!: number;
+export class UpdateProjectMetaDto extends MetaDto<UpdateProjectMetaParams> {
+	@ApiProperty({ type: UpdateProjectMetaParams })
+	@IsDefined()
+	@IsNotEmptyObject()
+	@IsObject()
+	@ValidateNested()
+	@Type(() => UpdateProjectMetaParams)
+	declare params: UpdateProjectMetaParams;
+}
 
-  @IsOptional()
-  @IsString()
-  location!: string;
+export class UpdateProjectDto extends CreateProjectDto {}
 
-  @IsOptional()
-  @IsString()
-  end_date!: Date;
+export class UpdateProjectMetaDataDto extends CreateProjectMetaDataDto {
+	@ApiProperty({ type: UpdateProjectMetaDto })
+	@IsDefined()
+	@IsNotEmptyObject()
+	@IsObject()
+	@ValidateNested()
+	@Type(() => UpdateProjectMetaDto)
+	declare meta: UpdateProjectMetaDto;
 }

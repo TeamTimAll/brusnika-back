@@ -16,6 +16,7 @@ import {
 	HttpExceptionFilter,
 	HttpValidationErrorFilter,
 } from "../filters/bad-request.filter";
+import { NodeErrorFilter } from "../filters/node-errors.filter";
 import {
 	QueryFailedErrorFilter,
 	TypeORMErrorFilter,
@@ -46,6 +47,7 @@ export class Http {
 			new QueryFailedErrorFilter(),
 			new TypeORMErrorFilter(),
 			new HttpExceptionFilter(),
+			new NodeErrorFilter(),
 		);
 
 		this.app.useGlobalPipes(

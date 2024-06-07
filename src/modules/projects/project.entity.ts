@@ -1,22 +1,24 @@
-import { UseDto } from "../../decorators";
-import { Entity, Column, OneToMany } from "typeorm";
-import { ProjectSDto } from "./dto/projects.dto";
+import { Column, Entity, OneToMany } from "typeorm";
+
 import { AbstractEntity } from "../../common/abstract.entity";
+import { UseDto } from "../../decorators";
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import { ClientEntity } from "../client/client.entity";
 import { DealsEntity } from "../deals/deals.entity";
 
+import { ProjectDto } from "./dto/projects.dto";
+
 @Entity({ name: "projects" })
-@UseDto(ProjectSDto)
-export class ProjectEntity extends AbstractEntity<ProjectSDto> {
+@UseDto(ProjectDto)
+export class ProjectEntity extends AbstractEntity<ProjectDto, ProjectDto> {
 	@Column({ nullable: true })
 	name!: string;
 
 	@Column({ nullable: true })
-	detailedDescription!: string;
+	detailed_description!: string;
 
 	@Column({ nullable: true })
-	briefDescription!: string;
+	brief_description!: string;
 
 	@Column({ nullable: true })
 	photo!: string;
