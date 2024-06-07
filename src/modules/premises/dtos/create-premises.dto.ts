@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
 import { CommercialStatus, PremisesType } from '../premises.entity';
 
 export class CreatePremisesDto {
@@ -33,10 +33,10 @@ export class CreatePremisesDto {
     @IsOptional()
     status?: CommercialStatus;
 
-    @ApiProperty({ description: 'Commercial number', required: false })
-    @IsString()
+    @ApiProperty({ description: 'number', required: false })
+    @IsNumberString()
     @IsOptional()
-    commercialNumber?: string;
+    number?: number;
 
     @ApiProperty({ description: 'Floor number', required: false })
     @IsNumber()
@@ -47,11 +47,6 @@ export class CreatePremisesDto {
     @IsString()
     @IsOptional()
     photo?: string;
-
-    @ApiProperty({ description: 'Parking place number', required: false })
-    @IsString()
-    @IsOptional()
-    parkingPlaceNumber?: string;
 
     @ApiProperty({ description: 'Number of rooms', required: false })
     @IsNumber()
@@ -79,13 +74,8 @@ export class CreatePremisesDto {
     @IsOptional()
     end_date?: Date;
 
-    @ApiProperty({ description: 'Apartment number', required: false })
-    @IsNumber()
-    @IsOptional()
-    apartmentNumber?: number;
-
     @ApiProperty({ description: 'Mortgage payment', required: false })
-    @IsString()
+    @IsNumberString()
     @IsOptional()
     mortagePayment?: number;
 }

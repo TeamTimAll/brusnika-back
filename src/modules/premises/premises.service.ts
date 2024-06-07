@@ -22,8 +22,8 @@ export class PremisesService extends BasicService<
     
     let query = this.repository
       .createQueryBuilder('premise')
-      .leftJoin('premise.building', 'building')
-      .leftJoin('building.project', 'project');
+      .leftJoinAndSelect('premise.building', 'building')
+      .leftJoinAndSelect('building.project', 'project');
     if (filter) {
       if (filter.endYear) {
         query = query.where('project.end_date = :endYear', {
