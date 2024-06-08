@@ -1,7 +1,7 @@
 import { Uuid } from 'boilerplate.polyfill';
 
 export interface ICurrentUser {
-  id: Uuid;
+  user_id: Uuid;
   username?: string;
   email?: string;
   roles?: string[];

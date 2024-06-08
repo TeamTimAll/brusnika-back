@@ -56,7 +56,7 @@ export class CitiesService extends BasicService<
 
 		Object.assign(foundCity, dto, {
 			updatedAt: new Date(),
-			updatedBy: currentUser?.id,
+			updatedBy: currentUser?.user_id,
 		});
 
 		const updatedData = await this.repository.save(foundCity);

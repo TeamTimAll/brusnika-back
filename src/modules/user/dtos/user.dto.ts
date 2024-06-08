@@ -9,6 +9,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
 } from 'class-validator';
 import { BaseDto } from '../../../common/dto/abstract.dto';
 import { RoleType } from '../../../constants';
@@ -139,32 +140,43 @@ export class UserChangePhoneVerifyCodeDto {
   code!: number;
 }
 
-export class UserUpdateDto extends BaseDto {
+export class UserUpdateDto {
   @IsString()
   @IsOptional()
-  firstName?: string | null;
+  @ApiProperty({ required: false, description: 'The first name of the user' })
+  @MaxLength(50, { message: 'First name cannot exceed 50 characters' })
+  firstName?: string;
 
   @IsString()
   @IsOptional()
-  lastName?: string | null;
+  @ApiProperty({ required: false, description: 'The last name of the user' })
+  @MaxLength(50, { message: 'Last name cannot exceed 50 characters' })
+  lastName?: string;
 
   @IsEmail()
   @IsOptional()
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, description: 'The email address of the user' })
+  @MaxLength(100, { message: 'Email address cannot exceed 100 characters' })
   email?: string;
 
   @IsString()
   @IsOptional()
+  @ApiProperty({ required: false, description: 'The avatar URL of the user' })
+  @MaxLength(200, { message: 'Avatar URL cannot exceed 200 characters' })
   avatar?: string;
 
   @IsDateString()
   @IsOptional()
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, description: 'The birth date of the user', example: '1990-01-01'})
+  // @MinDate(new Date('1900-01-01'), { message: 'Birth date must be after 1900-01-01' })
+  // @MaxDate(new Date('2015-01-01'), { message: 'Birth date must be before 2015-01-01' })
   birthDate?: Date;
 
   @IsUUID()
+  @IsOptional()
   @ApiProperty({
     required: false,
+    description: 'The ID of the city where the user resides',
   })
   city_id?: Uuid;
 }

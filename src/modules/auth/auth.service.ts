@@ -89,8 +89,6 @@ export class AuthService {
 			// const randomNumber = Math.floor(100000 + Math.random() * 900000);
 			const randomNumber = 111111;
 
-			console.log(randomNumber, user.id);
-
 			await this.userService.updateUser(user.id, {
 				verification_code: randomNumber,
 				verification_code_sent_date: new Date(),
@@ -356,39 +354,39 @@ export class AuthService {
 				// }
 			}
 
-			if (
-				user.isPhoneVerified
-				// user.register_status === UserRegisterStatus.FINISHED
-			) {
-				// todo send code to phone number
-				// const randomNumber = Math.floor(100000 + Math.random() * 900000);
-				const randomNumber = 111111;
+			// if (
+			// user.isPhoneVerified
+			// user.register_status === UserRegisterStatus.FINISHED
+			// ) {
+			// todo send code to phone number
+			// const randomNumber = Math.floor(100000 + Math.random() * 900000);
+			const randomNumber = 111111;
 
-				console.log(randomNumber, user.id);
+			console.log(randomNumber, user.id);
 
-				await this.userService.updateUser(user.id, {
-					verification_code: randomNumber,
-					verification_code_sent_date: new Date(),
-				});
+			await this.userService.updateUser(user.id, {
+				verification_code: randomNumber,
+				verification_code_sent_date: new Date(),
+			});
 
-				return new HttpException(
-					{ userId: user.id, message: "sms sent" },
-					HttpStatus.OK,
-				);
-				// const { password, ...result } = user;
-				// return {
-				//   accessToken: this.jwtService.sign(result),
-				// };
-			} else {
-				return new HttpException(
-					{
-						message: "user not verified or on different registiry",
-						userId: user.id,
-						register_status: user.register_status,
-					},
-					HttpStatus.BAD_REQUEST,
-				);
-			}
+			return new HttpException(
+				{ userId: user.id, message: "sms sent" },
+				HttpStatus.OK,
+			);
+			// const { password, ...result } = user;
+			// return {
+			//   accessToken: this.jwtService.sign(result),
+			// };
+			// } else {
+			// 	return new HttpException(
+			// 		{
+			// 			message: "user not verified or on different registiry",
+			// 			userId: user.id,
+			// 			register_status: user.register_status,
+			// 		},
+			// 		HttpStatus.BAD_REQUEST,
+			// 	);
+			// }
 		} catch (error: any) {
 			console.error("Login error:", error.message);
 			return new HttpException(error.message, 500);
@@ -408,7 +406,10 @@ export class AuthService {
 				);
 			}
 
-			if (user.isPhoneVerified) {
+			if (
+				user.isPhoneVerified &&
+				user.register_status === UserRegisterStatus.FINISHED
+			) {
 				if (user.verification_code_sent_date) {
 					if (
 						this.hasOneMinutePassed(
@@ -440,14 +441,14 @@ export class AuthService {
 					}
 				}
 			} else if (user.register_status === UserRegisterStatus.FILLED) {
-					return new HttpException(
-						{
-							message: "user on different registiry",
-							userId: user.id,
-							register_status: user.register_status,
-						},
-						HttpStatus.CONFLICT,
-					);
+				return new HttpException(
+					{
+						message: "user on different registiry",
+						userId: user.id,
+						register_status: user.register_status,
+					},
+					HttpStatus.CONFLICT,
+				);
 			} else {
 				if (user.verification_code_sent_date) {
 					if (
@@ -455,6 +456,7 @@ export class AuthService {
 							user.verification_code_sent_date,
 						)
 					) {
+						console.log("Verification code expired");
 						return new HttpException(
 							{
 								error: "verification code expired",
@@ -462,6 +464,7 @@ export class AuthService {
 							HttpStatus.GONE,
 						);
 					} else {
+						console.log("Verification code is correct");
 						if (user.verification_code === dto.code) {
 							await this.userService.updateUser(user.id, {
 								isPhoneVerified: true,
@@ -483,6 +486,13 @@ export class AuthService {
 							);
 						}
 					}
+				} else {
+					return new HttpException(
+						{
+							error: "No verification code sent",
+						},
+						HttpStatus.CONFLICT,
+					);
 				}
 			}
 		} catch (error: any) {
