@@ -8,17 +8,17 @@ import {
 	Param,
 	Post,
 	Put,
-	Query,
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiQuery, ApiTags } from "@nestjs/swagger";
 
 import { Uuid } from "boilerplate.polyfill";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { CreateBuildingMetaDto } from "../buildings/dtos/building.create.dto";
-import { UpdateBuildingMetaDataDto } from "../buildings/dtos/building.update.dto";
+import { UUIDParam, UUIDQuery } from "../../decorators";
 
 import { BuildingsService } from "./buildings.service";
+import { CreateBuildingMetaDto } from "./dtos/building.create.dto";
+import { UpdateBuildingMetaDataDto } from "./dtos/building.update.dto";
 
 @ApiTags("Buildings")
 @Controller("buildings")
@@ -27,7 +27,11 @@ export class BuildingsController {
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	async getAll(@Query("project_id") project_id: Uuid) {
+	@ApiQuery({
+		name: "project_id",
+		required: false,
+	})
+	async getAll(@UUIDQuery("project_id") project_id?: Uuid) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.buildingsService.findAllBuilding(project_id);
 		return metaData;
@@ -46,10 +50,13 @@ export class BuildingsController {
 
 	@Put(":id")
 	@HttpCode(HttpStatus.OK)
-	async update(@Body() dto: UpdateBuildingMetaDataDto) {
+	async update(
+		@Body() dto: UpdateBuildingMetaDataDto,
+		@UUIDParam("id") id: Uuid,
+	) {
 		const metaData = BaseDto.createFromDto(dto);
 		const updatedBuilding = await this.buildingsService.updateBuilding(
-			dto.meta.params.id,
+			id,
 			dto.data[0],
 		);
 		metaData.data = [updatedBuilding];

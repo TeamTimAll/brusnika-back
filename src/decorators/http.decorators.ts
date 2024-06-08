@@ -1,12 +1,12 @@
 import {
-  Param,
-  ParseUUIDPipe,
-  UseGuards,
-  UseInterceptors,
-  applyDecorators,
-  type PipeTransform,
+	Param,
+	ParseUUIDPipe,
+	Query,
+	UseGuards,
+	UseInterceptors,
+	applyDecorators,
+	type PipeTransform,
 } from "@nestjs/common";
-
 import { type Type } from "@nestjs/common/interfaces";
 import { ApiBearerAuth, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { ValidationError } from "class-validator";
@@ -16,6 +16,7 @@ import { type RoleType } from "../constants";
 import { AuthGuard } from "../guards/auth.guard";
 import { RolesGuard } from "../guards/roles.guard";
 import { AuthUserInterceptor } from "../interceptors/auth-user-interceptor.service";
+
 import { PublicRoute } from "./public-route.decorator";
 import { Roles } from "./roles.decorator";
 
@@ -40,6 +41,26 @@ export function UUIDParam(
 	...pipes: Array<Type<PipeTransform> | PipeTransform>
 ): ParameterDecorator {
 	return Param(
+		property,
+		new ParseUUIDPipe({
+			version: "4",
+			exceptionFactory(error_string) {
+				const error = new ValidationError();
+				error.property = property;
+				error.target = { ParseUUIDPipe: error_string };
+				error.constraints = { ParseUUIDPipe: error_string };
+				return new CustomValidationError([error]);
+			},
+		}),
+		...pipes,
+	);
+}
+
+export function UUIDQuery(
+	property: string,
+	...pipes: Array<Type<PipeTransform> | PipeTransform>
+): ParameterDecorator {
+	return Query(
 		property,
 		new ParseUUIDPipe({
 			version: "4",

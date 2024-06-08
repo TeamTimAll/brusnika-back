@@ -25,9 +25,9 @@ export class BuildingsService extends BasicService<
 		super("buildings", BuildingsEntity, dataSource);
 	}
 
-	async findAllBuilding(project_id: Uuid) {
+	async findAllBuilding(project_id?: Uuid) {
 		let buildings: BuildingsEntity[];
-		if (project_id) {
+		if (project_id && project_id.length) {
 			buildings = await this.r_findAll({
 				where: { project_id },
 				relations: ["project"],

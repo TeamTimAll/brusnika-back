@@ -3,17 +3,13 @@ import { Type } from "class-transformer";
 import {
 	ArrayMinSize,
 	IsArray,
-	IsDefined,
 	IsNotEmpty,
-	IsNotEmptyObject,
-	IsObject,
 	IsString,
-	ValidateNested,
+	ValidateNested
 } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
 
-import { BaseDto, MetaDto } from "../../../common/base/base_dto";
+import { BaseDto } from "../../../common/base/base_dto";
 
 export class UpdateBuilding {
 	@IsNotEmpty()
@@ -121,35 +117,7 @@ export class UpdateBuilding {
 	photos!: string[];
 }
 
-export class UpdateBuildingMetaParams {
-	@ApiProperty({
-		required: true,
-		example: "e01286e7-ebb8-419f-96f7-9895aac17b4f",
-	})
-	@IsNotEmpty()
-	@IsString()
-	id!: Uuid;
-}
-
-export class UpdateBuildingMetaDto extends MetaDto<UpdateBuildingMetaParams> {
-	@ApiProperty({ type: UpdateBuildingMetaParams })
-	@IsDefined()
-	@IsNotEmptyObject()
-	@IsObject()
-	@ValidateNested()
-	@Type(() => UpdateBuildingMetaParams)
-	declare params: UpdateBuildingMetaParams;
-}
-
 export class UpdateBuildingMetaDataDto extends BaseDto<UpdateBuilding> {
-	@ApiProperty({ type: UpdateBuildingMetaDto })
-	@IsDefined()
-	@IsNotEmptyObject()
-	@IsObject()
-	@ValidateNested()
-	@Type(() => UpdateBuildingMetaDto)
-	declare meta: UpdateBuildingMetaDto;
-
 	@ApiProperty({
 		example: [
 			{
