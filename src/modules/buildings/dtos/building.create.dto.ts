@@ -112,5 +112,5 @@ export class CreateBuilding {
     required: true,
     example: 'a949e0ad-97cc-4dfa-81bb-efe191eb903b',
   })
-  projectId!: Uuid;
+  project_id!: Uuid;
 }

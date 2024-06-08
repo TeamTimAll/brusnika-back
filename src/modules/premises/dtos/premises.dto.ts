@@ -90,6 +90,11 @@ export class PremisesDto extends BaseDto {
 	@IsOptional()
 	@IsString()
 	mortagePayment?: string;
+
+	@ApiProperty({ example: "123e4567-e 89b-12d3-a456-426614174000" ,required: false})
+	@IsOptional()
+	@IsString()
+	section_id?: string;
 }
 
 export class PremisesFilterDto {
@@ -100,6 +105,7 @@ export class PremisesFilterDto {
 
 	@ApiProperty({
 		enum: PremisesType,
+		description: "Premises type",
 		required: false,
 	})
 	@IsOptional()
@@ -107,6 +113,7 @@ export class PremisesFilterDto {
 
 	@ApiProperty({
 		example: "123e4567-e89b-12d3-a456-426614174000",
+		description: "Section ID",
 		required: false,
 	})
 	@IsOptional()
@@ -134,7 +141,7 @@ export class PremisesFilterDto {
 	@IsUUID()
 	building_id?: Uuid;
 
-	@ApiProperty({ example: "50", required: false })
+	@ApiProperty({ example: "1", required: false })
 	@IsOptional()
 	@IsNumberString()
 	min_size?: string;
@@ -144,17 +151,17 @@ export class PremisesFilterDto {
 	@IsNumberString()
 	max_size?: string;
 
-	@ApiProperty({ example: "50", required: false })
+	@ApiProperty({ example: "1", required: false })
 	@IsOptional()
 	@IsNumberString()
 	min_price?: string;
 
-	@ApiProperty({ example: "50", required: false })
+	@ApiProperty({ example: "50000000", required: false })
 	@IsOptional()
 	@IsNumberString()
 	max_price?: string;
 
-	@ApiProperty({ example: "50", required: false })
+	@ApiProperty({ example: "1", required: false })
 	@IsOptional()
 	@IsNumberString()
 	min_floor?: string;
@@ -164,7 +171,7 @@ export class PremisesFilterDto {
 	@IsNumberString()
 	max_floor?: string;
 
-	@ApiProperty({ example: "50", required: false })
+	@ApiProperty({ example: "1", required: false })
 	@IsOptional()
 	@IsNumberString()
 	min_number?: string;

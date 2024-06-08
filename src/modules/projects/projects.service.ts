@@ -19,21 +19,21 @@ export class ProjectsService {
     const rawResult = await this.projectsRepository
       .createQueryBuilder('project')
       .leftJoinAndSelect('project.buildings', 'building')
-      .leftJoin('building.premises', 'premise')
+      .leftJoinAndSelect('building.premises', 'premise')
       .select([
-        'project.id AS id',
-        'project.name AS name',
-        'project.detailedDescription AS detailed_description',
-        'project.briefDescription AS brief_description',
-        'project.photo AS photo',
-        'project.price AS price',
-        'project.location AS location',
-        'project.long AS long',
-        'project.lat AS lat',
-        'project.link AS link',
-        'project.end_date AS end_date',
-        'premise.type AS premise_type',
-        'COUNT(premise.id) AS premise_count',
+      'project.id AS id',
+      'project.name AS name',
+      'project.detailedDescription AS detailed_description',
+      'project.briefDescription AS brief_description',
+      'project.photo AS photo',
+      'project.price AS price',
+      'project.location AS location',
+      'project.long AS long',
+      'project.lat AS lat',
+      'project.link AS link',
+      'project.end_date AS end_date',
+      'premise.type AS premise_type',
+      'COUNT(premise.id) AS premise_count',
       ])
       .groupBy('project.id, premise.type')
       .getRawMany();
@@ -44,11 +44,12 @@ export class ProjectsService {
 
     const formattedResult = rawResult.reduce((acc, row) => {
       const projectId = row.id;
+      console.log(row);
 
       let project = acc.find((p) => p.projectId === projectId);
       if (!project) {
         project = {
-          projectId,
+          id: projectId,
           name: row.name,
           detailedDescription: row.detailed_description,
           briefDescription: row.brief_description,
