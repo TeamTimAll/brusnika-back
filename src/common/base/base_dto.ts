@@ -3,10 +3,9 @@ import { Type } from "class-transformer";
 import {
 	IsArray,
 	IsDefined,
-	IsNotEmptyObject,
 	IsObject,
 	IsOptional,
-	ValidateNested,
+	ValidateNested
 } from "class-validator";
 
 import { ResponseStatusType } from "../enums/response_status_type_enum";
@@ -26,7 +25,7 @@ export class MetaDto<T = object> {
 	@IsOptional()
 	taskId!: string;
 
-	@ApiProperty()
+	// @ApiProperty()
 	@IsOptional()
 	@IsObject()
 	params!: T;
@@ -37,7 +36,7 @@ export class MetaDto<T = object> {
 export class BaseDto<T = unknown> {
 	@ApiProperty({ type: MetaDto })
 	@IsDefined()
-	@IsNotEmptyObject()
+	// @IsNotEmptyObject()
 	@IsObject()
 	@ValidateNested()
 	@Type(() => MetaDto)

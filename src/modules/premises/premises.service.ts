@@ -1,10 +1,12 @@
-import { DataSource } from "typeorm";
-import { PremisesEntity } from "./premises.entity";
-import { BasicService } from "../../generic/service";
-import { UpdatePremisesDto } from "./dtos/update-premises.dto";
-import { CreatePremisesDto } from "./dtos/create-premises.dto";
 import { InjectDataSource } from "@nestjs/typeorm";
+import { DataSource } from "typeorm";
+
+import { BasicService } from "../../generic/service";
+
+import { CreatePremisesDto } from "./dtos/create-premises.dto";
 import { PremisesFilterDto } from "./dtos/premises.dto";
+import { UpdatePremisesDto } from "./dtos/update-premises.dto";
+import { PremisesEntity } from "./premises.entity";
 
 export class PremisesService extends BasicService<
 	PremisesEntity,
@@ -18,113 +20,111 @@ export class PremisesService extends BasicService<
 	async getPremisesFiltered(
 		filter?: PremisesFilterDto,
 	): Promise<PremisesEntity[]> {
-		console.log("hi");
-
 		let query = this.repository
 			.createQueryBuilder("premise")
 			.leftJoinAndSelect("premise.building", "building")
-      .leftJoinAndSelect("premise.section", "section")
+			.leftJoinAndSelect("premise.section", "section")
 			.leftJoinAndSelect("building.project", "project");
 		if (filter) {
 			if (filter.endYear) {
-				query = query.where("project.end_date = :endYear", {
+				query = query.andWhere("project.end_date = :endYear", {
 					endYear: filter.endYear,
 				});
 			}
 
 			if (filter.type) {
-				query = query.where("premise.type = :value", {
-					value: filter.type,
+				query = query.andWhere("premise.type = :type", {
+					type: filter.type,
 				});
 			}
 
 			if (filter.section_id) {
-				query = query.where("building.section_id = :value", {
-					value: filter.section_id,
+				query = query.andWhere("building.section_id = :section_id", {
+					section_id: filter.section_id,
 				});
 			}
 
 			if (filter.rooms) {
-				query = query.where("premise.rooms = :value", {
-					value: filter.rooms,
+				query = query.andWhere("premise.rooms = :rooms", {
+					rooms: filter.rooms,
 				});
 			}
 
 			if (filter.project_id) {
-				query = query.where("building.project_id = :value", {
-					value: filter.project_id,
+				query = query.andWhere("building.project_id = :project_id", {
+					project_id: filter.project_id,
 				});
 			}
 
 			if (filter.building_id) {
-				query = query.where("premise.building_id = :value", {
-					value: filter.building_id,
+				query = query.andWhere("premise.building_id = :building_id", {
+					building_id: filter.building_id,
 				});
 			}
 
 			if (filter.building_id) {
-				query = query.where("premise.building_id = :value", {
-					value: filter.building_id,
+				query = query.andWhere("premise.building_id = :building_id", {
+					building_id: filter.building_id,
 				});
 			}
 
 			if (filter.min_size) {
-				query = query.where("premise.size => :value", {
-					value: filter.min_size,
+				query = query.andWhere("premise.size => :min_size", {
+					min_size: filter.min_size,
 				});
 			}
 
 			if (filter.max_size) {
-				query = query.where("premise.size <= :value", {
-					value: filter.max_size,
+				query = query.andWhere("premise.size <= :max_size", {
+					max_size: filter.max_size,
 				});
 			}
 
 			if (filter.min_floor) {
-				query = query.where("premise.floor => :value", {
-					value: filter.min_floor,
+				query = query.andWhere("premise.floor => :min_floor", {
+					min_floor: filter.min_floor,
 				});
 			}
 
 			if (filter.max_floor) {
-				query = query.where("premise.floor <= :value", {
-					value: filter.max_floor,
+				query = query.andWhere("premise.floor <= :max_floor", {
+					max_floor: filter.max_floor,
 				});
 			}
 
 			if (filter.min_number) {
-				query = query.where("premise.number => :value", {
-					value: filter.min_number,
+				query = query.andWhere("premise.number => :min_number", {
+					min_number: filter.min_number,
 				});
 			}
 
 			if (filter.max_number) {
-				query = query.where("premise.number <= :value", {
-					value: filter.max_number,
+				query = query.andWhere("premise.number <= :max_number", {
+					max_number: filter.max_number,
 				});
 			}
 
 			if (filter.min_price) {
-				query = query.where("premise.price => :value", {
-					value: filter.min_price,
+				query = query.andWhere("premise.price => :min_price", {
+					min_price: filter.min_price,
 				});
 			}
 
 			if (filter.max_price) {
-				query = query.where("premise.price <= :value", {
-					value: filter.max_price,
+				query = query.andWhere("premise.price <= :max_price", {
+					max_price: filter.max_price,
 				});
 			}
 
 			if (filter.status) {
-				query = query.where("premise.status = :value", {
-					value: filter.status,
+				query = query.andWhere("premise.status = :status", {
+					status: filter.status,
 				});
 			}
 
 			if (filter.section_id) {
-				query = query.where("premise.section_id = :value", {
-					value: filter.section_id,
+				query = query.andWhere("premise.section_id = :section_id", {
+					section_id: filter.section_id,
 				});
 			}
 		}
