@@ -31,7 +31,7 @@ export class BuildingsController {
 		name: "project_id",
 		required: false,
 	})
-	async getAll(@UUIDQuery("project_id") project_id?: Uuid) {
+	async getAll(@UUIDQuery("project_id", true) project_id?: Uuid) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.buildingsService.findAllBuilding(project_id);
 		return metaData;
