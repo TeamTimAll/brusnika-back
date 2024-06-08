@@ -43,7 +43,7 @@ export class CitiesController {
 		return this.service.create(dto);
 	}
 	// ------------------------------@Get()-------------------------------------
-	@Get()
+
 	@ApiQuery({
 		name: "name",
 		description: " city Name (optional if not provided  or empty)",
@@ -61,6 +61,7 @@ export class CitiesController {
 			]),
 		},
 	})
+	@Get()
 	@ApiResponse({
 		status: new CityNotFoundError().status,
 		schema: {

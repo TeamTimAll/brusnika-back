@@ -19,7 +19,7 @@ export class MetaPrompt {
 	meta!: object;
 }
 
-export class MetaDto {
+export class MetaDto<T = object> {
 	@IsOptional()
 	type: ResponseStatusType = ResponseStatusType.SUCCESS;
 
@@ -29,7 +29,7 @@ export class MetaDto {
 	@ApiProperty()
 	@IsOptional()
 	@IsObject()
-	params!: object;
+	params!: T;
 
 	prompt!: MetaPrompt;
 }

@@ -8,8 +8,8 @@ export enum PromptType {
 	APPLICATION = 2,
 }
 
-export interface IPrompt {
-	promptId: number;
+export interface IPrompt<ID = number> {
+	promptId: ID;
 	promptType: IPromptType;
 	promptCode: string;
 	promptCondition: string;
@@ -28,7 +28,9 @@ export class DefaultPrompt implements IPrompt {
 	];
 }
 
-export type IPromptMap = Record<number, IPrompt>;
+export type IPromptMap<T extends number = number> = {
+	[x in T]: IPrompt<T>;
+};
 
 const prompts = new Map<PromptType, IPromptMap>([
 	[PromptType.APPLICATION, ApplicationPrompts],

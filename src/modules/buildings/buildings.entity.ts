@@ -1,10 +1,12 @@
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+
+import { Uuid } from "boilerplate.polyfill";
+
 import { AbstractEntity } from "../../common/abstract.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
-import { ManyToOne, Column, Entity, OneToMany, JoinColumn } from "typeorm";
-import { Uuid } from "boilerplate.polyfill";
+import { WithOutToDto } from "../../types";
 import { PremisesEntity } from "../premises/premises.entity";
 import { SectionsEntity } from "../sections/sections.entity";
-import { WithOutToDto } from "types";
 
 @Entity({ name: "buildings" })
 export class BuildingsEntity extends AbstractEntity {
@@ -13,33 +15,37 @@ export class BuildingsEntity extends AbstractEntity {
 
 	// storage
 	@Column({ nullable: true })
-	totalStorage!: number;
+	total_storage!: number;
 
 	// vacant storage
 	@Column({ nullable: true })
-	totalVacantStorage!: number;
+	total_vacant_storage!: number;
 
 	// total parking space
 	@Column({ nullable: true })
-	totalParkingSpace!: number;
+	total_parking_space!: number;
 
 	// total vacant parking space
 	@Column({ nullable: true })
-	totalVacantParkingSpace!: number;
+	total_vacant_parking_space!: number;
 
 	// commercial
 	@Column({ nullable: true })
-	totalCommercial!: number;
+	total_commercial!: number;
 
 	// vacant commercail
 	@Column({ nullable: true })
-	totalVacantCommercial!: number;
+	total_vacant_commercial!: number;
 
 	@Column({ nullable: true })
 	address!: string;
 
 	@Column({ nullable: true })
-	numberOfFloors!: number;
+	number_of_floors!: number;
+
+	// TODO: change this columns
+	total_apartment!: number;
+	total_vacant_apartment!: number;
 
 	@Column({ type: "text", array: true, nullable: true })
 	photos: string[] = [];
@@ -69,14 +75,14 @@ export class BuildingsEntity extends AbstractEntity {
 		const dto: WithOutToDto<BuildingsEntity> = {
 			id: entity.id ?? "",
 			name: entity.name ?? "",
-			totalStorage: entity.totalStorage ?? 0,
-			totalVacantStorage: entity.totalVacantStorage ?? 0,
-			totalParkingSpace: entity.totalParkingSpace ?? 0,
-			totalVacantParkingSpace: entity.totalVacantParkingSpace ?? 0,
-			totalCommercial: entity.totalCommercial ?? 0,
-			totalVacantCommercial: entity.totalVacantCommercial ?? 0,
+			total_storage: entity.total_storage ?? 0,
+			total_vacant_storage: entity.total_vacant_storage ?? 0,
+			total_parking_space: entity.total_parking_space ?? 0,
+			total_vacant_parking_space: entity.total_vacant_parking_space ?? 0,
+			total_commercial: entity.total_commercial ?? 0,
+			total_vacant_commercial: entity.total_vacant_commercial ?? 0,
 			address: entity.address ?? "",
-			numberOfFloors: entity.numberOfFloors ?? 0,
+			number_of_floors: entity.number_of_floors ?? 0,
 			photos: entity.photos ?? [],
 			project_id: entity.project_id ?? "",
 			project: entity.project ?? new ProjectEntity(),
@@ -84,6 +90,8 @@ export class BuildingsEntity extends AbstractEntity {
 			sections: entity.sections ?? [],
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
+			total_apartment: entity.total_apartment ?? 0,
+			total_vacant_apartment: entity.total_vacant_apartment ?? 0,
 		};
 
 		return dto;

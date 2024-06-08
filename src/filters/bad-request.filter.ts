@@ -27,7 +27,9 @@ export class HttpValidationErrorFilter
 		const request = ctx.getRequest<Request>();
 
 		let dto = request.body as BaseDto;
-		if (!dto) {
+		if (dto instanceof BaseDto) {
+			dto = request.body as BaseDto;
+		} else {
 			dto = new BaseDto();
 		}
 		const metaData = BaseDto.createFromDto(dto);
@@ -49,7 +51,9 @@ export class HttpErrorFilter implements ExceptionFilter<BaseError> {
 		const request = ctx.getRequest<Request>();
 
 		let dto = request.body as BaseDto;
-		if (!dto) {
+		if (dto instanceof BaseDto) {
+			dto = request.body as BaseDto;
+		} else {
 			dto = new BaseDto();
 		}
 		const metaData = BaseDto.createFromDto(dto);
@@ -73,10 +77,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();
-		const status = exception.getStatus();
+		const status = exception.getStatus() as HttpStatus;
 
 		let dto = request.body as BaseDto;
-		if (!dto) {
+		if (dto instanceof BaseDto) {
+			dto = request.body as BaseDto;
+		} else {
 			dto = new BaseDto();
 		}
 		const metaData = BaseDto.createFromDto(dto);

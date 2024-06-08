@@ -3,6 +3,8 @@ import { join } from "path";
 
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
+import { SnakeNamingStrategy } from "../lib/snake-naming.strategy";
+
 import { ConfigManager } from "./";
 
 export type DatabaseConfig = PostgresConnectionOptions;
@@ -16,6 +18,7 @@ export class DatabaseConfigManager {
 			username: ConfigManager.config.DB_USERNAME,
 			password: ConfigManager.config.DB_PASSWORD,
 			database: ConfigManager.config.DB_DATABASE,
+			namingStrategy: new SnakeNamingStrategy(),
 			ssl: ConfigManager.isProduction()
 				? {
 						ca: fs.readFileSync("postgresql.pem").toString(),

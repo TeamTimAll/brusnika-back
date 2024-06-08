@@ -1,50 +1,67 @@
 import {
 	Body,
 	Controller,
-	Get,
-	Post,
-	Param,
-	Put,
 	Delete,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Param,
+	Post,
+	Put,
 	Query,
 } from "@nestjs/common";
-import { ApiQuery, ApiTags } from "@nestjs/swagger";
-import { CreateBuilding } from "../buildings/dtos/building.create.dto";
-import { UpdateBuilding } from "../buildings/dtos/building.update.dto";
+import { ApiTags } from "@nestjs/swagger";
+
 import { Uuid } from "boilerplate.polyfill";
+
+import { BaseDto } from "../../common/base/base_dto";
+import { CreateBuildingMetaDto } from "../buildings/dtos/building.create.dto";
+import { UpdateBuildingMetaDataDto } from "../buildings/dtos/building.update.dto";
+
 import { BuildingsService } from "./buildings.service";
 
-@Controller("buildings")
 @ApiTags("Buildings")
+@Controller("buildings")
 export class BuildingsController {
-	constructor(private premiseService: BuildingsService) {}
+	constructor(private buildingsService: BuildingsService) {}
 
 	@Get()
-	@ApiQuery({ name: "project_id", required: false })
-	async getAllPremises(@Query("project_id") project_id: Uuid) {
-		if (project_id) {
-			return this.premiseService.r_findAll({
-				where: { project_id },
-				relations: ["project"],
-			});
-		}
-		return this.premiseService.r_findAll({
-			relations: ["project"],
-		});
+	@HttpCode(HttpStatus.OK)
+	async getAll(@Query("project_id") project_id: Uuid) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		metaData.data = await this.buildingsService.findAllBuilding(project_id);
+		return metaData;
 	}
 
 	@Post()
-	async createNewPremise(@Body() body: CreateBuilding) {
-		return this.premiseService.create(body);
+	@HttpCode(HttpStatus.CREATED)
+	async create(@Body() dto: CreateBuildingMetaDto) {
+		const metaData = BaseDto.createFromDto(dto);
+		const createdBuilding = await this.buildingsService.createBuilding(
+			dto.data[0],
+		);
+		metaData.data = [createdBuilding];
+		return metaData;
 	}
 
 	@Put(":id")
-	async updatePremise(@Body() body: UpdateBuilding, @Param("id") id: Uuid) {
-		return this.premiseService.update(id, body);
+	@HttpCode(HttpStatus.OK)
+	async update(@Body() dto: UpdateBuildingMetaDataDto) {
+		const metaData = BaseDto.createFromDto(dto);
+		const updatedBuilding = await this.buildingsService.updateBuilding(
+			dto.meta.params.id,
+			dto.data[0],
+		);
+		metaData.data = [updatedBuilding];
+		return metaData;
 	}
 
 	@Delete(":id")
-	async deletePremise(@Param("id") id: Uuid) {
-		return this.premiseService.remove(id);
+	@HttpCode(HttpStatus.OK)
+	async delete(@Param("id") id: Uuid) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		const deletedBuilding = await this.buildingsService.delete(id);
+		metaData.data = [deletedBuilding];
+		return metaData;
 	}
 }

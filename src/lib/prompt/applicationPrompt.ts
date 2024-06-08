@@ -2,22 +2,24 @@ import { IPromptMap } from "./prompt";
 
 export enum ApplicationPromptID {
 	// Auth Errors
-	UNAUTHORIZED_ERROR = 270,
-	INVALID_TOKEN_ERROR = 271,
-	TOKEN_EXPIRED_ERROR = 272,
-	PERMISITION_DENIED_ERROR = 273,
+	// UNAUTHORIZED_ERROR = 270,
+	// INVALID_TOKEN_ERROR = 271,
+	// TOKEN_EXPIRED_ERROR = 272,
+	// PERMISITION_DENIED_ERROR = 273,
 
 	// Internal Errors
 	INPUT_VALIDATION_ERROR = 300,
-	METHOD_NOT_FOUND_ERROR,
-	INTERNAL_SERVER_ERROR,
+	METHOD_NOT_FOUND_ERROR = 301,
+	INTERNAL_SERVER_ERROR = 302,
 
 	// Module Errors
-	USER_FOUND_ERROR = 303,
-	CITY_FOUND_ERROR = 304,
+	USER_NOT_FOUND_ERROR = 303,
+	CITY_NOT_FOUND_ERROR = 304,
+	PROJECT_NOT_FOUND_ERROR = 305,
+	BUILDING_NOT_FOUND_ERROR = 306,
 }
 
-export const ApplicationPrompts: IPromptMap = {
+export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 	[ApplicationPromptID.INPUT_VALIDATION_ERROR]: {
 		promptId: ApplicationPromptID.INPUT_VALIDATION_ERROR,
 		promptType: "application",
@@ -51,8 +53,8 @@ export const ApplicationPrompts: IPromptMap = {
 			"Internal server error",
 		],
 	},
-	[ApplicationPromptID.USER_FOUND_ERROR]: {
-		promptId: ApplicationPromptID.USER_FOUND_ERROR,
+	[ApplicationPromptID.USER_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.USER_NOT_FOUND_ERROR,
 		promptType: "application",
 		promptCode: "",
 		promptCondition: "user_not_found_error",
@@ -62,8 +64,8 @@ export const ApplicationPrompts: IPromptMap = {
 			"User not found error",
 		],
 	},
-	[ApplicationPromptID.CITY_FOUND_ERROR]: {
-		promptId: ApplicationPromptID.CITY_FOUND_ERROR,
+	[ApplicationPromptID.CITY_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.CITY_NOT_FOUND_ERROR,
 		promptType: "application",
 		promptCode: "",
 		promptCondition: "city_not_found_error",
@@ -73,4 +75,26 @@ export const ApplicationPrompts: IPromptMap = {
 			"City not found error",
 		],
 	},
+	[ApplicationPromptID.PROJECT_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.PROJECT_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "project_not_found_error",
+		promptLabels: [
+			"Project not found error",
+			"Project not found error",
+			"Project not found error",
+		],
+	},
+	[ApplicationPromptID.BUILDING_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.BUILDING_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "building_not_found_error",
+		promptLabels: [
+			"Building not found error",
+			"Building not found error",
+			"Building not found error",
+		],
+	}
 };
