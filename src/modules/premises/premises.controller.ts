@@ -1,13 +1,11 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	HttpStatus,
-	Put,
 	Post,
-	Delete,
-	InternalServerErrorException,
-	HttpException,
+	Put,
 	Query,
 } from "@nestjs/common";
 import {
@@ -17,12 +15,14 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
+import { Uuid } from "boilerplate.polyfill";
+
 import { UUIDParam } from "../../decorators";
+
 import { CreatePremisesDto } from "./dtos/create-premises.dto";
 import { PremisesDto, PremisesFilterDto } from "./dtos/premises.dto";
 import { UpdatePremisesDto } from "./dtos/update-premises.dto";
 import { PremisesService } from "./premises.service";
-import { Uuid } from "boilerplate.polyfill";
 
 @Controller("/premises")
 @ApiTags("Premises")
@@ -32,49 +32,29 @@ export class PremisesController {
 	@ApiOperation({ summary: "Create a premises " })
 	@ApiResponse({ status: HttpStatus.CREATED, type: PremisesDto })
 	@Post()
-	async createCity(
-		@Body() createPremisesDto: CreatePremisesDto,
-	): Promise<any> {
-		try {
-			return await this.service.create(createPremisesDto);
-		} catch (error: any) {
-			throw this.handleException(error);
-		}
+	async createCity(@Body() createPremisesDto: CreatePremisesDto) {
+		return await this.service.create(createPremisesDto);
 	}
 
 	@ApiOperation({ summary: "Get all Premises" })
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto, isArray: true })
 	@Get()
-	async getPremises(@Query() filterDto: PremisesFilterDto): Promise<any> {
-		try {
-			return await this.service.getPremisesFiltered(filterDto);
-		} catch (error: any) {
-			throw this.handleException(error);
-		}
+	async getPremises(@Query() filterDto: PremisesFilterDto) {
+		return await this.service.getPremisesFiltered(filterDto);
 	}
 
 	@ApiOperation({ summary: "Get unique number premises " })
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto, isArray: true })
 	@Get("/unique-number/")
-	async getUniqueNumberPremises(
-		@Query() filterDto: PremisesFilterDto,
-	): Promise<any> {
-		try {
-			return await this.service.getPremisesFiltered(filterDto);
-		} catch (error: any) {
-			throw this.handleException(error);
-		}
+	async getUniqueNumberPremises(@Query() filterDto: PremisesFilterDto) {
+		return await this.service.getPremisesFiltered(filterDto);
 	}
 
 	@ApiOperation({ summary: "Get a single city by ID" })
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get(":id")
-	async getSingleCity(@UUIDParam("id") id: Uuid): Promise<any> {
-		try {
-			return await this.service.findOne(id);
-		} catch (error: any) {
-			throw this.handleException(error);
-		}
+	async getSingleCity(@UUIDParam("id") id: Uuid) {
+		return await this.service.findOne(id);
 	}
 
 	@ApiOperation({ summary: "Update a city by ID" })
@@ -83,34 +63,14 @@ export class PremisesController {
 	async updateCity(
 		@UUIDParam("id") id: Uuid,
 		@Body() updatePremisesDto: UpdatePremisesDto,
-	): Promise<any> {
-		try {
-			await this.service.update(id, updatePremisesDto);
-		} catch (error: any) {
-			throw this.handleException(error);
-		}
+	) {
+		await this.service.update(id, updatePremisesDto);
 	}
 
 	@ApiOperation({ summary: "Delete a city by ID" })
 	@ApiAcceptedResponse()
 	@Delete(":id")
-	async deleteCity(@UUIDParam("id") id: Uuid): Promise<any> {
-		try {
-			await this.service.remove(id);
-		} catch (error: any) {
-			throw this.handleException(error);
-		}
-	}
-
-	private handleException(error: any): HttpException {
-		if (error.status) {
-			return new HttpException(
-				error.message ? error.message : error.response,
-				error.status,
-			);
-		} else {
-			console.error(error.message);
-			return new InternalServerErrorException("Internal server error");
-		}
+	async deleteCity(@UUIDParam("id") id: Uuid) {
+		await this.service.remove(id);
 	}
 }

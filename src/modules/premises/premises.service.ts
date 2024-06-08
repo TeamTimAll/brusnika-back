@@ -38,12 +38,6 @@ export class PremisesService extends BasicService<
 				});
 			}
 
-			if (filter.section_id) {
-				query = query.andWhere("building.section_id = :section_id", {
-					section_id: filter.section_id,
-				});
-			}
-
 			if (filter.rooms) {
 				query = query.andWhere("premise.rooms = :rooms", {
 					rooms: filter.rooms,
