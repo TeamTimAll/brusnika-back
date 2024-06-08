@@ -3,10 +3,10 @@ import { HttpStatus } from "@nestjs/common";
 import { BaseError } from "../../../common/base/baseError";
 import { ApplicationPromptID } from "../../../lib/prompt/applicationPrompt";
 
-export class UserNotFoundError extends BaseError {
+export class UserPremisesBasketNotFoundError extends BaseError {
 	constructor(message?: string) {
 		super(
-			ApplicationPromptID.USER_NOT_FOUND_ERROR,
+			ApplicationPromptID.USER_PREMISES_BASKET_NOT_FOUND_ERROR,
 			{
 				message: message ?? "",
 			},

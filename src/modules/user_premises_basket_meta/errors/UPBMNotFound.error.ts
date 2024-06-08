@@ -3,10 +3,10 @@ import { HttpStatus } from "@nestjs/common";
 import { BaseError } from "../../../common/base/baseError";
 import { ApplicationPromptID } from "../../../lib/prompt/applicationPrompt";
 
-export class UserNotFoundError extends BaseError {
+export class UPBMNotFoundError extends BaseError {
 	constructor(message?: string) {
 		super(
-			ApplicationPromptID.USER_NOT_FOUND_ERROR,
+			ApplicationPromptID.UPBM_NOT_FOUND_ERROR,
 			{
 				message: message ?? "",
 			},
