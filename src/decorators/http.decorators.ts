@@ -38,11 +38,13 @@ export function Auth(
 
 export function UUIDParam(
 	property: string,
+	isOptinal = false,
 	...pipes: Array<Type<PipeTransform> | PipeTransform>
 ): ParameterDecorator {
 	return Param(
 		property,
 		new ParseUUIDPipe({
+			optional: isOptinal,
 			version: "4",
 			exceptionFactory(error_string) {
 				const error = new ValidationError();
@@ -58,11 +60,13 @@ export function UUIDParam(
 
 export function UUIDQuery(
 	property: string,
+	isOptinal = false,
 	...pipes: Array<Type<PipeTransform> | PipeTransform>
 ): ParameterDecorator {
 	return Query(
 		property,
 		new ParseUUIDPipe({
+			optional: isOptinal,
 			version: "4",
 			exceptionFactory(error_string) {
 				const error = new ValidationError();
