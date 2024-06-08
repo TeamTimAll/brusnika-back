@@ -17,6 +17,8 @@ export enum ApplicationPromptID {
 	CITY_NOT_FOUND_ERROR = 304,
 	PROJECT_NOT_FOUND_ERROR = 305,
 	BUILDING_NOT_FOUND_ERROR = 306,
+	UPBM_NOT_FOUND_ERROR = 307,
+	USER_PREMISES_BASKET_NOT_FOUND_ERROR = 308,
 }
 
 export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
@@ -96,5 +98,27 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"Building not found error",
 			"Building not found error",
 		],
-	}
+	},
+	[ApplicationPromptID.UPBM_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.UPBM_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "upbm_not_found_error",
+		promptLabels: [
+			"User premises basket meta not found error",
+			"User premises basket meta not found error",
+			"User premises basket meta not found error",
+		],
+	},
+	[ApplicationPromptID.USER_PREMISES_BASKET_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.USER_PREMISES_BASKET_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "upb_not_found_error",
+		promptLabels: [
+			"User premises basket not found error",
+			"User premises basket not found error",
+			"User premises basket not found error",
+		],
+	},
 };

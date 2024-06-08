@@ -1,4 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+
 import { AbstractEntity } from "../../common/abstract.entity";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { SectionsEntity } from "../sections/sections.entity";

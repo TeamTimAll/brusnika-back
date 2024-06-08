@@ -1,6 +1,8 @@
+import { join } from "path";
+
 import { Module } from "@nestjs/common";
 import { ServeStaticModule } from "@nestjs/serve-static";
-import { join } from "path";
+
 import { AuthModule } from "./auth/auth.module";
 import { BuildingsModule } from "./buildings/buildings.module";
 import { CitiesModule } from "./cities/cities.module";
@@ -16,6 +18,8 @@ import { ProjectsModule } from "./projects/projects.module";
 import { SectionsModule } from "./sections/sections.module";
 import { TrainingModule } from "./training/training.module";
 import { UserModule } from "./user/user.module";
+import { UPBModule } from "./user_premises_basket/upb.module";
+import { UPBMModule } from "./user_premises_basket_meta/upbm.module";
 
 @Module({
 	imports: [
@@ -38,6 +42,8 @@ import { UserModule } from "./user/user.module";
 		BuildingsModule,
 		PremisesModule,
 		SectionsModule,
+		UPBMModule,
+		UPBModule,
 	],
 	exports: [],
 })

@@ -57,6 +57,20 @@ export class PremisesController {
 		return await this.service.findOne(id);
 	}
 
+	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
+	@Get("/cherry-pick/:ids")
+	async getMultiplePremisesByIds(@Query("ids") ids: Uuid[]) {
+		/*
+			If the query id is single, the @Query decorator returns a string.
+ 			We need to check if it is a string or not. Because getMultiplePremisesByIds
+			function accepts array of strings.
+		*/
+		if (typeof ids === "string") {
+			ids = [ids];
+		}
+		return await this.service.getMultiplePremisesByIds(ids);
+	}
+
 	@ApiOperation({ summary: "Update a city by ID" })
 	@ApiAcceptedResponse()
 	@Put(":id")
