@@ -1,6 +1,8 @@
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
+import { Uuid } from "boilerplate.polyfill";
+
 import { BasicService } from "../../generic/service";
 
 import { CreatePremisesDto } from "./dtos/create-premises.dto";
@@ -15,6 +17,20 @@ export class PremisesService extends BasicService<
 > {
 	constructor(@InjectDataSource() dataSource: DataSource) {
 		super("premises", PremisesEntity, dataSource);
+	}
+
+	async getMultiplePremisesByIds(ids: Uuid[]) {
+		console.log(ids);
+
+		let query = this.repository.createQueryBuilder("premise");
+		for (let i = 0; i < ids.length; i++) {
+			query = query.orWhere(`premise.id = :id_${i}`, {
+				[`id_${i}`]: ids[i],
+			});
+		}
+		const premises = await query.getMany();
+
+		return premises;
 	}
 
 	async getPremisesFiltered(
