@@ -54,7 +54,9 @@ export class PremisesController {
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get(":id")
 	async getSingleCity(@UUIDParam("id") id: Uuid) {
-		return await this.service.findOne(id);
+		return await this.service.findOne(id, {
+			relations: ["section", "building"],
+		});
 	}
 
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
