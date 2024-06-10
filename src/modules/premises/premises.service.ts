@@ -20,8 +20,6 @@ export class PremisesService extends BasicService<
 	}
 
 	async getMultiplePremisesByIds(ids: Uuid[]) {
-		console.log(ids);
-
 		let query = this.repository.createQueryBuilder("premise");
 		for (let i = 0; i < ids.length; i++) {
 			query = query.orWhere(`premise.id = :id_${i}`, {
@@ -79,19 +77,19 @@ export class PremisesService extends BasicService<
 			}
 
 			if (filter.min_size) {
-				query = query.andWhere("premise.size => :min_size", {
-					min_size: filter.min_size,
+				query = query.andWhere("premise.size >= :min_size", {
+					min_size: parseInt(filter.min_size),
 				});
 			}
 
 			if (filter.max_size) {
 				query = query.andWhere("premise.size <= :max_size", {
-					max_size: filter.max_size,
+					max_size: parseInt(filter.max_size),
 				});
 			}
 
 			if (filter.min_floor) {
-				query = query.andWhere("premise.floor => :min_floor", {
+				query = query.andWhere("premise.floor >= :min_floor", {
 					min_floor: filter.min_floor,
 				});
 			}
@@ -103,7 +101,7 @@ export class PremisesService extends BasicService<
 			}
 
 			if (filter.min_number) {
-				query = query.andWhere("premise.number => :min_number", {
+				query = query.andWhere("premise.number >= :min_number", {
 					min_number: filter.min_number,
 				});
 			}
@@ -115,7 +113,7 @@ export class PremisesService extends BasicService<
 			}
 
 			if (filter.min_price) {
-				query = query.andWhere("premise.price => :min_price", {
+				query = query.andWhere("premise.price >= :min_price", {
 					min_price: filter.min_price,
 				});
 			}

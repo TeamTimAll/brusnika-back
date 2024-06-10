@@ -22,21 +22,31 @@ import {
 	TypeORMErrorFilter,
 } from "../filters/query-failed.filter";
 
+import { AppLogger } from "./appLogger";
+
 export type HttpApplication = NestExpressApplication;
 
 export class Http {
 	public static app: HttpApplication;
 
 	static async init(): Promise<Http> {
+		const logger = AppLogger.init();
 		this.app = await NestFactory.create<NestExpressApplication>(
 			AppModule,
 			new ExpressAdapter(),
-			{ cors: true },
+			{ cors: true, logger: logger },
 		);
 		this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 		this.app.use(helmet());
 		this.app.use(compression());
-		this.app.use(morgan("combined"));
+		this.app.use(
+			morgan(
+				':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
+				{
+					stream: AppLogger.initStream(logger),
+				},
+			),
+		);
 		this.app.enableVersioning();
 
 		const reflector = this.app.get(Reflector);
