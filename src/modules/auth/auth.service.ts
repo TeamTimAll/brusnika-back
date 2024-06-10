@@ -465,17 +465,28 @@ export class AuthService {
 						);
 					} else {
 						console.log("Verification code is correct");
+						if (
+							user.register_status !== UserRegisterStatus.FINISHED
+						) {
+							return new HttpException(
+								{
+									message: "user on different registiry",
+									register_status: user.register_status,
+								},
+								HttpStatus.BAD_REQUEST,
+							);
+						}
 						if (user.verification_code === dto.code) {
 							await this.userService.updateUser(user.id, {
 								isPhoneVerified: true,
 								register_status: UserRegisterStatus.CREATED,
 							});
 							return {
-								// accessToken: this.jwtService.sign({
-								user_id: user.id,
-								message: "verified",
-								// role: user.role,
-								// }),
+								accessToken: this.jwtService.sign({
+									user_id: user.id,
+									message: "verified",
+									role: user.role,
+								}),
 							};
 						} else {
 							return new HttpException(

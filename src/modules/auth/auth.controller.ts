@@ -28,7 +28,7 @@ import {
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({ summary: 'login' })
+  @ApiOperation({ summary: 'employee login' })
   @ApiResponse({
     status: HttpStatus.OK,
     type: LoginSuccess,
