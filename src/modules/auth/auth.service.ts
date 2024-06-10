@@ -466,6 +466,7 @@ export class AuthService {
 					} else {
 						console.log("Verification code is correct");
 						if (
+							user.register_status &&
 							user.register_status !== UserRegisterStatus.FINISHED
 						) {
 							return new HttpException(
