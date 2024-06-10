@@ -6,6 +6,7 @@ import {
 	IsDateString,
 	IsNotEmpty,
 	IsNumber,
+	IsOptional,
 	IsString,
 	ValidateNested,
 } from "class-validator";
@@ -61,6 +62,16 @@ export class CreateProjectDto {
 	})
 	@IsString()
 	photo!: string;
+
+	@ApiProperty()
+	@IsOptional()
+	@IsString()
+	long!: string;
+
+	@ApiProperty()
+	@IsOptional()
+	@IsString()
+	lat!: string;
 }
 
 export class CreateProjectMetaDataDto extends BaseDto<CreateProjectDto> {
