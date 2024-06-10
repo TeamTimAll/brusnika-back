@@ -440,15 +440,6 @@ export class AuthService {
 						}
 					}
 				}
-			} else if (user.register_status === UserRegisterStatus.FILLED) {
-				return new HttpException(
-					{
-						message: "user on different registiry",
-						userId: user.id,
-						register_status: user.register_status,
-					},
-					HttpStatus.CONFLICT,
-				);
 			} else {
 				if (user.verification_code_sent_date) {
 					if (
@@ -465,30 +456,25 @@ export class AuthService {
 						);
 					} else {
 						console.log("Verification code is correct");
-						if (
-							user.register_status &&
-							user.register_status !== UserRegisterStatus.FINISHED
-						) {
-							return new HttpException(
-								{
-									message: "user on different registiry",
-									register_status: user.register_status,
-								},
-								HttpStatus.BAD_REQUEST,
-							);
-						}
 						if (user.verification_code === dto.code) {
-							await this.userService.updateUser(user.id, {
-								isPhoneVerified: true,
-								register_status: UserRegisterStatus.CREATED,
-							});
-							return {
-								accessToken: this.jwtService.sign({
+							if (!user.register_status) {
+								await this.userService.updateUser(user.id, {
+									isPhoneVerified: true,
+									register_status: UserRegisterStatus.CREATED,
+								});
+								return {
 									user_id: user.id,
 									message: "verified",
-									role: user.role,
-								}),
-							};
+								};
+							} else {
+								return new HttpException(
+									{
+										message: "user on different registiry",
+										register_status: user.register_status,
+									},
+									HttpStatus.BAD_REQUEST,
+								);
+							}
 						} else {
 							return new HttpException(
 								{
