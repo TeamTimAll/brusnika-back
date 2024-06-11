@@ -505,7 +505,7 @@ export class AuthService {
 	): Promise<LoginSuccess | any> {
 		try {
 			const user = await this.userService.findOne({
-				phone: dto.user_id,
+				phone: dto.phone,
 			});
 
 			if (!user) {

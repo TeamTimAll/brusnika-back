@@ -88,11 +88,11 @@ export class UserLoginVerifyCodeDto {
 }
 
 export class UserLoginResendCodeDto {
-  @IsUUID()
   @ApiProperty({
     required: true,
   })
-  readonly user_id!: Uuid;
+  @IsMobilePhone()
+  readonly phone!: Uuid;
 }
 
 export class LoginSuccess {
