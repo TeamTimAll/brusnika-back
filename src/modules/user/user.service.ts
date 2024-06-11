@@ -106,11 +106,12 @@ export class UserService {
 					"phone",
 					"city",
 					"agency",
+					"avatar",
 				],
 			});
 
 			console.log("user", user);
-			
+
 
 			if (!user) {
 				throw new UserNotFoundError();
