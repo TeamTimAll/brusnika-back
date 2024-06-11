@@ -471,6 +471,7 @@ export class AuthService {
 									{
 										message: "user on different registiry",
 										register_status: user.register_status,
+										user_id: user.id,
 									},
 									HttpStatus.BAD_REQUEST,
 								);
