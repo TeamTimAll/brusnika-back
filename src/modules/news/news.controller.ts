@@ -1,48 +1,27 @@
-import { Controller, Get , Body , Post  , Put, UseInterceptors, UploadedFile  } from '@nestjs/common';
-import { NewsService } from './news.service';
-import { UpdateNewsDto } from './dto/news.update.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { v4 as uuidv4 } from 'uuid';
+import { Controller, Get, Body, Post, Put } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 
-@Controller('news')
-@ApiTags('news')
+import { NewsService } from "./news.service";
+import { CreateNewsDto } from "./dto/news.create.dto";
+import { UpdateNewsDto } from "./dto/news.update.dto";
+
+@Controller("news")
+@ApiTags("News")
 export class NewsController {
-     constructor( private newsService : NewsService) {}
+	constructor(private service: NewsService) {}
 
-    @Get()
-    async getAllNews(){
-          return this.newsService.getAllNews()
-    };
+	@Get()
+	async getAllNews() {
+		return this.service.r_findAll();
+	}
 
-   
-    @Post()
-    @UseInterceptors(
-        FileInterceptor('file', {
-            storage: diskStorage({
-              destination: './media',
-              filename: (_, file, cb) => {
-                const filename: string = uuidv4() + '-' + file.originalname;
-                cb(null, filename);
-              },
-            }),
-          }),
-    )
-    
-    async createNews(@Body()  newsBody : any ,
-     @UploadedFile() file : Express.Multer.File ) {
-        return this.newsService.createNews(newsBody, file.originalname)
-    }
-    
+	@Post()
+	async createNews(@Body() body: CreateNewsDto) {
+		return this.service.create(body);
+	}
 
-    @Put()
-    async updateNews(@Body() updateNewsBody : UpdateNewsDto ) {
-        return this.newsService.updateNews(updateNewsBody)
-    }
+	@Put()
+	async updateNews(@Body() body: UpdateNewsDto) {
+		return this.service.update(body.id, body);
+	}
 }
-
-
-
-
-

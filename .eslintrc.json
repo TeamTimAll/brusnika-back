@@ -96,7 +96,6 @@
 		],
 		"no-implicit-coercion": "error",
 		// "indent": ["error", "tab"],
-		"linebreak-style": ["error", "unix"],
 		"semi": ["warn", "always"],
 		"import/first": "error",
 		"import/order": [

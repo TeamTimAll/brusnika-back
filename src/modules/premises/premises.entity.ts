@@ -16,6 +16,13 @@ export enum CommercialStatus {
 	TAKEN = "taken",
 }
 
+export enum PuchaseOptions {
+	MORTAGE = "mortage",
+	INSTALLMENT = "installment",
+	BILL = "bill",
+	FULL_PAYMENT = "full_payment",
+}
+
 @Entity({ name: "premises" })
 export class PremisesEntity extends AbstractEntity {
 	@Column({ nullable: true, type: "varchar" })
@@ -46,6 +53,9 @@ export class PremisesEntity extends AbstractEntity {
 
 	@Column({ nullable: true })
 	status!: CommercialStatus;
+
+	@Column({ nullable: true, type: "varchar" })
+	purchaseOption!: PuchaseOptions;
 
 	@Column({ nullable: true, type: "varchar" })
 	number!: number;

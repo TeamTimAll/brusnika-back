@@ -12,7 +12,7 @@ import {
 import { Uuid } from "boilerplate.polyfill";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
-import { CommercialStatus, PremisesType } from "../premises.entity";
+import { CommercialStatus, PremisesType, PuchaseOptions } from "../premises.entity";
 
 export class PremisesDto extends BaseDto {
 	@ApiProperty({ example: "Apartment 1" })
@@ -95,6 +95,11 @@ export class PremisesDto extends BaseDto {
 	@IsOptional()
 	@IsString()
 	section_id?: string;
+
+	@ApiProperty({ description: "Purchase option", required: false })
+	@IsOptional()
+	@IsEnum(PuchaseOptions)
+	purchaseOption?: PuchaseOptions;
 }
 
 export class PremisesFilterDto {
@@ -185,4 +190,9 @@ export class PremisesFilterDto {
 	@IsEnum(() => CommercialStatus)
 	@IsOptional()
 	status?: CommercialStatus;
+
+	@ApiProperty({ required: false, enum: PuchaseOptions})
+	@IsOptional()
+	@IsEnum(PuchaseOptions)
+	purchaseOption?: PuchaseOptions;
 }

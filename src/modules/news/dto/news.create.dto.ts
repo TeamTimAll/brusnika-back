@@ -1,22 +1,26 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { Transform } from 'class-transformer';
-import { NEWS_CATEGORIES } from "../news.entity"
+import { IsNotEmpty, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
+import { NEWS_CATEGORIES } from "../news.entity";
 
 export class CreateNewsDto {
-  @IsString()
-  @IsNotEmpty()
-  title!: string;
+	@IsString()
+	@IsNotEmpty()
+	@ApiProperty({
+		description: "The title of the news",
+		example: "The title of the news",
+		required: true,
+	})
+	title!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  content!: string;
+	@IsString()
+	@IsNotEmpty()
+	content!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  coverImage!: string;
+	@IsString()
+	@IsNotEmpty()
+	coverImage!: string;
 
-  @IsNotEmpty()
-  @Transform(({ value }) => value.toUpperCase())
-  category!: NEWS_CATEGORIES;
+	@IsNotEmpty()
+	category!: NEWS_CATEGORIES;
 }
