@@ -4,6 +4,7 @@ import { Module } from "@nestjs/common";
 import { ServeStaticModule } from "@nestjs/serve-static";
 
 import { AuthModule } from "./auth/auth.module";
+import { Auth2Module } from "./auth2/auth2.module";
 import { BuildingsModule } from "./buildings/buildings.module";
 import { CitiesModule } from "./cities/cities.module";
 import { ClientStatusModule } from "./client-status/client-status.module";
@@ -18,6 +19,7 @@ import { ProjectsModule } from "./projects/projects.module";
 import { SectionsModule } from "./sections/sections.module";
 import { TrainingModule } from "./training/training.module";
 import { UserModule } from "./user/user.module";
+import { User2Module } from "./user2/user2.module";
 import { UPBModule } from "./user_premises_basket/upb.module";
 import { UPBMModule } from "./user_premises_basket_meta/upbm.module";
 
@@ -44,6 +46,9 @@ import { UPBMModule } from "./user_premises_basket_meta/upbm.module";
 		SectionsModule,
 		UPBMModule,
 		UPBModule,
+
+		User2Module,
+		Auth2Module,
 	],
 	exports: [],
 })

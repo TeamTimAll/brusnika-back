@@ -2,7 +2,7 @@ import { IPromptMap } from "./prompt";
 
 export enum ApplicationPromptID {
 	// Auth Errors
-	// UNAUTHORIZED_ERROR = 270,
+	UNAUTHORIZED_ERROR = 270,
 	// INVALID_TOKEN_ERROR = 271,
 	// TOKEN_EXPIRED_ERROR = 272,
 	// PERMISITION_DENIED_ERROR = 273,
@@ -19,6 +19,17 @@ export enum ApplicationPromptID {
 	BUILDING_NOT_FOUND_ERROR = 306,
 	UPBM_NOT_FOUND_ERROR = 307,
 	USER_PREMISES_BASKET_NOT_FOUND_ERROR = 308,
+
+	// Event errors
+	EVENT_FINISHED_TO_CREATED_ERROR = 309,
+	USER_ALREADY_EXISTS_ERROR = 310,
+	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
+	VERIFICATION_EXISTS_ERROR = 312,
+	AGENCY_NOT_FOUND_ERROR = 313,
+	VERIFICATION_CODE_EXPIRED_ERROR = 314,
+	VERIFICATION_CODE_IS_NOT_CORRECT_ERROR = 315,
+	NO_VERIFICATION_CODE_SENT_ERROR = 316,
+	// EVENT_CREATE_TO_FINISHED_ERROR = 310,
 }
 
 export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
@@ -53,6 +64,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"Internal server error",
 			"Internal server error",
 			"Internal server error",
+		],
+	},
+	[ApplicationPromptID.UNAUTHORIZED_ERROR]: {
+		promptId: ApplicationPromptID.UNAUTHORIZED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "unauthorized_error",
+		promptLabels: [
+			"Unauthorized error",
+			"Unauthorized error",
+			"Unauthorized error",
 		],
 	},
 	[ApplicationPromptID.USER_NOT_FOUND_ERROR]: {
@@ -119,6 +141,94 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"User premises basket not found error",
 			"User premises basket not found error",
 			"User premises basket not found error",
+		],
+	},
+	[ApplicationPromptID.EVENT_FINISHED_TO_CREATED_ERROR]: {
+		promptId: ApplicationPromptID.EVENT_FINISHED_TO_CREATED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "event_error",
+		promptLabels: [
+			"Your registration is not finished.",
+			"Your registration is not finished.",
+			"Your registration is not finished.",
+		],
+	},
+	[ApplicationPromptID.USER_ALREADY_EXISTS_ERROR]: {
+		promptId: ApplicationPromptID.USER_ALREADY_EXISTS_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "user_already_exists_error",
+		promptLabels: [
+			"User already exists. Go to login page.",
+			"User already exists. Go to login page.",
+			"User already exists. Go to login page.",
+		],
+	},
+	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {
+		promptId: ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "user_already_exists_error",
+		promptLabels: [
+			"User email already exists. Try diffrent one.",
+			"User email already exists. Try diffrent one.",
+			"User email already exists. Try diffrent one.",
+		],
+	},
+	[ApplicationPromptID.VERIFICATION_EXISTS_ERROR]: {
+		promptId: ApplicationPromptID.VERIFICATION_EXISTS_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "verification_exists_error",
+		promptLabels: [
+			"A valid verification code already exists or wait till expire.",
+			"A valid verification code already exists or wait till expire.",
+			"A valid verification code already exists or wait till expire.",
+		],
+	},
+	[ApplicationPromptID.AGENCY_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.AGENCY_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "agency_not_found_error",
+		promptLabels: [
+			"Agency not found error",
+			"Agency not found error",
+			"Agency not found error",
+		],
+	},
+	[ApplicationPromptID.VERIFICATION_CODE_EXPIRED_ERROR]: {
+		promptId: ApplicationPromptID.VERIFICATION_CODE_EXPIRED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "verification_code_expired_error",
+		promptLabels: [
+			"Verification code expired error",
+			"Verification code expired error",
+			"Verification code expired error",
+		],
+	},
+	[ApplicationPromptID.VERIFICATION_CODE_IS_NOT_CORRECT_ERROR]: {
+		promptId: ApplicationPromptID.VERIFICATION_CODE_IS_NOT_CORRECT_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "verification_code_is_not_correct_error",
+		promptLabels: [
+			"Verification code is not correct error",
+			"Verification code is not correct error",
+			"Verification code is not correct error",
+		],
+	},
+	[ApplicationPromptID.NO_VERIFICATION_CODE_SENT_ERROR]: {
+		promptId: ApplicationPromptID.NO_VERIFICATION_CODE_SENT_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "no_verification_code_sent_error",
+		promptLabels: [
+			"No verification code sent error",
+			"No verification code sent error",
+			"No verification code sent error",
 		],
 	},
 };
