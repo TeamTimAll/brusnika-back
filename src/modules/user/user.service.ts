@@ -1,15 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { type FindOptionsWhere, Repository } from "typeorm";
+import { Repository, type FindOptionsWhere } from "typeorm";
+
+import { Uuid } from "boilerplate.polyfill";
+import { ICurrentUser } from "interfaces/current-user.interface";
+
 import {
 	UserChangePhoneVerifyCodeDto,
 	UserCreateDto,
 	type UserDto,
 } from "./dtos/user.dto";
-import { UserEntity } from "./user.entity";
-import { Uuid } from "boilerplate.polyfill";
-import { ICurrentUser } from "interfaces/current-user.interface";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
+import { UserEntity } from "./user.entity";
 
 @Injectable()
 export class UserService {
@@ -52,16 +54,10 @@ export class UserService {
 	}
 
 	async createUser(userRegisterDto: UserCreateDto): Promise<UserEntity> {
-		try {
-			const user: UserEntity =
-				this.userRepository.create(userRegisterDto);
-			const savedUser: UserEntity = await this.userRepository.save(user);
+		const user: UserEntity = this.userRepository.create(userRegisterDto);
+		const savedUser: UserEntity = await this.userRepository.save(user);
 
-			return savedUser;
-		} catch (error: any) {
-			// Handle any potential errors (e.g., database errors)
-			throw new Error("Failed to create user: " + error.message);
-		}
+		return savedUser;
 	}
 
 	// async getUsers(
@@ -86,7 +82,9 @@ export class UserService {
 			});
 
 			if (!user) {
-				throw new UserNotFoundError();
+				throw new UserNotFoundError(
+					`User not found. user_id: ${userId}`,
+				);
 			}
 
 			return user;
@@ -110,22 +108,21 @@ export class UserService {
 				],
 			});
 
-			console.log("user", user);
-
-
 			if (!user) {
-				throw new UserNotFoundError();
+				throw new UserNotFoundError(
+					`User not found. user_id: ${userId}`,
+				);
 			}
 
 			return user;
 		}
-		// const userEntity = await queryBuilder.getOne();
+		// const user2Entity = await queryBuilder.getOne();
 	}
 
 	async updateUser(
 		id: Uuid,
 		updateEventsDto: Partial<UserDto>,
-	): Promise<any> {
+	): Promise<unknown> {
 		const user = this.findOne({
 			id,
 		});
@@ -134,10 +131,13 @@ export class UserService {
 			throw new UserNotFoundError();
 		}
 
-		return await this.userRepository.update(id, updateEventsDto);
+		return await this.userRepository.update(
+			id,
+			updateEventsDto as UserEntity,
+		);
 	}
 
-	async changePhone(id: Uuid, dto: UserCreateDto): Promise<any> {
+	async changePhone(id: Uuid, dto: UserCreateDto): Promise<unknown> {
 		const user = await this.findOne({
 			id,
 		});
@@ -161,8 +161,6 @@ export class UserService {
 		// const randomNumber = Math.floor(100000 + Math.random() * 900000);
 		const randomNumber = 111111;
 
-		console.log(randomNumber, user.id);
-
 		await this.updateUser(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
@@ -180,7 +178,7 @@ export class UserService {
 	async verifySmsCode(
 		user: ICurrentUser,
 		dto: UserChangePhoneVerifyCodeDto,
-	): Promise<any> {
+	): Promise<unknown> {
 		try {
 			const foundUser = await this.getUser(user.user_id);
 
@@ -227,13 +225,15 @@ export class UserService {
 					}
 				}
 			}
-		} catch (error: any) {
-			console.error("Login error:", error.message);
-			return new HttpException(error.message, 500);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				console.error("Login error:", error.message);
+				return new HttpException(error.message, 500);
+			}
 		}
 	}
 
-	async agentLoginResendSmsCode(currentUser: ICurrentUser): Promise<any> {
+	async agentLoginResendSmsCode(currentUser: ICurrentUser): Promise<unknown> {
 		try {
 			const user = await this.getUser(currentUser.user_id);
 
@@ -249,7 +249,6 @@ export class UserService {
 					// const randomNumber = Math.floor(100000 + Math.random() * 900000);
 					const randomNumber = 111111;
 
-					console.log(randomNumber, user.id);
 					// todo send sms
 					await this.updateUser(user.id, {
 						verification_code: randomNumber,
@@ -269,9 +268,14 @@ export class UserService {
 					);
 				}
 			}
-		} catch (error: any) {
-			console.error("Login error:", error.message);
-			return new HttpException({ error: "internal server error" }, 500);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				console.error("Login error:", error.message);
+				return new HttpException(
+					{ error: "internal server error" },
+					500,
+				);
+			}
 		}
 	}
 }
