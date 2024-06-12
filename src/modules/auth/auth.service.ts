@@ -155,7 +155,7 @@ export class AuthService {
 		return {
 			user_id: user.id,
 			message: "ok",
-			register_status: user.register_status,
+			register_status: UserRegisterStatus.FILLED,
 		};
 	}
 
