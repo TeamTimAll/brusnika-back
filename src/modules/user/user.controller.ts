@@ -1,3 +1,5 @@
+import { log } from "console";
+
 import {
 	Body,
 	Controller,
@@ -12,6 +14,10 @@ import { ApiAcceptedResponse, ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
+import { RoleType } from "../../constants";
+import { Roles, User } from "../../decorators";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+
 import {
 	UserChangePhoneVerifyCodeDto,
 	UserCreateDto,
@@ -19,11 +25,7 @@ import {
 	UserUpdateDto,
 } from "./dtos/user.dto";
 import { UserService } from "./user.service";
-import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 // import { RolesGuard } from "../../guards/roles.guard";
-import { Roles, User } from "../../decorators";
-import { RoleType } from "../../constants";
-import { log } from "console";
 
 @Controller("users")
 @ApiTags("users")
@@ -46,19 +48,14 @@ export class UserController {
 	updateUser(
 		@Body() updateEventsDto: UserUpdateDto,
 		@User() user: ICurrentUser,
-	): Promise<void> {
-		console.log("updateEventsDto", updateEventsDto);
-		console.log("user", user);
+	) {
 		return this.userService.updateUser(user.user_id, updateEventsDto);
 	}
 
 	@Post("/phone")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	changePhoneUser(
-		@Body() dto: UserCreateDto,
-		@User() user: ICurrentUser,
-	): Promise<void> {
+	changePhoneUser(@Body() dto: UserCreateDto, @User() user: ICurrentUser) {
 		return this.userService.changePhone(user.user_id, dto);
 	}
 
@@ -68,7 +65,7 @@ export class UserController {
 	verifyPhone(
 		@Body() dto: UserChangePhoneVerifyCodeDto,
 		@User() user: ICurrentUser,
-	): Promise<void> {
+	) {
 		return this.userService.verifySmsCode(user, dto);
 	}
 }

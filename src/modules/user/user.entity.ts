@@ -12,9 +12,9 @@ import { WithOutToDto } from "types";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { RoleType } from "../../constants";
 import { UseDto } from "../../decorators";
-import { AgenciesEntity } from "../../modules/agencies/agencies.entity";
-import { CommentEntity } from "../../modules/comments/comment.entity";
-import { TrainingEntity } from "../../modules/training/training.entity";
+import { AgenciesEntity } from "../agencies/agencies.entity";
+import { CommentEntity } from "../comments/comment.entity";
+import { TrainingEntity } from "../training/training.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 import { ClientEntity } from "../client/client.entity";
 import { EventsEntity } from "../events/events.entity";
@@ -23,7 +23,8 @@ import { NewsEntity } from "../news/news.entity";
 import { UserDto } from "./dtos/user.dto";
 
 export enum UserRegisterStatus {
-	CREATED = "start",
+	DRAFT = "draft",
+	CREATED = "created",
 	FILLED = "filled",
 	FINISHED = "finished",
 }
@@ -70,9 +71,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	@Column({
 		type: "enum",
 		enum: UserRegisterStatus,
-		default: null,
+		default: UserRegisterStatus.DRAFT,
 	})
-	register_status!: UserRegisterStatus | null;
+	register_status!: UserRegisterStatus;
 
 	@VirtualColumn({
 		query: (alias) =>

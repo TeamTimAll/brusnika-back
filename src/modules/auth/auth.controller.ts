@@ -10,10 +10,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
-import {
-	UserCreateDto,
-	UserFillDataDto,
-} from "../../modules/user/dtos/user.dto";
+import { UserCreateDto, UserFillDataDto } from "../user/dtos/user.dto";
 
 import { AuthService } from "./auth.service";
 import {
@@ -28,8 +25,8 @@ import {
 } from "./dtos/user-login.dto";
 import { JwtAuthGuard } from "./guards/jwt.guard";
 
-@Controller("auth")
 @ApiTags("auth")
+@Controller("auth")
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
@@ -49,7 +46,7 @@ export class AuthController {
 		type: LoginSuccess,
 	})
 	@Post("/login/agent")
-	async agentLogin(@Body() agentLoginDto: AgentLoginDto) {
+	agentLogin(@Body() agentLoginDto: AgentLoginDto) {
 		return this.authService.agentLogin(agentLoginDto);
 	}
 
@@ -59,9 +56,7 @@ export class AuthController {
 		type: LoginSuccess,
 	})
 	@Post("/login/agent/verify")
-	async agentLoginVerify(
-		@Body() userLoginVerifyCodeDto: UserLoginVerifyCodeDto,
-	) {
+	agentLoginVerify(@Body() userLoginVerifyCodeDto: UserLoginVerifyCodeDto) {
 		return this.authService.verifySmsCode(userLoginVerifyCodeDto);
 	}
 
@@ -71,7 +66,7 @@ export class AuthController {
 		type: LoginSuccess,
 	})
 	@Post("/login/agent/resend")
-	async agentLoginResendSmsCode(@Body() dto: UserLoginResendCodeDto) {
+	agentLoginResendSmsCode(@Body() dto: UserLoginResendCodeDto) {
 		return this.authService.agentLoginResendSmsCode(dto);
 	}
 
