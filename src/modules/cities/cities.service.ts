@@ -1,10 +1,12 @@
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource, ILike } from "typeorm";
 
-import { BasicService } from "../../generic/service";
 
 import { Uuid } from "boilerplate.polyfill";
 import { ICurrentUser } from "interfaces/current-user.interface";
+
+import { BasicService } from "../../generic/service";
+
 import { CitiesEntity } from "./cities.entity";
 import { CreateCitiesDto } from "./dtos/create-cities.dto";
 import { UpdateCitiesDto } from "./dtos/update-cities.dto";

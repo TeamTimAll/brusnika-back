@@ -135,6 +135,15 @@ export class PremisesService extends BasicService<
 					section_id: filter.section_id,
 				});
 			}
+
+			if (filter.purchaseOption) {
+				query = query.andWhere(
+					"premise.purchaseOption = :purchaseOption",
+					{
+						purchaseOption: filter.purchaseOption,
+					},
+				);
+			}
 		}
 
 		const premises = await query.getMany();

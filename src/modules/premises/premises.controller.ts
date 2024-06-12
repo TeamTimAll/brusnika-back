@@ -32,7 +32,7 @@ export class PremisesController {
 	@ApiOperation({ summary: "Create a premises " })
 	@ApiResponse({ status: HttpStatus.CREATED, type: PremisesDto })
 	@Post()
-	async createCity(@Body() createPremisesDto: CreatePremisesDto) {
+	async createPremises(@Body() createPremisesDto: CreatePremisesDto) {
 		return await this.service.create(createPremisesDto);
 	}
 
@@ -53,7 +53,7 @@ export class PremisesController {
 	@ApiOperation({ summary: "Get a single city by ID" })
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get(":id")
-	async getSingleCity(@UUIDParam("id") id: Uuid) {
+	async getSinglePremises(@UUIDParam("id") id: Uuid) {
 		return await this.service.findOne(id, {
 			relations: ["section", "building"],
 		});
@@ -73,20 +73,20 @@ export class PremisesController {
 		return await this.service.getMultiplePremisesByIds(ids);
 	}
 
-	@ApiOperation({ summary: "Update a city by ID" })
+	@ApiOperation({ summary: "Update a premises by ID" })
 	@ApiAcceptedResponse()
 	@Put(":id")
-	async updateCity(
+	async updatePremises(
 		@UUIDParam("id") id: Uuid,
 		@Body() updatePremisesDto: UpdatePremisesDto,
 	) {
 		await this.service.update(id, updatePremisesDto);
 	}
 
-	@ApiOperation({ summary: "Delete a city by ID" })
+	@ApiOperation({ summary: "Delete a premises by ID" })
 	@ApiAcceptedResponse()
 	@Delete(":id")
-	async deleteCity(@UUIDParam("id") id: Uuid) {
+	async deletePremises(@UUIDParam("id") id: Uuid) {
 		await this.service.remove(id);
 	}
 }
