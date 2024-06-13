@@ -33,7 +33,7 @@ export class FileUploadController {
     FileInterceptor('image', {
       fileFilter: FileUploadController.imageFileFilter,
       limits: {
-        fileSize: 1024 * 1024 * 10, // Set the maximum file size limit (1 MB in this example)
+        fileSize: 1024 * 1024 * 10 * 4, // Set the maximum file size limit (1 MB in this example)
       },
     }),
   )
