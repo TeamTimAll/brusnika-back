@@ -92,7 +92,7 @@ export class AuthService {
 		if (user) {
 			if (
 				user?.isPhoneVerified &&
-				user.register_status !== UserRegisterStatus.CREATED
+				user.register_status === UserRegisterStatus.FINISHED
 			) {
 				this.userStatusDt.setEvent({
 					from_status: UserRegisterStatus.FINISHED,
