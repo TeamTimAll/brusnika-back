@@ -24,7 +24,7 @@ import { UPBMModule } from "./user_premises_basket_meta/upbm.module";
 @Module({
 	imports: [
 		ServeStaticModule.forRoot({
-			rootPath: join(process.cwd(), "uploads"),
+			rootPath: join(process.cwd(), "media"),
 			serveRoot: "/api/files",
 		}),
 		UserModule,
