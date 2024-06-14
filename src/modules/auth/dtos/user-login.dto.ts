@@ -17,6 +17,7 @@ import {
 	CreateAgenciesDto,
 	CreateExistentAgenciesDto,
 } from "../../agencies/dtos/create-agencies.dto";
+import { UserRegisterStatus } from "../../user/user.entity";
 
 export class UserLoginDto {
 	@ApiProperty()
@@ -114,4 +115,28 @@ export class LoginSuccess {
 	})
 	@IsString()
 	role: RoleType | undefined;
+}
+
+export class AuthResponeWithToken {
+	@ApiProperty({
+		example: "jwt_token",
+	})
+	accessToken!: string;
+}
+
+export class AuthResponeWithData {
+	@ApiProperty({
+		example: "uuidv4",
+	})
+	user_id!: string;
+
+	@ApiProperty({
+		example: "sms sent | verified | ok",
+	})
+	message!: string;
+
+	@ApiProperty({
+		example: Object.values(UserRegisterStatus).join(" | "),
+	})
+	register_status!: string;
 }

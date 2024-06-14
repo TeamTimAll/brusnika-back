@@ -3,16 +3,16 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
 import { PremisesEntity } from "../premises/premises.entity";
-import { UserPremisesBasketMetaEntity } from "../user_premises_basket_meta/upbm.entity";
+import { PremisesBasketMetaEntity } from "../premises_basket_meta/premises_basket_meta.entity";
 
-import { UserPremisesBasketDto } from "./dtos/upb.dto";
+import { PremisesBasketDto } from "./dtos/premises_basket.dto";
 
-@Entity({ name: "user_premises_basket" })
-@UseDto(UserPremisesBasketDto)
-export class UserPremisesBasketEntity extends AbstractEntity<UserPremisesBasketDto> {
-	@ManyToOne(() => UserPremisesBasketMetaEntity)
+@Entity({ name: "premises_basket" })
+@UseDto(PremisesBasketDto)
+export class PremisesBasketEntity extends AbstractEntity<PremisesBasketDto> {
+	@ManyToOne(() => PremisesBasketMetaEntity)
 	@JoinColumn({ name: "meta_id" })
-	meta!: UserPremisesBasketMetaEntity;
+	meta!: PremisesBasketMetaEntity;
 
 	@Column({ nullable: true })
 	meta_id?: string;

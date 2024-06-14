@@ -13,13 +13,13 @@ import { Uuid } from "boilerplate.polyfill";
 import { BaseDto } from "../../common/base/base_dto";
 import { UUIDQuery } from "../../decorators";
 
-import { UPBMService } from "./upbm.service";
-import { CreateUPBMMetaDataDto } from "./dtos/upbm_create.dto";
+import { PremisesBasketMetaService } from "./premises_basket_meta.service";
+import { CreatePremisesBasketMetaMetaDataDto } from "./dtos/premises_basket_meta_create.dto";
 
-@ApiTags("user_premises_basket_meta")
-@Controller("user_premises_basket_meta")
-export class UPBController {
-	constructor(private upbmService: UPBMService) {}
+@ApiTags("premises_basket_meta")
+@Controller("premises_basket_meta")
+export class PremisesBasketMetaController {
+	constructor(private upbmService: PremisesBasketMetaService) {}
 
 	@Get("/")
 	@HttpCode(HttpStatus.OK)
@@ -31,7 +31,7 @@ export class UPBController {
 
 	@Post("/")
 	@HttpCode(HttpStatus.CREATED)
-	async createBasketMeta(@Body() dto: CreateUPBMMetaDataDto) {
+	async createBasketMeta(@Body() dto: CreatePremisesBasketMetaMetaDataDto) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const createdBasket = await this.upbmService.createBasketMeta(
 			dto.data[0],

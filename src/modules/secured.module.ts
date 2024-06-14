@@ -9,17 +9,17 @@ import { CitiesModule } from "./cities/cities.module";
 import { ClientStatusModule } from "./client-status/client-status.module";
 import { ClientModule } from "./client/client.module";
 import { CommentsModule } from "./comments/comments.module";
-import { DealsModule } from "./deals/deals.module";
 import { EventsModule } from "./events/events.module";
 import { FileUploadModule } from "./file-upload/file-upload.module";
+import { LeadsModule } from "./leads/leads.module";
 import { NewsModule } from "./news/news.module";
 import { PremisesModule } from "./premises/premises.module";
+import { PremisesBasketModule } from "./premises_basket/premises_basket.module";
+import { PremisesBasketMetaModule } from "./premises_basket_meta/premises_basket_meta.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { SectionsModule } from "./sections/sections.module";
 import { TrainingModule } from "./training/training.module";
 import { UserModule } from "./user/user.module";
-import { UPBModule } from "./user_premises_basket/upb.module";
-import { UPBMModule } from "./user_premises_basket_meta/upbm.module";
 
 @Module({
 	imports: [
@@ -33,7 +33,7 @@ import { UPBMModule } from "./user_premises_basket_meta/upbm.module";
 		ClientModule,
 		ClientStatusModule,
 		TrainingModule,
-		DealsModule,
+		LeadsModule,
 		CitiesModule,
 		FileUploadModule,
 		NewsModule,
@@ -42,8 +42,8 @@ import { UPBMModule } from "./user_premises_basket_meta/upbm.module";
 		BuildingsModule,
 		PremisesModule,
 		SectionsModule,
-		UPBMModule,
-		UPBModule,
+		PremisesBasketModule,
+		PremisesBasketMetaModule,
 	],
 	exports: [],
 })

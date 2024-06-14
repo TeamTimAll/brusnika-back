@@ -13,12 +13,12 @@ export enum ApplicationPromptID {
 	INTERNAL_SERVER_ERROR = 302,
 
 	// Module Errors
-	USER_NOT_FOUND_ERROR = 303,
-	CITY_NOT_FOUND_ERROR = 304,
-	PROJECT_NOT_FOUND_ERROR = 305,
-	BUILDING_NOT_FOUND_ERROR = 306,
-	UPBM_NOT_FOUND_ERROR = 307,
-	USER_PREMISES_BASKET_NOT_FOUND_ERROR = 308,
+	USER_NOT_FOUND_ERROR = 403,
+	CITY_NOT_FOUND_ERROR = 404,
+	PROJECT_NOT_FOUND_ERROR = 405,
+	BUILDING_NOT_FOUND_ERROR = 406,
+	PREMISES_BASKET_META_NOT_FOUND_ERROR = 407,
+	PREMISES_BASKET_NOT_FOUND_ERROR = 408,
 
 	// Event errors
 	EVENT_FINISHED_TO_CREATED_ERROR = 309,
@@ -121,26 +121,26 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"Building not found error",
 		],
 	},
-	[ApplicationPromptID.UPBM_NOT_FOUND_ERROR]: {
-		promptId: ApplicationPromptID.UPBM_NOT_FOUND_ERROR,
+	[ApplicationPromptID.PREMISES_BASKET_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.PREMISES_BASKET_NOT_FOUND_ERROR,
 		promptType: "application",
 		promptCode: "",
-		promptCondition: "upbm_not_found_error",
+		promptCondition: "premises_basket_meta_not_found_error",
 		promptLabels: [
-			"User premises basket meta not found error",
-			"User premises basket meta not found error",
-			"User premises basket meta not found error",
+			"Premises basket meta not found error",
+			"Premises basket meta not found error",
+			"Premises basket meta not found error",
 		],
 	},
-	[ApplicationPromptID.USER_PREMISES_BASKET_NOT_FOUND_ERROR]: {
-		promptId: ApplicationPromptID.USER_PREMISES_BASKET_NOT_FOUND_ERROR,
+	[ApplicationPromptID.PREMISES_BASKET_META_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.PREMISES_BASKET_META_NOT_FOUND_ERROR,
 		promptType: "application",
 		promptCode: "",
-		promptCondition: "upb_not_found_error",
+		promptCondition: "premises_basket_not_found_error",
 		promptLabels: [
-			"User premises basket not found error",
-			"User premises basket not found error",
-			"User premises basket not found error",
+			"Premises basket not found error",
+			"Premises basket not found error",
+			"Premises basket not found error",
 		],
 	},
 	[ApplicationPromptID.EVENT_FINISHED_TO_CREATED_ERROR]: {
