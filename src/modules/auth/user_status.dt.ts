@@ -19,27 +19,6 @@ export class UserStatusDecisionTable {
 	constructor() {}
 
 	private UserRegisterStatusRuleMap: IUserRegisterStatusRuleMap[] = [
-		// Draft rule
-		{
-			from_dt_status: UserRegisterStatus.DRAFT,
-			to_dt_status: UserRegisterStatus.DRAFT,
-			is_accessible: true,
-		},
-		{
-			from_dt_status: UserRegisterStatus.DRAFT,
-			to_dt_status: UserRegisterStatus.CREATED,
-			is_accessible: true,
-		},
-		{
-			from_dt_status: UserRegisterStatus.DRAFT,
-			to_dt_status: UserRegisterStatus.FILLED,
-			is_accessible: true,
-		},
-		{
-			from_dt_status: UserRegisterStatus.DRAFT,
-			to_dt_status: UserRegisterStatus.FINISHED,
-			is_accessible: true,
-		},
 		// Create rule
 		{
 			from_dt_status: UserRegisterStatus.CREATED,
@@ -48,7 +27,7 @@ export class UserStatusDecisionTable {
 		},
 		{
 			from_dt_status: UserRegisterStatus.CREATED,
-			to_dt_status: UserRegisterStatus.FILLED,
+			to_dt_status: UserRegisterStatus.FILL_DATA,
 			is_accessible: true,
 		},
 		{
@@ -56,30 +35,20 @@ export class UserStatusDecisionTable {
 			to_dt_status: UserRegisterStatus.FINISHED,
 			is_accessible: false,
 		},
-		{
-			from_dt_status: UserRegisterStatus.CREATED,
-			to_dt_status: UserRegisterStatus.DRAFT,
-			is_accessible: true,
-		},
 		// In progress rule
 		{
-			from_dt_status: UserRegisterStatus.FILLED,
+			from_dt_status: UserRegisterStatus.FILL_DATA,
 			to_dt_status: UserRegisterStatus.CREATED,
 			is_accessible: false,
 		},
 		{
-			from_dt_status: UserRegisterStatus.FILLED,
-			to_dt_status: UserRegisterStatus.FILLED,
+			from_dt_status: UserRegisterStatus.FILL_DATA,
+			to_dt_status: UserRegisterStatus.FILL_DATA,
 			is_accessible: true,
 		},
 		{
-			from_dt_status: UserRegisterStatus.FILLED,
+			from_dt_status: UserRegisterStatus.FILL_DATA,
 			to_dt_status: UserRegisterStatus.FINISHED,
-			is_accessible: true,
-		},
-		{
-			from_dt_status: UserRegisterStatus.FILLED,
-			to_dt_status: UserRegisterStatus.DRAFT,
 			is_accessible: true,
 		},
 		// Complete rule
@@ -90,39 +59,17 @@ export class UserStatusDecisionTable {
 		},
 		{
 			from_dt_status: UserRegisterStatus.FINISHED,
-			to_dt_status: UserRegisterStatus.FILLED,
+			to_dt_status: UserRegisterStatus.FILL_DATA,
 			is_accessible: false,
 		},
 		{
 			from_dt_status: UserRegisterStatus.FINISHED,
 			to_dt_status: UserRegisterStatus.FINISHED,
-			is_accessible: true,
-		},
-		{
-			from_dt_status: UserRegisterStatus.FINISHED,
-			to_dt_status: UserRegisterStatus.DRAFT,
 			is_accessible: true,
 		},
 	];
 
 	private StatusRuleEventMap: IStatusRuleEventMap[] = [
-		// Draft rule
-		{
-			from_status: UserRegisterStatus.DRAFT,
-			to_status: UserRegisterStatus.DRAFT,
-		},
-		{
-			from_status: UserRegisterStatus.DRAFT,
-			to_status: UserRegisterStatus.CREATED,
-		},
-		{
-			from_status: UserRegisterStatus.DRAFT,
-			to_status: UserRegisterStatus.FILLED,
-		},
-		{
-			from_status: UserRegisterStatus.DRAFT,
-			to_status: UserRegisterStatus.FINISHED,
-		},
 		// Create rule
 		{
 			from_status: UserRegisterStatus.CREATED,
@@ -130,32 +77,24 @@ export class UserStatusDecisionTable {
 		},
 		{
 			from_status: UserRegisterStatus.CREATED,
-			to_status: UserRegisterStatus.FILLED,
+			to_status: UserRegisterStatus.FILL_DATA,
 		},
 		{
 			from_status: UserRegisterStatus.CREATED,
 			to_status: UserRegisterStatus.FINISHED,
-		},
-		{
-			from_status: UserRegisterStatus.CREATED,
-			to_status: UserRegisterStatus.DRAFT,
 		},
 		// In progress rule
 		{
-			from_status: UserRegisterStatus.FILLED,
+			from_status: UserRegisterStatus.FILL_DATA,
 			to_status: UserRegisterStatus.CREATED,
 		},
 		{
-			from_status: UserRegisterStatus.FILLED,
-			to_status: UserRegisterStatus.FILLED,
+			from_status: UserRegisterStatus.FILL_DATA,
+			to_status: UserRegisterStatus.FILL_DATA,
 		},
 		{
-			from_status: UserRegisterStatus.FILLED,
+			from_status: UserRegisterStatus.FILL_DATA,
 			to_status: UserRegisterStatus.FINISHED,
-		},
-		{
-			from_status: UserRegisterStatus.FILLED,
-			to_status: UserRegisterStatus.DRAFT,
 		},
 		// Complete rule
 		{
@@ -164,15 +103,11 @@ export class UserStatusDecisionTable {
 		},
 		{
 			from_status: UserRegisterStatus.FINISHED,
-			to_status: UserRegisterStatus.FILLED,
+			to_status: UserRegisterStatus.FILL_DATA,
 		},
 		{
 			from_status: UserRegisterStatus.FINISHED,
 			to_status: UserRegisterStatus.FINISHED,
-		},
-		{
-			from_status: UserRegisterStatus.FINISHED,
-			to_status: UserRegisterStatus.DRAFT,
 		},
 	];
 

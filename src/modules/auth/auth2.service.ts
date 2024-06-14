@@ -20,93 +20,29 @@ import {
 } from "./dtos/user-login.dto";
 import { NoVerificationCodeSentError } from "./errors/NoVerificationCodeSent.error";
 import { UnauthorizedError } from "./errors/Unauthorized.error";
-import {
-	UserAlreadyExistsError,
-	UserEmailAlreadyExistsError,
-} from "./errors/UserAlreadyExists.error";
+import { UserEmailAlreadyExistsError } from "./errors/UserAlreadyExists.error";
 import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "./errors/VerificationExists.error";
-import {
-	EventFinishedToCreatedError,
-	EventFinishedToFillDataError,
-} from "./errors/event.error";
-import { UserStatusDecisionTable } from "./user_status.dt";
 
-type AuthRespone =
+export type AuthRespone =
 	| { user_id: string; message: string; register_status: string }
 	| { accessToken: string };
 
 @Injectable()
-export class AuthService {
-	private userStatusDt = new UserStatusDecisionTable();
+export class Auth2Service {
 	constructor(
 		private jwtService: JwtService,
 		private userService: UserService,
 		private agenciesService: AgenciesService,
-	) {
-		// Setting event for check user status
-		this.userStatusDt.setEvent({
-			from_status: UserRegisterStatus.FINISHED,
-			to_status: UserRegisterStatus.CREATED,
-			onErrorEvent() {
-				throw new EventFinishedToCreatedError(
-					`${UserRegisterStatus.FINISHED} -> ${UserRegisterStatus.CREATED}`,
-				);
-			},
-		});
-		this.userStatusDt.setEvent({
-			from_status: UserRegisterStatus.FINISHED,
-			to_status: UserRegisterStatus.FILL_DATA,
-			onErrorEvent() {
-				throw new EventFinishedToFillDataError(
-					`${UserRegisterStatus.FINISHED} -> ${UserRegisterStatus.FILL_DATA}`,
-				);
-			},
-		});
-		this.userStatusDt.setEvent({
-			from_status: UserRegisterStatus.CREATED,
-			to_status: UserRegisterStatus.FINISHED,
-			onErrorEvent() {
-				throw new EventFinishedToFillDataError(
-					`${UserRegisterStatus.CREATED} -> ${UserRegisterStatus.FINISHED}`,
-				);
-			},
-		});
-		this.userStatusDt.setEvent({
-			from_status: UserRegisterStatus.FILL_DATA,
-			to_status: UserRegisterStatus.CREATED,
-			onErrorEvent() {
-				throw new EventFinishedToFillDataError(
-					`${UserRegisterStatus.FILL_DATA} -> ${UserRegisterStatus.CREATED}`,
-				);
-			},
-		});
-	}
+	) {}
 
-	async createUser(body: UserCreateDto): Promise<AuthRespone> {
+	async agentRegister(body: UserCreateDto): Promise<AuthRespone> {
 		let user = await this.userService.findOne({
 			phone: body.phone,
 		});
 
-		if (user) {
-			if (
-				user?.isPhoneVerified &&
-				user.register_status === UserRegisterStatus.FINISHED
-			) {
-				this.userStatusDt.setEvent({
-					from_status: UserRegisterStatus.FINISHED,
-					to_status: UserRegisterStatus.FINISHED,
-					event() {
-						throw new UserAlreadyExistsError();
-					},
-				});
-				this.userStatusDt.statusSwitcher(
-					UserRegisterStatus.FINISHED,
-					user.register_status,
-				);
-			}
-		} else {
+		if (!user) {
 			user = await this.userService.createUser(body);
 		}
 
@@ -134,11 +70,6 @@ export class AuthService {
 	async agentFillData(body: UserFillDataDto): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.id);
 
-		this.userStatusDt.statusSwitcher(
-			UserRegisterStatus.CREATED,
-			user.register_status,
-		);
-
 		const foundUser = await this.userService.findOne({
 			email: body.email,
 		});
@@ -148,24 +79,19 @@ export class AuthService {
 		}
 
 		await this.userService.updateUser(user.id, {
-			register_status: UserRegisterStatus.FILL_DATA,
+			register_status: UserRegisterStatus.ATTACHMENT,
 			...body,
 		});
 
 		return {
 			user_id: user.id,
 			message: "ok",
-			register_status: UserRegisterStatus.FILL_DATA,
+			register_status: UserRegisterStatus.ATTACHMENT,
 		};
 	}
 
 	async agentChooseAgency(body: AgentChooseAgencyDto): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
-
-		this.userStatusDt.statusSwitcher(
-			UserRegisterStatus.FILL_DATA,
-			user.register_status,
-		);
 
 		const agency = await this.agenciesService.findOne(body.agency_id);
 		if (!agency?.data) {
@@ -189,11 +115,6 @@ export class AuthService {
 		body: AgentRegisterAgencyDto,
 	): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
-
-		this.userStatusDt.statusSwitcher(
-			UserRegisterStatus.FILL_DATA,
-			user.register_status,
-		);
 
 		const newAgency = await this.agenciesService.create<AgenciesEntity>({
 			city_id: body.city_id,
@@ -220,11 +141,6 @@ export class AuthService {
 		body: AgentRequestAgencyDto,
 	): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
-
-		this.userStatusDt.statusSwitcher(
-			UserRegisterStatus.FILL_DATA,
-			user.register_status,
-		);
 
 		const newAgency = await this.agenciesService.create<AgenciesEntity>({
 			city_id: body.city_id,
@@ -298,6 +214,7 @@ export class AuthService {
 			throw new VerificationCodeIsNotCorrectError();
 		}
 
+		// If agent registration is finished, an access token needs to be sent.
 		if (
 			user.isPhoneVerified &&
 			user.register_status === UserRegisterStatus.FINISHED
@@ -310,23 +227,19 @@ export class AuthService {
 			};
 		}
 
+		// If a new agent is created, he needs to be sent to the data filling section.
+		// Otherwise, send him to his current step.
 		if (user.register_status === UserRegisterStatus.CREATED) {
-			this.userStatusDt.statusSwitcher(
-				UserRegisterStatus.CREATED,
-				user.register_status,
-			);
 			await this.userService.updateUser(user.id, {
 				isPhoneVerified: true,
+				register_status: UserRegisterStatus.FILL_DATA,
 			});
-			return {
-				user_id: user.id,
-				message: "verified",
-				register_status: user.register_status,
-			};
 		}
-		throw new EventFinishedToFillDataError(
-			`${UserRegisterStatus.FINISHED} -> ${user.register_status}`,
-		);
+		return {
+			user_id: user.id,
+			message: "verified",
+			register_status: user.register_status,
+		};
 	}
 
 	async agentLoginResendSmsCode(

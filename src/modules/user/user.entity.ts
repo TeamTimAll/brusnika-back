@@ -23,9 +23,9 @@ import { NewsEntity } from "../news/news.entity";
 import { UserDto } from "./dtos/user.dto";
 
 export enum UserRegisterStatus {
-	DRAFT = "draft",
 	CREATED = "created",
-	FILLED = "filled",
+	FILL_DATA = "fill_data",
+	ATTACHMENT = "attachment",
 	FINISHED = "finished",
 }
 
@@ -71,7 +71,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	@Column({
 		type: "enum",
 		enum: UserRegisterStatus,
-		default: UserRegisterStatus.DRAFT,
+		default: UserRegisterStatus.CREATED,
 	})
 	register_status!: UserRegisterStatus;
 
