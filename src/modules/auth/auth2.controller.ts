@@ -10,7 +10,6 @@ import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { Auth2Service } from "./auth2.service";
 import {
 	AgentChooseAgencyDto,
-	AgentLoginDto,
 	AgentRegisterAgencyDto,
 	AgentRequestAgencyDto,
 	AuthResponeWithData,
@@ -43,14 +42,6 @@ export class Auth2Controller {
 		return this.authService.loginAccount(userLoginDto);
 	}
 
-	@ApiOperation({ summary: "agent login" })
-	@ApiOkResponse({ type: AuthResponeWithData })
-	@ApiErrorResponse(UserNotFoundError, "User not found. phone: 7654321")
-	@Post("/agent/login")
-	agentLogin(@Body() agentLoginDto: AgentLoginDto) {
-		return this.authService.agentLogin(agentLoginDto);
-	}
-
 	@ApiOperation({ summary: "verify sms code" })
 	// OK responses
 	@ApiOkResponse({ type: AuthResponeWithToken })
@@ -80,7 +71,7 @@ export class Auth2Controller {
 
 	@ApiOkResponse({ type: AuthResponeWithData })
 	@ApiErrorResponse(VerificationExistsError)
-	@Post("/agent/register")
+	@Post("/agent")
 	createAccount(@Body() dao: UserCreateDto) {
 		return this.authService.agentRegister(dao);
 	}

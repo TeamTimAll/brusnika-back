@@ -11,7 +11,6 @@ import { UserService } from "../user/user.service";
 
 import {
 	AgentChooseAgencyDto,
-	AgentLoginDto,
 	AgentRegisterAgencyDto,
 	AgentRequestAgencyDto,
 	UserLoginDto,
@@ -175,29 +174,6 @@ export class Auth2Service {
 		const { password, ...result } = user;
 		return {
 			accessToken: this.jwtService.sign(result),
-		};
-	}
-
-	async agentLogin(dto: AgentLoginDto): Promise<AuthRespone> {
-		const user = await this.userService.findOne({
-			phone: dto.phone,
-		});
-
-		if (!user) {
-			throw new UserNotFoundError(`User not found. phone: ${dto.phone}`);
-		}
-
-		const randomNumber = 111111;
-
-		await this.userService.updateUser(user.id, {
-			verification_code: randomNumber,
-			verification_code_sent_date: new Date(),
-		});
-
-		return {
-			user_id: user.id,
-			message: "sms sent",
-			register_status: user.register_status,
 		};
 	}
 
