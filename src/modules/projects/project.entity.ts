@@ -4,7 +4,6 @@ import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import { ClientEntity } from "../client/client.entity";
-import { DealsEntity } from "../deals/deals.entity";
 
 import { ProjectDto } from "./dto/projects.dto";
 
@@ -46,7 +45,4 @@ export class ProjectEntity extends AbstractEntity<ProjectDto, ProjectDto> {
 
 	@Column({ nullable: true, type: "date" })
 	end_date!: Date;
-
-	@OneToMany(() => DealsEntity, (deal) => deal.project)
-	deals?: DealsEntity[];
 }
