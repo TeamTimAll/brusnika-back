@@ -4,15 +4,15 @@ import { Repository } from "typeorm";
 
 import { Uuid } from "boilerplate.polyfill";
 
-import { UserPremisesBasketNotFoundError } from "./errors/UPBNotFound.error";
-import { UserPremisesBasketEntity } from "./upb.entity";
-import { CreateUserPremisesBasketDto } from "./dtos/upb_create.dto";
+import { PremisesBasketNotFoundError } from "./errors/PremisesBasketNotFound.error";
+import { PremisesBasketEntity } from "./premises_basket.entity";
+import { CreatePremisesBasketDto } from "./dtos/premises_basket_create.dto";
 
 @Injectable()
-export class UPBService {
+export class PremisesBasketService {
 	constructor(
-		@InjectRepository(UserPremisesBasketEntity)
-		private upbRepository: Repository<UserPremisesBasketEntity>,
+		@InjectRepository(PremisesBasketEntity)
+		private upbRepository: Repository<PremisesBasketEntity>,
 	) {}
 
 	async getAllBasket(meta_id: Uuid) {
@@ -20,12 +20,12 @@ export class UPBService {
 			where: { meta: { id: meta_id } },
 		});
 		if (!foundBasket.length) {
-			throw new UserPremisesBasketNotFoundError(`MetaId: '${meta_id}'`);
+			throw new PremisesBasketNotFoundError(`MetaId: '${meta_id}'`);
 		}
 		return foundBasket;
 	}
 
-	createBasketMeta(entity: CreateUserPremisesBasketDto) {
+	createBasketMeta(entity: CreatePremisesBasketDto) {
 		const upbmEntity = this.upbRepository.create(entity);
 
 		return this.upbRepository.save(upbmEntity);
