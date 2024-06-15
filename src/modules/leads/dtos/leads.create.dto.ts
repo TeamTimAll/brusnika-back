@@ -1,52 +1,31 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsInt, IsNotEmpty, IsOptional, IsUUID } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
+import { LeadsEntity } from "../leads.entity";
 
-export class LeadsCreateDto {
+export class CreateLeadDto extends LeadsEntity {
+	@ApiProperty({ example: "uuidv4" })
 	@IsNotEmpty()
-	@IsString()
-	projectId!: Uuid;
+	@IsUUID("4")
+	declare clinet_id: string;
 
+	@ApiProperty({ example: "uuidv4" })
 	@IsNotEmpty()
-	@IsString()
-	clientId!: Uuid;
+	@IsUUID("4")
+	declare agent_id: string;
 
-	@IsNotEmpty()
-	@IsString()
-	productType!: string;
-
-	// @IsNotEmpty()
-	// @IsString()
-	// clientFullName !: string;
-	// clientPhoneNumber!: string;
-
-	@IsNotEmpty()
-	@IsString()
-	transactionNumber!: string;
-
-	@IsNotEmpty()
-	@IsString()
-	transactionStatus!: string;
-
-	@IsNotEmpty()
-	@IsString()
-	transactionStage!: string;
-
+	@ApiProperty({ example: "uuidv4" })
 	@IsOptional()
-	floor?: number;
+	@IsUUID("4")
+	declare manager_id?: string;
 
-	@IsOptional()
-	roomNumber?: string;
-
+	@ApiProperty({ example: "uuidv4" })
 	@IsNotEmpty()
-	@IsNumber()
-	cost!: number;
+	@IsUUID("4")
+	declare premise_id: string;
 
+	@ApiProperty({ example: "uuidv4" })
 	@IsNotEmpty()
-	@IsString()
-	agentName!: string;
-
-	@IsNotEmpty()
-	@IsString()
-	managerName!: string;
+	@IsInt()
+	declare fee: number;
 }
