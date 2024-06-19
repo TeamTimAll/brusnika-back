@@ -39,7 +39,7 @@ export class UserController {
 	@Roles([RoleType.ADMIN, RoleType.USER])
 	async getUser(@User() user: ICurrentUser): Promise<UserDto> {
 		log("user", user);
-		return this.userService.getUser(user.id, false);
+		return this.userService.getUser(user.user_id, false);
 	}
 
 	@Put("/")
@@ -49,14 +49,14 @@ export class UserController {
 		@Body() updateEventsDto: UserUpdateDto,
 		@User() user: ICurrentUser,
 	) {
-		return this.userService.updateUser(user.id, updateEventsDto);
+		return this.userService.updateUser(user.user_id, updateEventsDto);
 	}
 
 	@Post("/phone")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
 	changePhoneUser(@Body() dto: UserCreateDto, @User() user: ICurrentUser) {
-		return this.userService.changePhone(user.id, dto);
+		return this.userService.changePhone(user.user_id, dto);
 	}
 
 	@Post("/phone/verify")
