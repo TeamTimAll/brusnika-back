@@ -109,6 +109,7 @@ export class UserService {
 					"city",
 					"agency",
 					"avatar",
+					"role",
 				],
 			});
 
