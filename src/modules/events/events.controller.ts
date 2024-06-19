@@ -7,48 +7,49 @@ import {
 	HttpStatus,
 	Post,
 	Put,
+	Query,
 } from "@nestjs/common";
 import {
 	ApiAcceptedResponse,
 	ApiCreatedResponse,
-	ApiOkResponse,
 	ApiTags,
 } from "@nestjs/swagger";
 
 import { Uuid } from "boilerplate.polyfill";
+import { ICurrentUser } from "interfaces/current-user.interface";
+
 import { UUIDParam, User } from "../../decorators";
-import { UserEntity } from "../user/user.entity";
+
 import { CreateEventsDto } from "./dtos/create-events.dto";
-import { EventsDto } from "./dtos/events.dto";
+import { EventsDto, FilterEventsDto } from "./dtos/events.dto";
 import { UpdateEventsDto } from "./dtos/update-events.dto";
 import { EventsService } from "./events.service";
 
 @Controller("/events")
 @ApiTags("events")
 export class EventsController {
-	constructor(private eventsService: EventsService) {}
+	constructor(private service: EventsService) {}
+
+	@Get()
+	@HttpCode(HttpStatus.OK)
+	async getAllEvents(@Query() queryParams: FilterEventsDto): Promise<any> {
+		return this.service.findAllWith(queryParams);
+	}
 
 	@HttpCode(HttpStatus.CREATED)
 	@ApiCreatedResponse({ type: EventsDto })
 	@Post()
 	async createEvents(
 		@Body() createEventsDto: CreateEventsDto,
-		@User() user: UserEntity,
+		@User() user: ICurrentUser,
 	) {
-		const EventsEntity = await this.eventsService.createEvents(
-			user.id,
-			createEventsDto,
-		);
-
-		return EventsEntity.toDto();
+		return this.service.create(createEventsDto, user);
 	}
 
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
-	@ApiOkResponse({ type: EventsDto })
-	async getSingleEvents(@UUIDParam("id") id: Uuid): Promise<EventsDto> {
-		const entity = await this.eventsService.getSingleEvents(id);
-		return entity.toDto();
+	async getSingleEvents(@UUIDParam("id") id: Uuid): Promise<any> {
+		return this.service.findOne(id);
 	}
 
 	@Put(":id")
@@ -57,14 +58,14 @@ export class EventsController {
 	updateEvents(
 		@UUIDParam("id") id: Uuid,
 		@Body() updateEventsDto: UpdateEventsDto,
-	): Promise<void> {
-		return this.eventsService.updateEvents(id, updateEventsDto);
+	): Promise<any> {
+		return this.service.update(id, updateEventsDto);
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
 	async deleteEvents(@UUIDParam("id") id: Uuid): Promise<void> {
-		await this.eventsService.deleteEvents(id);
+		await this.service.remove(id);
 	}
 }
