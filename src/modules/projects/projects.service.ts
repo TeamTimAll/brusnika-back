@@ -40,6 +40,10 @@ export class ProjectsService {
 		private projectsRepository: Repository<ProjectEntity>,
 	) {}
 
+	get repository(): Repository<ProjectEntity> {
+		return this.projectsRepository;
+	}
+
 	async getAllProjects(): Promise<GetAllProjectRaw[]> {
 		const rawResult = await this.projectsRepository
 			.createQueryBuilder("project")

@@ -19,18 +19,17 @@ export enum ApplicationPromptID {
 	BUILDING_NOT_FOUND_ERROR = 406,
 	PREMISES_BASKET_META_NOT_FOUND_ERROR = 407,
 	PREMISES_BASKET_NOT_FOUND_ERROR = 408,
-	NEWS_NOT_FOUND_ERROR = 409,
+	PREMISE_NOT_FOUND_ERROR = 409,
+	CLIENT_NOT_FOUND_ERROR = 410,
+	NEWS_NOT_FOUND_ERROR = 411,
 
 	// Event errors
-	EVENT_FINISHED_TO_CREATED_ERROR = 309,
-	USER_ALREADY_EXISTS_ERROR = 310,
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
 	VERIFICATION_EXISTS_ERROR = 312,
 	AGENCY_NOT_FOUND_ERROR = 313,
 	VERIFICATION_CODE_EXPIRED_ERROR = 314,
 	VERIFICATION_CODE_IS_NOT_CORRECT_ERROR = 315,
 	NO_VERIFICATION_CODE_SENT_ERROR = 316,
-	// EVENT_CREATE_TO_FINISHED_ERROR = 310,
 }
 
 export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
@@ -41,7 +40,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "input_validation_error",
 		promptLabels: [
 			"Input validation error",
-			"Input validation error",
+			"Ошибка проверки ввода",
 			"Input validation error",
 		],
 	},
@@ -52,7 +51,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "method_not_found_error",
 		promptLabels: [
 			"Method not found error",
-			"Method not found error",
+			"Ошибка метод не найден",
 			"Method not found error",
 		],
 	},
@@ -63,7 +62,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "internal_server_error",
 		promptLabels: [
 			"Internal server error",
-			"Internal server error",
+			"Внутренняя ошибка сервера",
 			"Internal server error",
 		],
 	},
@@ -74,7 +73,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "unauthorized_error",
 		promptLabels: [
 			"Unauthorized error",
-			"Unauthorized error",
+			"Ошибка доступа",
 			"Unauthorized error",
 		],
 	},
@@ -85,7 +84,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "user_not_found_error",
 		promptLabels: [
 			"User not found error",
-			"User not found error",
+			"Пользователь не найден",
 			"User not found error",
 		],
 	},
@@ -96,7 +95,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "city_not_found_error",
 		promptLabels: [
 			"City not found error",
-			"City not found error",
+			"Город не найден",
 			"City not found error",
 		],
 	},
@@ -118,7 +117,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "project_not_found_error",
 		promptLabels: [
 			"Project not found error",
-			"Project not found error",
+			"Проект не найден",
 			"Project not found error",
 		],
 	},
@@ -129,8 +128,19 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "building_not_found_error",
 		promptLabels: [
 			"Building not found error",
+			"Здание не найдено",
 			"Building not found error",
-			"Building not found error",
+		],
+	},
+	[ApplicationPromptID.PREMISE_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.PREMISE_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "premise_not_found_error",
+		promptLabels: [
+			"Premise not found error",
+			"Помещение не найдено",
+			"Premise not found error",
 		],
 	},
 	[ApplicationPromptID.PREMISES_BASKET_NOT_FOUND_ERROR]: {
@@ -140,7 +150,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "premises_basket_meta_not_found_error",
 		promptLabels: [
 			"Premises basket meta not found error",
-			"Premises basket meta not found error",
+			"Мета-информация о корзине помещений не найдена",
 			"Premises basket meta not found error",
 		],
 	},
@@ -151,30 +161,30 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "premises_basket_not_found_error",
 		promptLabels: [
 			"Premises basket not found error",
-			"Premises basket not found error",
+			"Корзина помещений не найдена",
 			"Premises basket not found error",
 		],
 	},
-	[ApplicationPromptID.EVENT_FINISHED_TO_CREATED_ERROR]: {
-		promptId: ApplicationPromptID.EVENT_FINISHED_TO_CREATED_ERROR,
+	[ApplicationPromptID.AGENCY_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.AGENCY_NOT_FOUND_ERROR,
 		promptType: "application",
 		promptCode: "",
-		promptCondition: "event_error",
+		promptCondition: "agency_not_found_error",
 		promptLabels: [
-			"Your registration is not finished.",
-			"Your registration is not finished.",
-			"Your registration is not finished.",
+			"Agency not found error",
+			"Агентство не найдено",
+			"Agency not found error",
 		],
 	},
-	[ApplicationPromptID.USER_ALREADY_EXISTS_ERROR]: {
-		promptId: ApplicationPromptID.USER_ALREADY_EXISTS_ERROR,
+	[ApplicationPromptID.CLIENT_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.CLIENT_NOT_FOUND_ERROR,
 		promptType: "application",
 		promptCode: "",
-		promptCondition: "user_already_exists_error",
+		promptCondition: "client_not_found_error",
 		promptLabels: [
-			"User already exists. Go to login page.",
-			"User already exists. Go to login page.",
-			"User already exists. Go to login page.",
+			"Client not found error",
+			"Клиент не найден",
+			"Client not found error",
 		],
 	},
 	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {
@@ -184,7 +194,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "user_already_exists_error",
 		promptLabels: [
 			"User email already exists. Try diffrent one.",
-			"User email already exists. Try diffrent one.",
+			"Пользователь с таким email уже существует. Попробуйте другой.",
 			"User email already exists. Try diffrent one.",
 		],
 	},
@@ -195,19 +205,8 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "verification_exists_error",
 		promptLabels: [
 			"A valid verification code already exists or wait till expire.",
+			"Уже существует действующий код верификации или подождите, пока истечет срок его действия.",
 			"A valid verification code already exists or wait till expire.",
-			"A valid verification code already exists or wait till expire.",
-		],
-	},
-	[ApplicationPromptID.AGENCY_NOT_FOUND_ERROR]: {
-		promptId: ApplicationPromptID.AGENCY_NOT_FOUND_ERROR,
-		promptType: "application",
-		promptCode: "",
-		promptCondition: "agency_not_found_error",
-		promptLabels: [
-			"Agency not found error",
-			"Agency not found error",
-			"Agency not found error",
 		],
 	},
 	[ApplicationPromptID.VERIFICATION_CODE_EXPIRED_ERROR]: {
@@ -217,7 +216,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "verification_code_expired_error",
 		promptLabels: [
 			"Verification code expired error",
-			"Verification code expired error",
+			"Срок действия кода верификации истек",
 			"Verification code expired error",
 		],
 	},
@@ -228,7 +227,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "verification_code_is_not_correct_error",
 		promptLabels: [
 			"Verification code is not correct error",
-			"Verification code is not correct error",
+			"Неверный код верификации",
 			"Verification code is not correct error",
 		],
 	},
@@ -239,7 +238,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "no_verification_code_sent_error",
 		promptLabels: [
 			"No verification code sent error",
-			"No verification code sent error",
+			"Ошибка: код верификации не отправлен",
 			"No verification code sent error",
 		],
 	},

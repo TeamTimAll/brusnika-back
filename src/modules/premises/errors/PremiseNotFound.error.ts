@@ -3,14 +3,14 @@ import { HttpStatus } from "@nestjs/common";
 import { BaseError } from "../../../common/base/baseError";
 import { ApplicationPromptID } from "../../../lib/prompt/applicationPrompt";
 
-export class UserEmailAlreadyExistsError extends BaseError {
+export class PremiseNotFoundError extends BaseError {
     constructor(message?: string) {
 		super(
-			ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR,
+			ApplicationPromptID.PREMISE_NOT_FOUND_ERROR,
 			{
 				message: message ?? "",
 			},
-			HttpStatus.CONFLICT,
+			HttpStatus.NOT_FOUND,
 		);
 	}
 }

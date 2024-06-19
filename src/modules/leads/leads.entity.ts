@@ -1,10 +1,4 @@
-import {
-	Column,
-	CreateDateColumn,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
@@ -15,6 +9,7 @@ import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
 
 import { LeadsDto } from "./dtos/leads.dto";
+import { LeadOpsEntity } from "./lead_ops.entity";
 
 @Entity({ name: "leads" })
 @UseDto(LeadsDto)
@@ -54,27 +49,9 @@ export class LeadsEntity extends AbstractEntity<LeadsDto> {
 	@Column({ nullable: true })
 	premise_id?: string;
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, type: "integer" })
 	fee?: number;
 
-	@Column({ default: true })
-	status!: string;
-
-	// Status dan status'ga o'tgan vaqti
-	// client_op;
-
-	@Column({ type: "integer" })
-	premise_price!: number;
-
-	@Column({ type: "integer" })
-	initial_payment_amount!: number;
-
-	@Column({ type: "varchar", length: 255 })
-	comment!: string;
-
-	@CreateDateColumn()
-	sending_date!: Date;
-
-	@Column({ type: "timestamp" })
-	received_request_date?: Date;
+	@OneToMany(() => LeadOpsEntity, (type) => type.lead)
+	lead_ops?: LeadOpsEntity[];
 }

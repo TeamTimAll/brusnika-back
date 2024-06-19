@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgenciesEntity } from "../agencies/agencies.entity";
 import { AgenciesService } from "../agencies/agencies.service";
 import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
@@ -161,19 +162,26 @@ export class AuthService {
 	}
 
 	async loginAccount(loginDto: UserLoginDto): Promise<AuthRespone> {
+		// TODO: remove this
+		const emails = ["plingen@vicegolf.com", "kacper.polak@teacode.io"];
 		const user = await this.userService.findOne({
 			email: loginDto.email,
+			password: loginDto.password,
 		});
 
-		if (!user) {
+		if (!user || !emails.includes(user.email ?? "")) {
 			throw new UnauthorizedError(
 				`User not found. email: ${loginDto.email}`,
 			);
 		}
 
 		const { password, ...result } = user;
+		const jwtBuffer: ICurrentUser = {
+			user_id: result.id,
+			role: result.role,
+		};
 		return {
-			accessToken: this.jwtService.sign(result),
+			accessToken: this.jwtService.sign(jwtBuffer),
 		};
 	}
 

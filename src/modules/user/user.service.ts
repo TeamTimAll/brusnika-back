@@ -20,6 +20,10 @@ export class UserService {
 		private userRepository: Repository<UserEntity>,
 	) {}
 
+	get repository(): Repository<UserEntity> {
+		return this.userRepository;
+	}
+
 	hasOneMinutePassed(startTime: Date): boolean {
 		const oneMinute = 60 * 1000; // 60 seconds * 1000 milliseconds
 		const currentTime = new Date();
@@ -105,6 +109,7 @@ export class UserService {
 					"city",
 					"agency",
 					"avatar",
+					"role",
 				],
 			});
 
