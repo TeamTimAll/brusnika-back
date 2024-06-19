@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgenciesEntity } from "../agencies/agencies.entity";
 import { AgenciesService } from "../agencies/agencies.service";
 import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
@@ -163,6 +164,7 @@ export class AuthService {
 	async loginAccount(loginDto: UserLoginDto): Promise<AuthRespone> {
 		const user = await this.userService.findOne({
 			email: loginDto.email,
+			password: loginDto.password,
 		});
 
 		if (!user) {
@@ -172,8 +174,12 @@ export class AuthService {
 		}
 
 		const { password, ...result } = user;
+		const jwtBuffer: ICurrentUser = {
+			user_id: result.id,
+			role: result.role,
+		};
 		return {
-			accessToken: this.jwtService.sign(result),
+			accessToken: this.jwtService.sign(jwtBuffer),
 		};
 	}
 

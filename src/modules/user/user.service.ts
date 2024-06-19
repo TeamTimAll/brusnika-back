@@ -184,7 +184,7 @@ export class UserService {
 		dto: UserChangePhoneVerifyCodeDto,
 	): Promise<unknown> {
 		try {
-			const foundUser = await this.getUser(user.id);
+			const foundUser = await this.getUser(user.user_id);
 
 			if (!foundUser) {
 				return new HttpException(
@@ -239,7 +239,7 @@ export class UserService {
 
 	async agentLoginResendSmsCode(currentUser: ICurrentUser): Promise<unknown> {
 		try {
-			const user = await this.getUser(currentUser.id);
+			const user = await this.getUser(currentUser.user_id);
 
 			if (!user) {
 				return new HttpException(

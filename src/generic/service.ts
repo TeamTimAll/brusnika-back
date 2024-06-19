@@ -64,7 +64,7 @@ export class BasicService<
 	): Promise<ServiceResponse<T>> {
 		let createdData = this.repository.create({
 			...dto,
-			createdBy: currentUser?.id,
+			createdBy: currentUser?.user_id,
 		});
 
 		createdData = await this.repository.save(createdData);
@@ -92,7 +92,7 @@ export class BasicService<
 
 		Object.assign(existingData, dto, {
 			updatedAt: new Date(),
-			updatedBy: currentUser?.id,
+			updatedBy: currentUser?.user_id,
 		});
 
 		const updatedData = await this.repository.save(
