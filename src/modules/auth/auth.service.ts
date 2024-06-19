@@ -162,12 +162,14 @@ export class AuthService {
 	}
 
 	async loginAccount(loginDto: UserLoginDto): Promise<AuthRespone> {
+		// TODO: remove this
+		const emails = ["plingen@vicegolf.com", "kacper.polak@teacode.io"];
 		const user = await this.userService.findOne({
 			email: loginDto.email,
 			password: loginDto.password,
 		});
 
-		if (!user) {
+		if (!user || !emails.includes(user.email ?? "")) {
 			throw new UnauthorizedError(
 				`User not found. email: ${loginDto.email}`,
 			);
