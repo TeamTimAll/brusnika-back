@@ -20,6 +20,10 @@ export class UserService {
 		private userRepository: Repository<UserEntity>,
 	) {}
 
+	get repository(): Repository<UserEntity> {
+		return this.userRepository;
+	}
+
 	hasOneMinutePassed(startTime: Date): boolean {
 		const oneMinute = 60 * 1000; // 60 seconds * 1000 milliseconds
 		const currentTime = new Date();
@@ -180,7 +184,7 @@ export class UserService {
 		dto: UserChangePhoneVerifyCodeDto,
 	): Promise<unknown> {
 		try {
-			const foundUser = await this.getUser(user.user_id);
+			const foundUser = await this.getUser(user.id);
 
 			if (!foundUser) {
 				return new HttpException(
@@ -235,7 +239,7 @@ export class UserService {
 
 	async agentLoginResendSmsCode(currentUser: ICurrentUser): Promise<unknown> {
 		try {
-			const user = await this.getUser(currentUser.user_id);
+			const user = await this.getUser(currentUser.id);
 
 			if (!user) {
 				return new HttpException(
