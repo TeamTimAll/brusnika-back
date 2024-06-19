@@ -17,6 +17,7 @@ export enum LeadOpStatus {
 	BOOK_CANCELED = "отмененная бронь",
 	LOST_BOOK = "слетевшая бронь",
 	ON_PAUSE = "на паузе",
+	CHECK_LEAD = "проверка лида",
 	FAILED = "проиграна",
 }
 
@@ -30,6 +31,6 @@ export class LeadOpsEntity extends AbstractEntity<LeadsDto> {
 	@Column()
 	lead_id!: string;
 
-	@Column({ enum: LeadOpStatus })
+	@Column({ enum: LeadOpStatus, default: LeadOpStatus.OPEN })
 	status!: LeadOpStatus;
 }
