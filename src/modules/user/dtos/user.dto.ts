@@ -131,6 +131,8 @@ export class UserCreateDto {
 	@IsMobilePhone()
 	@ApiProperty({ required: true })
 	phone!: string;
+
+	role?: RoleType;
 }
 
 export class UserChangePhoneVerifyCodeDto {

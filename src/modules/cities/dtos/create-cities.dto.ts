@@ -1,12 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import {
-	ArrayMinSize,
-	IsArray,
-	IsString,
-	ValidateNested,
-} from "class-validator";
-
 import { Type } from "class-transformer";
+import { IsString, ValidateNested } from "class-validator";
+
 import { BaseDto } from "../../../common/base/base_dto";
 
 export class CreateCitiesDto {
@@ -20,10 +15,8 @@ export class CreateCitiesDto {
 }
 
 export class CreateCitiesMetaDataDto extends BaseDto<CreateCitiesDto> {
-	@ApiProperty({ default: [{ name: "moscow" } as CreateCitiesDto] })
-	@IsArray()
-	@ValidateNested({ each: true })
-	@ArrayMinSize(1)
+	@ApiProperty({ example: { name: "moscow" } as CreateCitiesDto })
+	@ValidateNested()
 	@Type(() => CreateCitiesDto)
-	declare data: CreateCitiesDto[];
+	declare data: CreateCitiesDto;
 }

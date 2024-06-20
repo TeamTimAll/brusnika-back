@@ -3,7 +3,6 @@ import { Column, Entity, OneToMany } from "typeorm";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
-import { ClientEntity } from "../client/client.entity";
 
 import { ProjectDto } from "./dto/projects.dto";
 
@@ -21,9 +20,6 @@ export class ProjectEntity extends AbstractEntity<ProjectDto, ProjectDto> {
 
 	@Column({ nullable: true })
 	photo!: string;
-
-	@OneToMany(() => ClientEntity, (client) => client.project)
-	clients?: ClientEntity[];
 
 	@OneToMany(() => BuildingsEntity, (buildings) => buildings.project)
 	buildings?: BuildingsEntity[];

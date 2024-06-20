@@ -42,9 +42,9 @@ export class BuildingsController {
 	async create(@Body() dto: CreateBuildingMetaDto) {
 		const metaData = BaseDto.createFromDto(dto);
 		const createdBuilding = await this.buildingsService.createBuilding(
-			dto.data[0],
+			dto.data,
 		);
-		metaData.data = [createdBuilding];
+		metaData.data = createdBuilding;
 		return metaData;
 	}
 
@@ -57,9 +57,9 @@ export class BuildingsController {
 		const metaData = BaseDto.createFromDto(dto);
 		const updatedBuilding = await this.buildingsService.updateBuilding(
 			id,
-			dto.data[0],
+			dto.data,
 		);
-		metaData.data = [updatedBuilding];
+		metaData.data = updatedBuilding;
 		return metaData;
 	}
 
@@ -68,7 +68,7 @@ export class BuildingsController {
 	async delete(@Param("id") id: Uuid) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const deletedBuilding = await this.buildingsService.delete(id);
-		metaData.data = [deletedBuilding];
+		metaData.data = deletedBuilding;
 		return metaData;
 	}
 }

@@ -13,12 +13,11 @@ import { AbstractEntity } from "../../common/abstract.entity";
 import { RoleType } from "../../constants";
 import { UseDto } from "../../decorators";
 import { AgenciesEntity } from "../agencies/agencies.entity";
-import { CommentEntity } from "../comments/comment.entity";
-import { TrainingEntity } from "../training/training.entity";
 import { CitiesEntity } from "../cities/cities.entity";
-import { ClientEntity } from "../client/client.entity";
+import { CommentEntity } from "../comments/comment.entity";
 import { EventsEntity } from "../events/events.entity";
 import { NewsEntity } from "../news/news.entity";
+import { TrainingEntity } from "../training/training.entity";
 
 import { UserDto } from "./dtos/user.dto";
 
@@ -114,12 +113,6 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	// })
 	// projects?: ProjectEntity[];
 
-	@OneToMany(() => ClientEntity, (client) => client.user, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	clients?: ClientEntity[];
-
 	@OneToMany(() => TrainingEntity, (train) => train.user, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
@@ -170,7 +163,6 @@ export class UserEntity extends AbstractEntity<UserDto> {
 			events: entity.events ?? [],
 			comments: entity.comments ?? [],
 			news: entity.news ?? [],
-			clients: entity.clients ?? [],
 			trainings: entity.trainings ?? [],
 			city: entity.city ?? new CitiesEntity(),
 			city_id: entity.city_id ?? "",
