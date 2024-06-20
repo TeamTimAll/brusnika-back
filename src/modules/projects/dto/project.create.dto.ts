@@ -1,8 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
-	ArrayMinSize,
-	IsArray,
 	IsDateString,
 	IsNotEmpty,
 	IsNumber,
@@ -76,21 +74,17 @@ export class CreateProjectDto {
 
 export class CreateProjectMetaDataDto extends BaseDto<CreateProjectDto> {
 	@ApiProperty({
-		default: [
-			{
-				name: "Name",
-				detailed_description: "Something deatiled about the project",
-				brief_description: "Brief description about the project",
-				price: 0,
-				location: "Brief description about the project",
-				end_date: new Date(),
-				photo: "string",
-			} as CreateProjectDto,
-		],
+		example: {
+			name: "Name",
+			detailed_description: "Something deatiled about the project",
+			brief_description: "Brief description about the project",
+			price: 0,
+			location: "Brief description about the project",
+			end_date: new Date(),
+			photo: "string",
+		} as CreateProjectDto,
 	})
-	@IsArray()
-	@ValidateNested({ each: true })
-	@ArrayMinSize(1)
+	@ValidateNested()
 	@Type(() => CreateProjectDto)
-	declare data: CreateProjectDto[];
+	declare data: CreateProjectDto;
 }

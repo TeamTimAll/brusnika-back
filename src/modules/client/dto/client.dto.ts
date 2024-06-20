@@ -1,51 +1,54 @@
-import { IsString, IsNotEmpty, IsOptional, IsDateString, IsUUID, IsMobilePhone } from 'class-validator';
-import { Type } from 'class-transformer';
-import { BaseDto } from '../../../common/dto/abstract.dto';
-import { Uuid } from 'boilerplate.polyfill';
+import { ApiProperty } from "@nestjs/swagger";
+import {
+	IsDateString,
+	IsEnum,
+	IsMobilePhone,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+} from "class-validator";
 
+import { BaseDto } from "../../../common/dto/abstract.dto";
+import { ClientStatus } from "../client.entity";
 
+export class ClientDto extends BaseDto {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	fullname!: string;
 
-class ClientDto extends BaseDto {
-  @IsNotEmpty()
-  @IsString()
-  fullName!: string;
+	@ApiProperty()
+	@IsMobilePhone()
+	@IsNotEmpty()
+	phone_number!: string;
 
-  @IsOptional()
-  @IsString()
-  comment?: string;
+	@ApiProperty()
+	@IsDateString()
+	@IsNotEmpty()
+	actived_from_date!: Date;
 
-  @IsNotEmpty()
-  @IsMobilePhone()
-  phoneNumber!: string;
+	@ApiProperty()
+	@IsDateString()
+	@IsNotEmpty()
+	actived_to_date!: Date;
 
-  @IsOptional()
-  @IsUUID()
-  projectId?: string;
+	@ApiProperty()
+	@IsString()
+	@IsOptional()
+	comment?: string;
 
-  @IsOptional()
-  @IsString()
-  transactionStatus?: string;
+	@ApiProperty()
+	@IsEnum(() => ClientStatus)
+	@IsNotEmpty()
+	status!: ClientStatus;
 
-  @IsOptional()
-  @IsString()
-  transactionStage?: string;
+	@ApiProperty()
+	@IsDateString()
+	@IsNotEmpty()
+	expiration_date!: number;
 
-  @IsNotEmpty()
-  @IsDateString()
-  establishmentDate!: Date;
-
-
-  @IsNotEmpty()
-  @Type(() => Number)
-  daysUntilEndOfAssignment!: number;
-
-  @IsOptional()
-  @IsString()
-  managerNote?: string;
-
-  @IsNotEmpty()
-  @IsUUID()
-  userId!: Uuid;
+	@ApiProperty()
+	@IsString()
+	@IsOptional()
+	node?: string;
 }
-
-export { ClientDto };

@@ -1,42 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ClientStatusEntity } from './client-status.entity';
-import { Repository } from 'typeorm';
-import { IClientCreateStatus , IClientStatusCreatedType } from "../../types/client.types"
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
+import {
+	IClientCreateStatus,
+	IClientStatusCreatedType,
+} from "../../types/client.types";
 
+import { ClientStatusEntity } from "./client-status.entity";
 
 @Injectable()
 export class ClientStatusService {
-    constructor (
-        @InjectRepository(ClientStatusEntity)
-        private statusRepo : Repository<ClientStatusEntity>
+	constructor(
+		@InjectRepository(ClientStatusEntity)
+		private statusRepo: Repository<ClientStatusEntity>,
+	) {}
 
-    ){}
+	get repository(): Repository<ClientStatusEntity> {
+		return this.statusRepo;
+	}
 
+	async createClientStatus(
+		clientStatus: IClientCreateStatus,
+	): Promise<IClientStatusCreatedType> {
+		const newStatus = await this.statusRepo.save(clientStatus);
 
+		const response: IClientStatusCreatedType = {
+			success: true,
+			clientStatus: newStatus,
+		};
 
-    async createClientStatus(clientStatus : IClientCreateStatus)
-     : Promise<IClientStatusCreatedType> {
-              try {
-
-                const newStatus = await this.statusRepo.save(clientStatus)
-
-                const response :   IClientStatusCreatedType  = {
-                           success : true,
-                           clientStatus: newStatus
-                } 
-
-                return response 
-                
-              } catch (error : any ) {
-               
-                const errorStatus : IClientStatusCreatedType = {
-                       success : false ,
-                       error_reason : error.message 
-                }
-                
-                return errorStatus
-              }
-    }
+		return response;
+	}
 }

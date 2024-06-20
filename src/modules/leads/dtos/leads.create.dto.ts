@@ -1,6 +1,14 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsOptional, IsUUID } from "class-validator";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import {
+	IsInt,
+	IsNotEmpty,
+	IsOptional,
+	IsUUID,
+	ValidateNested,
+} from "class-validator";
 
+import { BaseDto } from "../../../common/base/base_dto";
 import { LeadsEntity } from "../leads.entity";
 
 export class CreateLeadDto extends LeadsEntity {
@@ -28,4 +36,14 @@ export class CreateLeadDto extends LeadsEntity {
 	@IsNotEmpty()
 	@IsInt()
 	declare fee: number;
+}
+
+export class CreateLeadMetaDataDto extends BaseDto<CreateLeadDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(CreateLeadDto) }],
+		type: () => CreateLeadDto,
+	})
+	@ValidateNested()
+	@Type(() => CreateLeadDto)
+	declare data: CreateLeadDto;
 }

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgenciesEntity } from "../agencies/agencies.entity";
 import { AgenciesService } from "../agencies/agencies.service";
@@ -43,7 +44,10 @@ export class AuthService {
 		});
 
 		if (!user) {
-			user = await this.userService.createUser(body);
+			user = await this.userService.createUser({
+				...body,
+				role: RoleType.AGENT,
+			});
 		}
 
 		if (

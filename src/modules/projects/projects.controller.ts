@@ -45,9 +45,9 @@ export class ProjectsController {
 	async createProject(@Body() projectDto: CreateProjectMetaDataDto) {
 		const metaData = BaseDto.createFromDto(projectDto);
 		const createdProject = await this.projectsService.createProjects(
-			projectDto.data[0],
+			projectDto.data,
 		);
-		metaData.data = [createdProject];
+		metaData.data = createdProject;
 		return metaData;
 	}
 
@@ -57,9 +57,9 @@ export class ProjectsController {
 		const metaData = BaseDto.createFromDto(projectDto);
 		const updatedProject = await this.projectsService.updateProject(
 			projectDto.meta.params.project_id,
-			projectDto.data[0],
+			projectDto.data,
 		);
-		metaData.data = [updatedProject];
+		metaData.data = updatedProject;
 		return metaData;
 	}
 
@@ -68,7 +68,7 @@ export class ProjectsController {
 	async deleteProject(@Param("id") id: Uuid) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const deletedProject = await this.projectsService.deleteProject(id);
-		metaData.data = [deletedProject];
+		metaData.data = deletedProject;
 		return metaData;
 	}
 }

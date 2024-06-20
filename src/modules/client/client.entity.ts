@@ -1,77 +1,41 @@
-import {
-	Column,
-	DeleteDateColumn,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToOne,
-} from "typeorm";
-
-import { Uuid } from "boilerplate.polyfill";
+import { Column, Entity } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
-import { ClientStatusEntity } from "../../modules/client-status/client-status.entity";
-import { ProjectEntity } from "../projects/project.entity";
-import { UserEntity } from "../user/user.entity";
 
 import { ClientDto } from "./dto/client.dto";
+
+export enum ClientStatus {
+	lead_verification = "проверка лида",
+	cencel_fixing = "отказ в закреплении",
+	weak_fixing = "слабое закрепление",
+	strong_fixing = "сильное закрепление",
+}
 
 @Entity({ name: "clients" })
 @UseDto(ClientDto)
 export class ClientEntity extends AbstractEntity<ClientDto> {
 	@Column({ type: "varchar", length: 255 })
-	fullName!: string;
+	fullname!: string;
+
+	@Column({ type: "varchar", length: 15 })
+	phone_number!: string;
+
+	@Column({ type: "timestamp" })
+	actived_from_date!: Date;
+
+	@Column({ type: "timestamp" })
+	actived_to_date!: Date;
 
 	@Column({ type: "text", nullable: true })
 	comment?: string;
 
-	@Column({ type: "varchar", length: 15 })
-	phoneNumber!: string;
-
-	@Column({ type: "varchar", nullable: true })
-	transactionStatus?: string;
-
-	@Column({ type: "varchar", nullable: true })
-	transactionStage?: string;
-
-	@Column({ type: "timestamp" })
-	establishmentDate!: Date;
-
-	@OneToOne(() => ClientStatusEntity, (clientStatus) => clientStatus.client, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	@JoinColumn({ name: "client_status_id" })
-	pinningType!: ClientStatusEntity;
+	@Column({ type: "enum", enum: ClientStatus })
+	status!: ClientStatus;
 
 	@Column({ type: "int" })
-	daysUntilEndOfAssignment!: number;
+	expiration_date!: number;
 
 	@Column({ type: "text", nullable: true })
-	managerNote?: string;
-
-	@Column({ type: "uuid" })
-	userId!: Uuid;
-
-	// @ManyToOne(() => UserEntity, user => user.projects, {
-	//   onDelete: 'CASCADE',
-	//   onUpdate: 'CASCADE',
-	// })
-
-	@JoinColumn({ name: "user_id" })
-	user!: UserEntity;
-
-	@Column({ type: "uuid", nullable: true })
-	projectId!: Uuid;
-
-	@ManyToOne(() => ProjectEntity, (project) => project.clients, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	@JoinColumn({ name: "project_id" })
-	project!: ProjectEntity;
-
-	@DeleteDateColumn()
-	deletedAt?: Date;
+	node?: string;
 }

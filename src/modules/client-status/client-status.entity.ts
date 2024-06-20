@@ -1,20 +1,22 @@
-import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
-import { AbstractEntity } from '../../common/abstract.entity';
-import { ClientStatusDto } from './dto/client.status.dto';
-import { Uuid } from 'boilerplate.polyfill';
-import { ClientEntity } from '../../modules/client/client.entity';
-import { IStatusType } from 'types/client.types';
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 
-@Entity({ name: 'client_status' })
+import { Uuid } from "boilerplate.polyfill";
+import { IStatusType } from "types/client.types";
+
+import { AbstractEntity } from "../../common/abstract.entity";
+import { ClientEntity } from "../../modules/client/client.entity";
+
+import { ClientStatusDto } from "./dto/client.status.dto";
+
+@Entity({ name: "client_status" })
 export class ClientStatusEntity extends AbstractEntity<ClientStatusDto> {
-  @Column({ type: 'varchar' })
-  type!: IStatusType;
+	@Column({ type: "varchar" })
+	type!: IStatusType;
 
-  @Column({ type: 'uuid' })
-  clientId!: Uuid;
+	@Column({ type: "uuid" })
+	client_id!: Uuid;
 
-  @OneToOne(() => ClientEntity, client => client.pinningType)
-  @JoinColumn({ name: 'client_id' })
-  client!: ClientEntity;
-  
+	@OneToOne(() => ClientEntity, (client) => client.status)
+	@JoinColumn({ name: "client_id" })
+	client!: ClientEntity;
 }
