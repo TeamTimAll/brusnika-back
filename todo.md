@@ -3,7 +3,7 @@
 ## Code baza
 - [x] Project config'larini validation qilib config abstraction'dan olinishi kerak. Hozirda `proccess.env`'dan olinyapti. Config oqimini shakilantirish. ORM'da 2 ta config yozilgan. Sync bo'lishi izdan chiqadi.
 - [x] code format qo'shish?
-- [ ] unit testing?
+- [x] unit testing?
 - [ ] Seed qo'shish (logika jihatdan kelib chiqib)?
 - [ ] Base service? Qayta takrorlanadigan CRUD'ni base service'ga olib o'tish. Yangi module qo'shish tezligini oshiradi, DRY'ni oldini oladi.
 - [x] auth service'da ok response'da `HttpException` ishlatilgan. Response abstraction kerak. Chunki `HttpException` Error'dan extend olgan. Bu degani `HttpException` tashalganda stack trace bilan chiqadi degani. Logger'da kelishmovchiliklar bo'ladi. Misol uchun info'ni ichida stack trace string keladi va bu debug qilishni qiyinlashtirib yuboradi.
@@ -14,30 +14,25 @@
 - [ ] Environment shakli. Misol: `main` (shuncha project haqida ma'lumot. ixtiyoriy), `prod`, `test`, `dev`.
 - [x] Code bazadan ishlatilmaydigan keraksiz code va config'larni o'chirib tashlash.
 
-## Database
-- [ ] Клиенты - [Client](src/modules/client/)
-- [ ] Сделки - [Deals](src/modules/deals/)
-- [ ] Агент - [News](src/modules/agencies/)
-- [ ] Проекты - [Projects](src/modules/projects/)
-- [ ] Чат с поддержкой ? - [Commnets](src/modules/comments/)
-- [ ] Задачи - ?
-- [ ] Обмен - ?
-- [ ] ? - [Deals](src/modules/events/)
-- [ ] ? - [Training](src/modules/training/)
-- [ ] ? - [Cities](src/modules/news/)
+---
 
-Arenda logikaning hisobotsiz shakli.
-
-- [ ] Client module'ni ko'rib chiqish kerak.
+- [x] Client module'ni ko'rib chiqish kerak.
 - [ ] Client filter'ida active/hamma (default active) bo'yicha ma'lumot olinadi. 
     Lekin lead'dagi status "на паузе" yoki "проиграна" bo'lmasligi kerak.
+    - [x] Filter field `fullname`
+    - [x] Filter field `phone_number`
+    - [ ] Filter field `project_id`
+    - [x] Filter field `actived_from_date`
+    - [x] Filter field `actived_to_date`
+    - [ ] Filter field `status`
 - [ ] Client entity ma'lumotlari:
-    - F.I.SH
-    - Telfon raqam
-    - Project
-    - Actived_date[from | to] (Дата первичного заведения “от” и “до”)
-    - Current status.
-    - Comment
-    - Tags
-    - Expiration date
-    - Task node
+    - [x] F.I.SH
+    - [x] Telfon raqam
+    - [ ] Project
+    - [x] Actived_date[from | to] (Дата первичного заведения “от” и “до”)
+    - [ ] Current status.
+    - [x] Comment
+    - [x] Tags
+    - [x] Expiration date
+    - [x] Task node (About client)
+

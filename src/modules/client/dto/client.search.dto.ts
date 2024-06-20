@@ -1,37 +1,44 @@
-import { IsOptional, IsString, IsUUID, IsDateString } from 'class-validator';
-import { Type } from 'class-transformer';
+import { ApiProperty } from "@nestjs/swagger";
+import {
+	IsDateString,
+	IsEnum,
+	IsMobilePhone,
+	IsOptional,
+	IsString,
+	IsUUID,
+} from "class-validator";
 
-export class ClientFilterDto {
-  @IsOptional()
-  @IsString()
-  fullName?: string;
+import { Uuid } from "boilerplate.polyfill";
 
-  @IsOptional()
-  @IsString()
-  phoneNumber?: string;
+import { LeadOpStatus } from "../../leads/lead_ops.entity";
 
-  @IsOptional()
-  @IsUUID()
-  projectId?: string;
+export class FilterClientDto {
+	@ApiProperty()
+	@IsString()
+	@IsOptional()
+	fullname?: string;
 
-  @IsOptional()
-  @IsDateString()
-  @Type(() => Date)
-  establishmentDateFrom?: Date;
+	@ApiProperty()
+	@IsMobilePhone()
+	@IsOptional()
+	phone_number?: string;
 
-  @IsOptional()
-  @IsDateString()
-  @Type(() => Date)
-  establishmentDateTo?: Date;
+	@ApiProperty()
+	@IsUUID("4")
+	@IsOptional()
+	project_id?: Uuid;
 
-  @IsOptional()
-  @IsString()
-  transactionStatus?: string;
+	@ApiProperty()
+	@IsDateString()
+	@IsOptional()
+	actived_from_date?: Date;
 
-  @IsOptional()
-  @IsString()
-  transactionStage?: string;
+	@ApiProperty()
+	@IsDateString()
+	@IsOptional()
+	actived_to_date?: Date;
 
-  @IsOptional()
-  active?: boolean;
+	@ApiProperty()
+	@IsEnum(() => LeadOpStatus)
+	status?: LeadOpStatus;
 }

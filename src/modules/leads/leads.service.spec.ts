@@ -101,12 +101,11 @@ describe(LeadsService.name, () => {
 		projectsService = moduleRef.get(ProjectsService);
 
 		user = await userService.createUser({ phone: "+78932154" });
-		client = await clientService.createClient({
-			userId: user.id,
-			fullName: "Test client",
-			phoneNumber: "+78932154",
-			establishmentDate: new Date(),
-			daysUntilEndOfAssignment: 0,
+		client = await clientService.create({
+			fullname: "Test client",
+			phone_number: "+78932154",
+			actived_date: new Date(),
+			expiration_date: new Date(),
 		});
 		city = await citiesService.create<CitiesEntity>({
 			name: "Test city",
@@ -183,7 +182,7 @@ describe(LeadsService.name, () => {
 		await moduleRef.close();
 	});
 
-	describe("ClientService.create", () => {
+	describe("LeadsService.create", () => {
 		test("should return a lead", async () => {
 			const new_lead = await leadsService.create(input);
 			expect(new_lead).toMatchObject<Partial<LeadsEntity>>({
