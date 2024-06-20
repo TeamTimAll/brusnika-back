@@ -11,11 +11,11 @@
 - [ ] Logger. Error qolibi qilinsa logger implement qilish oson kechadi. Logger daraxt ko'rinishida shakilantirish ixtiyoriy.
 - [ ] File saqlashda jildlarga ajaratib ishlash. Bu file boshqaruvni osonlashtiradi. Tashqaridan tool ishlatish file bilan bo'ladigan amallarni tezlashtiradi. Tool'ga misol `MinIO`. Hozirda file saqlanish `media` nomli jildda saqlanyapti. File boshqaruv ixtiyoriy.
 - [ ] CI/CD. Development tezligini oshiradi.
-- [ ] Environment shakli. Misol: `main` (shuncha project haqida ma'lumot. ixtiyoriy), `prod`, `test`, `dev`.
+- [x] Environment shakli. Misol: `main` (shuncha project haqida ma'lumot. ixtiyoriy), `prod`, `test`, `dev`.
 - [x] Code bazadan ishlatilmaydigan keraksiz code va config'larni o'chirib tashlash.
 
 ---
-
+### Client
 - [x] Client module'ni ko'rib chiqish kerak.
 - [ ] Client filter'ida active/hamma (default active) bo'yicha ma'lumot olinadi. 
     Lekin lead'dagi status "на паузе" yoki "проиграна" bo'lmasligi kerak.
@@ -36,3 +36,5 @@
     - [x] Expiration date
     - [x] Task node (About client)
 
+### Agent
+- [ ] Agent gruhga qo'sha olish va olib tashlash

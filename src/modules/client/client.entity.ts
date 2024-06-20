@@ -31,4 +31,7 @@ export class ClientEntity extends AbstractEntity {
 
 	@Column({ type: "text", nullable: true })
 	node?: string;
+
+	// @OneToMany(() => LeadsEntity, (l) => l.client)
+	// leads?: LeadsEntity[];
 }

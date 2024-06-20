@@ -63,7 +63,8 @@ describe(ClientService.name, () => {
 				node: expectedOutput.node,
 			});
 		});
-
+	});
+	describe("ClientService.readAll", () => {
 		test("read all client", async () => {
 			await clientService.create(input);
 			const clinets = await clientService.readAll();
@@ -79,7 +80,9 @@ describe(ClientService.name, () => {
 				});
 			});
 		});
+	});
 
+	describe("ClientService.readByFilter", () => {
 		test("read by filter client", async () => {
 			await clientService.create(input);
 			const dto = new FilterClientDto();
