@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	ParseArrayPipe,
 	Post,
 	Put,
 	Query,
@@ -61,7 +62,13 @@ export class PremisesController {
 
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get("/cherry-pick/:ids")
-	async getMultiplePremisesByIds(@Query("ids") ids: Uuid[]) {
+	async getMultiplePremisesByIds(
+		@Query("ids", new ParseArrayPipe({ optional: true }))
+		ids: Uuid[],
+	) {
+		if (!ids || !ids.length) {
+			return [];
+		}
 		/*
 			If the query id is single, the @Query decorator returns a string.
  			We need to check if it is a string or not. Because getMultiplePremisesByIds
