@@ -32,14 +32,15 @@ export class CitiesController {
 	@ApiResponse({
 		status: HttpStatus.CREATED,
 		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
+			example: BaseDto.createFromDto(
+				new BaseDto(),
 				CitiesEntity.toDto({ name: "..." }),
-			]),
+			),
 		},
 	})
 	@Post()
 	createCity(@Body() createCitiesDto: CreateCitiesMetaDataDto) {
-		const dto = createCitiesDto.data[0]; // Only one item comes
+		const dto = createCitiesDto.data;
 		return this.service.create(dto);
 	}
 	// ------------------------------@Get()-------------------------------------
@@ -85,12 +86,13 @@ export class CitiesController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
+			example: BaseDto.createFromDto(
+				new BaseDto(),
 				CitiesEntity.toDto({
 					name: "...",
 					users: [UserEntity.toDto({})],
 				}),
-			]),
+			),
 		},
 	})
 	@ApiResponse({
@@ -108,7 +110,7 @@ export class CitiesController {
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const foundCity = await this.service.r_findOne(id);
-		metaData.data = [foundCity];
+		metaData.data = foundCity;
 		return metaData;
 	}
 	// ---------------------------@Put(":id")-----------------------------------
@@ -116,12 +118,13 @@ export class CitiesController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
+			example: BaseDto.createFromDto(
+				new BaseDto<CitiesEntity>(),
 				CitiesEntity.toDto({
 					name: "...",
 					users: [UserEntity.toDto({})],
 				}),
-			]),
+			),
 		},
 	})
 	@Put(":id")
@@ -130,7 +133,7 @@ export class CitiesController {
 		@Body() updateCitiesDto: UpdateCitiesMetaDataDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		const dto = updateCitiesDto.data[0]; // Only one item comes
+		const dto = updateCitiesDto.data;
 		const updatedCity = await this.service.r_update(id, dto);
 		metaData.data = updatedCity;
 		return metaData;
@@ -140,12 +143,13 @@ export class CitiesController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
+			example: BaseDto.createFromDto(
+				new BaseDto(),
 				CitiesEntity.toDto({
 					name: "...",
 					users: [UserEntity.toDto({})],
 				}),
-			]),
+			),
 		},
 	})
 	@Delete(":id")

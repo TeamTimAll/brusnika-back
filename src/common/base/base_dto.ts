@@ -42,10 +42,10 @@ export class BaseDto<T = unknown> {
 	@Type(() => MetaDto)
 	meta!: MetaDto;
 
-	@ApiProperty({ default: [] })
+	@ApiProperty()
 	@IsDefined()
 	@IsArray()
-	data!: T[];
+	data!: T;
 
 	/**
 	 * Setting the prompt and error type "ERROR".
@@ -61,7 +61,7 @@ export class BaseDto<T = unknown> {
 		return this;
 	}
 
-	static createFromDto<T extends BaseDto, D>(dto: T, data: D[] = []): T {
+	static createFromDto<T extends BaseDto, D>(dto: T, data?: D): T {
 		// Filling meta if it is null or undefined
 		dto.meta ??= new MetaDto();
 		dto.meta.type ??= ResponseStatusType.SUCCESS;

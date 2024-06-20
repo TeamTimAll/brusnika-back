@@ -1,12 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import {
-	ArrayMinSize,
-	IsArray,
-	IsNotEmpty,
-	IsUUID,
-	ValidateNested,
-} from "class-validator";
+import { IsNotEmpty, IsUUID, ValidateNested } from "class-validator";
 
 import { Uuid } from "boilerplate.polyfill";
 
@@ -31,15 +25,11 @@ export class CreatePremisesBasketMetaDto {
 
 export class CreatePremisesBasketMetaMetaDataDto extends BaseDto<CreatePremisesBasketMetaDto> {
 	@ApiProperty({
-		example: [
-			{
-				client_id: "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
-			} as CreatePremisesBasketMetaDto,
-		],
+		example: {
+			client_id: "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
+		} as CreatePremisesBasketMetaDto,
 	})
-	@IsArray()
-	@ValidateNested({ each: true })
-	@ArrayMinSize(1)
+	@ValidateNested()
 	@Type(() => CreatePremisesBasketMetaDto)
-	declare data: CreatePremisesBasketMetaDto[];
+	declare data: CreatePremisesBasketMetaDto;
 }

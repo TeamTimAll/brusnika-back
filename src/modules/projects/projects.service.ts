@@ -119,9 +119,7 @@ export class ProjectsService {
 		return formattedResult;
 	}
 
-	async createProjects(
-		createProjectDto: CreateProjectDto,
-	): Promise<CreateProjectDto> {
+	async createProjects(createProjectDto: CreateProjectDto) {
 		const newProject = await this.projectsRepository.save(createProjectDto);
 
 		return newProject;
@@ -131,7 +129,6 @@ export class ProjectsService {
 		const project = await this.projectsRepository.findOne({
 			where: { id },
 			relations: {
-				clients: true,
 				buildings: true,
 			},
 		});

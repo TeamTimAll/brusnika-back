@@ -27,3 +27,17 @@
 - [ ] ? - [Cities](src/modules/news/)
 
 Arenda logikaning hisobotsiz shakli.
+
+- [ ] Client module'ni ko'rib chiqish kerak.
+- [ ] Client filter'ida active/hamma (default active) bo'yicha ma'lumot olinadi. 
+    Lekin lead'dagi status "на паузе" yoki "проиграна" bo'lmasligi kerak.
+- [ ] Client entity ma'lumotlari:
+    - F.I.SH
+    - Telfon raqam
+    - Project
+    - Actived_date[from | to] (Дата первичного заведения “от” и “до”)
+    - Current status.
+    - Comment
+    - Tags
+    - Expiration date
+    - Task node
