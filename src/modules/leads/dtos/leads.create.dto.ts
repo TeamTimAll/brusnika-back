@@ -32,7 +32,7 @@ export class CreateLeadDto extends LeadsEntity {
 	@IsUUID("4")
 	declare premise_id: string;
 
-	@ApiProperty({ example: "uuidv4" })
+	@ApiProperty({ example: 0 })
 	@IsNotEmpty()
 	@IsInt()
 	declare fee: number;

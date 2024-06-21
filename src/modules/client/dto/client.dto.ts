@@ -11,37 +11,37 @@ import {
 import { ClientTag } from "../client.entity";
 
 export class ClientDto {
-	@ApiProperty()
+	@ApiProperty({ default: "client fullname" })
 	@IsString()
 	@IsNotEmpty()
 	fullname!: string;
 
-	@ApiProperty()
+	@ApiProperty({ default: "+7894561" })
 	@IsMobilePhone()
 	@IsNotEmpty()
 	phone_number!: string;
 
-	@ApiProperty()
+	@ApiProperty({ default: new Date() })
 	@IsDateString()
 	@IsNotEmpty()
 	actived_date!: Date;
 
-	@ApiProperty()
+	@ApiProperty({ default: "some comment about client" })
 	@IsString()
 	@IsOptional()
 	comment?: string;
 
-	@ApiProperty()
-	@IsEnum(() => ClientTag)
-	@IsNotEmpty()
+	@ApiProperty({ default: ClientTag.LEAD_VERIFICATION })
+	@IsEnum(ClientTag)
+	@IsOptional()
 	status?: ClientTag;
 
-	@ApiProperty()
+	@ApiProperty({ default: new Date() })
 	@IsDateString()
 	@IsNotEmpty()
 	expiration_date!: Date;
 
-	@ApiProperty()
+	@ApiProperty({ default: "this client is not responding" })
 	@IsString()
 	@IsOptional()
 	node?: string;
