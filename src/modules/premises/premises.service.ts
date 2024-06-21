@@ -19,6 +19,18 @@ export class PremisesService extends BasicService<
 		super("premises", PremisesEntity, dataSource);
 	}
 
+	readOne(id: Uuid) {
+		return this.repository.findOne({
+			where: {
+				id: id,
+			},
+			relations: {
+				section: true,
+				building: true,
+			},
+		});
+	}
+
 	async getMultiplePremisesByIds(ids: Uuid[]) {
 		let query = this.repository.createQueryBuilder("premise");
 		for (let i = 0; i < ids.length; i++) {
