@@ -3,13 +3,13 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, type FindOptionsWhere } from "typeorm";
 
 import { Uuid } from "boilerplate.polyfill";
-import { VerificationExistsError } from "modules/auth/errors/VerificationExists.error";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AuthRespone } from "../auth/auth.service";
 import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
 import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
+import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
 
 import {
 	UserChangePhoneVerifyCodeDto,
