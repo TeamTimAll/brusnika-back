@@ -18,6 +18,7 @@ import {
 
 import { Uuid } from "boilerplate.polyfill";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { UUIDParam } from "../../decorators";
 
 import { CreatePremisesDto } from "./dtos/create-premises.dto";
@@ -52,12 +53,11 @@ export class PremisesController {
 	}
 
 	@ApiOperation({ summary: "Get a single city by ID" })
-	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get(":id")
 	async getSinglePremises(@UUIDParam("id") id: Uuid) {
-		return await this.service.findOne(id, {
-			relations: ["section", "building"],
-		});
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		metaData.data = await this.service.readOne(id);
+		return metaData;
 	}
 
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
