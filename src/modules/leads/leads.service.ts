@@ -5,8 +5,6 @@ import { IsNull, Repository } from "typeorm";
 import { Uuid } from "boilerplate.polyfill";
 
 import { RoleType } from "../../constants";
-import { AgenciesService } from "../agencies/agencies.service";
-import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { BuildingsService } from "../buildings/buildings.service";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
 import { ClientService } from "../client/client.service";
@@ -36,7 +34,6 @@ export class LeadsService {
 		private readonly prjectService: ProjectsService,
 		private readonly premisesService: PremisesService,
 		private readonly buildingsService: BuildingsService,
-		private readonly agenciesService: AgenciesService,
 		private readonly userService: UserService,
 	) {}
 
@@ -74,13 +71,14 @@ export class LeadsService {
 		if (!foundClinet) {
 			throw new ClientNotFoundError(`clinet id: ${lead.clinet_id}`);
 		}
-		const foundAgent = await this.agenciesService.repository.findOne({
+		const foundAgent = await this.userService.repository.findOne({
 			where: {
-				id: lead.agent_id,
+				id: lead.agent_id ?? IsNull(),
+				role: RoleType.AGENT,
 			},
 		});
 		if (!foundAgent) {
-			throw new AgencyNotFoundError(`agency id: ${lead.agent_id}`);
+			throw new UserNotFoundError(`agent(user) id: ${lead.agent_id}`);
 		}
 		const foundManeger = await this.userService.repository.findOne({
 			where: {

@@ -55,11 +55,23 @@ export class ClientService {
 				},
 			);
 		}
-		// if (dto.project_id) {
-		// 	queryBuilder = queryBuilder.andWhere("client.project_id = :project_id", {
-		// 		project_id: dto.project_id,
-		// 	});
-		// }
+		if (dto.project_id || dto.status) {
+			queryBuilder.innerJoin("leads", "l");
+
+			if (dto.project_id) {
+				queryBuilder = queryBuilder.andWhere("l.project_id = :project_id", {
+					project_id: dto.project_id,
+				});
+			}
+			if (dto.status) {
+				queryBuilder = queryBuilder.andWhere(
+					"l.status = :status",
+					{
+						status: dto.status,
+					},
+				);
+			}
+		}
 		if (dto.actived_from_date) {
 			queryBuilder = queryBuilder.andWhere(
 				"actived_date >= :actived_from_date",
@@ -76,11 +88,6 @@ export class ClientService {
 				},
 			);
 		}
-		// if (dto.status) {
-		// 	queryBuilder = queryBuilder.andWhere("client.status = :status", {
-		// 		status: dto.status,
-		// 	});
-		// }
 
 		return queryBuilder.execute() as Promise<ClientEntity[]>;
 	}

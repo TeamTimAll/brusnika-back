@@ -2,7 +2,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { v4 as uuid } from "uuid";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
-import { AgenciesEntity } from "../../agencies/agencies.entity";
 import { ClientEntity } from "../../client/client.entity";
 import { PremisesEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
@@ -23,7 +22,7 @@ export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
 	clinet_id?: string;
 
 	@ApiProperty()
-	agent!: AgenciesEntity;
+	agent!: UserEntity;
 
 	@ApiProperty()
 	agent_id?: string;
