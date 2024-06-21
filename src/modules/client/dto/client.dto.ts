@@ -8,10 +8,9 @@ import {
 	IsString,
 } from "class-validator";
 
-import { BaseDto } from "../../../common/dto/abstract.dto";
-import { ClientStatus } from "../client.entity";
+import { ClientTag } from "../client.entity";
 
-export class ClientDto extends BaseDto {
+export class ClientDto {
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
@@ -25,12 +24,7 @@ export class ClientDto extends BaseDto {
 	@ApiProperty()
 	@IsDateString()
 	@IsNotEmpty()
-	actived_from_date!: Date;
-
-	@ApiProperty()
-	@IsDateString()
-	@IsNotEmpty()
-	actived_to_date!: Date;
+	actived_date!: Date;
 
 	@ApiProperty()
 	@IsString()
@@ -38,14 +32,14 @@ export class ClientDto extends BaseDto {
 	comment?: string;
 
 	@ApiProperty()
-	@IsEnum(() => ClientStatus)
+	@IsEnum(() => ClientTag)
 	@IsNotEmpty()
-	status!: ClientStatus;
+	status?: ClientTag;
 
 	@ApiProperty()
 	@IsDateString()
 	@IsNotEmpty()
-	expiration_date!: number;
+	expiration_date!: Date;
 
 	@ApiProperty()
 	@IsString()

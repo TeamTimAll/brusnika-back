@@ -4,6 +4,7 @@ import { DataSource } from "typeorm";
 import { v4 as uuid } from "uuid";
 
 import { ConfigManager } from "../../config";
+import { RoleType } from "../../constants";
 import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
 import { AgenciesEntity } from "../agencies/agencies.entity";
 import { AgenciesService } from "../agencies/agencies.service";
@@ -46,7 +47,7 @@ describe(LeadsService.name, () => {
 	let projectsService: ProjectsService;
 
 	const input = new CreateLeadDto();
-	let user: UserEntity;
+	let manager: UserEntity;
 	let client: ClientEntity;
 	let city: ServiceResponse<CitiesEntity>;
 	let agent: ServiceResponse<AgenciesEntity>;
@@ -100,13 +101,15 @@ describe(LeadsService.name, () => {
 		buildingsService = moduleRef.get(BuildingsService);
 		projectsService = moduleRef.get(ProjectsService);
 
-		user = await userService.createUser({ phone: "+78932154" });
-		client = await clientService.createClient({
-			userId: user.id,
-			fullName: "Test client",
-			phoneNumber: "+78932154",
-			establishmentDate: new Date(),
-			daysUntilEndOfAssignment: 0,
+		manager = await userService.createUser({
+			phone: "+78932154",
+			role: RoleType.MANAGER,
+		});
+		client = await clientService.create({
+			fullname: "Test client",
+			phone_number: "+78932154",
+			actived_date: new Date(),
+			expiration_date: new Date(),
 		});
 		city = await citiesService.create<CitiesEntity>({
 			name: "Test city",
@@ -148,14 +151,14 @@ describe(LeadsService.name, () => {
 		});
 		input.clinet_id = client.id;
 		input.agent_id = agent.data[0].id;
-		input.manager_id = user.id;
+		input.manager_id = manager.id;
 		input.premise_id = premise.data[0].id;
 		input.fee = 0;
 
 		expectedOutput = new LeadsEntity();
 		expectedOutput.clinet_id = client.id;
 		expectedOutput.agent_id = agent.data[0].id;
-		expectedOutput.manager_id = user.id;
+		expectedOutput.manager_id = manager.id;
 		expectedOutput.premise_id = premise.data[0].id;
 		expectedOutput.fee = 0;
 	});
@@ -183,7 +186,7 @@ describe(LeadsService.name, () => {
 		await moduleRef.close();
 	});
 
-	describe("ClientService.create", () => {
+	describe("LeadsService.create", () => {
 		test("should return a lead", async () => {
 			const new_lead = await leadsService.create(input);
 			expect(new_lead).toMatchObject<Partial<LeadsEntity>>({
@@ -289,6 +292,32 @@ describe(LeadsService.name, () => {
 
 				return await leadsService.create(new_input);
 			}).rejects.toThrow(ProjectNotFoundError);
+		});
+	});
+
+	describe("LeadsService.readAll", () => {
+		test("read all lead with lead_ops relation", async () => {
+			await leadsService.create(input);
+			const leads = await leadsService.readAll();
+			leads.forEach((l) => {
+				expect(l).toMatchObject({
+					clinet_id: expect.any(String) as string,
+					agent_id: expect.any(String) as string,
+					manager_id: expect.any(String) as string,
+					project_id: expect.any(String) as string,
+					premise_id: expect.any(String) as string,
+					fee: expect.any(Number) as number,
+				});
+
+				expect(l.lead_ops).not.toEqual([]);
+
+				l.lead_ops?.forEach((o) =>
+					expect(o).toMatchObject({
+						lead_id: expect.any(String) as string,
+						status: expect.any(String) as string,
+					}),
+				);
+			});
 		});
 	});
 });

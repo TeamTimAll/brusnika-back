@@ -1,20 +1,16 @@
 import { Column, Entity } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
 
-import { ClientDto } from "./dto/client.dto";
-
-export enum ClientStatus {
-	lead_verification = "проверка лида",
-	cencel_fixing = "отказ в закреплении",
-	weak_fixing = "слабое закрепление",
-	strong_fixing = "сильное закрепление",
+export enum ClientTag {
+	LEAD_VERIFICATION = "проверка лида",
+	CENCEL_FIXING = "отказ в закреплении",
+	WEAK_FIXING = "слабое закрепление",
+	STRONG_FIXING = "сильное закрепление",
 }
 
 @Entity({ name: "clients" })
-@UseDto(ClientDto)
-export class ClientEntity extends AbstractEntity<ClientDto> {
+export class ClientEntity extends AbstractEntity {
 	@Column({ type: "varchar", length: 255 })
 	fullname!: string;
 
@@ -22,20 +18,20 @@ export class ClientEntity extends AbstractEntity<ClientDto> {
 	phone_number!: string;
 
 	@Column({ type: "timestamp" })
-	actived_from_date!: Date;
-
-	@Column({ type: "timestamp" })
-	actived_to_date!: Date;
+	actived_date!: Date;
 
 	@Column({ type: "text", nullable: true })
 	comment?: string;
 
-	@Column({ type: "enum", enum: ClientStatus })
-	status!: ClientStatus;
+	@Column({ type: "enum", enum: ClientTag, nullable: true })
+	status?: ClientTag;
 
-	@Column({ type: "int" })
-	expiration_date!: number;
+	@Column({ type: "timestamp" })
+	expiration_date!: Date;
 
 	@Column({ type: "text", nullable: true })
 	node?: string;
+
+	// @OneToMany(() => LeadsEntity, (l) => l.client)
+	// leads?: LeadsEntity[];
 }

@@ -4,6 +4,7 @@ import { IsNull, Repository } from "typeorm";
 
 import { Uuid } from "boilerplate.polyfill";
 
+import { RoleType } from "../../constants";
 import { AgenciesService } from "../agencies/agencies.service";
 import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { BuildingsService } from "../buildings/buildings.service";
@@ -84,7 +85,7 @@ export class LeadsService {
 		const foundManeger = await this.userService.repository.findOne({
 			where: {
 				id: lead.manager_id ?? IsNull(),
-				// TODO: add role check
+				role: RoleType.MANAGER,
 			},
 		});
 		if (!foundManeger) {
@@ -101,6 +102,14 @@ export class LeadsService {
 		});
 		const updatedLead = await this.leadRepository.save(mergedLead);
 		return updatedLead;
+	}
+
+	readAll() {
+		return this.leadRepository.find({
+			relations: {
+				lead_ops: true,
+			},
+		});
 	}
 
 	changeStatus(leadId: Uuid, toStatus: LeadOpStatus) {

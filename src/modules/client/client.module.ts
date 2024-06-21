@@ -1,29 +1,21 @@
-import { Module } from '@nestjs/common';
-import { ClientController } from './client.controller';
-import { ClientService } from './client.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClientEntity } from './client.entity';
-import { ClientStatusModule } from '../../modules/client-status/client-status.module';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { ClientController } from "./client.controller";
+import { ClientEntity } from "./client.entity";
+import { ClientService } from "./client.service";
 
 @Module({
-  imports : [
-    ClientStatusModule,
-    TypeOrmModule.forFeature([ClientEntity]),
-  ],
-  exports : [ ClientService ],
-  controllers: [ClientController],
-  providers: [ClientService],
-
+	imports: [TypeOrmModule.forFeature([ClientEntity])],
+	controllers: [ClientController],
+	providers: [ClientService],
+	exports: [ClientService],
 })
-
 export class ClientModule {}
 
-
 /*
-  What should be changed  | added 
-  1 : Sending request to BpmSoft 
+  What should be changed  | added
+  1 : Sending request to BpmSoft
   2 : Assign clients to agents ( logic should be discussed)
   3 : Getting client info ( such as pinning type from CRM  BRUSTSNIKA ) should be added
 */
-
