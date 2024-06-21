@@ -2,7 +2,6 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
-import { AgenciesEntity } from "../agencies/agencies.entity";
 import { ClientEntity } from "../client/client.entity";
 import { PremisesEntity } from "../premises/premises.entity";
 import { ProjectEntity } from "../projects/project.entity";
@@ -21,9 +20,9 @@ export class LeadsEntity extends AbstractEntity<LeadsDto> {
 	@Column({ nullable: true })
 	clinet_id?: string;
 
-	@ManyToOne(() => AgenciesEntity)
+	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "agent_id" })
-	agent!: AgenciesEntity;
+	agent!: UserEntity;
 
 	@Column({ nullable: true })
 	agent_id?: string;

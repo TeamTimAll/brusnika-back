@@ -7,14 +7,11 @@ import { ConfigManager } from "../../config";
 import { RoleType } from "../../constants";
 import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
 import { AgenciesEntity } from "../agencies/agencies.entity";
-import { AgenciesService } from "../agencies/agencies.service";
-import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { BuildingsService } from "../buildings/buildings.service";
 import { CreateBuilding } from "../buildings/dtos/building.create.dto";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
 import { CitiesEntity } from "../cities/cities.entity";
-import { CitiesService } from "../cities/cities.service";
 import { ClientStatusEntity } from "../client-status/client-status.entity";
 import { ClientStatusService } from "../client-status/client-status.service";
 import { ClientEntity } from "../client/client.entity";
@@ -40,17 +37,14 @@ describe(LeadsService.name, () => {
 	let leadsService: LeadsService;
 	let clientService: ClientService;
 	let userService: UserService;
-	let agenciesService: AgenciesService;
-	let citiesService: CitiesService;
 	let premisesService: PremisesService;
 	let buildingsService: BuildingsService;
 	let projectsService: ProjectsService;
 
 	const input = new CreateLeadDto();
 	let manager: UserEntity;
+	let agent: UserEntity;
 	let client: ClientEntity;
-	let city: ServiceResponse<CitiesEntity>;
-	let agent: ServiceResponse<AgenciesEntity>;
 	let project: CreateProjectDto & ProjectEntity;
 	let building: CreateBuilding & BuildingsEntity;
 	let premise: ServiceResponse<PremisesEntity>;
@@ -75,7 +69,6 @@ describe(LeadsService.name, () => {
 					ProjectEntity,
 					PremisesEntity,
 					BuildingsEntity,
-					AgenciesEntity,
 					UserEntity,
 				]),
 			],
@@ -83,8 +76,6 @@ describe(LeadsService.name, () => {
 				LeadsService,
 				ClientService,
 				UserService,
-				AgenciesService,
-				CitiesService,
 				PremisesService,
 				BuildingsService,
 				ProjectsService,
@@ -95,8 +86,6 @@ describe(LeadsService.name, () => {
 		leadsService = moduleRef.get(LeadsService);
 		clientService = moduleRef.get(ClientService);
 		userService = moduleRef.get(UserService);
-		agenciesService = moduleRef.get(AgenciesService);
-		citiesService = moduleRef.get(CitiesService);
 		premisesService = moduleRef.get(PremisesService);
 		buildingsService = moduleRef.get(BuildingsService);
 		projectsService = moduleRef.get(ProjectsService);
@@ -111,12 +100,9 @@ describe(LeadsService.name, () => {
 			actived_date: new Date(),
 			expiration_date: new Date(),
 		});
-		city = await citiesService.create<CitiesEntity>({
-			name: "Test city",
-		});
-		agent = await agenciesService.create<AgenciesEntity>({
-			title: "Test agent",
-			city_id: city.data[0].id,
+		agent = await userService.createUser({
+			phone: "+78932152",
+			role: RoleType.AGENT,
 		});
 		project = await projectsService.createProjects({
 			name: "Test project",
@@ -150,14 +136,14 @@ describe(LeadsService.name, () => {
 			building_id: building.id,
 		});
 		input.clinet_id = client.id;
-		input.agent_id = agent.data[0].id;
+		input.agent_id = agent.id;
 		input.manager_id = manager.id;
 		input.premise_id = premise.data[0].id;
 		input.fee = 0;
 
 		expectedOutput = new LeadsEntity();
 		expectedOutput.clinet_id = client.id;
-		expectedOutput.agent_id = agent.data[0].id;
+		expectedOutput.agent_id = agent.id;
 		expectedOutput.manager_id = manager.id;
 		expectedOutput.premise_id = premise.data[0].id;
 		expectedOutput.fee = 0;
@@ -209,7 +195,7 @@ describe(LeadsService.name, () => {
 			}).rejects.toThrow(ClientNotFoundError);
 		});
 
-		test("error: AgencyNotFoundError", async () => {
+		test("error: [agent] UserNotFoundError", async () => {
 			await expect(async () => {
 				const new_input = JSON.parse(
 					JSON.stringify(input),
@@ -217,10 +203,10 @@ describe(LeadsService.name, () => {
 
 				new_input.agent_id = uuid();
 				return await leadsService.create(new_input);
-			}).rejects.toThrow(AgencyNotFoundError);
+			}).rejects.toThrow(UserNotFoundError);
 		});
 
-		test("error: UserNotFoundError", async () => {
+		test("error: [manager] UserNotFoundError", async () => {
 			await expect(async () => {
 				const new_input = JSON.parse(
 					JSON.stringify(input),

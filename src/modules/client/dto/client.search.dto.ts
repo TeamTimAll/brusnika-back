@@ -13,7 +13,7 @@ import { Uuid } from "boilerplate.polyfill";
 import { LeadOpStatus } from "../../leads/lead_ops.entity";
 
 export class FilterClientDto {
-	@ApiProperty()
+	@ApiProperty({ required: false })
 	@IsString()
 	@IsOptional()
 	fullname?: string;
