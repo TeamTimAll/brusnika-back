@@ -1,11 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
-	IsArray,
 	IsDefined,
 	IsObject,
 	IsOptional,
-	ValidateNested
+	ValidateNested,
 } from "class-validator";
 
 import { ResponseStatusType } from "../enums/response_status_type_enum";
@@ -44,7 +43,6 @@ export class BaseDto<T = unknown> {
 
 	@ApiProperty()
 	@IsDefined()
-	@IsArray()
 	data!: T;
 
 	/**
