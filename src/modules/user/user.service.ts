@@ -1,9 +1,15 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, type FindOptionsWhere } from "typeorm";
 
 import { Uuid } from "boilerplate.polyfill";
-import { ICurrentUser } from "interfaces/current-user.interface";
+import { VerificationExistsError } from "modules/auth/errors/VerificationExists.error";
+
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { AuthRespone } from "../auth/auth.service";
+import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
+import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
+import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 
 import {
 	UserChangePhoneVerifyCodeDto,
@@ -11,7 +17,10 @@ import {
 	type UserDto,
 } from "./dtos/user.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
+import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
+
+type UserResponse = Omit<AuthRespone, "register_status">;
 
 @Injectable()
 export class UserService {
@@ -128,21 +137,22 @@ export class UserService {
 		id: Uuid,
 		updateEventsDto: Partial<UserDto>,
 	): Promise<unknown> {
-		const user = this.findOne({
+		const user = await this.findOne({
 			id,
 		});
 
-		if (user === null || typeof user === "undefined") {
+		if (!user) {
 			throw new UserNotFoundError();
 		}
 
-		return await this.userRepository.update(
+		await this.userRepository.update(id, updateEventsDto);
+
+		return this.findOne({
 			id,
-			updateEventsDto as UserEntity,
-		);
+		});
 	}
 
-	async changePhone(id: Uuid, dto: UserCreateDto): Promise<unknown> {
+	async changePhone(id: Uuid, dto: UserCreateDto): Promise<UserResponse> {
 		const user = await this.findOne({
 			id,
 		});
@@ -155,12 +165,7 @@ export class UserService {
 			user.verification_code_sent_date &&
 			!this.hasOneMinutePassed(user.verification_code_sent_date)
 		) {
-			return new HttpException(
-				{
-					error: "A valid verification code already exists or wait till expire",
-				},
-				HttpStatus.CONFLICT,
-			);
+			throw new VerificationExistsError();
 		}
 
 		// const randomNumber = Math.floor(100000 + Math.random() * 900000);
@@ -174,113 +179,64 @@ export class UserService {
 
 		// todo send sms
 
-		return new HttpException(
-			{ userId: user.id, message: "sms sent" },
-			HttpStatus.OK,
-		);
+		return {
+			user_id: user.id,
+			message: "sms sent",
+		};
 	}
 
 	async verifySmsCode(
 		user: ICurrentUser,
 		dto: UserChangePhoneVerifyCodeDto,
-	): Promise<unknown> {
-		try {
-			const foundUser = await this.getUser(user.user_id);
+	): Promise<UserResponse> {
+		const foundUser = await this.getUser(user.user_id);
 
-			if (!foundUser) {
-				return new HttpException(
-					"User not found",
-					HttpStatus.NOT_FOUND,
-				);
-			}
-
-			if (foundUser.isPhoneVerified) {
-				if (foundUser.verification_code_sent_date) {
-					if (
-						this.hasOneMinutePassed(
-							foundUser.verification_code_sent_date,
-						)
-					) {
-						return new HttpException(
-							{
-								error: "verification code expired",
-							},
-							HttpStatus.GONE,
-						);
-					} else {
-						if (foundUser.verification_code === dto.code) {
-							await this.updateUser(foundUser.id, {
-								phone: foundUser.temporaryNumber,
-								temporaryNumber: null,
-								verification_code: null,
-								verification_code_sent_date: null,
-								isPhoneVerified: true,
-							});
-							return {
-								message: "Verification code is correct",
-							};
-						} else {
-							return new HttpException(
-								{
-									error: "Verification code is not correct",
-								},
-								HttpStatus.BAD_REQUEST,
-							);
-						}
-					}
-				}
-			}
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				console.error("Login error:", error.message);
-				return new HttpException(error.message, 500);
-			}
+		if (!foundUser.isPhoneVerified) {
+			throw new UserPhoneNotVerifiedError();
 		}
+		if (!foundUser.verification_code_sent_date) {
+			throw new NoVerificationCodeSentError();
+		}
+		if (this.hasOneMinutePassed(foundUser.verification_code_sent_date)) {
+			throw new VerificationCodeExpiredError();
+		}
+		if (foundUser.verification_code !== dto.code) {
+			throw new VerificationCodeIsNotCorrectError();
+		}
+
+		await this.updateUser(foundUser.id, {
+			phone: foundUser.temporaryNumber,
+			temporaryNumber: null,
+			verification_code: null,
+			verification_code_sent_date: null,
+			isPhoneVerified: true,
+		});
+		return {
+			user_id: foundUser.id,
+			message: "Verification code is correct",
+		};
 	}
 
-	async agentLoginResendSmsCode(currentUser: ICurrentUser): Promise<unknown> {
-		try {
-			const user = await this.getUser(currentUser.user_id);
+	async agentLoginResendSmsCode(
+		currentUser: ICurrentUser,
+	): Promise<UserResponse> {
+		const user = await this.getUser(currentUser.user_id);
 
-			if (!user) {
-				return new HttpException(
-					"User not found",
-					HttpStatus.NOT_FOUND,
-				);
-			}
-
-			if (user.verification_code_sent_date) {
-				if (this.hasOneMinutePassed(user.verification_code_sent_date)) {
-					// const randomNumber = Math.floor(100000 + Math.random() * 900000);
-					const randomNumber = 111111;
-
-					// todo send sms
-					await this.updateUser(user.id, {
-						verification_code: randomNumber,
-						verification_code_sent_date: new Date(),
-					});
-
-					return new HttpException(
-						{ userId: user.id, message: "sms sent" },
-						HttpStatus.OK,
-					);
-				} else {
-					return new HttpException(
-						{
-							error: "A valid verification code already exists or wait till expire",
-						},
-						HttpStatus.CONFLICT,
-					);
-				}
-			}
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				console.error("Login error:", error.message);
-				return new HttpException(
-					{ error: "internal server error" },
-					500,
-				);
-			}
+		if (!user.verification_code_sent_date) {
+			throw new NoVerificationCodeSentError();
 		}
+		if (!this.hasOneMinutePassed(user.verification_code_sent_date)) {
+			throw new VerificationExistsError();
+		}
+		// const randomNumber = Math.floor(100000 + Math.random() * 900000);
+		const randomNumber = 111111;
+
+		// todo send sms
+		await this.updateUser(user.id, {
+			verification_code: randomNumber,
+			verification_code_sent_date: new Date(),
+		});
+
+		return { user_id: user.id, message: "sms sent" };
 	}
 }
