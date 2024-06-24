@@ -17,20 +17,20 @@
 ---
 ### Client
 - [x] Client module'ni ko'rib chiqish kerak.
-- [ ] Client filter'ida active/hamma (default active) bo'yicha ma'lumot olinadi. 
+- [x] Client filter'ida active/hamma (default active) bo'yicha ma'lumot olinadi. 
     Lekin lead'dagi status "на паузе" yoki "проиграна" bo'lmasligi kerak.
     - [x] Filter field `fullname`
     - [x] Filter field `phone_number`
-    - [ ] Filter field `project_id`
+    - [x] Filter field `project_id`
     - [x] Filter field `actived_from_date`
     - [x] Filter field `actived_to_date`
-    - [ ] Filter field `status`
-- [ ] Client entity ma'lumotlari:
+    - [x] Filter field `status`
+- [x] Client entity ma'lumotlari:
     - [x] F.I.SH
     - [x] Telfon raqam
-    - [ ] Project
+    - [x] Project
     - [x] Actived_date[from | to] (Дата первичного заведения “от” и “до”)
-    - [ ] Current status.
+    - [x] Current status.
     - [x] Comment
     - [x] Tags
     - [x] Expiration date
