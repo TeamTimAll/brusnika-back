@@ -1,13 +1,15 @@
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { HttpApplication } from './http';
-import { ConfigManager } from '../config';
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+
+import { ConfigManager } from "../config";
+
+import { HttpApplication } from "./http";
 
 export class SwaggerManager {
-  static init(app: HttpApplication): void {
-    const documentBuilder = new DocumentBuilder()
-      .setTitle('API')
-      .setDescription(
-        `### REST
+	static init(app: HttpApplication): void {
+		const documentBuilder = new DocumentBuilder()
+			.setTitle("API")
+			.setDescription(
+				`### [**${ConfigManager.config.NODE_ENV}**] REST
 
 Routes is following REST standard (Richardson level 3)
 
@@ -49,22 +51,25 @@ Routes is following REST standard (Richardson level 3)
       - The **<user_id>** have no access to **<resource_id>**
 </p>
 </details>`,
-      )
-      .addBearerAuth();
+			)
+			.addBearerAuth();
 
-    if (ConfigManager.config.API_VERSION) {
-      documentBuilder.setVersion(ConfigManager.config.API_VERSION);
-    }
+		if (ConfigManager.config.API_VERSION) {
+			documentBuilder.setVersion(ConfigManager.config.API_VERSION);
+		}
 
-    const document = SwaggerModule.createDocument(app, documentBuilder.build());
-    SwaggerModule.setup('documentation', app, document, {
-      swaggerOptions: {
-        persistAuthorization: true,
-      },
-    });
+		const document = SwaggerModule.createDocument(
+			app,
+			documentBuilder.build(),
+		);
+		SwaggerModule.setup("documentation", app, document, {
+			swaggerOptions: {
+				persistAuthorization: true,
+			},
+		});
 
-    console.info(
-      `Documentation: http://localhost:${ConfigManager.config.SERVER_PORT}/documentation`,
-    );
-  }
+		console.info(
+			`Documentation: http://localhost:${ConfigManager.config.SERVER_PORT}/documentation`,
+		);
+	}
 }
