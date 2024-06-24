@@ -15,7 +15,7 @@ export class CreateLeadDto extends LeadsEntity {
 	@ApiProperty({ example: "uuidv4" })
 	@IsNotEmpty()
 	@IsUUID("4")
-	declare clinet_id: string;
+	declare client_id: string;
 
 	@ApiProperty({ example: "uuidv4" })
 	@IsNotEmpty()
