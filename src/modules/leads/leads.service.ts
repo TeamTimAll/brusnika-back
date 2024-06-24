@@ -65,11 +65,11 @@ export class LeadsService {
 		}
 		const foundClinet = await this.clientService.repository.findOne({
 			where: {
-				id: lead.clinet_id,
+				id: lead.client_id,
 			},
 		});
 		if (!foundClinet) {
-			throw new ClientNotFoundError(`clinet id: ${lead.clinet_id}`);
+			throw new ClientNotFoundError(`clinet id: ${lead.client_id}`);
 		}
 		const foundAgent = await this.userService.repository.findOne({
 			where: {
