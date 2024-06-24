@@ -18,27 +18,28 @@ export class FilterClientDto {
 	@IsOptional()
 	fullname?: string;
 
-	@ApiProperty()
+	@ApiProperty({ required: false })
 	@IsMobilePhone()
 	@IsOptional()
 	phone_number?: string;
 
-	@ApiProperty()
+	@ApiProperty({ required: false })
 	@IsUUID("4")
 	@IsOptional()
 	project_id?: Uuid;
 
-	@ApiProperty()
+	@ApiProperty({ required: false })
 	@IsDateString()
 	@IsOptional()
 	actived_from_date?: Date;
 
-	@ApiProperty()
+	@ApiProperty({ required: false })
 	@IsDateString()
 	@IsOptional()
 	actived_to_date?: Date;
 
-	@ApiProperty()
-	@IsEnum(() => LeadOpStatus)
+	@ApiProperty({ required: false, enum: LeadOpStatus })
+	@IsEnum(LeadOpStatus)
+	@IsOptional()
 	status?: LeadOpStatus;
 }

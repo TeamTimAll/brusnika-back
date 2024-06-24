@@ -1,6 +1,7 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
+import { LeadsEntity } from "../leads/leads.entity";
 
 export enum ClientTag {
 	LEAD_VERIFICATION = "проверка лида",
@@ -32,6 +33,6 @@ export class ClientEntity extends AbstractEntity {
 	@Column({ type: "text", nullable: true })
 	node?: string;
 
-	// @OneToMany(() => LeadsEntity, (l) => l.client)
-	// leads?: LeadsEntity[];
+	@OneToMany(() => LeadsEntity, (l) => l.client)
+	leads?: LeadsEntity[];
 }

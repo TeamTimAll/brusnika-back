@@ -14,11 +14,11 @@ import { LeadOpsEntity } from "./lead_ops.entity";
 @UseDto(LeadsDto)
 export class LeadsEntity extends AbstractEntity<LeadsDto> {
 	@ManyToOne(() => ClientEntity)
-	@JoinColumn({ name: "clinet_id" })
+	@JoinColumn({ name: "client_id" })
 	client!: ClientEntity;
 
 	@Column({ nullable: true })
-	clinet_id?: string;
+	client_id?: string;
 
 	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "agent_id" })
