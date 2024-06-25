@@ -55,7 +55,7 @@ export class ClientService {
 				},
 			);
 		}
-		if (dto.project_id || dto.status) {
+		if (dto.project_id || dto.status || dto.state) {
 			queryBuilder = queryBuilder.innerJoin(
 				(qb) => {
 					const query = qb
@@ -90,6 +90,11 @@ export class ClientService {
 				"c.id = l.client_id",
 			);
 
+			if (dto.state) {
+				queryBuilder = queryBuilder.andWhere("l.state = :state", {
+					state: dto.state,
+				});
+			}
 			if (dto.project_id) {
 				queryBuilder = queryBuilder.andWhere(
 					"l.project_id = :project_id",

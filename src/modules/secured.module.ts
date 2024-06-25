@@ -6,7 +6,6 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { AuthModule } from "./auth/auth.module";
 import { BuildingsModule } from "./buildings/buildings.module";
 import { CitiesModule } from "./cities/cities.module";
-import { ClientStatusModule } from "./client-status/client-status.module";
 import { ClientModule } from "./client/client.module";
 import { CommentsModule } from "./comments/comments.module";
 import { EventsModule } from "./events/events.module";
@@ -31,7 +30,6 @@ import { UserModule } from "./user/user.module";
 		EventsModule,
 		AuthModule,
 		ClientModule,
-		ClientStatusModule,
 		TrainingModule,
 		LeadsModule,
 		CitiesModule,

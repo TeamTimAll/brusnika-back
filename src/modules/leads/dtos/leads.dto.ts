@@ -81,7 +81,7 @@ export class LeadReadByFilter {
 
 	@ApiProperty({ required: false, enum: LeadOpStatus })
 	@IsOptional()
-	@IsEnum(LeadOpStatus)
+	@IsEnum(() => LeadOpStatus)
 	status?: LeadOpStatus;
 
 	@ApiProperty({ required: false })
