@@ -37,9 +37,15 @@
     - [x] Task node (About client)
 
 ### Lead
-- ~~[ ] current status field qo'shish.~~
+- [ ] ~~current status field qo'shish.~~
 - [x] created at bo'yicha asc va desc sort
 - [x] lead number
+- [ ] lead'ning hozirgi turgan status'i bo'yicha filter qilish.
+    Muamo: `TypeOrm`'ning `where` API'sidan foydalanganda, `lead_ops` ma'lumotlarini filter qilyapti. Lekin lead'ning ma'lumotlari filter qilinishi kerak.
+- [ ] premises type lead read all'da
+
+### Clinet
+- [ ] Lead state bo'yicha filter qilish.
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?

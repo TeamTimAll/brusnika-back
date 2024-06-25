@@ -12,8 +12,6 @@ import { BuildingsService } from "../buildings/buildings.service";
 import { CreateBuilding } from "../buildings/dtos/building.create.dto";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
 import { CitiesEntity } from "../cities/cities.entity";
-import { ClientStatusEntity } from "../client-status/client-status.entity";
-import { ClientStatusService } from "../client-status/client-status.service";
 import { ClientEntity } from "../client/client.entity";
 import { ClientService } from "../client/client.service";
 import { ClientNotFoundError } from "../client/errors/ClientNotFound.error";
@@ -65,7 +63,6 @@ describe(LeadsService.name, () => {
 					LeadsEntity,
 					LeadOpsEntity,
 					ClientEntity,
-					ClientStatusEntity,
 					ProjectEntity,
 					PremisesEntity,
 					BuildingsEntity,
@@ -79,7 +76,6 @@ describe(LeadsService.name, () => {
 				PremisesService,
 				BuildingsService,
 				ProjectsService,
-				ClientStatusService,
 			],
 		}).compile();
 
@@ -155,8 +151,6 @@ describe(LeadsService.name, () => {
 		await dataSource.createQueryBuilder().delete().from(LeadOpsEntity).execute();
 		// prettier-ignore
 		await dataSource.createQueryBuilder().delete().from(LeadsEntity).execute();
-		// prettier-ignore
-		await dataSource.createQueryBuilder().delete().from(ClientStatusEntity).execute();
 		// prettier-ignore
 		await dataSource.createQueryBuilder().delete().from(UserEntity).execute();
 		// prettier-ignore

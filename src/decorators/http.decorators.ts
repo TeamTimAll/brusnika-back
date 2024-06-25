@@ -3,39 +3,12 @@ import {
 	ParseArrayPipe,
 	ParseUUIDPipe,
 	Query,
-	// UseGuards,
-	// UseInterceptors,
-	// applyDecorators,
 	type PipeTransform,
 } from "@nestjs/common";
 import { type Type } from "@nestjs/common/interfaces";
-// import { ApiBearerAuth } from "@nestjs/swagger";
 import { ValidationError } from "class-validator";
 
 import { CustomValidationError } from "../common/errors/valitationError";
-// import { type RoleType } from "../constants";
-// import { AuthGuard } from "../guards/auth.guard";
-// import { RolesGuard } from "../guards/roles.guard";
-// import { AuthUserInterceptor } from "../interceptors/auth-user-interceptor.service";
-
-// import { PublicRoute } from "./public-route.decorator";
-// import { Roles } from "./roles.decorator";
-
-// export function Auth(
-// 	roles: RoleType[] = [],
-// 	options?: Partial<{ public: boolean }>,
-// ): MethodDecorator {
-// 	const isPublicRoute = options?.public;
-
-// 	return applyDecorators(
-// 		Roles(roles),
-// 		// UseGuards(AuthGuard({ public: isPublicRoute }), RolesGuard),
-// 		ApiBearerAuth(),
-// 		UseInterceptors(AuthUserInterceptor),
-// 		// ApiUnauthorizedResponse({ description: "Unauthorized" }),
-// 		PublicRoute(Boolean(isPublicRoute)),
-// 	);
-// }
 
 export function UUIDParam(
 	property: string,
