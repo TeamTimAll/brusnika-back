@@ -10,6 +10,13 @@ import { UserEntity } from "../user/user.entity";
 import { LeadsDto } from "./dtos/leads.dto";
 import { LeadOpsEntity } from "./lead_ops.entity";
 
+export enum LeadState {
+	ACTIVE = "Активные",
+	IN_PROGRESS = "На паузе",
+	FAILED = "Проиграна",
+	COMPLETE = "Выиграна",
+}
+
 @Entity({ name: "leads" })
 @UseDto(LeadsDto)
 export class LeadsEntity extends AbstractEntity<LeadsDto> {
@@ -50,6 +57,9 @@ export class LeadsEntity extends AbstractEntity<LeadsDto> {
 
 	@Column({ nullable: true, type: "integer" })
 	fee?: number;
+
+	@Column({ default: LeadState.ACTIVE, enum: LeadState })
+	state!: LeadState;
 
 	@OneToMany(() => LeadOpsEntity, (type) => type.lead)
 	lead_ops?: LeadOpsEntity[];
