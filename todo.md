@@ -36,5 +36,10 @@
     - [x] Expiration date
     - [x] Task node (About client)
 
+---
+
+### Premises
+- [ ] подъезд qo'shish kerak emasmi?
+
 ### Agent
 - [ ] Agent gruhga qo'sha olish va olib tashlash
