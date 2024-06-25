@@ -5,6 +5,7 @@ import { v4 as uuid } from "uuid";
 import { Uuid } from "boilerplate.polyfill";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
+import { Order } from "../../../constants";
 import { ClientEntity } from "../../client/client.entity";
 import { PremisesEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
@@ -15,8 +16,6 @@ import { LeadState, LeadsEntity } from "../leads.entity";
 export class LeadsDto extends BaseDto {}
 
 export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
-	client_id?: string | undefined;
-
 	@ApiProperty({ default: uuid })
 	id!: string;
 
@@ -53,6 +52,9 @@ export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
 	@ApiProperty()
 	fee?: number;
 
+	@ApiProperty()
+	lead_number!: number;
+
 	@ApiProperty({ enum: LeadState })
 	state!: LeadState;
 
@@ -70,20 +72,25 @@ export class LeadReadByFilter {
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsUUID()
-	project_id!: Uuid;
+	project_id?: Uuid;
 
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsUUID()
-	premise_id!: Uuid;
+	premise_id?: Uuid;
 
 	@ApiProperty({ required: false, enum: LeadOpStatus })
 	@IsOptional()
 	@IsEnum(LeadOpStatus)
-	status!: LeadOpStatus;
+	status?: LeadOpStatus;
 
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsString()
-	client_fullname!: string;
+	client_fullname?: string;
+
+	@ApiProperty({ required: false, enum: Order })
+	@IsOptional()
+	@IsEnum(Order)
+	createdAt?: Order;
 }

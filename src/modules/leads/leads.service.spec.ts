@@ -135,14 +135,14 @@ describe(LeadsService.name, () => {
 			name: "Test premise",
 			building_id: building.id,
 		});
-		input.clinet_id = client.id;
+		input.client_id = client.id;
 		input.agent_id = agent.id;
 		input.manager_id = manager.id;
 		input.premise_id = premise.data[0].id;
 		input.fee = 0;
 
 		expectedOutput = new LeadsEntity();
-		expectedOutput.clinet_id = client.id;
+		expectedOutput.client_id = client.id;
 		expectedOutput.agent_id = agent.id;
 		expectedOutput.manager_id = manager.id;
 		expectedOutput.premise_id = premise.data[0].id;
@@ -176,7 +176,7 @@ describe(LeadsService.name, () => {
 		test("should return a lead", async () => {
 			const new_lead = await leadsService.create(input);
 			expect(new_lead).toMatchObject<Partial<LeadsEntity>>({
-				clinet_id: expectedOutput.clinet_id,
+				client_id: expectedOutput.client_id,
 				agent_id: expectedOutput.agent_id,
 				manager_id: expectedOutput.manager_id,
 				premise_id: expectedOutput.premise_id,
@@ -190,7 +190,7 @@ describe(LeadsService.name, () => {
 					JSON.stringify(input),
 				) as CreateLeadDto;
 
-				new_input.clinet_id = uuid();
+				new_input.client_id = uuid();
 				return await leadsService.create(new_input);
 			}).rejects.toThrow(ClientNotFoundError);
 		});
@@ -287,7 +287,7 @@ describe(LeadsService.name, () => {
 			const leads = await leadsService.readAll();
 			leads.forEach((l) => {
 				expect(l).toMatchObject({
-					clinet_id: expect.any(String) as string,
+					client_id: expect.any(String) as string,
 					agent_id: expect.any(String) as string,
 					manager_id: expect.any(String) as string,
 					project_id: expect.any(String) as string,
