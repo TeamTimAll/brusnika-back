@@ -37,9 +37,12 @@
     - [x] Task node (About client)
 
 ### Lead
-- ~~[ ] current status field qo'shish.~~
+- [ ] ~~current status field qo'shish.~~
 - [x] created at bo'yicha asc va desc sort
 - [x] lead number
+
+### Clinet
+- [ ] Lead state bo'yicha filter qilish.
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?

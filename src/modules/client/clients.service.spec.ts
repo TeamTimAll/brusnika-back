@@ -1,9 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
 
 import { ConfigManager } from "../../config";
-import { ClientStatusEntity } from "../client-status/client-status.entity";
 
 import { ClientEntity, ClientTag } from "./client.entity";
 import { ClientService } from "./client.service";
@@ -33,9 +31,6 @@ describe(ClientService.name, () => {
 	});
 
 	afterEach(async () => {
-		const dataSource = moduleRef.get(DataSource);
-		// prettier-ignore
-		await dataSource.createQueryBuilder().delete().from(ClientStatusEntity).execute();
 		await moduleRef.close();
 	});
 
