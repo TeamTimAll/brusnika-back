@@ -10,11 +10,13 @@ import { PremisesEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
 import { UserEntity } from "../../user/user.entity";
 import { LeadOpStatus, LeadOpsEntity } from "../lead_ops.entity";
-import { LeadsEntity } from "../leads.entity";
+import { LeadState, LeadsEntity } from "../leads.entity";
 
 export class LeadsDto extends BaseDto {}
 
 export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
+	client_id?: string | undefined;
+
 	@ApiProperty({ default: uuid })
 	id!: string;
 
@@ -50,6 +52,9 @@ export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
 
 	@ApiProperty()
 	fee?: number;
+
+	@ApiProperty({ enum: LeadState })
+	state!: LeadState;
 
 	@ApiProperty()
 	lead_ops?: LeadOpsEntity[];
