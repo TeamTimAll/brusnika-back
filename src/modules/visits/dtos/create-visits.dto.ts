@@ -13,9 +13,9 @@ import { Uuid } from "boilerplate.polyfill";
 
 import { PuchaseOptions } from "../../premises/premises.entity";
 import { BaseDto } from "../../../common/base/base_dto";
-import { BookingStatus } from "../bookings.entity";
+import { VisitStatus } from "../visits.entity";
 
-export class CreateBookingsDto {
+export class CreateVisitsDto {
 	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of premise" })
 	premise_id?: Uuid;
@@ -45,17 +45,17 @@ export class CreateBookingsDto {
 	purchase_option!: PuchaseOptions;
 
 	@IsOptional()
-	@IsEnum(() => BookingStatus)
+	@IsEnum(() => VisitStatus)
 	@ApiProperty({
 		required: false,
 		description: "Status of booking",
-		enum: BookingStatus,
+		enum: VisitStatus,
 	})
-	status?: BookingStatus;
+	status?: VisitStatus;
 }
 
-export class CreateBookingsMetaDataDto extends BaseDto<CreateBookingsDto> {
+export class CreateVisitsMetaDataDto extends BaseDto<CreateVisitsDto> {
 	@ValidateNested()
-	@Type(() => CreateBookingsDto)
-	declare data: CreateBookingsDto;
+	@Type(() => CreateVisitsDto)
+	declare data: CreateVisitsDto;
 }

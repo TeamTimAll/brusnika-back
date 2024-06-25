@@ -7,7 +7,7 @@ import { UserEntity } from "../user/user.entity";
 import { PremisesEntity } from "../premises/premises.entity";
 import { ClientEntity } from "../client/client.entity";
 
-export enum BookingStatus {
+export enum VisitStatus {
 	OPEN = "открыто",
 	SUCCESS = "успешно",
 	FAIL = "неуспешно",
@@ -20,11 +20,11 @@ export enum PuchaseOptions {
 	FULL_PAYMENT = "full_payment",
 }
 
-@Entity({ name: "bookings" })
-export class BookingsEntity extends AbstractEntity {
+@Entity({ name: "visits" })
+export class VisitsEntity extends AbstractEntity {
 	@ManyToOne(
 		() => PremisesEntity,
-		(PremisesEntity: PremisesEntity) => PremisesEntity.bookings,
+		(PremisesEntity: PremisesEntity) => PremisesEntity.visits,
 		{
 			onDelete: "SET NULL",
 			onUpdate: "NO ACTION",
@@ -38,7 +38,7 @@ export class BookingsEntity extends AbstractEntity {
 
 	@ManyToOne(
 		() => ClientEntity,
-		(ClientEntity: ClientEntity) => ClientEntity.bookings,
+		(ClientEntity: ClientEntity) => ClientEntity.visits,
 		{
 			onDelete: "SET NULL",
 			onUpdate: "NO ACTION",
@@ -52,7 +52,7 @@ export class BookingsEntity extends AbstractEntity {
 
 	@ManyToOne(
 		() => UserEntity,
-		(UserEntity: UserEntity) => UserEntity.bookings,
+		(UserEntity: UserEntity) => UserEntity.visits,
 		{
 			onDelete: "SET NULL",
 			onUpdate: "NO ACTION",
@@ -73,13 +73,13 @@ export class BookingsEntity extends AbstractEntity {
 	@Column({ type: "enum", enum: PuchaseOptions })
 	purchase_option!: PuchaseOptions;
 
-	@Column({ default: BookingStatus.OPEN, enum: BookingStatus })
-	status!: BookingStatus;
+	@Column({ default: VisitStatus.OPEN, enum: VisitStatus })
+	status!: VisitStatus;
 
 	static toDto(
-		entity: Partial<WithOutToDto<BookingsEntity>>,
-	): WithOutToDto<BookingsEntity> {
-		const dto: WithOutToDto<BookingsEntity> = {
+		entity: Partial<WithOutToDto<VisitsEntity>>,
+	): WithOutToDto<VisitsEntity> {
+		const dto: WithOutToDto<VisitsEntity> = {
 			id: entity.id ?? "",
 			premise: entity.premise ?? new PremisesEntity(),
 			premise_id: entity.premise_id ?? "",
@@ -90,7 +90,7 @@ export class BookingsEntity extends AbstractEntity {
 			date: entity.date ?? new Date(),
 			time: entity.time ?? new Date(),
 			purchase_option: entity.purchase_option ?? PuchaseOptions.BILL,
-			status: entity.status ?? BookingStatus.OPEN,
+			status: entity.status ?? VisitStatus.OPEN,
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
 		};

@@ -20,6 +20,8 @@ import { ProjectsModule } from "./projects/projects.module";
 import { SectionsModule } from "./sections/sections.module";
 import { TrainingModule } from "./training/training.module";
 import { UserModule } from "./user/user.module";
+import { VisitsModule } from "./visits/visits.module";
+import { BookingsModule } from "./bookings/bookings.module";
 
 @Module({
 	imports: [
@@ -42,6 +44,8 @@ import { UserModule } from "./user/user.module";
 		BuildingsModule,
 		PremisesModule,
 		SectionsModule,
+		BookingsModule,
+		VisitsModule,
 		PremisesBasketModule,
 		PremisesBasketMetaModule,
 	],

@@ -14,80 +14,80 @@ import { Uuid } from "boilerplate.polyfill";
 import { BaseDto } from "../../common/base/base_dto";
 import { UUIDParam } from "../../decorators";
 
-import { BookingsEntity } from "./bookings.entity";
-import { BookingsService } from "./bookings.service";
-import { CreateBookingsMetaDataDto } from "./dtos/create-bookings.dto";
-import { UpdateBookingsMetaDataDto } from "./dtos/update-bookings.dto";
-import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
+import { VisitsEntity } from "./visits.entity";
+import { VisitsService } from "./visits.service";
+import { CreateVisitsMetaDataDto } from "./dtos/create-visits.dto";
+import { UpdateVisitsMetaDataDto } from "./dtos/update-visits.dto";
+import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
 
-@ApiTags("Bookings")
-@Controller("/bookings")
-export class BookingsController {
-	constructor(private service: BookingsService) {}
+@ApiTags("Visits")
+@Controller("/visits")
+export class VisitsController {
+	constructor(private service: VisitsService) {}
 
 	// -------------------------------@Post()-----------------------------------
-	@ApiOperation({ summary: "Create a booking" })
+	@ApiOperation({ summary: "Create a visit" })
 	@ApiResponse({
 		status: HttpStatus.CREATED,
 		schema: {
 			example: BaseDto.createFromDto(
 				new BaseDto(),
-				BookingsEntity.toDto({}),
+				VisitsEntity.toDto({}),
 			),
 		},
 	})
 	@Post()
-	createCity(@Body() createBookingsDto: CreateBookingsMetaDataDto) {
-		const dto = createBookingsDto.data;
+	createCity(@Body() createVisitsDto: CreateVisitsMetaDataDto) {
+		const dto = createVisitsDto.data;
 		return this.service.create(dto);
 	}
 	// ------------------------------@Get()-------------------------------------
 
 	@ApiQuery({
 		name: "name",
-		description: " booking Name (optional if not provided  or empty)",
+		description: " visit Name (optional if not provided  or empty)",
 		required: false,
 	})
-	@ApiOperation({ summary: "Get all bookings" })
+	@ApiOperation({ summary: "Get all visits" })
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
 			example: BaseDto.createFromDto(new BaseDto(), [
-				BookingsEntity.toDto({}),
+				VisitsEntity.toDto({}),
 			]),
 		},
 	})
 	@Get()
 	@ApiResponse({
-		status: new BookingNotFoundError().status,
+		status: new VisitNotFoundError().status,
 		schema: {
 			example: BaseDto.createFromDto(new BaseDto()).setPrompt(
-				new BookingNotFoundError("'name' booking not found"),
+				new VisitNotFoundError("'name' visit not found"),
 			),
 		},
 	})
-	async getBookings() {
+	async getVisits() {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 
 		metaData.data = await this.service.r_findAll();
 		return metaData;
 	}
 	// ----------------------------@Get(":id")----------------------------------
-	@ApiOperation({ summary: "Get a single booking by ID" })
+	@ApiOperation({ summary: "Get a single visit by ID" })
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
 			example: BaseDto.createFromDto(
 				new BaseDto(),
-				BookingsEntity.toDto({}),
+				VisitsEntity.toDto({}),
 			),
 		},
 	})
 	@ApiResponse({
-		status: new BookingNotFoundError().status,
+		status: new VisitNotFoundError().status,
 		schema: {
 			example: BaseDto.createFromDto(new BaseDto()).setPrompt(
-				new BookingNotFoundError("'name' booking not found"),
+				new VisitNotFoundError("'name' visit not found"),
 			),
 		},
 	})
@@ -102,35 +102,35 @@ export class BookingsController {
 		return metaData;
 	}
 	// ---------------------------@Put(":id")-----------------------------------
-	@ApiOperation({ summary: "Update a booking by ID" })
+	@ApiOperation({ summary: "Update a visit by ID" })
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
 			example: BaseDto.createFromDto(
-				new BaseDto<BookingsEntity>(),
-				BookingsEntity.toDto({}),
+				new BaseDto<VisitsEntity>(),
+				VisitsEntity.toDto({}),
 			),
 		},
 	})
 	@Put(":id")
 	async updateCity(
 		@UUIDParam("id") id: Uuid,
-		@Body() updateBookingsDto: UpdateBookingsMetaDataDto,
+		@Body() updateVisitsDto: UpdateVisitsMetaDataDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		const dto = updateBookingsDto.data;
+		const dto = updateVisitsDto.data;
 		const updatedCity = await this.service.r_update(id, dto);
 		metaData.data = updatedCity;
 		return metaData;
 	}
 	// ---------------------------@Delete(":id")-------------------------------
-	@ApiOperation({ summary: "Delete a booking by ID" })
+	@ApiOperation({ summary: "Delete a visit by ID" })
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
 			example: BaseDto.createFromDto(
 				new BaseDto(),
-				BookingsEntity.toDto({}),
+				VisitsEntity.toDto({}),
 			),
 		},
 	})
