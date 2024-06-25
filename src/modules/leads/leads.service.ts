@@ -153,6 +153,35 @@ export class LeadsService {
 
 	readByFilter(dto: LeadReadByFilter): Promise<LeadsEntity[]> {
 		return this.leadRepository.find({
+			select: {
+				project: {
+					id: true,
+					name: true,
+				},
+				client: {
+					id: true,
+					fullname: true,
+					phone_number: true,
+				},
+				agent: {
+					id: true,
+					fullName: true,
+				},
+				manager: {
+					id: true,
+					fullName: true,
+				},
+				premise: {
+					id: true,
+					name: true,
+					rooms: true,
+					floor: true,
+				},
+				lead_ops: {
+					id: true,
+					status: true,
+				},
+			},
 			where: {
 				project_id: dto.project_id,
 				premise_id: dto.premise_id,
@@ -164,13 +193,18 @@ export class LeadsService {
 				},
 			},
 			relations: {
-				client: true,
 				lead_ops: true,
+				client: true,
+				agent: true,
+				manager: true,
+				premise: true,
+				project: true,
 			},
 			order: {
 				lead_ops: {
 					createdAt: "DESC",
 				},
+				createdAt: dto.createdAt ?? "ASC",
 			},
 		});
 	}

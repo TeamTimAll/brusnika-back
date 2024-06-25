@@ -58,6 +58,9 @@ export class LeadsEntity extends AbstractEntity<LeadsDto> {
 	@Column({ nullable: true, type: "integer" })
 	fee?: number;
 
+	@Column({ default: 0, type: "integer" })
+	lead_number!: number;
+
 	@Column({ default: LeadState.ACTIVE, enum: LeadState })
 	state!: LeadState;
 
