@@ -56,11 +56,11 @@ export class ClientService {
 			);
 		}
 		if (dto.project_id || dto.status) {
-			queryBuilder = queryBuilder.leftJoin(
+			queryBuilder = queryBuilder.innerJoin(
 				(qb) => {
 					const query = qb
 						.select("l.*")
-						.addSelect("json_agg(lop) as lead_ops")
+						.addSelect("lop.status")
 						.from(LeadsEntity, "l")
 						.innerJoin(
 							(qb2) => {
@@ -68,6 +68,7 @@ export class ClientService {
 									.select("*")
 									.from(LeadOpsEntity, "lop")
 									.where("l.id = lop.lead_id")
+									.orderBy("lop.created_at", "DESC")
 									.limit(1)
 									.getQuery();
 								qb2.getQuery = () => `LATERAL (${query})`;
@@ -78,6 +79,7 @@ export class ClientService {
 						)
 						.where("l.client_id = c.id")
 						.groupBy("l.id")
+						.addGroupBy("lop.status")
 						.limit(1)
 						.getQuery();
 
@@ -97,10 +99,9 @@ export class ClientService {
 				);
 			}
 			if (dto.status) {
-				queryBuilder = queryBuilder.andWhere(
-					"l.lead_ops -> 0 ->> 'status' = :status",
-					{ status: dto.status },
-				);
+				queryBuilder = queryBuilder.andWhere("l.status = :status", {
+					status: dto.status,
+				});
 			}
 		}
 		if (dto.actived_from_date) {

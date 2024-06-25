@@ -17,8 +17,10 @@ import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserService } from "../user/user.service";
 
 import { CreateLeadDto } from "./dtos/leads.create.dto";
+import { LeadReadByFilter } from "./dtos/leads.dto";
+import { LeadNotFoundError } from "./errors/LeadNotFound.error";
 import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
-import { LeadsEntity } from "./leads.entity";
+import { LeadState, LeadsEntity } from "./leads.entity";
 
 @Injectable()
 export class LeadsService {
@@ -107,11 +109,72 @@ export class LeadsService {
 			relations: {
 				lead_ops: true,
 			},
+			order: {
+				lead_ops: {
+					createdAt: "DESC",
+				},
+			},
 		});
 	}
 
-	changeStatus(leadId: Uuid, toStatus: LeadOpStatus) {
-		leadId;
-		toStatus;
+	readByFilter(dto: LeadReadByFilter): Promise<LeadsEntity[]> {
+		return this.leadRepository.find({
+			where: {
+				project_id: dto.project_id,
+				premise_id: dto.premise_id,
+				client: {
+					fullname: dto.client_fullname,
+				},
+				lead_ops: {
+					status: dto.status,
+				},
+			},
+			relations: {
+				client: true,
+				lead_ops: true,
+			},
+			order: {
+				lead_ops: {
+					createdAt: "DESC",
+				},
+			},
+		});
+	}
+
+	async changeStatus(leadId: Uuid, toStatus: LeadOpStatus) {
+		const foundLead = await this.leadRepository.findOne({
+			where: {
+				id: leadId,
+			},
+		});
+		if (!foundLead) {
+			throw new LeadNotFoundError(`lead id: ${leadId}`);
+		}
+		if (toStatus === LeadOpStatus.ON_PAUSE) {
+			await this.leadRepository.update(leadId, {
+				state: LeadState.IN_PROGRESS,
+			});
+		} else if (toStatus === LeadOpStatus.FAILED) {
+			await this.leadRepository.update(leadId, {
+				state: LeadState.FAILED,
+			});
+		} else if (toStatus === LeadOpStatus.BOOK_CANCELED) {
+			await this.leadRepository.update(leadId, {
+				state: LeadState.FAILED,
+			});
+		} else if (toStatus === LeadOpStatus.WON) {
+			await this.leadRepository.update(leadId, {
+				state: LeadState.COMPLETE,
+			});
+		}
+		let newLeadOP = this.leadOpsRepository.create();
+		newLeadOP.lead_id = leadId;
+		newLeadOP.status = toStatus;
+		newLeadOP = await this.leadOpsRepository.save(newLeadOP);
+		return this.leadRepository.findOne({
+			where: {
+				id: leadId,
+			},
+		});
 	}
 }
