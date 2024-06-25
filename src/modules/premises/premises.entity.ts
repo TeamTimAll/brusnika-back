@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { SectionsEntity } from "../sections/sections.entity";
+import { BookingsEntity } from "../bookings/bookings.entity";
 
 export enum PremisesType {
 	APARTMENT = "apartment",
@@ -97,4 +98,7 @@ export class PremisesEntity extends AbstractEntity {
 
 	@Column({ nullable: true })
 	section_id?: string;
+
+	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.premise)
+	bookings?: BookingsEntity[];
 }

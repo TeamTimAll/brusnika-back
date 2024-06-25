@@ -20,6 +20,7 @@ import { NewsEntity } from "../news/news.entity";
 import { TrainingEntity } from "../training/training.entity";
 
 import { UserDto } from "./dtos/user.dto";
+import { BookingsEntity } from "../bookings/bookings.entity";
 
 export enum UserRegisterStatus {
 	CREATED = "created",
@@ -135,6 +136,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
 	@Column({ nullable: true })
 	agency_id?: string;
+
+	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.agent)
+	bookings?: BookingsEntity[];
 
 	static toDto(
 		entity: Partial<WithOutToDto<UserEntity>>,
