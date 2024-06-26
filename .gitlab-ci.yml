@@ -2,7 +2,8 @@ stages:
   - build
   - deploy
 
-job:
+build:
+  stage: build
   script:
     - export PATH=/home/gitlab-runner/.nvm/versions/node/v20.14.0/bin/:$PATH
 
