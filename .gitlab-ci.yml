@@ -1,0 +1,9 @@
+stages:
+  - build
+  - deploy
+
+include:
+  - local: .gitlab/prod.yml
+  - local: .gitlab/dev.yml
+  - local: .gitlab/test.yml
+
