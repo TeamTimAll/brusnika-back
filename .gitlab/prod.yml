@@ -1,6 +1,7 @@
 build-prod:
   stage: build
   before_script:
+    - export PATH=/home/gitlab-runner/.nvm/versions/node/v20.14.0/bin/:$PATH
     - git pull origin prod
   script:
     - npm run build:prod
