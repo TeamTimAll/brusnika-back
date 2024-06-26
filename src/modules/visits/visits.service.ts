@@ -19,6 +19,12 @@ export class VisitsService extends BasicService<
 		super("visits", VisitsEntity, dataSource);
 	}
 
+	async new_findAll(user: ICurrentUser): Promise<VisitsEntity[]> {
+		return this.repository.find({
+			where: { agent_id: user.user_id },
+		});
+	}
+
 	async r_findOne(id: string): Promise<VisitsEntity> {
 		const findOne = await this.repository.findOne({
 			where: { id },
