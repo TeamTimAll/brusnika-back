@@ -2,6 +2,10 @@ stages:
   - build
   - deploy
 
+job:
+  script:
+    - export PATH=/home/gitlab-runner/.nvm/versions/node/v20.14.0/bin/:$PATH
+
 include:
   - local: .gitlab/prod.yml
   - local: .gitlab/dev.yml
