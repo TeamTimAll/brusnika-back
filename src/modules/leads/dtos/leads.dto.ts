@@ -77,7 +77,7 @@ export class LeadReadByFilter {
 	@IsUUID()
 	project_id?: Uuid;
 
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, enum: PremisesType })
 	@IsOptional()
 	@IsEnum(PremisesType)
 	premise_type?: PremisesType;
