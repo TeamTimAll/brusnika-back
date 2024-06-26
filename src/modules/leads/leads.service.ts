@@ -138,7 +138,9 @@ export class LeadsService {
 			},
 			where: {
 				project_id: dto.project_id,
-				premise_id: dto.premise_id,
+				premise: {
+					type: dto.premise_type,
+				},
 				client: {
 					fullname: dto.client_fullname,
 				},
