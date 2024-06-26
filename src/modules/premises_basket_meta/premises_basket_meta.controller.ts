@@ -8,8 +8,6 @@ import {
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../common/base/base_dto";
 import { UUIDQuery } from "../../decorators";
 
@@ -23,7 +21,7 @@ export class PremisesBasketMetaController {
 
 	@Get("/")
 	@HttpCode(HttpStatus.OK)
-	async getAllBasketMeta(@UUIDQuery("user_id") user_id: Uuid) {
+	async getAllBasketMeta(@UUIDQuery("user_id") user_id: string) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.upbmService.getAllBasketMeta(user_id);
 		return metaData;

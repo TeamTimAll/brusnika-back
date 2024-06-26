@@ -6,7 +6,7 @@
 // import { Uuid } from 'boilerplate.polyfill';
 
 // export class GetAgenciesQuery implements ICommand {
-//   constructor(public readonly userId: Uuid) {}
+//   constructor(public readonly userId: string) {}
 // }
 
 // @QueryHandler(GetAgenciesQuery)

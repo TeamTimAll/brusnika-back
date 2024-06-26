@@ -2,21 +2,19 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsOptional, IsString, IsUUID } from "class-validator";
 import { v4 as uuid } from "uuid";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Order } from "../../../constants";
 import { ClientEntity } from "../../client/client.entity";
-import { PremisesEntity, PremisesType } from "../../premises/premises.entity";
+import { PremisesEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
 import { UserEntity } from "../../user/user.entity";
-import { LeadOpStatus, LeadOpsEntity } from "../lead_ops.entity";
+import { PremisesType, LeadOpStatus, LeadOpsEntity } from "../lead_ops.entity";
 import { LeadState, LeadsEntity } from "../leads.entity";
 
 export class LeadsDto extends BaseDto {}
 
 export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
-	@ApiProperty({ default: uuid })
+	@ApiProperty({ default: uuid() })
 	id!: string;
 
 	@ApiProperty({ type: ClientEntity })
@@ -75,7 +73,7 @@ export class LeadReadByFilter {
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsUUID()
-	project_id?: Uuid;
+	project_id?: string;
 
 	@ApiProperty({ required: false, enum: PremisesType })
 	@IsOptional()

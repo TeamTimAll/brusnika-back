@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Repository } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { RoleType } from "../../constants";
 import { BuildingsService } from "../buildings/buildings.service";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
@@ -163,7 +161,7 @@ export class LeadsService {
 		});
 	}
 
-	async changeStatus(leadId: Uuid, toStatus: LeadOpStatus) {
+	async changeStatus(leadId: string, toStatus: LeadOpStatus) {
 		const foundLead = await this.leadRepository.findOne({
 			where: {
 				id: leadId,

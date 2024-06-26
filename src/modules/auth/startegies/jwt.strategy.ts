@@ -17,7 +17,7 @@
 
 //   async validate(payload: any) {
 //     console.log(payload, 's');
-    
+
 //     this.logger.log(`Validating payload: ${JSON.stringify(payload)}`);
 //     return { user_id: payload.user_id,  roles: payload.roles };
 //   }

@@ -110,6 +110,6 @@ export class AuthController {
 	@Get()
 	@UseGuards(JwtAuthGuard)
 	status(@Req() req: Request) {
-		return req.user;
+		return req["user"];
 	}
 }

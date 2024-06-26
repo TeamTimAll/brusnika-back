@@ -1,48 +1,51 @@
-import { IsString, IsOptional, IsDateString, IsUUID, IsNotEmpty } from 'class-validator';
-import { Type } from 'class-transformer';
-
-import { Uuid } from 'boilerplate.polyfill';
+import {
+	IsString,
+	IsOptional,
+	IsDateString,
+	IsUUID,
+	IsNotEmpty,
+} from "class-validator";
+import { Type } from "class-transformer";
 
 export class UpdateClientDto {
-  @IsOptional()
-  @IsString()
-  fullName?: string;
+	@IsOptional()
+	@IsString()
+	fullName?: string;
 
-  @IsOptional()
-  @IsString()
-  comment?: string;
+	@IsOptional()
+	@IsString()
+	comment?: string;
 
-  @IsOptional()
-  phoneNumber?: string;
+	@IsOptional()
+	phoneNumber?: string;
 
-  @IsOptional()
-  @IsUUID()
-  projectId?: string;
+	@IsOptional()
+	@IsUUID()
+	projectId?: string;
 
-  @IsOptional()
-  @IsString()
-  transactionStatus?: string;
+	@IsOptional()
+	@IsString()
+	transactionStatus?: string;
 
-  @IsOptional()
-  @IsString()
-  transactionStage?: string;
+	@IsOptional()
+	@IsString()
+	transactionStage?: string;
 
-  @IsOptional()
-  @IsDateString()
-  establishmentDate?: Date;
+	@IsOptional()
+	@IsDateString()
+	establishmentDate?: Date;
 
-  @IsOptional()
-  pinningTypeId !: Uuid;
+	@IsOptional()
+	pinningTypeId!: string;
 
-  @IsOptional()
-  @Type(() => Number)
-  daysUntilEndOfAssignment?: number;
+	@IsOptional()
+	@Type(() => Number)
+	daysUntilEndOfAssignment?: number;
 
-  @IsOptional()
-  @IsString()
-  managerNote?: string;
+	@IsOptional()
+	@IsString()
+	managerNote?: string;
 
-
-  @IsNotEmpty()
-  clientId !: Uuid
+	@IsNotEmpty()
+	clientId!: string;
 }

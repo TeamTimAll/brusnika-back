@@ -9,8 +9,6 @@ import {
 	ValidateNested,
 } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { PuchaseOptions } from "../../premises/premises.entity";
 import { BaseDto } from "../../../common/base/base_dto";
 import { BookingStatus } from "../bookings.entity";
@@ -18,15 +16,15 @@ import { BookingStatus } from "../bookings.entity";
 export class CreateBookingsDto {
 	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of premise" })
-	premise_id?: Uuid;
+	premise_id?: string;
 
 	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of client" })
-	client_id?: Uuid;
+	client_id?: string;
 
 	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of agent" })
-	agent_id?: Uuid;
+	agent_id?: string;
 
 	@IsDate()
 	@ApiProperty({ required: true, description: "Date of booking" })

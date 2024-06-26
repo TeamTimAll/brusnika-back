@@ -3,7 +3,6 @@ import { TrainingEntity } from './training.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TrainingCreateDto } from './dtos/training.create.dto';
-import { Uuid } from 'boilerplate.polyfill';
 
 
 @Injectable()
@@ -19,13 +18,13 @@ export class TrainingService {
           return this.trainingRepo.find()
     };
 
-    async createTraining( trainingCreate : TrainingCreateDto , fileName : string ) 
+    async createTraining( trainingCreate : TrainingCreateDto , fileName : string )
     : Promise<HttpException | TrainingEntity>
 
     {
 
           try {
-               
+
             return await this.trainingRepo.save({
                     ...trainingCreate, imageUrl : fileName
             })
@@ -35,7 +34,7 @@ export class TrainingService {
     }
 
 
-       async getOneTraining( id : Uuid) : Promise<TrainingEntity | null>{
+       async getOneTraining( id : string) : Promise<TrainingEntity | null>{
 
         try {
 
@@ -48,7 +47,7 @@ export class TrainingService {
             return training
         } catch (error : any ) {
             throw  new HttpException(error.message , 500)
-            
+
         }
        }
 
@@ -65,10 +64,10 @@ export class TrainingService {
                 await this.trainingRepo.merge(training , trainingUpdate)
 
                 return trainingUpdate
-                
+
              } catch (error) {
                 console.log({
-                      error 
+                      error
                 })
                 return new HttpException("Something went wrong " , 500)
              }
@@ -77,7 +76,7 @@ export class TrainingService {
 
 
 
-       async deleteTraining ( id : Uuid) {
+       async deleteTraining ( id : string) {
              try {
 
 
@@ -90,7 +89,7 @@ export class TrainingService {
 
 
                 return training
-                
+
              } catch (error : any ) {
 
                 console.log({
@@ -98,7 +97,7 @@ export class TrainingService {
                 })
 
                 return new HttpException(error.message , 500)
-                
+
              }
        }
 

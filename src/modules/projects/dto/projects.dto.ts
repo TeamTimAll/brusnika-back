@@ -1,7 +1,5 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../../common/dto/abstract.dto";
 
 export class ProjectDto extends BaseDto {
@@ -15,7 +13,7 @@ export class ProjectDto extends BaseDto {
 
 	@IsNotEmpty()
 	@IsString()
-	userId!: Uuid;
+	userId!: string;
 
 	@IsNumber()
 	@IsNotEmpty()

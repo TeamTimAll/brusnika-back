@@ -1,23 +1,19 @@
-import { Uuid } from 'boilerplate.polyfill';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty } from "class-validator";
 
 export class AddCommentDto {
-  @IsString()
-  @IsNotEmpty()
-  userId!: Uuid;
+	@IsString()
+	@IsNotEmpty()
+	userId!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  eventId!: Uuid;
+	@IsString()
+	@IsNotEmpty()
+	eventId!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  comment: string;
+	@IsString()
+	@IsNotEmpty()
+	comment: string;
 
-
-
-  constructor(){
-      this.comment =""
-  }
-  
+	constructor() {
+		this.comment = "";
+	}
 }

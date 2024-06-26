@@ -7,8 +7,6 @@ import {
 	Repository,
 } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { ICurrentUser } from "../interfaces/current-user.interface";
 import { IFind, IFindBy, IFindOne } from "../interfaces/find.interface";
 import { ServiceResponse } from "../interfaces/serviceResponse.interface";
@@ -77,7 +75,7 @@ export class BasicService<
 	}
 
 	async update(
-		id: Uuid, // Assuming UUID is a string
+		id: string, // Assuming UUID is a string
 		dto: UpdateDto,
 		currentUser?: ICurrentUser,
 	): Promise<ServiceResponse> {
@@ -147,7 +145,7 @@ export class BasicService<
 	//   }
 
 	async findOne<E = unknown>(
-		id: Uuid,
+		id: string,
 		options?: IFindOne,
 	): Promise<ServiceResponse<E>> {
 		const findOne = await this.repository.findOne({

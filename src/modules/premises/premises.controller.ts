@@ -16,8 +16,6 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../common/base/base_dto";
 import { UUIDParam } from "../../decorators";
 
@@ -54,7 +52,7 @@ export class PremisesController {
 
 	@ApiOperation({ summary: "Get a single city by ID" })
 	@Get(":id")
-	async getSinglePremises(@UUIDParam("id") id: Uuid) {
+	async getSinglePremises(@UUIDParam("id") id: string) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.service.readOne(id);
 		return metaData;
@@ -64,7 +62,7 @@ export class PremisesController {
 	@Get("/cherry-pick/:ids")
 	async getMultiplePremisesByIds(
 		@Query("ids", new ParseArrayPipe({ optional: true }))
-		ids: Uuid[],
+		ids: string[],
 	) {
 		if (!ids || !ids.length) {
 			return [];
@@ -84,7 +82,7 @@ export class PremisesController {
 	@ApiAcceptedResponse()
 	@Put(":id")
 	async updatePremises(
-		@UUIDParam("id") id: Uuid,
+		@UUIDParam("id") id: string,
 		@Body() updatePremisesDto: UpdatePremisesDto,
 	) {
 		await this.service.update(id, updatePremisesDto);
@@ -93,7 +91,7 @@ export class PremisesController {
 	@ApiOperation({ summary: "Delete a premises by ID" })
 	@ApiAcceptedResponse()
 	@Delete(":id")
-	async deletePremises(@UUIDParam("id") id: Uuid) {
+	async deletePremises(@UUIDParam("id") id: string) {
 		await this.service.remove(id);
 	}
 }

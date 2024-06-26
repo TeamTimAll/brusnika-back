@@ -4,32 +4,31 @@ import { Entity } from "typeorm";
 import { TraningDto } from "./dtos/training.dto";
 import { UserEntity } from "../../modules/user/user.entity";
 import { Column , ManyToOne , JoinColumn } from "typeorm";
-import { Uuid } from "boilerplate.polyfill";
 
 @Entity( { name : "traning"})
 @UseDto(TraningDto)
 export class TrainingEntity extends AbstractEntity <TraningDto>{
-  
+
     @Column({ type: 'uuid' })
-    userId!: Uuid;
-  
+    userId!: string;
+
     @ManyToOne(() => UserEntity, (userEntity) => userEntity.news, {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
     })
-  
+
     @JoinColumn({ name: 'user_id' })
     user!: UserEntity;
 
 
     @Column({ nullable : false , type : "varchar"})
-    title !: string 
+    title !: string
 
     @Column({ nullable : false , type : "varchar"})
-    description !: string 
+    description !: string
 
     @Column({ nullable : false , type : "varchar"})
-    imageUrl !: string 
+    imageUrl !: string
 
 
 }
