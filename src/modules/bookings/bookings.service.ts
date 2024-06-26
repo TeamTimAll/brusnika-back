@@ -1,7 +1,6 @@
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BasicService } from "../../generic/service";
@@ -20,7 +19,7 @@ export class BookingsService extends BasicService<
 		super("bookings", BookingsEntity, dataSource);
 	}
 
-	async r_findOne(id: Uuid): Promise<BookingsEntity> {
+	async r_findOne(id: string): Promise<BookingsEntity> {
 		const findOne = await this.repository.findOne({
 			where: { id },
 		});
@@ -33,7 +32,7 @@ export class BookingsService extends BasicService<
 	}
 
 	async r_update(
-		id: Uuid, // Assuming UUID is a string
+		id: string, // Assuming UUID is a string
 		dto: UpdateBookingsDto,
 		currentUser?: ICurrentUser,
 	): Promise<BookingsEntity[]> {

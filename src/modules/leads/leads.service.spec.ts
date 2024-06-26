@@ -259,7 +259,7 @@ describe(LeadsService.name, () => {
 					address: "Test address",
 					number_of_floors: 0,
 					photos: [],
-					project_id: uuid(),
+					project_id: string(),
 				});
 
 				const new_premise =

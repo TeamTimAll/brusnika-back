@@ -5,8 +5,9 @@ import {
 	SetMetadata,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { RoleType } from "../constants";
 import { Observable } from "rxjs";
+
+import { RoleType } from "../constants";
 
 export const ROLES_KEY = "roles";
 export const Roles = (...roles: RoleType[]) => SetMetadata(ROLES_KEY, roles);

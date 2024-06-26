@@ -11,8 +11,6 @@ import {
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../common/base/base_dto";
 
 import { CreateProjectMetaDataDto } from "./dto/project.create.dto";
@@ -65,7 +63,7 @@ export class ProjectsController {
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.OK)
-	async deleteProject(@Param("id") id: Uuid) {
+	async deleteProject(@Param("id") id: string) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const deletedProject = await this.projectsService.deleteProject(id);
 		metaData.data = deletedProject;

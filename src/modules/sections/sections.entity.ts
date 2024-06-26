@@ -1,10 +1,13 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+
+import { WithOutToDto } from "types";
+
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
-import { SectionsDto } from "./dtos/sections.dto";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { PremisesEntity } from "../premises/premises.entity";
-import { WithOutToDto } from "types";
+
+import { SectionsDto } from "./dtos/sections.dto";
 
 @Entity({ name: "sections" })
 @UseDto(SectionsDto)
