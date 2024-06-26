@@ -2,6 +2,8 @@ import { Column, Entity, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
 import { LeadsEntity } from "../leads/leads.entity";
+import { BookingsEntity } from "../bookings/bookings.entity";
+import { VisitsEntity } from "../visits/visits.entity";
 
 export enum ClientTag {
 	LEAD_VERIFICATION = "проверка лида",
@@ -35,4 +37,10 @@ export class ClientEntity extends AbstractEntity {
 
 	@OneToMany(() => LeadsEntity, (l) => l.client)
 	leads?: LeadsEntity[];
+
+	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.client)
+	bookings?: BookingsEntity[];
+
+	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.premise)
+	visits?: BookingsEntity[];
 }
