@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, type FindOptionsWhere } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AuthRespone } from "../auth/auth.service";
 import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
@@ -82,7 +80,7 @@ export class UserService {
 	//   return items.toPageDto(pageMetaDto);
 	// }
 
-	async getUser(userId: Uuid, full = true): Promise<UserDto> {
+	async getUser(userId: string, full = true): Promise<UserDto> {
 		// const queryBuilder = await this.userRepository.createQueryBuilder('user');
 
 		// await queryBuilder.where('user.id = :userId', { userId });
@@ -134,7 +132,7 @@ export class UserService {
 	}
 
 	async updateUser(
-		id: Uuid,
+		id: string,
 		updateEventsDto: Partial<UserDto>,
 	): Promise<unknown> {
 		const user = await this.findOne({
@@ -152,7 +150,7 @@ export class UserService {
 		});
 	}
 
-	async changePhone(id: Uuid, dto: UserCreateDto): Promise<UserResponse> {
+	async changePhone(id: string, dto: UserCreateDto): Promise<UserResponse> {
 		const user = await this.findOne({
 			id,
 		});

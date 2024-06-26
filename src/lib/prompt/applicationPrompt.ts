@@ -277,5 +277,5 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"Ошибка лида не найдена",
 			"Lead not found error",
 		],
-	}
+	},
 };

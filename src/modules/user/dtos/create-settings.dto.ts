@@ -3,7 +3,7 @@
 
 // export class CreateSettingsDto {
 //   @UUIDFieldOptional()
-//   id?: Uuid;
+//   id?: string;
 //   @BooleanFieldOptional()
 //   isEmailVerified?: boolean;
 

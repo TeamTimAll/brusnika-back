@@ -54,8 +54,8 @@ export class SnakeNamingStrategy
 	}
 
 	classTableInheritanceParentColumnName(
-		parentTableName: any,
-		parentTableIdPropertyName: any,
+		parentTableName: unknown,
+		parentTableIdPropertyName: unknown,
 	): string {
 		return snakeCase(parentTableName + "_" + parentTableIdPropertyName);
 	}

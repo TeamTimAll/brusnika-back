@@ -10,8 +10,6 @@ import {
 	IsUUID,
 } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { RoleType } from "../../../constants";
 import {
 	CreateAgenciesDto,
@@ -44,13 +42,13 @@ export class AgentChooseAgencyDto {
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: Uuid;
+	user_id!: string;
 
 	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	agency_id!: Uuid;
+	agency_id!: string;
 
 	@IsDateString()
 	@ApiProperty({
@@ -64,7 +62,7 @@ export class AgentRegisterAgencyDto extends CreateAgenciesDto {
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: Uuid;
+	user_id!: string;
 
 	@IsBoolean()
 	@ApiProperty({
@@ -78,7 +76,7 @@ export class AgentRequestAgencyDto extends CreateExistentAgenciesDto {
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: Uuid;
+	user_id!: string;
 }
 
 export class UserLoginVerifyCodeDto {
@@ -92,7 +90,7 @@ export class UserLoginVerifyCodeDto {
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: Uuid;
+	user_id!: string;
 }
 
 export class UserLoginResendCodeDto {

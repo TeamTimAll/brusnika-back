@@ -2,8 +2,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsString, ValidateNested } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../../common/base/base_dto";
 
 export class CreateBuilding {
@@ -116,7 +114,7 @@ export class CreateBuilding {
 		required: true,
 		example: "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
 	})
-	project_id!: Uuid;
+	project_id!: string;
 }
 
 export class CreateBuildingMetaDto extends BaseDto<CreateBuilding> {

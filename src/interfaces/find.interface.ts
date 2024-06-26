@@ -6,10 +6,10 @@
  * * where - object
  */
 export interface IFindOne {
-  select?: object;
-  relations?: string[];
+	select?: object;
+	relations?: string[];
 }
 export interface IFindBy extends IFindOne {
-  where: object;
+	where: object;
 }
 export interface IFind extends Partial<IFindBy> {}

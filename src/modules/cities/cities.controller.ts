@@ -10,8 +10,6 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../common/base/base_dto";
 import { UUIDParam } from "../../decorators";
 import { UserEntity } from "../../modules/user/user.entity";
@@ -106,7 +104,7 @@ export class CitiesController {
 	@Get(":id")
 	async getSingleCity(
 		@UUIDParam("id")
-		id: Uuid,
+		id: string,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const foundCity = await this.service.r_findOne(id);
@@ -129,7 +127,7 @@ export class CitiesController {
 	})
 	@Put(":id")
 	async updateCity(
-		@UUIDParam("id") id: Uuid,
+		@UUIDParam("id") id: string,
 		@Body() updateCitiesDto: UpdateCitiesMetaDataDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
@@ -153,7 +151,7 @@ export class CitiesController {
 		},
 	})
 	@Delete(":id")
-	async deleteCity(@UUIDParam("id") id: Uuid) {
+	async deleteCity(@UUIDParam("id") id: string) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.service.r_remove(id);
 		return metaData;

@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post, Put , Delete, Param, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { TrainingCreateDto } from './dtos/training.create.dto';
 import { TrainingService } from './training.service';
-import { Uuid } from 'boilerplate.polyfill';
 import { UpdateTrainingDto } from "./dtos/train.update.dto";
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -14,7 +13,7 @@ export class TrainingController {
               private trainingService : TrainingService
     ){}
 
-    
+
     @Get()
     async getAllCourses(){
           return []
@@ -37,7 +36,7 @@ export class TrainingController {
      @Body() trainingCreateDto : TrainingCreateDto ) {
 
         console.log({
-              file 
+              file
         });
 
         return this.trainingService.createTraining(trainingCreateDto , "New file url" )
@@ -49,7 +48,7 @@ export class TrainingController {
     }
 
     @Delete(':id')
-    async deleteTraining( @Param("id") id : Uuid) {
+    async deleteTraining( @Param("id") id : string) {
            return this.trainingService.deleteTraining(id)
     }
 
