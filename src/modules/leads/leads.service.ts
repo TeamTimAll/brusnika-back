@@ -142,9 +142,7 @@ export class LeadsService {
 				client: {
 					fullname: dto.client_fullname,
 				},
-				lead_ops: {
-					status: dto.status,
-				},
+				current_status: dto.status,
 			},
 			relations: {
 				lead_ops: true,
@@ -189,6 +187,9 @@ export class LeadsService {
 				state: LeadState.COMPLETE,
 			});
 		}
+		await this.leadRepository.update(leadId, {
+			current_status: toStatus,
+		});
 		let newLeadOP = this.leadOpsRepository.create();
 		newLeadOP.lead_id = leadId;
 		newLeadOP.status = toStatus;
