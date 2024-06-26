@@ -23,7 +23,7 @@ export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
 	client!: ClientEntity;
 
 	@ApiProperty()
-	clinet_id?: string;
+	client_id?: string;
 
 	@ApiProperty()
 	agent!: UserEntity;
@@ -51,6 +51,9 @@ export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
 
 	@ApiProperty()
 	fee?: number;
+
+	@ApiProperty()
+	current_status!: LeadOpStatus;
 
 	@ApiProperty()
 	lead_number!: number;
@@ -81,7 +84,7 @@ export class LeadReadByFilter {
 
 	@ApiProperty({ required: false, enum: LeadOpStatus })
 	@IsOptional()
-	@IsEnum(() => LeadOpStatus)
+	@IsEnum(LeadOpStatus)
 	status?: LeadOpStatus;
 
 	@ApiProperty({ required: false })
