@@ -42,10 +42,12 @@
 - [x] lead number
 - [ ] lead'ning hozirgi turgan status'i bo'yicha filter qilish.
     Muamo: `TypeOrm`'ning `where` API'sidan foydalanganda, `lead_ops` ma'lumotlarini filter qilyapti. Lekin lead'ning ma'lumotlari filter qilinishi kerak.
-- [ ] premises type lead read all'da
+- [x] premises type lead read all'da
+- [ ] filter'ni read all bilan 1 ta qilish
 
 ### Clinet
-- [ ] Lead state bo'yicha filter qilish.
+- [x] Lead state bo'yicha filter qilish.
+- [ ] filter'ni read all bilan 1 ta qilish
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?

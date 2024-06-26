@@ -22,16 +22,9 @@ export class ClientController {
 
 	@Get()
 	@ApiOkResponse({ type: CreateClientMetaDataDto })
-	async readAll() {
+	async readAll(@Query() dto: FilterClientDto) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.clientService.readAll();
-		return metaData;
-	}
-
-	@Get("/filter")
-	async readByFilter(@Query() dto: FilterClientDto) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.clientService.readByFilter(dto);
+		metaData.data = await this.clientService.readAll(dto);
 		return metaData;
 	}
 }

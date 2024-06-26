@@ -104,55 +104,7 @@ export class LeadsService {
 		return updatedLead;
 	}
 
-	readAll() {
-		return this.leadRepository.find({
-			select: {
-				project: {
-					id: true,
-					name: true,
-				},
-				client: {
-					id: true,
-					fullname: true,
-					phone_number: true,
-				},
-				agent: {
-					id: true,
-					fullName: true,
-				},
-				manager: {
-					id: true,
-					fullName: true,
-				},
-				premise: {
-					id: true,
-					name: true,
-					type: true,
-					rooms: true,
-					floor: true,
-				},
-				lead_ops: {
-					id: true,
-					status: true,
-				},
-			},
-			relations: {
-				lead_ops: true,
-				client: true,
-				agent: true,
-				manager: true,
-				premise: true,
-				project: true,
-			},
-			order: {
-				lead_ops: {
-					createdAt: "DESC",
-				},
-			},
-		});
-	}
-
-	readByFilter(dto: LeadReadByFilter): Promise<LeadsEntity[]> {
+	readAll(dto: LeadReadByFilter): Promise<LeadsEntity[]> {
 		return this.leadRepository.find({
 			select: {
 				project: {
