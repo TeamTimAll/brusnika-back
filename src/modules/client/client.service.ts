@@ -25,11 +25,7 @@ export class ClientService {
 		return this.clientRepository.save(client);
 	}
 
-	readAll() {
-		return this.clientRepository.find();
-	}
-
-	readByFilter(dto: FilterClientDto): Promise<ClientEntity[]> {
+	readAll(dto: FilterClientDto): Promise<ClientEntity[]> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
 			.select([
