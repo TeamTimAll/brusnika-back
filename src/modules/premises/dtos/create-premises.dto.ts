@@ -8,7 +8,11 @@ import {
 	IsString,
 } from "class-validator";
 
-import { CommercialStatus, PremisesType, PuchaseOptions } from "../premises.entity";
+import {
+	CommercialStatus,
+	PremisesType,
+	PuchaseOptions,
+} from "../premises.entity";
 
 export class CreatePremisesDto {
 	@ApiProperty({ description: "Name of the premise", required: false })

@@ -1,7 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
 import { UserEntity } from "../user/user.entity";
@@ -19,7 +17,7 @@ export enum NEWS_CATEGORIES {
 @UseDto(NewsDto)
 export class NewsEntity extends AbstractEntity<NewsDto> {
 	@Column({ type: "uuid" })
-	userId!: Uuid;
+	userId!: string;
 
 	@ManyToOne(() => UserEntity, (userEntity) => userEntity.news, {
 		onDelete: "CASCADE",

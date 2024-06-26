@@ -43,7 +43,7 @@ export class AgenciesService extends BasicService<
 //   ) {}
 
 //   async createAgencies(
-//     userId: Uuid,
+//     userId: string,
 //     createAgenciesDto: CreateAgenciesDto,
 //   ): Promise<AgenciesEntity> {
 //     createAgenciesDto.userId = userId;
@@ -63,7 +63,7 @@ export class AgenciesService extends BasicService<
 //     return items.toPageDto(pageMetaDto);
 //   }
 
-//   async getSingleAgencies(id: Uuid): Promise<AgenciesEntity> {
+//   async getSingleAgencies(id: string): Promise<AgenciesEntity> {
 //     const queryBuilder = this.AgenciesRepository
 //       .createQueryBuilder('Agencies')
 //       .where('Agencies.id = :id', { id });
@@ -78,7 +78,7 @@ export class AgenciesService extends BasicService<
 //   }
 
 //   async updateAgencies(
-//     id: Uuid,
+//     id: string,
 //     updateAgenciesDto: UpdateAgenciesDto,
 //   ): Promise<void> {
 //     const queryBuilder = this.AgenciesRepository
@@ -96,7 +96,7 @@ export class AgenciesService extends BasicService<
 //     await this.AgenciesRepository.save(updateAgenciesDto);
 //   }
 
-//   async deleteAgencies(id: Uuid): Promise<void> {
+//   async deleteAgencies(id: string): Promise<void> {
 //     const queryBuilder = this.AgenciesRepository
 //       .createQueryBuilder('Agencies')
 //       .where('Agencies.id = :id', { id });

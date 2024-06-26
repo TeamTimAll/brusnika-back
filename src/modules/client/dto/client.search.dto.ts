@@ -8,9 +8,8 @@ import {
 	IsUUID,
 } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { LeadOpStatus } from "../../leads/lead_ops.entity";
+import { LeadState } from "../../leads/leads.entity";
 
 export class FilterClientDto {
 	@ApiProperty({ required: false })
@@ -26,7 +25,7 @@ export class FilterClientDto {
 	@ApiProperty({ required: false })
 	@IsUUID("4")
 	@IsOptional()
-	project_id?: Uuid;
+	project_id?: string;
 
 	@ApiProperty({ required: false })
 	@IsDateString()
@@ -42,4 +41,9 @@ export class FilterClientDto {
 	@IsEnum(LeadOpStatus)
 	@IsOptional()
 	status?: LeadOpStatus;
+
+	@ApiProperty({ required: false, enum: LeadState })
+	@IsEnum(LeadState)
+	@IsOptional()
+	state?: string;
 }

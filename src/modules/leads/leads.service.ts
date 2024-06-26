@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Repository } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { RoleType } from "../../constants";
 import { BuildingsService } from "../buildings/buildings.service";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
@@ -104,7 +102,7 @@ export class LeadsService {
 		return updatedLead;
 	}
 
-	readAll() {
+	readAll(dto: LeadReadByFilter): Promise<LeadsEntity[]> {
 		return this.leadRepository.find({
 			select: {
 				project: {
@@ -127,6 +125,7 @@ export class LeadsService {
 				premise: {
 					id: true,
 					name: true,
+					type: true,
 					rooms: true,
 					floor: true,
 				},
@@ -134,6 +133,16 @@ export class LeadsService {
 					id: true,
 					status: true,
 				},
+			},
+			where: {
+				project_id: dto.project_id,
+				premise: {
+					type: dto.premise_type,
+				},
+				client: {
+					fullname: dto.client_fullname,
+				},
+				current_status: dto.status,
 			},
 			relations: {
 				lead_ops: true,
@@ -147,35 +156,12 @@ export class LeadsService {
 				lead_ops: {
 					createdAt: "DESC",
 				},
+				createdAt: dto.createdAt ?? "ASC",
 			},
 		});
 	}
 
-	readByFilter(dto: LeadReadByFilter): Promise<LeadsEntity[]> {
-		return this.leadRepository.find({
-			where: {
-				project_id: dto.project_id,
-				premise_id: dto.premise_id,
-				client: {
-					fullname: dto.client_fullname,
-				},
-				lead_ops: {
-					status: dto.status,
-				},
-			},
-			relations: {
-				client: true,
-				lead_ops: true,
-			},
-			order: {
-				lead_ops: {
-					createdAt: "DESC",
-				},
-			},
-		});
-	}
-
-	async changeStatus(leadId: Uuid, toStatus: LeadOpStatus) {
+	async changeStatus(leadId: string, toStatus: LeadOpStatus) {
 		const foundLead = await this.leadRepository.findOne({
 			where: {
 				id: leadId,
@@ -201,6 +187,9 @@ export class LeadsService {
 				state: LeadState.COMPLETE,
 			});
 		}
+		await this.leadRepository.update(leadId, {
+			current_status: toStatus,
+		});
 		let newLeadOP = this.leadOpsRepository.create();
 		newLeadOP.lead_id = leadId;
 		newLeadOP.status = toStatus;

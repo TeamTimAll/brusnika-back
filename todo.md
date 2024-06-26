@@ -36,7 +36,18 @@
     - [x] Expiration date
     - [x] Task node (About client)
 
----
+### Lead
+- [x] current status field qo'shish.
+- [x] created at bo'yicha asc va desc sort
+- [x] lead number
+- [x] lead'ning hozirgi turgan status'i bo'yicha filter qilish.
+    Muamo: `TypeOrm`'ning `where` API'sidan foydalanganda, `lead_ops` ma'lumotlarini filter qilyapti. Lekin lead'ning ma'lumotlari filter qilinishi kerak.
+- [x] premises type lead read all'da
+- [x] filter'ni read all bilan 1 ta qilish
+
+### Clinet
+- [x] Lead state bo'yicha filter qilish.
+- [x] filter'ni read all bilan 1 ta qilish
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?

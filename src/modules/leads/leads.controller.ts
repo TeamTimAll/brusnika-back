@@ -32,17 +32,9 @@ export class LeadsController {
 
 	@Get()
 	// @ApiOkResponse({ type: LeadReadAll })
-	async readAll() {
+	async readAll(@Query() dto: LeadReadByFilter) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.dealsService.readAll();
-		return metaData;
-	}
-
-	@Get("/filter")
-	// @ApiOkResponse({ type: LeadReadAll })
-	async readByFilter(@Query() dto: LeadReadByFilter) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.dealsService.readByFilter(dto);
+		metaData.data = await this.dealsService.readAll(dto);
 		return metaData;
 	}
 }

@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { PremisesEntity, PremisesType } from "../premises/premises.entity";
 
 import { CreateProjectDto } from "./dto/project.create.dto";
@@ -125,7 +123,7 @@ export class ProjectsService {
 		return newProject;
 	}
 
-	async getOneProject(id: Uuid): Promise<ProjectEntity | null> {
+	async getOneProject(id: string): Promise<ProjectEntity | null> {
 		const project = await this.projectsRepository.findOne({
 			where: { id },
 			relations: {
@@ -149,7 +147,7 @@ export class ProjectsService {
 	}
 
 	async updateProject(
-		project_id: Uuid,
+		project_id: string,
 		updateProjectDto: UpdateProjectDto,
 	): Promise<ProjectEntity> {
 		const project = await this.projectsRepository.findOne({
@@ -169,7 +167,7 @@ export class ProjectsService {
 		return updatedProject;
 	}
 
-	async deleteProject(id: Uuid): Promise<ProjectEntity> {
+	async deleteProject(id: string): Promise<ProjectEntity> {
 		const project = await this.projectsRepository.findOne({
 			where: { id },
 		});

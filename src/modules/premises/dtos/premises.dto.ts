@@ -9,10 +9,12 @@ import {
 	IsUUID,
 } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../../common/dto/abstract.dto";
-import { CommercialStatus, PremisesType, PuchaseOptions } from "../premises.entity";
+import {
+	CommercialStatus,
+	PremisesType,
+	PuchaseOptions,
+} from "../premises.entity";
 
 export class PremisesDto extends BaseDto {
 	@ApiProperty({ example: "Apartment 1" })
@@ -91,7 +93,10 @@ export class PremisesDto extends BaseDto {
 	@IsString()
 	mortagePayment?: string;
 
-	@ApiProperty({ example: "123e4567-e 89b-12d3-a456-426614174000" ,required: false})
+	@ApiProperty({
+		example: "123e4567-e 89b-12d3-a456-426614174000",
+		required: false,
+	})
 	@IsOptional()
 	@IsString()
 	section_id?: string;
@@ -123,7 +128,7 @@ export class PremisesFilterDto {
 	})
 	@IsOptional()
 	@IsUUID()
-	section_id?: Uuid;
+	section_id?: string;
 
 	@ApiProperty({ example: 3, required: false })
 	@IsOptional()
@@ -136,7 +141,7 @@ export class PremisesFilterDto {
 	})
 	@IsOptional()
 	@IsUUID()
-	project_id?: Uuid;
+	project_id?: string;
 
 	@ApiProperty({
 		example: "123e4567-e89b-12d3-a456-426614174000",
@@ -144,7 +149,7 @@ export class PremisesFilterDto {
 	})
 	@IsOptional()
 	@IsUUID()
-	building_id?: Uuid;
+	building_id?: string;
 
 	@ApiProperty({ example: "1", required: false })
 	@IsOptional()
@@ -191,7 +196,7 @@ export class PremisesFilterDto {
 	@IsOptional()
 	status?: CommercialStatus;
 
-	@ApiProperty({ required: false, enum: PuchaseOptions})
+	@ApiProperty({ required: false, enum: PuchaseOptions })
 	@IsOptional()
 	@IsEnum(PuchaseOptions)
 	purchaseOption?: PuchaseOptions;

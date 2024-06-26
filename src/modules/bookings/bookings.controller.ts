@@ -17,7 +17,6 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BaseDto } from "../../common/base/base_dto";
@@ -80,7 +79,7 @@ export class BookingsController {
 	})
 	async getBookings(
 		@User() user: ICurrentUser,
-		@Query("client_id") _client_id: Uuid,
+		@Query("client_id") _client_id: string,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 
@@ -109,7 +108,7 @@ export class BookingsController {
 	@Get(":id")
 	async getSingleBooking(
 		@UUIDParam("id")
-		id: Uuid,
+		id: string,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const foundCity = await this.service.r_findOne(id);
@@ -129,7 +128,7 @@ export class BookingsController {
 	})
 	@Put(":id")
 	async updateCity(
-		@UUIDParam("id") id: Uuid,
+		@UUIDParam("id") id: string,
 		@Body() updateBookingsDto: UpdateBookingsDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
@@ -149,7 +148,7 @@ export class BookingsController {
 		},
 	})
 	@Delete(":id")
-	async deleteCity(@UUIDParam("id") id: Uuid) {
+	async deleteCity(@UUIDParam("id") id: string) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.service.r_remove(id);
 		return metaData;

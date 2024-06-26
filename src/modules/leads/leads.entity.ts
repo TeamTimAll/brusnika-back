@@ -8,7 +8,7 @@ import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
 
 import { LeadsDto } from "./dtos/leads.dto";
-import { LeadOpsEntity } from "./lead_ops.entity";
+import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 
 export enum LeadState {
 	ACTIVE = "Активные",
@@ -57,6 +57,12 @@ export class LeadsEntity extends AbstractEntity<LeadsDto> {
 
 	@Column({ nullable: true, type: "integer" })
 	fee?: number;
+
+	@Column({ enum: LeadOpStatus, default: LeadOpStatus.OPEN })
+	current_status!: LeadOpStatus;
+
+	@Column({ default: 0, type: "integer" })
+	lead_number!: number;
 
 	@Column({ default: LeadState.ACTIVE, enum: LeadState })
 	state!: LeadState;
