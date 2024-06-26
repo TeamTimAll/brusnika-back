@@ -7,7 +7,7 @@ import { Uuid } from "boilerplate.polyfill";
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Order } from "../../../constants";
 import { ClientEntity } from "../../client/client.entity";
-import { PremisesEntity } from "../../premises/premises.entity";
+import { PremisesEntity, PremisesType } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
 import { UserEntity } from "../../user/user.entity";
 import { LeadOpStatus, LeadOpsEntity } from "../lead_ops.entity";
@@ -79,8 +79,8 @@ export class LeadReadByFilter {
 
 	@ApiProperty({ required: false })
 	@IsOptional()
-	@IsUUID()
-	premise_id?: Uuid;
+	@IsEnum(PremisesType)
+	premise_type?: PremisesType;
 
 	@ApiProperty({ required: false, enum: LeadOpStatus })
 	@IsOptional()
