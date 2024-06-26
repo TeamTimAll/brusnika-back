@@ -1,18 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
 import {
-	IsDate,
+	IsDateString,
 	IsEnum,
 	IsMilitaryTime,
 	IsOptional,
 	IsUUID,
-	ValidateNested,
 } from "class-validator";
 
 import { Uuid } from "boilerplate.polyfill";
 
 import { PuchaseOptions } from "../../premises/premises.entity";
-import { BaseDto } from "../../../common/base/base_dto";
 import { BookingStatus } from "../bookings.entity";
 
 export class CreateBookingsDto {
@@ -25,18 +22,19 @@ export class CreateBookingsDto {
 	client_id?: Uuid;
 
 	@IsUUID()
-	@ApiProperty({ required: false, description: "ID of agent" })
+	@IsOptional()
+	// @ApiProperty({ required: false, description: "ID of agent" })
 	agent_id?: Uuid;
 
-	@IsDate()
+	@IsDateString()
 	@ApiProperty({ required: true, description: "Date of booking" })
-	date!: Date;
+	date!: string;
 
 	@IsMilitaryTime()
 	@ApiProperty({ required: true, description: "Time of booking" })
 	time!: Date;
 
-	@IsEnum(() => PuchaseOptions)
+	@IsEnum(PuchaseOptions)
 	@ApiProperty({
 		required: true,
 		description: "Purchase option",
@@ -45,7 +43,7 @@ export class CreateBookingsDto {
 	purchase_option!: PuchaseOptions;
 
 	@IsOptional()
-	@IsEnum(() => BookingStatus)
+	@IsEnum( BookingStatus)
 	@ApiProperty({
 		required: false,
 		description: "Status of booking",
@@ -54,8 +52,12 @@ export class CreateBookingsDto {
 	status?: BookingStatus;
 }
 
-export class CreateBookingsMetaDataDto extends BaseDto<CreateBookingsDto> {
-	@ValidateNested()
-	@Type(() => CreateBookingsDto)
-	declare data: CreateBookingsDto;
-}
+// export class CreateBookingsMetaDataDto extends BaseDto<CreateBookingsDto> {
+// 	// @ApiProperty({
+// 	// 	oneOf: [{ $ref: getSchemaPath(CreateBookingsDto) }],
+// 	// 	type: () => CreateBookingsDto,
+// 	// })
+// 	// @ValidateNested()
+// 	// @Type(() => CreateBookingsDto)
+// 	declare data: CreateBookingsDto;
+// }

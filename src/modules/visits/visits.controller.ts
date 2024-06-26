@@ -6,13 +6,23 @@ import {
 	HttpStatus,
 	Post,
 	Put,
+	Query,
+	UseGuards,
 } from "@nestjs/common";
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+	ApiBearerAuth,
+	ApiOperation,
+	ApiQuery,
+	ApiResponse,
+	ApiTags,
+} from "@nestjs/swagger";
 
 import { Uuid } from "boilerplate.polyfill";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDParam } from "../../decorators";
+import { UUIDParam, User } from "../../decorators";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
 
 import { VisitsEntity } from "./visits.entity";
 import { VisitsService } from "./visits.service";
@@ -22,6 +32,8 @@ import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
 
 @ApiTags("Visits")
 @Controller("/visits")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class VisitsController {
 	constructor(private service: VisitsService) {}
 
@@ -37,8 +49,12 @@ export class VisitsController {
 		},
 	})
 	@Post()
-	createCity(@Body() createVisitsDto: CreateVisitsMetaDataDto) {
+	createCity(
+		@User() user: ICurrentUser,
+		@Body() createVisitsDto: CreateVisitsMetaDataDto,
+	) {
 		const dto = createVisitsDto.data;
+		dto.agent_id = user.user_id;
 		return this.service.create(dto);
 	}
 	// ------------------------------@Get()-------------------------------------
@@ -66,10 +82,10 @@ export class VisitsController {
 			),
 		},
 	})
-	async getVisits() {
+	async getVisits(@User() user: ICurrentUser, @Query("name") _name: Uuid) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 
-		metaData.data = await this.service.r_findAll();
+		metaData.data = await this.service.new_findAll(user);
 		return metaData;
 	}
 	// ----------------------------@Get(":id")----------------------------------

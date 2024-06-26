@@ -32,6 +32,12 @@ export class BookingsService extends BasicService<
 		return findOne;
 	}
 
+	async new_findAll(user: ICurrentUser): Promise<BookingsEntity[]> {
+		return this.repository.find({
+			where: { agent_id: user.user_id },
+		});
+	}
+
 	async r_update(
 		id: Uuid, // Assuming UUID is a string
 		dto: UpdateBookingsDto,

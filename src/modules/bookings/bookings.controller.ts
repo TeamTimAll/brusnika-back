@@ -6,22 +6,34 @@ import {
 	HttpStatus,
 	Post,
 	Put,
+	Query,
+	UseGuards,
 } from "@nestjs/common";
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+	ApiBearerAuth,
+	ApiOperation,
+	ApiQuery,
+	ApiResponse,
+	ApiTags,
+} from "@nestjs/swagger";
 
 import { Uuid } from "boilerplate.polyfill";
+import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDParam } from "../../decorators";
+import { UUIDParam, User } from "../../decorators";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { BookingsEntity } from "./bookings.entity";
 import { BookingsService } from "./bookings.service";
-import { CreateBookingsMetaDataDto } from "./dtos/create-bookings.dto";
-import { UpdateBookingsMetaDataDto } from "./dtos/update-bookings.dto";
+import { CreateBookingsDto } from "./dtos/create-bookings.dto";
+import { UpdateBookingsDto } from "./dtos/update-bookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
 
 @ApiTags("Bookings")
 @Controller("/bookings")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class BookingsController {
 	constructor(private service: BookingsService) {}
 
@@ -37,15 +49,15 @@ export class BookingsController {
 		},
 	})
 	@Post()
-	createCity(@Body() createBookingsDto: CreateBookingsMetaDataDto) {
-		const dto = createBookingsDto.data;
+	createCity(@User() user: ICurrentUser, @Body() dto: CreateBookingsDto) {
+		dto.agent_id = user.user_id;
 		return this.service.create(dto);
 	}
 	// ------------------------------@Get()-------------------------------------
 
 	@ApiQuery({
-		name: "name",
-		description: " booking Name (optional if not provided  or empty)",
+		name: "client_id",
+		description: " client id (optional if not provided  or empty)",
 		required: false,
 	})
 	@ApiOperation({ summary: "Get all bookings" })
@@ -66,10 +78,13 @@ export class BookingsController {
 			),
 		},
 	})
-	async getBookings() {
+	async getBookings(
+		@User() user: ICurrentUser,
+		@Query("client_id") _client_id: Uuid,
+	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 
-		metaData.data = await this.service.r_findAll();
+		metaData.data = await this.service.new_findAll(user);
 		return metaData;
 	}
 	// ----------------------------@Get(":id")----------------------------------
@@ -92,7 +107,7 @@ export class BookingsController {
 		},
 	})
 	@Get(":id")
-	async getSingleCity(
+	async getSingleBooking(
 		@UUIDParam("id")
 		id: Uuid,
 	) {
@@ -115,11 +130,10 @@ export class BookingsController {
 	@Put(":id")
 	async updateCity(
 		@UUIDParam("id") id: Uuid,
-		@Body() updateBookingsDto: UpdateBookingsMetaDataDto,
+		@Body() updateBookingsDto: UpdateBookingsDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		const dto = updateBookingsDto.data;
-		const updatedCity = await this.service.r_update(id, dto);
+		const updatedCity = await this.service.r_update(id, updateBookingsDto);
 		metaData.data = updatedCity;
 		return metaData;
 	}
