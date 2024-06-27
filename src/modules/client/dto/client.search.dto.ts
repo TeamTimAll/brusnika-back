@@ -22,9 +22,9 @@ export class FilterClientDto {
 	limit: number = 50;
 
 	@ApiProperty({ required: false })
-	@IsString()
+	@IsUUID("4")
 	@IsOptional()
-	fullname?: string;
+	client_id?: string;
 
 	@ApiProperty({ required: false })
 	@IsMobilePhone()
@@ -55,4 +55,11 @@ export class FilterClientDto {
 	@IsEnum(LeadState)
 	@IsOptional()
 	state?: string;
+}
+
+export class QuickSearchDto {
+	@ApiProperty({ required: false })
+	@IsString()
+	@IsOptional()
+	fullname?: string;
 }

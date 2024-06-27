@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 
 import { calcPagination } from "../../lib/pagination";
 import { ServiceResponse } from "../../types";
@@ -27,6 +27,20 @@ export class ClientService {
 		return this.clientRepository.save(client);
 	}
 
+	quickSearch(fullname: string = "") {
+		return this.clientRepository.find({
+			select: {
+				id: true,
+				fullname: true,
+				phone_number: true,
+			},
+			where: {
+				fullname: ILike(`%${fullname}%`),
+			},
+			take: 25,
+		});
+	}
+
 	async readAll(
 		dto: FilterClientDto,
 	): Promise<ServiceResponse<ClientEntity[]>> {
@@ -42,9 +56,9 @@ export class ClientService {
 				"c.node as node",
 			]);
 
-		if (dto.fullname) {
-			queryBuilder = queryBuilder.andWhere("c.fullname ilike :fullname", {
-				fullname: `%${dto.fullname}%`,
+		if (dto.client_id) {
+			queryBuilder = queryBuilder.andWhere("c.id = :client_id", {
+				client_id: dto.client_id,
 			});
 		}
 		if (dto.phone_number) {

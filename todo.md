@@ -50,8 +50,8 @@
 - [x] Lead state bo'yicha filter qilish.
 - [x] filter'ni read all bilan 1 ta qilish
 - [x] pagination kerak.
-- [ ] Client fullname va phone bo'yicha quick search.
-- [ ] Client fullname bilan emas id'si bilan filter qilish.
+- [x] Client fullname va phone bo'yicha quick search.
+- [x] Client fullname bilan emas id'si bilan filter qilish.
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?
