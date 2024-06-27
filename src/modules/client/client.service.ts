@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { calcPagination } from "../../lib/pagination";
+import { ServiceResponse } from "../../types";
 import { LeadOpsEntity } from "../leads/lead_ops.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 
@@ -25,7 +27,9 @@ export class ClientService {
 		return this.clientRepository.save(client);
 	}
 
-	readAll(dto: FilterClientDto): Promise<ClientEntity[]> {
+	async readAll(
+		dto: FilterClientDto,
+	): Promise<ServiceResponse<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
 			.select([
@@ -122,6 +126,17 @@ export class ClientService {
 			);
 		}
 
-		return queryBuilder.execute() as Promise<ClientEntity[]>;
+		const pageSize = (dto.page - 1) * dto.limit;
+
+		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
+
+		const clientCount = await this.clientRepository.count();
+
+		const clientResponse: ServiceResponse<ClientEntity[]> = {
+			links: calcPagination(clientCount, dto.page, dto.limit),
+			data: (await queryBuilder.execute()) as ClientEntity[],
+		};
+
+		return clientResponse;
 	}
 }

@@ -4,11 +4,12 @@ import { v4 as uuid } from "uuid";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Order } from "../../../constants";
+import { Limit, Page } from "../../../decorators/pagination";
 import { ClientEntity } from "../../client/client.entity";
 import { PremisesEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
 import { UserEntity } from "../../user/user.entity";
-import { PremisesType, LeadOpStatus, LeadOpsEntity } from "../lead_ops.entity";
+import { LeadOpStatus, LeadOpsEntity, PremisesType } from "../lead_ops.entity";
 import { LeadState, LeadsEntity } from "../leads.entity";
 
 export class LeadsDto extends BaseDto {}
@@ -70,6 +71,14 @@ export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
 }
 
 export class LeadReadByFilter {
+	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsUUID()

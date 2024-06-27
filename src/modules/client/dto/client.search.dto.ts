@@ -8,10 +8,19 @@ import {
 	IsUUID,
 } from "class-validator";
 
+import { Limit, Page } from "../../../decorators/pagination";
 import { LeadOpStatus } from "../../leads/lead_ops.entity";
 import { LeadState } from "../../leads/leads.entity";
 
 export class FilterClientDto {
+	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
 	@ApiProperty({ required: false })
 	@IsString()
 	@IsOptional()

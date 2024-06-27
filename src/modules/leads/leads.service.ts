@@ -3,6 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Repository } from "typeorm";
 
 import { RoleType } from "../../constants";
+import { calcPagination } from "../../lib/pagination";
+import { ServiceResponse } from "../../types";
 import { BuildingsService } from "../buildings/buildings.service";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
 import { ClientService } from "../client/client.service";
@@ -102,8 +104,10 @@ export class LeadsService {
 		return updatedLead;
 	}
 
-	readAll(dto: LeadReadByFilter): Promise<LeadsEntity[]> {
-		return this.leadRepository.find({
+	async readAll(
+		dto: LeadReadByFilter,
+	): Promise<ServiceResponse<LeadsEntity[]>> {
+		const leads = await this.leadRepository.find({
 			select: {
 				project: {
 					id: true,
@@ -159,6 +163,13 @@ export class LeadsService {
 				createdAt: dto.createdAt ?? "ASC",
 			},
 		});
+
+		const leadsCount = await this.leadRepository.count();
+
+		return {
+			data: leads,
+			links: calcPagination(leadsCount, dto.page, dto.limit),
+		};
 	}
 
 	async changeStatus(leadId: string, toStatus: LeadOpStatus) {

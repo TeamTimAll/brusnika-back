@@ -12,3 +12,15 @@ export type KeyOfType<Entity, U> = {
 }[keyof Entity];
 
 export type WithOutToDto<T> = Omit<T, "toDto">;
+
+export interface Links {
+	self: number;
+	next: number | null;
+	last: number;
+	limit: number;
+}
+
+export interface ServiceResponse<T> {
+	links: Links;
+	data: T;
+}
