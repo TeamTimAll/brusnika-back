@@ -31,7 +31,11 @@ export class CreateVisitsDto {
 	date!: Date;
 
 	@IsMilitaryTime()
-	@ApiProperty({ required: true, description: "Time of booking" })
+	@ApiProperty({
+		required: true,
+		default: "19:00",
+		description: "Time of booking",
+	})
 	time!: Date;
 
 	@IsEnum(PuchaseOptions)
