@@ -5,7 +5,7 @@ import { BaseDto } from "../../common/base/base_dto";
 import { createLink } from "../../lib/pagination";
 
 import { ClientService } from "./client.service";
-import { FilterClientDto, QuickSearchDto } from "./dto/client.search.dto";
+import { FilterClientDto, ClientQuickSearchDto } from "./dto/client.search.dto";
 import { CreateClientMetaDataDto } from "./dto/create.client.dto";
 
 @ApiTags("Client")
@@ -22,7 +22,7 @@ export class ClientController {
 	}
 
 	@Get("/search")
-	async quickSearch(@Query() dto: QuickSearchDto) {
+	async quickSearch(@Query() dto: ClientQuickSearchDto) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.clientService.quickSearch(dto.fullname);
 		return metaData;

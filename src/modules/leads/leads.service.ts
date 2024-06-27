@@ -144,7 +144,7 @@ export class LeadsService {
 					type: dto.premise_type,
 				},
 				client: {
-					fullname: dto.client_fullname,
+					id: dto.client_id,
 				},
 				current_status: dto.status,
 			},

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsEnum, IsOptional, IsUUID } from "class-validator";
 import { v4 as uuid } from "uuid";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
@@ -96,8 +96,8 @@ export class LeadReadByFilter {
 
 	@ApiProperty({ required: false })
 	@IsOptional()
-	@IsString()
-	client_fullname?: string;
+	@IsUUID("4")
+	client_id?: string;
 
 	@ApiProperty({ required: false, enum: Order })
 	@IsOptional()

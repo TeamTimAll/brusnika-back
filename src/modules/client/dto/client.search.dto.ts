@@ -57,7 +57,7 @@ export class FilterClientDto {
 	state?: string;
 }
 
-export class QuickSearchDto {
+export class ClientQuickSearchDto {
 	@ApiProperty({ required: false })
 	@IsString()
 	@IsOptional()
