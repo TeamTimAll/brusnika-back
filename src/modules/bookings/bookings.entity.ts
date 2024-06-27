@@ -8,9 +8,9 @@ import { PremisesEntity } from "../premises/premises.entity";
 import { ClientEntity } from "../client/client.entity";
 
 export enum BookingStatus {
-	OPEN = "открыто",
-	SUCCESS = "успешно",
-	FAIL = "неуспешно",
+	OPEN = "open",
+	SUCCESS = "success",
+	FAIL = "fail",
 }
 
 export enum PuchaseOptions {

@@ -17,9 +17,18 @@ export class MetaPrompt {
 	meta!: object;
 }
 
+export class MetaLinks {
+	self!: string;
+	next!: string;
+	last!: string;
+}
+
 export class MetaDto<T = object> {
 	@IsOptional()
 	type: ResponseStatusType = ResponseStatusType.SUCCESS;
+
+	@IsOptional()
+	links!: MetaLinks;
 
 	@IsOptional()
 	taskId!: string;
