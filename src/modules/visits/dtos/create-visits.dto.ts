@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsDate,
@@ -9,8 +9,8 @@ import {
 	ValidateNested,
 } from "class-validator";
 
-import { PuchaseOptions } from "../../premises/premises.entity";
 import { BaseDto } from "../../../common/base/base_dto";
+import { PuchaseOptions } from "../../premises/premises.entity";
 import { VisitStatus } from "../visits.entity";
 
 export class CreateVisitsDto {
@@ -53,6 +53,10 @@ export class CreateVisitsDto {
 }
 
 export class CreateVisitsMetaDataDto extends BaseDto<CreateVisitsDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(CreateVisitsDto) }],
+		type: () => CreateVisitsDto,
+	})
 	@ValidateNested()
 	@Type(() => CreateVisitsDto)
 	declare data: CreateVisitsDto;
