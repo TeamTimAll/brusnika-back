@@ -2,9 +2,10 @@ import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
+import { createLink } from "../../lib/pagination";
 
 import { ClientService } from "./client.service";
-import { FilterClientDto } from "./dto/client.search.dto";
+import { FilterClientDto, ClientQuickSearchDto } from "./dto/client.search.dto";
 import { CreateClientMetaDataDto } from "./dto/create.client.dto";
 
 @ApiTags("Client")
@@ -20,11 +21,20 @@ export class ClientController {
 		return metaData;
 	}
 
+	@Get("/search")
+	async quickSearch(@Query() dto: ClientQuickSearchDto) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		metaData.data = await this.clientService.quickSearch(dto.fullname);
+		return metaData;
+	}
+
 	@Get()
 	@ApiOkResponse({ type: CreateClientMetaDataDto })
 	async readAll(@Query() dto: FilterClientDto) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.clientService.readAll(dto);
+		const serviceResponse = await this.clientService.readAll(dto);
+		metaData.data = serviceResponse.data;
+		metaData.meta.links = createLink(serviceResponse.links);
 		return metaData;
 	}
 }

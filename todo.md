@@ -44,10 +44,14 @@
     Muamo: `TypeOrm`'ning `where` API'sidan foydalanganda, `lead_ops` ma'lumotlarini filter qilyapti. Lekin lead'ning ma'lumotlari filter qilinishi kerak.
 - [x] premises type lead read all'da
 - [x] filter'ni read all bilan 1 ta qilish
+- [x] pagination kerak.
 
 ### Clinet
 - [x] Lead state bo'yicha filter qilish.
 - [x] filter'ni read all bilan 1 ta qilish
+- [x] pagination kerak.
+- [x] Client fullname va phone bo'yicha quick search.
+- [x] Client fullname bilan emas id'si bilan filter qilish.
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?

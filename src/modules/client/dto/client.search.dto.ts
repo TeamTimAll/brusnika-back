@@ -8,14 +8,23 @@ import {
 	IsUUID,
 } from "class-validator";
 
+import { Limit, Page } from "../../../decorators/pagination";
 import { LeadOpStatus } from "../../leads/lead_ops.entity";
 import { LeadState } from "../../leads/leads.entity";
 
 export class FilterClientDto {
 	@ApiProperty({ required: false })
-	@IsString()
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
+	@ApiProperty({ required: false })
+	@IsUUID("4")
 	@IsOptional()
-	fullname?: string;
+	client_id?: string;
 
 	@ApiProperty({ required: false })
 	@IsMobilePhone()
@@ -46,4 +55,11 @@ export class FilterClientDto {
 	@IsEnum(LeadState)
 	@IsOptional()
 	state?: string;
+}
+
+export class ClientQuickSearchDto {
+	@ApiProperty({ required: false })
+	@IsString()
+	@IsOptional()
+	fullname?: string;
 }
