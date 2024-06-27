@@ -34,7 +34,7 @@ export class CreateVisitsDto {
 	@ApiProperty({ required: true, description: "Time of booking" })
 	time!: Date;
 
-	@IsEnum(() => PuchaseOptions)
+	@IsEnum(PuchaseOptions)
 	@ApiProperty({
 		required: true,
 		description: "Purchase option",
@@ -43,7 +43,7 @@ export class CreateVisitsDto {
 	purchase_option!: PuchaseOptions;
 
 	@IsOptional()
-	@IsEnum(() => VisitStatus)
+	@IsEnum(VisitStatus)
 	@ApiProperty({
 		required: false,
 		description: "Status of booking",

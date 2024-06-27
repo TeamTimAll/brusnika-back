@@ -21,6 +21,7 @@ import { TrainingModule } from "./training/training.module";
 import { UserModule } from "./user/user.module";
 import { VisitsModule } from "./visits/visits.module";
 import { BookingsModule } from "./bookings/bookings.module";
+import { CalendarModule } from "./calendar/calendar.module";
 
 @Module({
 	imports: [
@@ -46,6 +47,7 @@ import { BookingsModule } from "./bookings/bookings.module";
 		VisitsModule,
 		PremisesBasketModule,
 		PremisesBasketMetaModule,
+		CalendarModule,
 	],
 	exports: [],
 })
