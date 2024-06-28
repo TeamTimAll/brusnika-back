@@ -70,8 +70,8 @@ export class VisitsEntity extends AbstractEntity {
 	@Column({ type: "time" })
 	time!: Date;
 
-	@Column({ type: "enum", enum: PuchaseOptions })
-	purchase_option!: PuchaseOptions;
+	// @Column({ type: "enum", enum: PuchaseOptions })
+	// purchase_option!: PuchaseOptions;
 
 	@Column({ default: VisitStatus.OPEN, enum: VisitStatus })
 	status!: VisitStatus;
@@ -89,7 +89,7 @@ export class VisitsEntity extends AbstractEntity {
 			agent_id: entity.agent_id ?? "",
 			date: entity.date ?? new Date(),
 			time: entity.time ?? new Date(),
-			purchase_option: entity.purchase_option ?? PuchaseOptions.BILL,
+			// purchase_option: entity.purchase_option ?? PuchaseOptions.BILL,
 			status: entity.status ?? VisitStatus.OPEN,
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
