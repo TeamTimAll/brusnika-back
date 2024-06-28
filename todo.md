@@ -45,6 +45,7 @@
 - [x] premises type lead read all'da
 - [x] filter'ni read all bilan 1 ta qilish
 - [x] pagination kerak.
+- [ ] premise price field chiqarish kerak.
 
 ### Clinet
 - [x] Lead state bo'yicha filter qilish.
