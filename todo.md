@@ -45,17 +45,48 @@
 - [x] premises type lead read all'da
 - [x] filter'ni read all bilan 1 ta qilish
 - [x] pagination kerak.
-- [ ] premise price field chiqarish kerak.
+- [x] premise price field chiqarish kerak.
 
-### Clinet
+### Client
 - [x] Lead state bo'yicha filter qilish.
 - [x] filter'ni read all bilan 1 ta qilish
 - [x] pagination kerak.
 - [x] Client fullname va phone bo'yicha quick search.
 - [x] Client fullname bilan emas id'si bilan filter qilish.
+- [x] Read All'da client id qo'shish kerak.
+- [ ] Client ma'lumotlari auth bilan olinishi kerak. 
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?
 
 ### Agent
 - [ ] Agent gruhga qo'sha olish va olib tashlash
+
+Есть:
+    Auth        (Авторизация)
+    Agencies    (Агентства)
+    Booking     (Бронирование)
+    Building    (Здание)
+    Cities      (Города)
+    Client      (Клиент)
+    Events      (Мероприятия)
+    File-upload
+    News        (Новости)
+    Premises    (Помещение)
+    Projects    (Проекты)
+    Sections    (Разделы)
+    Training    (Обучение)
+    User        (Пользователь)
+    Lead        (Сделки)
+    Visits      (Запись на показ)
+    Calendar    (Календарь)
+
+Нету:
+    Форма NPS
+    Задачи
+    Заявка на ипотеку
+    Чат
+    Ипотечный калькулятор
+    Обмен
+    Аналитика
+    Администрирование
