@@ -14,10 +14,10 @@ export type KeyOfType<Entity, U> = {
 export type WithOutToDto<T> = Omit<T, "toDto">;
 
 export interface Links {
-	self: number;
-	next: number | null;
-	last: number;
+	totalPage: number;
+	currPage: number;
 	limit: number;
+	total: number;
 }
 
 export interface ServiceResponse<T> {

@@ -6,19 +6,19 @@ export function calcPagination(
 	limit: number,
 ): Links {
 	const maxPage = Math.ceil(count / limit);
-	const nextPage = maxPage <= page ? null : page + 1;
 	return {
-		self: page,
-		next: nextPage,
-		last: maxPage,
+		currPage: page,
+		totalPage: maxPage,
 		limit: limit,
+		total: count,
 	};
 }
 
-export function createLink(links: Links) {
+export function createLink(links: Links): Links {
 	return {
-		last: `page=${links.last}?limit=${links.limit}`,
-		next: `page=${links.next}?limit=${links.limit}`,
-		self: `page=${links.self}?limit=${links.limit}`,
+		currPage: links.currPage,
+		totalPage: links.totalPage,
+		limit: links.limit,
+		total: links.total,
 	};
 }
