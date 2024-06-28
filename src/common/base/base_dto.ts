@@ -7,6 +7,7 @@ import {
 	ValidateNested,
 } from "class-validator";
 
+import { Links } from "../../types";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
 
 import { BaseError } from "./baseError";
@@ -17,10 +18,11 @@ export class MetaPrompt {
 	meta!: object;
 }
 
-export class MetaLinks {
-	self!: string;
-	next!: string;
-	last!: string;
+export class MetaLinks implements Links {
+	totalPage!: number;
+	currPage!: number;
+	limit!: number;
+	total!: number;
 }
 
 export class MetaDto<T = object> {
