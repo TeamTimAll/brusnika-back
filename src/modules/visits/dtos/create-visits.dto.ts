@@ -14,45 +14,46 @@ import { PuchaseOptions } from "../../premises/premises.entity";
 import { VisitStatus } from "../visits.entity";
 
 export class CreateVisitsDto {
-	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of premise" })
+	@IsUUID()
 	premise_id?: string;
 
-	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of client" })
+	@IsUUID()
 	client_id?: string;
 
-	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of agent" })
+	@IsUUID()
+	@IsOptional()
 	agent_id?: string;
 
-	@IsDate()
 	@ApiProperty({ required: true, description: "Date of booking" })
+	@IsDate()
 	date!: Date;
 
-	@IsMilitaryTime()
 	@ApiProperty({
 		required: true,
 		default: "19:00",
 		description: "Time of booking",
 	})
+	@IsMilitaryTime()
 	time!: Date;
 
-	@IsEnum(PuchaseOptions)
 	@ApiProperty({
 		required: true,
 		description: "Purchase option",
 		enum: PuchaseOptions,
 	})
+	@IsEnum(PuchaseOptions)
 	purchase_option!: PuchaseOptions;
 
-	@IsOptional()
-	@IsEnum(VisitStatus)
 	@ApiProperty({
 		required: false,
 		description: "Status of booking",
 		enum: VisitStatus,
 	})
+	@IsOptional()
+	@IsEnum(VisitStatus)
 	status?: VisitStatus;
 }
 
