@@ -132,6 +132,7 @@ export class LeadsService {
 					type: true,
 					rooms: true,
 					floor: true,
+					price: true,
 				},
 				lead_ops: {
 					id: true,
