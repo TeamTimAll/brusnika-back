@@ -10,7 +10,6 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
-import { PuchaseOptions } from "../../premises/premises.entity";
 import { VisitStatus } from "../visits.entity";
 
 export class CreateVisitsDto {
@@ -39,13 +38,14 @@ export class CreateVisitsDto {
 	@IsMilitaryTime()
 	time!: Date;
 
-	@ApiProperty({
-		required: true,
-		description: "Purchase option",
-		enum: PuchaseOptions,
-	})
-	@IsEnum(PuchaseOptions)
-	purchase_option!: PuchaseOptions;
+	// @ApiProperty({
+	// 	required: true,
+	// 	description: "Purchase option",
+	// 	enum: PuchaseOptions,
+	// })
+	// @IsEnum(PuchaseOptions)
+	// @IsOptional()
+	// purchase_option?: PuchaseOptions;
 
 	@ApiProperty({
 		required: false,
