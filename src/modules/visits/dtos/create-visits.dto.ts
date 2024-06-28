@@ -1,7 +1,7 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
-	IsDate,
+	IsDateString,
 	IsEnum,
 	IsMilitaryTime,
 	IsOptional,
@@ -27,7 +27,7 @@ export class CreateVisitsDto {
 	agent_id?: string;
 
 	@ApiProperty({ required: true, description: "Date of booking" })
-	@IsDate()
+	@IsDateString()
 	date!: Date;
 
 	@ApiProperty({
