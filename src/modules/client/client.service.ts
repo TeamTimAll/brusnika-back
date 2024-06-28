@@ -47,6 +47,7 @@ export class ClientService {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
 			.select([
+				"c.id as id",
 				"c.fullname as fullname",
 				"c.phone_number as phone_number",
 				"c.actived_date as actived_date",
