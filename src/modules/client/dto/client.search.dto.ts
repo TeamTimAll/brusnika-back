@@ -1,37 +1,65 @@
-import { IsOptional, IsString, IsUUID, IsDateString } from 'class-validator';
-import { Type } from 'class-transformer';
+import { ApiProperty } from "@nestjs/swagger";
+import {
+	IsDateString,
+	IsEnum,
+	IsMobilePhone,
+	IsOptional,
+	IsString,
+	IsUUID,
+} from "class-validator";
 
-export class ClientFilterDto {
-  @IsOptional()
-  @IsString()
-  fullName?: string;
+import { Limit, Page } from "../../../decorators/pagination";
+import { LeadOpStatus } from "../../leads/lead_ops.entity";
+import { LeadState } from "../../leads/leads.entity";
 
-  @IsOptional()
-  @IsString()
-  phoneNumber?: string;
+export class FilterClientDto {
+	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
 
-  @IsOptional()
-  @IsUUID()
-  projectId?: string;
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
 
-  @IsOptional()
-  @IsDateString()
-  @Type(() => Date)
-  establishmentDateFrom?: Date;
+	@ApiProperty({ required: false })
+	@IsUUID("4")
+	@IsOptional()
+	client_id?: string;
 
-  @IsOptional()
-  @IsDateString()
-  @Type(() => Date)
-  establishmentDateTo?: Date;
+	@ApiProperty({ required: false })
+	@IsMobilePhone()
+	@IsOptional()
+	phone_number?: string;
 
-  @IsOptional()
-  @IsString()
-  transactionStatus?: string;
+	@ApiProperty({ required: false })
+	@IsUUID("4")
+	@IsOptional()
+	project_id?: string;
 
-  @IsOptional()
-  @IsString()
-  transactionStage?: string;
+	@ApiProperty({ required: false })
+	@IsDateString()
+	@IsOptional()
+	actived_from_date?: Date;
 
-  @IsOptional()
-  active?: boolean;
+	@ApiProperty({ required: false })
+	@IsDateString()
+	@IsOptional()
+	actived_to_date?: Date;
+
+	@ApiProperty({ required: false, enum: LeadOpStatus })
+	@IsEnum(LeadOpStatus)
+	@IsOptional()
+	status?: LeadOpStatus;
+
+	@ApiProperty({ required: false, enum: LeadState })
+	@IsEnum(LeadState)
+	@IsOptional()
+	state?: string;
+}
+
+export class ClientQuickSearchDto {
+	@ApiProperty({ required: false })
+	@IsString()
+	@IsOptional()
+	fullname?: string;
 }

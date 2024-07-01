@@ -6,7 +6,6 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { AuthModule } from "./auth/auth.module";
 import { BuildingsModule } from "./buildings/buildings.module";
 import { CitiesModule } from "./cities/cities.module";
-import { ClientStatusModule } from "./client-status/client-status.module";
 import { ClientModule } from "./client/client.module";
 import { CommentsModule } from "./comments/comments.module";
 import { EventsModule } from "./events/events.module";
@@ -20,6 +19,9 @@ import { ProjectsModule } from "./projects/projects.module";
 import { SectionsModule } from "./sections/sections.module";
 import { TrainingModule } from "./training/training.module";
 import { UserModule } from "./user/user.module";
+import { VisitsModule } from "./visits/visits.module";
+import { BookingsModule } from "./bookings/bookings.module";
+import { CalendarModule } from "./calendar/calendar.module";
 
 @Module({
 	imports: [
@@ -31,7 +33,6 @@ import { UserModule } from "./user/user.module";
 		EventsModule,
 		AuthModule,
 		ClientModule,
-		ClientStatusModule,
 		TrainingModule,
 		LeadsModule,
 		CitiesModule,
@@ -42,8 +43,11 @@ import { UserModule } from "./user/user.module";
 		BuildingsModule,
 		PremisesModule,
 		SectionsModule,
+		BookingsModule,
+		VisitsModule,
 		PremisesBasketModule,
 		PremisesBasketMetaModule,
+		CalendarModule,
 	],
 	exports: [],
 })

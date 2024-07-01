@@ -21,7 +21,10 @@ export enum ApplicationPromptID {
 	PREMISES_BASKET_NOT_FOUND_ERROR = 408,
 	PREMISE_NOT_FOUND_ERROR = 409,
 	CLIENT_NOT_FOUND_ERROR = 410,
-	NEWS_NOT_FOUND_ERROR = 411,
+	LEAD_NOT_FOUND_ERROR = 411,
+	BOOKING_NOT_FOUND_ERROR = 412,
+	VISIT_NOT_FOUND_ERROR = 413,
+	NEWS_NOT_FOUND_ERROR = 414,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -30,6 +33,7 @@ export enum ApplicationPromptID {
 	VERIFICATION_CODE_EXPIRED_ERROR = 314,
 	VERIFICATION_CODE_IS_NOT_CORRECT_ERROR = 315,
 	NO_VERIFICATION_CODE_SENT_ERROR = 316,
+	USER_PHONE_NOT_VERIFIED_ERROR = 317,
 }
 
 export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
@@ -187,6 +191,28 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"Client not found error",
 		],
 	},
+	[ApplicationPromptID.BOOKING_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.BOOKING_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "booking_not_found_error",
+		promptLabels: [
+			"Booking not found error",
+			"Бронирование не найдено",
+			"Booking not found error",
+		],
+	},
+	[ApplicationPromptID.VISIT_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.VISIT_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "visit_not_found_error",
+		promptLabels: [
+			"Visit not found error",
+			"Визит не найден",
+			"Visit not found error",
+		],
+	},
 	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {
 		promptId: ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR,
 		promptType: "application",
@@ -240,6 +266,28 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"No verification code sent error",
 			"Ошибка: код верификации не отправлен",
 			"No verification code sent error",
+		],
+	},
+	[ApplicationPromptID.USER_PHONE_NOT_VERIFIED_ERROR]: {
+		promptId: ApplicationPromptID.USER_PHONE_NOT_VERIFIED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "user_phone_not_verified_error",
+		promptLabels: [
+			"User phone not verified error",
+			"Ошибка: Номер пользователя не подтвержден",
+			"User phone not verified error",
+		],
+	},
+	[ApplicationPromptID.LEAD_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.LEAD_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "lead_not_found_error",
+		promptLabels: [
+			"Lead not found error",
+			"Ошибка лида не найдена",
+			"Lead not found error",
 		],
 	},
 };

@@ -13,9 +13,11 @@ import { AbstractEntity } from "../../common/abstract.entity";
 import { RoleType } from "../../constants";
 import { UseDto } from "../../decorators";
 import { AgenciesEntity } from "../agencies/agencies.entity";
-import { CommentEntity } from "../comments/comment.entity";
+import { BookingsEntity } from "../bookings/bookings.entity";
 import { CitiesEntity } from "../cities/cities.entity";
-import { ClientEntity } from "../client/client.entity";
+import { CommentEntity } from "../comments/comment.entity";
+import { TrainingEntity } from "../training/training.entity";
+import { VisitsEntity } from "../visits/visits.entity";
 
 import { UserDto } from "./dtos/user.dto";
 
@@ -105,11 +107,11 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	// })
 	// projects?: ProjectEntity[];
 
-	@OneToMany(() => ClientEntity, (client) => client.user, {
+	@OneToMany(() => TrainingEntity, (train) => train.user, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
 	})
-	clients?: ClientEntity[];
+	trainings?: TrainingEntity[];
 
 	@ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",
@@ -127,6 +129,12 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
 	@Column({ nullable: true })
 	agency_id?: string;
+
+	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.agent)
+	bookings?: BookingsEntity[];
+
+	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.premise)
+	visits?: BookingsEntity[];
 
 	static toDto(
 		entity: Partial<WithOutToDto<UserEntity>>,
@@ -154,7 +162,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
 			status: entity.status ?? true,
 			// events: entity.events ?? [],
 			comments: entity.comments ?? [],
-			clients: entity.clients ?? [],
+			trainings: entity.trainings ?? [],
 			city: entity.city ?? new CitiesEntity(),
 			city_id: entity.city_id ?? "",
 			agency: entity.agency ?? new AgenciesEntity(),

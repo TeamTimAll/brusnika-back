@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgenciesEntity } from "../agencies/agencies.entity";
 import { AgenciesService } from "../agencies/agencies.service";
@@ -43,7 +44,10 @@ export class AuthService {
 		});
 
 		if (!user) {
-			user = await this.userService.createUser(body);
+			user = await this.userService.createUser({
+				...body,
+				role: RoleType.AGENT,
+			});
 		}
 
 		if (
@@ -162,14 +166,13 @@ export class AuthService {
 	}
 
 	async loginAccount(loginDto: UserLoginDto): Promise<AuthRespone> {
-		// TODO: remove this
-		const emails = ["plingen@vicegolf.com", "kacper.polak@teacode.io"];
 		const user = await this.userService.findOne({
 			email: loginDto.email,
 			password: loginDto.password,
+			role: RoleType.EMPLOYEE,
 		});
 
-		if (!user || !emails.includes(user.email ?? "")) {
+		if (!user) {
 			throw new UnauthorizedError(
 				`User not found. email: ${loginDto.email}`,
 			);

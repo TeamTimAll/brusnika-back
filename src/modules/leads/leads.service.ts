@@ -2,10 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Repository } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
-import { AgenciesService } from "../agencies/agencies.service";
-import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
+import { RoleType } from "../../constants";
+import { calcPagination } from "../../lib/pagination";
+import { ServiceResponse } from "../../types";
 import { BuildingsService } from "../buildings/buildings.service";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
 import { ClientService } from "../client/client.service";
@@ -18,8 +17,10 @@ import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserService } from "../user/user.service";
 
 import { CreateLeadDto } from "./dtos/leads.create.dto";
+import { LeadReadByFilter } from "./dtos/leads.dto";
+import { LeadNotFoundError } from "./errors/LeadNotFound.error";
 import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
-import { LeadsEntity } from "./leads.entity";
+import { LeadState, LeadsEntity } from "./leads.entity";
 
 @Injectable()
 export class LeadsService {
@@ -35,7 +36,6 @@ export class LeadsService {
 		private readonly prjectService: ProjectsService,
 		private readonly premisesService: PremisesService,
 		private readonly buildingsService: BuildingsService,
-		private readonly agenciesService: AgenciesService,
 		private readonly userService: UserService,
 	) {}
 
@@ -67,24 +67,25 @@ export class LeadsService {
 		}
 		const foundClinet = await this.clientService.repository.findOne({
 			where: {
-				id: lead.clinet_id,
+				id: lead.client_id,
 			},
 		});
 		if (!foundClinet) {
-			throw new ClientNotFoundError(`clinet id: ${lead.clinet_id}`);
+			throw new ClientNotFoundError(`clinet id: ${lead.client_id}`);
 		}
-		const foundAgent = await this.agenciesService.repository.findOne({
+		const foundAgent = await this.userService.repository.findOne({
 			where: {
-				id: lead.agent_id,
+				id: lead.agent_id ?? IsNull(),
+				role: RoleType.AGENT,
 			},
 		});
 		if (!foundAgent) {
-			throw new AgencyNotFoundError(`agency id: ${lead.agent_id}`);
+			throw new UserNotFoundError(`agent(user) id: ${lead.agent_id}`);
 		}
 		const foundManeger = await this.userService.repository.findOne({
 			where: {
 				id: lead.manager_id ?? IsNull(),
-				// TODO: add role check
+				role: RoleType.MANAGER,
 			},
 		});
 		if (!foundManeger) {
@@ -103,8 +104,112 @@ export class LeadsService {
 		return updatedLead;
 	}
 
-	changeStatus(leadId: Uuid, toStatus: LeadOpStatus) {
-		leadId;
-		toStatus;
+	async readAll(
+		dto: LeadReadByFilter,
+	): Promise<ServiceResponse<LeadsEntity[]>> {
+		const leads = await this.leadRepository.find({
+			select: {
+				project: {
+					id: true,
+					name: true,
+				},
+				client: {
+					id: true,
+					fullname: true,
+					phone_number: true,
+				},
+				agent: {
+					id: true,
+					fullName: true,
+				},
+				manager: {
+					id: true,
+					fullName: true,
+				},
+				premise: {
+					id: true,
+					name: true,
+					type: true,
+					rooms: true,
+					floor: true,
+					price: true,
+				},
+				lead_ops: {
+					id: true,
+					status: true,
+				},
+			},
+			where: {
+				project_id: dto.project_id,
+				premise: {
+					type: dto.premise_type,
+				},
+				client: {
+					id: dto.client_id,
+				},
+				current_status: dto.status,
+			},
+			relations: {
+				lead_ops: true,
+				client: true,
+				agent: true,
+				manager: true,
+				premise: true,
+				project: true,
+			},
+			order: {
+				lead_ops: {
+					createdAt: "DESC",
+				},
+				createdAt: dto.createdAt ?? "ASC",
+			},
+		});
+
+		const leadsCount = await this.leadRepository.count();
+
+		return {
+			data: leads,
+			links: calcPagination(leadsCount, dto.page, dto.limit),
+		};
+	}
+
+	async changeStatus(leadId: string, toStatus: LeadOpStatus) {
+		const foundLead = await this.leadRepository.findOne({
+			where: {
+				id: leadId,
+			},
+		});
+		if (!foundLead) {
+			throw new LeadNotFoundError(`lead id: ${leadId}`);
+		}
+		if (toStatus === LeadOpStatus.ON_PAUSE) {
+			await this.leadRepository.update(leadId, {
+				state: LeadState.IN_PROGRESS,
+			});
+		} else if (toStatus === LeadOpStatus.FAILED) {
+			await this.leadRepository.update(leadId, {
+				state: LeadState.FAILED,
+			});
+		} else if (toStatus === LeadOpStatus.BOOK_CANCELED) {
+			await this.leadRepository.update(leadId, {
+				state: LeadState.FAILED,
+			});
+		} else if (toStatus === LeadOpStatus.WON) {
+			await this.leadRepository.update(leadId, {
+				state: LeadState.COMPLETE,
+			});
+		}
+		await this.leadRepository.update(leadId, {
+			current_status: toStatus,
+		});
+		let newLeadOP = this.leadOpsRepository.create();
+		newLeadOP.lead_id = leadId;
+		newLeadOP.status = toStatus;
+		newLeadOP = await this.leadOpsRepository.save(newLeadOP);
+		return this.leadRepository.findOne({
+			where: {
+				id: leadId,
+			},
+		});
 	}
 }

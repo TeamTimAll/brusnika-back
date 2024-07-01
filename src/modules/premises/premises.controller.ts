@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	ParseArrayPipe,
 	Post,
 	Put,
 	Query,
@@ -15,8 +16,7 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
+import { BaseDto } from "../../common/base/base_dto";
 import { UUIDParam } from "../../decorators";
 
 import { CreatePremisesDto } from "./dtos/create-premises.dto";
@@ -51,17 +51,22 @@ export class PremisesController {
 	}
 
 	@ApiOperation({ summary: "Get a single city by ID" })
-	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get(":id")
-	async getSinglePremises(@UUIDParam("id") id: Uuid) {
-		return await this.service.findOne(id, {
-			relations: ["section", "building"],
-		});
+	async getSinglePremises(@UUIDParam("id") id: string) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		metaData.data = await this.service.readOne(id);
+		return metaData;
 	}
 
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get("/cherry-pick/:ids")
-	async getMultiplePremisesByIds(@Query("ids") ids: Uuid[]) {
+	async getMultiplePremisesByIds(
+		@Query("ids", new ParseArrayPipe({ optional: true }))
+		ids: string[],
+	) {
+		if (!ids || !ids.length) {
+			return [];
+		}
 		/*
 			If the query id is single, the @Query decorator returns a string.
  			We need to check if it is a string or not. Because getMultiplePremisesByIds
@@ -77,7 +82,7 @@ export class PremisesController {
 	@ApiAcceptedResponse()
 	@Put(":id")
 	async updatePremises(
-		@UUIDParam("id") id: Uuid,
+		@UUIDParam("id") id: string,
 		@Body() updatePremisesDto: UpdatePremisesDto,
 	) {
 		await this.service.update(id, updatePremisesDto);
@@ -86,7 +91,7 @@ export class PremisesController {
 	@ApiOperation({ summary: "Delete a premises by ID" })
 	@ApiAcceptedResponse()
 	@Delete(":id")
-	async deletePremises(@UUIDParam("id") id: Uuid) {
+	async deletePremises(@UUIDParam("id") id: string) {
 		await this.service.remove(id);
 	}
 }

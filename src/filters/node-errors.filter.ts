@@ -1,3 +1,5 @@
+import { AssertionError } from "assert";
+
 import {
 	ArgumentsHost,
 	Catch,
@@ -10,7 +12,6 @@ import { BaseError } from "../common/base/baseError";
 import { BaseDto } from "../common/base/base_dto";
 import { ResponseStatusType } from "../common/enums/response_status_type_enum";
 import { ApplicationPromptID } from "../lib/prompt/applicationPrompt";
-import { AssertionError } from "assert";
 
 /**
  * NodeJS buildin error handler

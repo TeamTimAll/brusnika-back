@@ -1,14 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import {
-	ArrayMinSize,
-	IsArray,
-	IsNotEmpty,
-	IsString,
-	ValidateNested,
-} from "class-validator";
-
-import { Uuid } from "boilerplate.polyfill";
+import { IsNotEmpty, IsString, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
@@ -122,31 +114,27 @@ export class CreateBuilding {
 		required: true,
 		example: "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
 	})
-	project_id!: Uuid;
+	project_id!: string;
 }
 
 export class CreateBuildingMetaDto extends BaseDto<CreateBuilding> {
 	@ApiProperty({
-		example: [
-			{
-				name: "Building name ",
-				total_storage: 22,
-				total_vacant_storage: 12,
-				total_apartment: 22,
-				total_vacant_apartment: 12,
-				total_parking_space: 33,
-				total_vacant_parking_space: 44,
-				total_commercial: 3,
-				total_vacant_commercial: 1,
-				address: "Somewhere for building address",
-				number_of_floors: 3,
-				project_id: "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
-			} as CreateBuilding,
-		],
+		example: {
+			name: "Building name ",
+			total_storage: 22,
+			total_vacant_storage: 12,
+			total_apartment: 22,
+			total_vacant_apartment: 12,
+			total_parking_space: 33,
+			total_vacant_parking_space: 44,
+			total_commercial: 3,
+			total_vacant_commercial: 1,
+			address: "Somewhere for building address",
+			number_of_floors: 3,
+			project_id: "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
+		} as CreateBuilding,
 	})
-	@IsArray()
-	@ValidateNested({ each: true })
-	@ArrayMinSize(1)
+	@ValidateNested()
 	@Type(() => CreateBuilding)
-	declare data: CreateBuilding[];
+	declare data: CreateBuilding;
 }

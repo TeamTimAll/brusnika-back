@@ -1,5 +1,3 @@
-import "./boilerplate.polyfill";
-
 import { Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";

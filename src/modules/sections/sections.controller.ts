@@ -19,13 +19,13 @@ import {
 } from "@nestjs/swagger";
 
 import { UUIDParam } from "../../decorators";
+import { BaseDto } from "../../common/base/base_dto";
+
 import { CreateSectionsDto } from "./dtos/create-sections.dto";
 import { SectionsDto } from "./dtos/sections.dto";
 import { UpdateSectionsDto } from "./dtos/update-sections.dto";
 import { SectionsService } from "./sections.service";
-import { Uuid } from "boilerplate.polyfill";
 import { SectionsEntity } from "./sections.entity";
-import { BaseDto } from "../../common/base/base_dto";
 
 @Controller("/sections")
 @ApiTags("Sections")
@@ -58,7 +58,7 @@ export class SectionsController {
 	})
 	@ApiQuery({ name: "building_id", required: false })
 	@Get("/")
-	async getSections(@Query("building_id") building_id: Uuid): Promise<any> {
+	async getSections(@Query("building_id") building_id: string): Promise<any> {
 		try {
 			if (building_id) {
 				return await this.service.r_findAll({ where: { building_id } });
@@ -72,7 +72,7 @@ export class SectionsController {
 	@ApiOperation({ summary: "Get a single section by ID" })
 	@ApiResponse({ status: HttpStatus.OK, type: SectionsDto })
 	@Get(":id")
-	async getSinglesection(@UUIDParam("id") id: Uuid): Promise<any> {
+	async getSinglesection(@UUIDParam("id") id: string): Promise<any> {
 		try {
 			return await this.service.findOne(id);
 		} catch (error: any) {
@@ -84,7 +84,7 @@ export class SectionsController {
 	@ApiAcceptedResponse()
 	@Put(":id")
 	async updatesection(
-		@UUIDParam("id") id: Uuid,
+		@UUIDParam("id") id: string,
 		@Body() updateSectionsDto: UpdateSectionsDto,
 	): Promise<any> {
 		try {
@@ -97,7 +97,7 @@ export class SectionsController {
 	@ApiOperation({ summary: "Delete a section by ID" })
 	@ApiAcceptedResponse()
 	@Delete(":id")
-	async deletesection(@UUIDParam("id") id: Uuid): Promise<any> {
+	async deletesection(@UUIDParam("id") id: string): Promise<any> {
 		try {
 			await this.service.remove(id);
 		} catch (error: any) {

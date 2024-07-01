@@ -1,44 +1,40 @@
-import { Body, Controller, Get, Post , Put , Delete, Param  } from '@nestjs/common';
-import { ClientService } from './client.service';
-import { ClientCreateDto } from './dto/create.client.dto';
-import { UpdateClientDto } from './dto/client.update.dto';
-import { Uuid } from 'boilerplate.polyfill';
-import { ClientFilterDto } from './dto/client.search.dto';
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
-@Controller('client')
+import { BaseDto } from "../../common/base/base_dto";
+import { createLink } from "../../lib/pagination";
+
+import { ClientService } from "./client.service";
+import { FilterClientDto, ClientQuickSearchDto } from "./dto/client.search.dto";
+import { CreateClientMetaDataDto } from "./dto/create.client.dto";
+
+@ApiTags("Client")
+@Controller("client")
 export class ClientController {
-    constructor( private clientService : ClientService) {}
+	constructor(private clientService: ClientService) {}
 
-    @Get()
-    async  getAllCLients(){
-          return this.clientService.getAllClients()
-    }
+	@Post()
+	@ApiOkResponse({ type: CreateClientMetaDataDto })
+	async create(@Body() dto: CreateClientMetaDataDto) {
+		const metaData = BaseDto.createFromDto(dto);
+		metaData.data = await this.clientService.create(dto.data);
+		return metaData;
+	}
 
+	@Get("/search")
+	async quickSearch(@Query() dto: ClientQuickSearchDto) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		metaData.data = await this.clientService.quickSearch(dto.fullname);
+		return metaData;
+	}
 
-    @Post()
-    async createClient(@Body() creatClientDto : ClientCreateDto) {
-        return this.clientService.createClient(creatClientDto)
-    }
-
-
-    @Put()
-    async updateClient( @Body() updateClientDto : UpdateClientDto ){
-             return this.clientService.updateClient( updateClientDto)
-    };
-
-
-    @Delete(":id")
-    async deleteClient( @Param("id") id : Uuid){
-          return this.clientService.deleteClient(id)
-    }   
-
-    @Get(":id") 
-    async getOneClient( @Param("id") id : Uuid){  
-        return this.clientService.getOneClient(id)
-    } 
-
-    @Get("search")
-    async filterClients( @Body() filterSearch : ClientFilterDto){
-          return this.filterClients(filterSearch)
-    }
+	@Get()
+	@ApiOkResponse({ type: CreateClientMetaDataDto })
+	async readAll(@Query() dto: FilterClientDto) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		const serviceResponse = await this.clientService.readAll(dto);
+		metaData.data = serviceResponse.data;
+		metaData.meta.links = createLink(serviceResponse.links);
+		return metaData;
+	}
 }

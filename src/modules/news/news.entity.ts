@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
 import { WithOutToDto } from "types";
 
 import { AbstractEntity } from "../../common/abstract.entity";
@@ -8,12 +7,15 @@ import { UseDto } from "../../decorators";
 
 import { NewsDto } from "./dto/news.dto";
 import { NewsCategories } from "./modules/categories/categories.entity";
-import { NewsViews } from "./modules/views/views.entity";
 import { NewsLikes } from "./modules/likes/likes.entity";
+import { NewsViews } from "./modules/views/views.entity";
 
 @Entity({ name: "news" })
 @UseDto(NewsDto)
 export class NewsEntity extends AbstractEntity<NewsDto> {
+	@Column({ type: "uuid" })
+	userId!: string;
+
 	@Column({ nullable: true, type: "varchar" })
 	title!: string;
 
@@ -40,14 +42,14 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
 	published_at!: Date;
 
 	@Column({ type: "uuid", nullable: true })
-	primary_category_id!: Uuid;
+	primary_category_id!: string;
 
 	@OneToOne(() => NewsCategories)
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: NewsCategories;
 
 	@Column({ type: "uuid", nullable: true })
-	second_category_id?: Uuid;
+	second_category_id?: string;
 
 	@OneToOne(() => NewsCategories)
 	@JoinColumn({ name: "second_category_id" })
@@ -82,8 +84,8 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
 			primary_category: entity.primary_category ?? new NewsCategories(),
-			secondary_category:
-				entity.secondary_category ?? new NewsCategories(),
+			secondary_category: entity.secondary_category ?? new NewsCategories(),
+			userId: ""
 		};
 		return dto;
 	}

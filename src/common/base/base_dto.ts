@@ -1,13 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
-	IsArray,
 	IsDefined,
 	IsObject,
 	IsOptional,
-	ValidateNested
+	ValidateNested,
 } from "class-validator";
 
+import { Links } from "../../types";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
 
 import { BaseError } from "./baseError";
@@ -18,9 +18,19 @@ export class MetaPrompt {
 	meta!: object;
 }
 
+export class MetaLinks implements Links {
+	totalPage!: number;
+	currPage!: number;
+	limit!: number;
+	total!: number;
+}
+
 export class MetaDto<T = object> {
 	@IsOptional()
 	type: ResponseStatusType = ResponseStatusType.SUCCESS;
+
+	@IsOptional()
+	links!: MetaLinks;
 
 	@IsOptional()
 	taskId!: string;
@@ -42,10 +52,9 @@ export class BaseDto<T = unknown> {
 	@Type(() => MetaDto)
 	meta!: MetaDto;
 
-	@ApiProperty({ default: [] })
+	@ApiProperty()
 	@IsDefined()
-	@IsArray()
-	data!: T[];
+	data!: T;
 
 	/**
 	 * Setting the prompt and error type "ERROR".
@@ -61,7 +70,7 @@ export class BaseDto<T = unknown> {
 		return this;
 	}
 
-	static createFromDto<T extends BaseDto, D>(dto: T, data: D[] = []): T {
+	static createFromDto<T extends BaseDto, D>(dto: T, data?: D): T {
 		// Filling meta if it is null or undefined
 		dto.meta ??= new MetaDto();
 		dto.meta.type ??= ResponseStatusType.SUCCESS;

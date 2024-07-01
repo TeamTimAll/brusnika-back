@@ -4,18 +4,14 @@ import { DataSource } from "typeorm";
 import { v4 as uuid } from "uuid";
 
 import { ConfigManager } from "../../config";
+import { RoleType } from "../../constants";
 import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
 import { AgenciesEntity } from "../agencies/agencies.entity";
-import { AgenciesService } from "../agencies/agencies.service";
-import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { BuildingsService } from "../buildings/buildings.service";
 import { CreateBuilding } from "../buildings/dtos/building.create.dto";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
 import { CitiesEntity } from "../cities/cities.entity";
-import { CitiesService } from "../cities/cities.service";
-import { ClientStatusEntity } from "../client-status/client-status.entity";
-import { ClientStatusService } from "../client-status/client-status.service";
 import { ClientEntity } from "../client/client.entity";
 import { ClientService } from "../client/client.service";
 import { ClientNotFoundError } from "../client/errors/ClientNotFound.error";
@@ -39,17 +35,14 @@ describe(LeadsService.name, () => {
 	let leadsService: LeadsService;
 	let clientService: ClientService;
 	let userService: UserService;
-	let agenciesService: AgenciesService;
-	let citiesService: CitiesService;
 	let premisesService: PremisesService;
 	let buildingsService: BuildingsService;
 	let projectsService: ProjectsService;
 
 	const input = new CreateLeadDto();
-	let user: UserEntity;
+	let manager: UserEntity;
+	let agent: UserEntity;
 	let client: ClientEntity;
-	let city: ServiceResponse<CitiesEntity>;
-	let agent: ServiceResponse<AgenciesEntity>;
 	let project: CreateProjectDto & ProjectEntity;
 	let building: CreateBuilding & BuildingsEntity;
 	let premise: ServiceResponse<PremisesEntity>;
@@ -70,11 +63,9 @@ describe(LeadsService.name, () => {
 					LeadsEntity,
 					LeadOpsEntity,
 					ClientEntity,
-					ClientStatusEntity,
 					ProjectEntity,
 					PremisesEntity,
 					BuildingsEntity,
-					AgenciesEntity,
 					UserEntity,
 				]),
 			],
@@ -82,38 +73,32 @@ describe(LeadsService.name, () => {
 				LeadsService,
 				ClientService,
 				UserService,
-				AgenciesService,
-				CitiesService,
 				PremisesService,
 				BuildingsService,
 				ProjectsService,
-				ClientStatusService,
 			],
 		}).compile();
 
 		leadsService = moduleRef.get(LeadsService);
 		clientService = moduleRef.get(ClientService);
 		userService = moduleRef.get(UserService);
-		agenciesService = moduleRef.get(AgenciesService);
-		citiesService = moduleRef.get(CitiesService);
 		premisesService = moduleRef.get(PremisesService);
 		buildingsService = moduleRef.get(BuildingsService);
 		projectsService = moduleRef.get(ProjectsService);
 
-		user = await userService.createUser({ phone: "+78932154" });
-		client = await clientService.createClient({
-			userId: user.id,
-			fullName: "Test client",
-			phoneNumber: "+78932154",
-			establishmentDate: new Date(),
-			daysUntilEndOfAssignment: 0,
+		manager = await userService.createUser({
+			phone: "+78932154",
+			role: RoleType.MANAGER,
 		});
-		city = await citiesService.create<CitiesEntity>({
-			name: "Test city",
+		client = await clientService.create({
+			fullname: "Test client",
+			phone_number: "+78932154",
+			actived_date: new Date(),
+			expiration_date: new Date(),
 		});
-		agent = await agenciesService.create<AgenciesEntity>({
-			title: "Test agent",
-			city_id: city.data[0].id,
+		agent = await userService.createUser({
+			phone: "+78932152",
+			role: RoleType.AGENT,
 		});
 		project = await projectsService.createProjects({
 			name: "Test project",
@@ -146,16 +131,16 @@ describe(LeadsService.name, () => {
 			name: "Test premise",
 			building_id: building.id,
 		});
-		input.clinet_id = client.id;
-		input.agent_id = agent.data[0].id;
-		input.manager_id = user.id;
+		input.client_id = client.id;
+		input.agent_id = agent.id;
+		input.manager_id = manager.id;
 		input.premise_id = premise.data[0].id;
 		input.fee = 0;
 
 		expectedOutput = new LeadsEntity();
-		expectedOutput.clinet_id = client.id;
-		expectedOutput.agent_id = agent.data[0].id;
-		expectedOutput.manager_id = user.id;
+		expectedOutput.client_id = client.id;
+		expectedOutput.agent_id = agent.id;
+		expectedOutput.manager_id = manager.id;
 		expectedOutput.premise_id = premise.data[0].id;
 		expectedOutput.fee = 0;
 	});
@@ -166,8 +151,6 @@ describe(LeadsService.name, () => {
 		await dataSource.createQueryBuilder().delete().from(LeadOpsEntity).execute();
 		// prettier-ignore
 		await dataSource.createQueryBuilder().delete().from(LeadsEntity).execute();
-		// prettier-ignore
-		await dataSource.createQueryBuilder().delete().from(ClientStatusEntity).execute();
 		// prettier-ignore
 		await dataSource.createQueryBuilder().delete().from(UserEntity).execute();
 		// prettier-ignore
@@ -183,11 +166,11 @@ describe(LeadsService.name, () => {
 		await moduleRef.close();
 	});
 
-	describe("ClientService.create", () => {
+	describe("LeadsService.create", () => {
 		test("should return a lead", async () => {
 			const new_lead = await leadsService.create(input);
 			expect(new_lead).toMatchObject<Partial<LeadsEntity>>({
-				clinet_id: expectedOutput.clinet_id,
+				client_id: expectedOutput.client_id,
 				agent_id: expectedOutput.agent_id,
 				manager_id: expectedOutput.manager_id,
 				premise_id: expectedOutput.premise_id,
@@ -201,12 +184,12 @@ describe(LeadsService.name, () => {
 					JSON.stringify(input),
 				) as CreateLeadDto;
 
-				new_input.clinet_id = uuid();
+				new_input.client_id = uuid();
 				return await leadsService.create(new_input);
 			}).rejects.toThrow(ClientNotFoundError);
 		});
 
-		test("error: AgencyNotFoundError", async () => {
+		test("error: [agent] UserNotFoundError", async () => {
 			await expect(async () => {
 				const new_input = JSON.parse(
 					JSON.stringify(input),
@@ -214,10 +197,10 @@ describe(LeadsService.name, () => {
 
 				new_input.agent_id = uuid();
 				return await leadsService.create(new_input);
-			}).rejects.toThrow(AgencyNotFoundError);
+			}).rejects.toThrow(UserNotFoundError);
 		});
 
-		test("error: UserNotFoundError", async () => {
+		test("error: [manager] UserNotFoundError", async () => {
 			await expect(async () => {
 				const new_input = JSON.parse(
 					JSON.stringify(input),
@@ -276,7 +259,7 @@ describe(LeadsService.name, () => {
 					address: "Test address",
 					number_of_floors: 0,
 					photos: [],
-					project_id: uuid(),
+					project_id: string(),
 				});
 
 				const new_premise =
@@ -289,6 +272,32 @@ describe(LeadsService.name, () => {
 
 				return await leadsService.create(new_input);
 			}).rejects.toThrow(ProjectNotFoundError);
+		});
+	});
+
+	describe("LeadsService.readAll", () => {
+		test("read all lead with lead_ops relation", async () => {
+			await leadsService.create(input);
+			const leads = await leadsService.readAll();
+			leads.forEach((l) => {
+				expect(l).toMatchObject({
+					client_id: expect.any(String) as string,
+					agent_id: expect.any(String) as string,
+					manager_id: expect.any(String) as string,
+					project_id: expect.any(String) as string,
+					premise_id: expect.any(String) as string,
+					fee: expect.any(Number) as number,
+				});
+
+				expect(l.lead_ops).not.toEqual([]);
+
+				l.lead_ops?.forEach((o) =>
+					expect(o).toMatchObject({
+						lead_id: expect.any(String) as string,
+						status: expect.any(String) as string,
+					}),
+				);
+			});
 		});
 	});
 });

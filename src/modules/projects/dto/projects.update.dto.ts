@@ -6,10 +6,8 @@ import {
 	IsNotEmptyObject,
 	IsObject,
 	IsString,
-	ValidateNested
+	ValidateNested,
 } from "class-validator";
-
-import { Uuid } from "boilerplate.polyfill";
 
 import { MetaDto } from "../../../common/base/base_dto";
 
@@ -25,7 +23,7 @@ export class UpdateProjectMetaParams {
 	// })
 	// @IsOptional()
 	// @IsUUID()
-	// user_id?: Uuid;
+	// user_id?: string;
 
 	@ApiProperty({
 		required: true,
@@ -33,7 +31,7 @@ export class UpdateProjectMetaParams {
 	})
 	@IsNotEmpty()
 	@IsString()
-	project_id!: Uuid;
+	project_id!: string;
 }
 
 export class UpdateProjectMetaDto extends MetaDto<UpdateProjectMetaParams> {

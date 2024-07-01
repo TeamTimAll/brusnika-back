@@ -1,61 +1,103 @@
 import { Injectable } from "@nestjs/common";
-import { InjectDataSource } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
-import { BasicService } from "../../generic/service";
-
-import { EventsEntity } from "./events.entity";
 import { CreateEventsDto } from "./dtos/create-events.dto";
-import { UpdateEventsDto } from "./dtos/update-events.dto";
-import { FilterEventsDto } from "./dtos/events.dto";
+import { type UpdateEventsDto } from "./dtos/update-events.dto";
+import { EventsEntity } from "./events.entity";
+import { EventsNotFoundException } from "./exceptions/events-not-found.exception";
 
 @Injectable()
-export class EventsService extends BasicService<
-	EventsEntity,
-	CreateEventsDto,
-	UpdateEventsDto
-> {
-	constructor(@InjectDataSource() dataSource: DataSource) {
-		super("events", EventsEntity, dataSource);
+export class EventsService {
+	constructor(
+		@InjectRepository(EventsEntity)
+		private eventsRepository: Repository<EventsEntity>,
+	) {}
+
+	async createEvents(
+		userId: string,
+		createEventsDto: CreateEventsDto,
+	): Promise<EventsEntity> {
+		createEventsDto.userId = userId;
+		const createdEvent: EventsEntity =
+			await this.eventsRepository.save(createEventsDto);
+		return createdEvent;
 	}
 
-	async findAllWith(filter?: FilterEventsDto): Promise<any> {
-		const currentDate = new Date();
-		const queryBuilder = this.repository
-			.createQueryBuilder("events")
-			.leftJoinAndSelect("events.city", "city");
+	async getSingleEvents(id: string): Promise<EventsEntity> {
+		const queryBuilder = this.eventsRepository
+			.createQueryBuilder("Events")
+			.where("Events.id = :id", { id });
 
-		if (filter) {
-			if (filter.type) {
-				queryBuilder.andWhere("events.type = :type", {
-					type: filter.type,
-				});
-			}
+		const EventsEntity = await queryBuilder.getOne();
 
-			if (filter.city_id) {
-				queryBuilder.andWhere("city.id = :city", {
-					city: filter.city_id,
-				});
-			}
-
-			if (filter.format) {
-				queryBuilder.andWhere("events.format = :format", {
-					format: filter.format,
-				});
-			}
+		if (!EventsEntity) {
+			throw new EventsNotFoundException();
 		}
 
-		const upcomingEvents = await queryBuilder
-			.where("events.date > :currentDate", { currentDate })
-			.getMany();
+		return EventsEntity;
+	}
 
-		const pastEvents = await queryBuilder
-			.where("events.date < :currentDate", { currentDate })
-			.getMany();
+	async updateEvents(
+		id: string,
+		updateEventsDto: UpdateEventsDto,
+	): Promise<void> {
+		const queryBuilder = this.eventsRepository
+			.createQueryBuilder("Events")
+			.where("Events.id = :id", { id });
 
-		return {
-			upcoming: upcomingEvents,
-			past: pastEvents,
-		};
+		const EventsEntity = await queryBuilder.getOne();
+
+		if (!EventsEntity) {
+			throw new EventsNotFoundException();
+		}
+
+		this.eventsRepository.merge(EventsEntity, updateEventsDto);
+
+		await this.eventsRepository.save(updateEventsDto);
+	}
+
+	async deleteEvents(id: string): Promise<void> {
+		const queryBuilder = this.eventsRepository
+			.createQueryBuilder("Events")
+			.where("Events.id = :id", { id });
+
+		const EventsEntity = await queryBuilder.getOne();
+
+		if (!EventsEntity) {
+			throw new EventsNotFoundException();
+		}
+
+		await this.eventsRepository.remove(EventsEntity);
+	}
+
+	async updateEventLike(id: string): Promise<void> {
+		const queryBuilder = this.eventsRepository
+			.createQueryBuilder("Events")
+			.where("Events.id = :id", { id });
+
+		const event = await queryBuilder.getOne();
+
+		if (!event) {
+			throw new EventsNotFoundException();
+		}
+
+		event["likeCount"]++;
+		await this.eventsRepository.save(event);
+	}
+
+	async updateEventView(id: string): Promise<void> {
+		const queryBuilder = this.eventsRepository
+			.createQueryBuilder("Events")
+			.where("Events.id = :id", { id });
+
+		const event = await queryBuilder.getOne();
+
+		if (!event) {
+			throw new EventsNotFoundException();
+		}
+
+		event["views"]++; // Increment view count
+		await this.eventsRepository.save(event);
 	}
 }

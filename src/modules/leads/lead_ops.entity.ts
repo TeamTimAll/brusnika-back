@@ -21,6 +21,13 @@ export enum LeadOpStatus {
 	FAILED = "проиграна",
 }
 
+export enum PremisesType {
+	APARTMENT = "apartment",
+	STOREROOM = "storeroom",
+	PARKING = "parking",
+	COMMERCIAL = "commercial",
+}
+
 @Entity({ name: "lead_ops" })
 @UseDto(LeadsDto)
 export class LeadOpsEntity extends AbstractEntity<LeadsDto> {

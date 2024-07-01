@@ -1,15 +1,13 @@
 import { IsOptional, IsString, IsUUID } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
 export class UpdateNewsDto {
 	@IsUUID()
 	@ApiProperty({
 		required: true,
 		description: "UUID of the news",
 	})
-	id!: Uuid;
+	id!: string;
 
 	@IsString()
 	@ApiProperty({
@@ -30,7 +28,7 @@ export class UpdateNewsDto {
 	@IsString()
 	@ApiProperty({
 		required: false,
-		description: "Image URL",	
+		description: "Image URL",
 	})
 	@IsOptional()
 	cover_image?: string;

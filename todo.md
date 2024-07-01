@@ -3,27 +3,90 @@
 ## Code baza
 - [x] Project config'larini validation qilib config abstraction'dan olinishi kerak. Hozirda `proccess.env`'dan olinyapti. Config oqimini shakilantirish. ORM'da 2 ta config yozilgan. Sync bo'lishi izdan chiqadi.
 - [x] code format qo'shish?
-- [ ] unit testing?
+- [x] unit testing?
 - [ ] Seed qo'shish (logika jihatdan kelib chiqib)?
 - [ ] Base service? Qayta takrorlanadigan CRUD'ni base service'ga olib o'tish. Yangi module qo'shish tezligini oshiradi, DRY'ni oldini oladi.
 - [x] auth service'da ok response'da `HttpException` ishlatilgan. Response abstraction kerak. Chunki `HttpException` Error'dan extend olgan. Bu degani `HttpException` tashalganda stack trace bilan chiqadi degani. Logger'da kelishmovchiliklar bo'ladi. Misol uchun info'ni ichida stack trace string keladi va bu debug qilishni qiyinlashtirib yuboradi.
 - [x] Error qolibi. Error code va message'larni bilan. Tillik yoki 1 ta tillik.
-- [ ] Logger. Error qolibi qilinsa logger implement qilish oson kechadi. Logger daraxt ko'rinishida shakilantirish ixtiyoriy.
-- [ ] File saqlashda jildlarga ajaratib ishlash. Bu file boshqaruvni osonlashtiradi. Tashqaridan tool ishlatish file bilan bo'ladigan amallarni tezlashtiradi. Tool'ga misol `MinIO`. Hozirda file saqlanish `media` nomli jildda saqlanyapti. File boshqaruv ixtiyoriy.
-- [ ] CI/CD. Development tezligini oshiradi.
-- [ ] Environment shakli. Misol: `main` (shuncha project haqida ma'lumot. ixtiyoriy), `prod`, `test`, `dev`.
+- [-] Logger. Error qolibi qilinsa logger implement qilish oson kechadi. Logger daraxt ko'rinishida shakilantirish ixtiyoriy.
+- [-] File saqlashda jildlarga ajaratib ishlash. Bu file boshqaruvni osonlashtiradi. Tashqaridan tool ishlatish file bilan bo'ladigan amallarni tezlashtiradi. Tool'ga misol `MinIO`. Hozirda file saqlanish `media` nomli jildda saqlanyapti. File boshqaruv ixtiyoriy.
+- [-] CI/CD. Development tezligini oshiradi.
+- [x] Environment shakli. Misol: `main` (shuncha project haqida ma'lumot. ixtiyoriy), `prod`, `test`, `dev`.
 - [x] Code bazadan ishlatilmaydigan keraksiz code va config'larni o'chirib tashlash.
 
-## Database
-- [ ] Клиенты - [Client](src/modules/client/)
-- [ ] Сделки - [Deals](src/modules/deals/)
-- [ ] Агент - [News](src/modules/agencies/)
-- [ ] Проекты - [Projects](src/modules/projects/)
-- [ ] Чат с поддержкой ? - [Commnets](src/modules/comments/)
-- [ ] Задачи - ?
-- [ ] Обмен - ?
-- [ ] ? - [Deals](src/modules/events/)
-- [ ] ? - [Training](src/modules/training/)
-- [ ] ? - [Cities](src/modules/news/)
+---
+### Client
+- [x] Client module'ni ko'rib chiqish kerak.
+- [x] Client filter'ida active/hamma (default active) bo'yicha ma'lumot olinadi. 
+    Lekin lead'dagi status "на паузе" yoki "проиграна" bo'lmasligi kerak.
+    - [x] Filter field `fullname`
+    - [x] Filter field `phone_number`
+    - [x] Filter field `project_id`
+    - [x] Filter field `actived_from_date`
+    - [x] Filter field `actived_to_date`
+    - [x] Filter field `status`
+- [x] Client entity ma'lumotlari:
+    - [x] F.I.SH
+    - [x] Telfon raqam
+    - [x] Project
+    - [x] Actived_date[from | to] (Дата первичного заведения “от” и “до”)
+    - [x] Current status.
+    - [x] Comment
+    - [x] Tags
+    - [x] Expiration date
+    - [x] Task node (About client)
 
-Arenda logikaning hisobotsiz shakli.
+### Lead
+- [x] current status field qo'shish.
+- [x] created at bo'yicha asc va desc sort
+- [x] lead number
+- [x] lead'ning hozirgi turgan status'i bo'yicha filter qilish.
+    Muamo: `TypeOrm`'ning `where` API'sidan foydalanganda, `lead_ops` ma'lumotlarini filter qilyapti. Lekin lead'ning ma'lumotlari filter qilinishi kerak.
+- [x] premises type lead read all'da
+- [x] filter'ni read all bilan 1 ta qilish
+- [x] pagination kerak.
+- [x] premise price field chiqarish kerak.
+
+### Client
+- [x] Lead state bo'yicha filter qilish.
+- [x] filter'ni read all bilan 1 ta qilish
+- [x] pagination kerak.
+- [x] Client fullname va phone bo'yicha quick search.
+- [x] Client fullname bilan emas id'si bilan filter qilish.
+- [x] Read All'da client id qo'shish kerak.
+- [ ] Client ma'lumotlari auth bilan olinishi kerak. 
+
+### Premises
+- [ ] подъезд qo'shish kerak emasmi?
+
+### Agent
+- [ ] Agent gruhga qo'sha olish va olib tashlash
+
+Есть:
+    Auth        (Авторизация)
+    Agencies    (Агентства)
+    Booking     (Бронирование)
+    Building    (Здание)
+    Cities      (Города)
+    Client      (Клиент)
+    Events      (Мероприятия)
+    File-upload
+    News        (Новости)
+    Premises    (Помещение)
+    Projects    (Проекты)
+    Sections    (Разделы)
+    Training    (Обучение)
+    User        (Пользователь)
+    Lead        (Сделки)
+    Visits      (Запись на показ)
+    Calendar    (Календарь)
+
+Нету:
+    Форма NPS
+    Задачи
+    Заявка на ипотеку
+    Чат
+    Ипотечный калькулятор
+    Обмен
+    Аналитика
+    Администрирование

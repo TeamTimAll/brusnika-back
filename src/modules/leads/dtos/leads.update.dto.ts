@@ -1,5 +1,14 @@
-import { PartialType } from "@nestjs/mapped-types";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEnum, IsUUID } from "class-validator";
 
-import { CreateLeadDto } from "./leads.create.dto";
+import { LeadOpStatus } from "../lead_ops.entity";
 
-export class UpdateDealsDto extends PartialType(CreateLeadDto) {}
+export class UpdateLeadDto {
+	@ApiProperty()
+	@IsUUID("4")
+	leadId!: string;
+
+	@ApiProperty({ enum: LeadOpStatus })
+	@IsEnum(LeadOpStatus)
+	toStatus!: LeadOpStatus;
+}

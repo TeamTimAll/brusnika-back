@@ -10,8 +10,6 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../common/base/base_dto";
 import { UUIDParam } from "../../decorators";
 import { UserEntity } from "../../modules/user/user.entity";
@@ -32,14 +30,15 @@ export class CitiesController {
 	@ApiResponse({
 		status: HttpStatus.CREATED,
 		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
+			example: BaseDto.createFromDto(
+				new BaseDto(),
 				CitiesEntity.toDto({ name: "..." }),
-			]),
+			),
 		},
 	})
 	@Post()
 	createCity(@Body() createCitiesDto: CreateCitiesMetaDataDto) {
-		const dto = createCitiesDto.data[0]; // Only one item comes
+		const dto = createCitiesDto.data;
 		return this.service.create(dto);
 	}
 	// ------------------------------@Get()-------------------------------------
@@ -85,12 +84,13 @@ export class CitiesController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
+			example: BaseDto.createFromDto(
+				new BaseDto(),
 				CitiesEntity.toDto({
 					name: "...",
 					users: [UserEntity.toDto({})],
 				}),
-			]),
+			),
 		},
 	})
 	@ApiResponse({
@@ -104,11 +104,11 @@ export class CitiesController {
 	@Get(":id")
 	async getSingleCity(
 		@UUIDParam("id")
-		id: Uuid,
+		id: string,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const foundCity = await this.service.r_findOne(id);
-		metaData.data = [foundCity];
+		metaData.data = foundCity;
 		return metaData;
 	}
 	// ---------------------------@Put(":id")-----------------------------------
@@ -116,21 +116,22 @@ export class CitiesController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
+			example: BaseDto.createFromDto(
+				new BaseDto<CitiesEntity>(),
 				CitiesEntity.toDto({
 					name: "...",
 					users: [UserEntity.toDto({})],
 				}),
-			]),
+			),
 		},
 	})
 	@Put(":id")
 	async updateCity(
-		@UUIDParam("id") id: Uuid,
+		@UUIDParam("id") id: string,
 		@Body() updateCitiesDto: UpdateCitiesMetaDataDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		const dto = updateCitiesDto.data[0]; // Only one item comes
+		const dto = updateCitiesDto.data;
 		const updatedCity = await this.service.r_update(id, dto);
 		metaData.data = updatedCity;
 		return metaData;
@@ -140,16 +141,17 @@ export class CitiesController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
+			example: BaseDto.createFromDto(
+				new BaseDto(),
 				CitiesEntity.toDto({
 					name: "...",
 					users: [UserEntity.toDto({})],
 				}),
-			]),
+			),
 		},
 	})
 	@Delete(":id")
-	async deleteCity(@UUIDParam("id") id: Uuid) {
+	async deleteCity(@UUIDParam("id") id: string) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.service.r_remove(id);
 		return metaData;

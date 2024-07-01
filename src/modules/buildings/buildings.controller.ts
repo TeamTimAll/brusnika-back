@@ -11,8 +11,6 @@ import {
 } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../common/base/base_dto";
 import { UUIDParam, UUIDQuery } from "../../decorators";
 
@@ -31,7 +29,7 @@ export class BuildingsController {
 		name: "project_id",
 		required: false,
 	})
-	async getAll(@UUIDQuery("project_id", true) project_id?: Uuid) {
+	async getAll(@UUIDQuery("project_id", true) project_id?: string) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.buildingsService.findAllBuilding(project_id);
 		return metaData;
@@ -42,9 +40,9 @@ export class BuildingsController {
 	async create(@Body() dto: CreateBuildingMetaDto) {
 		const metaData = BaseDto.createFromDto(dto);
 		const createdBuilding = await this.buildingsService.createBuilding(
-			dto.data[0],
+			dto.data,
 		);
-		metaData.data = [createdBuilding];
+		metaData.data = createdBuilding;
 		return metaData;
 	}
 
@@ -52,23 +50,23 @@ export class BuildingsController {
 	@HttpCode(HttpStatus.OK)
 	async update(
 		@Body() dto: UpdateBuildingMetaDataDto,
-		@UUIDParam("id") id: Uuid,
+		@UUIDParam("id") id: string,
 	) {
 		const metaData = BaseDto.createFromDto(dto);
 		const updatedBuilding = await this.buildingsService.updateBuilding(
 			id,
-			dto.data[0],
+			dto.data,
 		);
-		metaData.data = [updatedBuilding];
+		metaData.data = updatedBuilding;
 		return metaData;
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.OK)
-	async delete(@Param("id") id: Uuid) {
+	async delete(@Param("id") id: string) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const deletedBuilding = await this.buildingsService.delete(id);
-		metaData.data = [deletedBuilding];
+		metaData.data = deletedBuilding;
 		return metaData;
 	}
 }

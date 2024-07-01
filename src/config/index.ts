@@ -4,7 +4,7 @@ import * as Joi from "joi";
 import { DatabaseConfig, DatabaseConfigManager } from "./database";
 // import { DatabaseConfig, DatabaseConfigManager } from './database';
 
-export type NodeEnv = "development" | "production";
+export type NodeEnv = "development" | "production" | "test";
 
 export interface IConfig {
 	NODE_ENV: NodeEnv;
@@ -45,7 +45,7 @@ export class ConfigManager {
 	private static configSchema = Joi.object<IConfig, true>({
 		SERVER_PORT: Joi.number().required(),
 		NODE_ENV: Joi.string()
-			.valid(...(["development", "production"] as NodeEnv[]))
+			.valid(...(["development", "production", "test"] as NodeEnv[]))
 			.required(),
 		DB_TYPE: Joi.string().required(),
 		DB_HOST: Joi.string().required(),

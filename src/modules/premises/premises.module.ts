@@ -6,8 +6,9 @@ import { PremisesEntity } from "./premises.entity";
 import { PremisesService } from "./premises.service";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PremisesEntity])],
-  providers: [PremisesService],
-  controllers: [PremisesController],
+	imports: [TypeOrmModule.forFeature([PremisesEntity])],
+	providers: [PremisesService],
+	controllers: [PremisesController],
+	exports: [PremisesService],
 })
 export class PremisesModule {}

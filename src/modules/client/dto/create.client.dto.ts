@@ -1,48 +1,17 @@
-import { IsString, IsNotEmpty, IsOptional, IsDateString, IsUUID, IsMobilePhone } from 'class-validator';
-import { Type } from 'class-transformer';
-import { Uuid } from 'boilerplate.polyfill';
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { ValidateNested } from "class-validator";
 
-class ClientCreateDto {
-  @IsNotEmpty()
-  @IsString()
-  fullName!: string;
+import { BaseDto } from "../../../common/base/base_dto";
 
-  @IsOptional()
-  @IsString()
-  comment?: string;
+import { ClientDto } from "./client.dto";
 
-  @IsNotEmpty()
-  @IsMobilePhone()
-  phoneNumber!: string;
-
-  @IsOptional()
-  @IsUUID()
-  projectId?: string;
-
-  @IsOptional()
-  @IsString()
-  transactionStatus?: string;
-
-  @IsOptional()
-  @IsString()
-  transactionStage?: string;
-
-  @IsNotEmpty()
-  @IsDateString()
-  establishmentDate!: Date;
-
-
-  @IsNotEmpty()
-  @Type(() => Number)
-  daysUntilEndOfAssignment!: number;
-
-  @IsOptional()
-  @IsString()
-  managerNote?: string;
-
-  @IsNotEmpty()
-  @IsUUID()
-  userId!: Uuid;
+export class CreateClientMetaDataDto extends BaseDto<ClientDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(ClientDto) }],
+		type: () => ClientDto,
+	})
+	@ValidateNested()
+	@Type(() => ClientDto)
+	declare data: ClientDto;
 }
-
-export { ClientCreateDto };

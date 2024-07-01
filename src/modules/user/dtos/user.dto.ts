@@ -13,8 +13,6 @@ import {
 	MaxLength,
 } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { RoleType } from "../../../constants";
 import { UserEntity, UserRegisterStatus } from "../user.entity";
@@ -96,7 +94,7 @@ export class UserDto extends BaseDto {
 	@ApiProperty({
 		required: false,
 	})
-	city_id?: Uuid;
+	city_id?: string;
 
 	@ApiProperty({ description: "The agency ID of the user" })
 	@IsOptional()
@@ -131,6 +129,8 @@ export class UserCreateDto {
 	@IsMobilePhone()
 	@ApiProperty({ required: true })
 	phone!: string;
+
+	role?: RoleType;
 }
 
 export class UserChangePhoneVerifyCodeDto {
@@ -186,7 +186,7 @@ export class UserUpdateDto {
 		required: false,
 		description: "The ID of the city where the user resides",
 	})
-	city_id?: Uuid;
+	city_id?: string;
 }
 
 export class UserFillDataDto {
@@ -194,7 +194,7 @@ export class UserFillDataDto {
 	@ApiProperty({
 		required: true,
 	})
-	id!: Uuid;
+	id!: string;
 
 	@IsString()
 	@ApiProperty({
@@ -212,7 +212,7 @@ export class UserFillDataDto {
 	@ApiProperty({
 		required: true,
 	})
-	city_id!: Uuid;
+	city_id!: string;
 
 	@IsDateString()
 	@ApiProperty({ required: true })

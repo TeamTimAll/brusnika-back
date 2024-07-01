@@ -1,157 +1,157 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ClientEntity } from  "./client.entity"
-import { Repository } from 'typeorm';
-import { Uuid } from 'boilerplate.polyfill';
-import { UpdateClientDto } from './dto/client.update.dto';
-import { ClientFilterDto } from './dto/client.search.dto';
-import { ClientStatusService } from '../../modules/client-status/client-status.service';
-import { IClientStatusCreatedType } from "../../types/client.types"
-import { ClientCreateDto } from './dto/create.client.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ILike, Repository } from "typeorm";
 
+import { calcPagination } from "../../lib/pagination";
+import { ServiceResponse } from "../../types";
+import { LeadOpsEntity } from "../leads/lead_ops.entity";
+import { LeadsEntity } from "../leads/leads.entity";
+
+import { ClientEntity } from "./client.entity";
+import { ClientDto } from "./dto/client.dto";
+import { FilterClientDto } from "./dto/client.search.dto";
 
 @Injectable()
 export class ClientService {
+	constructor(
+		@InjectRepository(ClientEntity)
+		private clientRepository: Repository<ClientEntity>,
+	) {}
 
-    constructor( 
-          @InjectRepository(ClientEntity)
-           private clientRepository : Repository<ClientEntity>,
-           private clientStatusService : ClientStatusService
-    ){};
+	get repository(): Repository<ClientEntity> {
+		return this.clientRepository;
+	}
 
-    async getAllClients() : Promise<any[]>{
-          return await  this.clientRepository.find({
-              relations : {
-                  pinningType : true
-              }
-          })
-    }
+	create(dto: ClientDto) {
+		const client = this.clientRepository.create(dto);
+		return this.clientRepository.save(client);
+	}
 
-    async createClient( clientCreateDto : ClientCreateDto  )  : Promise<ClientEntity | HttpException>{
-           try{
-               
-               const newClient =  await this.clientRepository.save(clientCreateDto)
-              
-               if(!newClient) return new HttpException("Cannot create client " , 500)
-         
-               const clientStatusType  : IClientStatusCreatedType  = await this.clientStatusService.createClientStatus({
-                clientId : newClient.id,
-                type : "lead verification"
-               })
-              
+	quickSearch(fullname: string = "") {
+		return this.clientRepository.find({
+			select: {
+				id: true,
+				fullname: true,
+				phone_number: true,
+			},
+			where: {
+				fullname: ILike(`%${fullname}%`),
+			},
+			take: 25,
+		});
+	}
 
-               if(clientStatusType.success === false  ) {
-                console.log(clientStatusType?.error_reason)
-                 return new  HttpException("Cannot create client status" , 500)
-               };
+	async readAll(
+		dto: FilterClientDto,
+	): Promise<ServiceResponse<ClientEntity[]>> {
+		let queryBuilder = this.clientRepository
+			.createQueryBuilder("c")
+			.select([
+				"c.id as id",
+				"c.fullname as fullname",
+				"c.phone_number as phone_number",
+				"c.actived_date as actived_date",
+				"c.comment as comment",
+				"c.status as status",
+				"c.expiration_date as expiration_date",
+				"c.node as node",
+			]);
 
+		if (dto.client_id) {
+			queryBuilder = queryBuilder.andWhere("c.id = :client_id", {
+				client_id: dto.client_id,
+			});
+		}
+		if (dto.phone_number) {
+			queryBuilder = queryBuilder.andWhere(
+				"phone_number ilike :phone_number",
+				{
+					phone_number: `%${dto.phone_number}%`,
+				},
+			);
+		}
+		if (dto.project_id || dto.status || dto.state) {
+			queryBuilder = queryBuilder.innerJoin(
+				(qb) => {
+					const query = qb
+						.select("l.*")
+						.addSelect("lop.status")
+						.from(LeadsEntity, "l")
+						.innerJoin(
+							(qb2) => {
+								const query = qb2
+									.select("*")
+									.from(LeadOpsEntity, "lop")
+									.where("l.id = lop.lead_id")
+									.orderBy("lop.created_at", "DESC")
+									.limit(1)
+									.getQuery();
+								qb2.getQuery = () => `LATERAL (${query})`;
+								return qb2;
+							},
+							"lop",
+							"l.id = lop.lead_id",
+						)
+						.where("l.client_id = c.id")
+						.groupBy("l.id")
+						.addGroupBy("lop.status")
+						.limit(1)
+						.getQuery();
 
-               if(!clientStatusType.clientStatus) {
-                console.log("Cannot get client status")
-                return new HttpException("Something went wrong" , 500);
-               }
+					qb.getQuery = () => `LATERAL (${query})`;
+					return qb;
+				},
+				"l",
+				"c.id = l.client_id",
+			);
 
+			if (dto.state) {
+				queryBuilder = queryBuilder.andWhere("l.state = :state", {
+					state: dto.state,
+				});
+			}
+			if (dto.project_id) {
+				queryBuilder = queryBuilder.andWhere(
+					"l.project_id = :project_id",
+					{
+						project_id: dto.project_id,
+					},
+				);
+			}
+			if (dto.status) {
+				queryBuilder = queryBuilder.andWhere("l.status = :status", {
+					status: dto.status,
+				});
+			}
+		}
+		if (dto.actived_from_date) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.actived_date >= :actived_from_date",
+				{
+					actived_from_date: dto.actived_from_date,
+				},
+			);
+		}
+		if (dto.actived_to_date) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.actived_date <= :actived_to_date",
+				{
+					actived_to_date: dto.actived_to_date,
+				},
+			);
+		}
 
-               newClient.pinningType = clientStatusType.clientStatus
+		const pageSize = (dto.page - 1) * dto.limit;
 
-               return await  this.clientRepository.save(newClient)
+		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
 
-           }catch ( error : any ){
-             console.log({
-                error 
-             })
+		const clientCount = await this.clientRepository.count();
 
-             return new HttpException(error.message , 500)
-           }
-    }
+		const clientResponse: ServiceResponse<ClientEntity[]> = {
+			links: calcPagination(clientCount, dto.page, dto.limit),
+			data: (await queryBuilder.execute()) as ClientEntity[],
+		};
 
-    async updateClient ( clientUpdateDto : UpdateClientDto ) : Promise<ClientEntity | HttpException>{
-
-        const client = await this.getOneClient(clientUpdateDto.clientId)
-        if(!client) return new HttpException("Client not found" , 404)
-            
-       
-        const updatedClient = await this.clientRepository.merge(client , clientUpdateDto)
-        
-        return  await this.clientRepository.save(updatedClient)
-          
-    }
-
-    async getOneClient(id: Uuid): Promise<ClientEntity | null> {
-      const queryBuilder = this.clientRepository 
-      .createQueryBuilder('client')
-       .leftJoinAndSelect('client.pinningType', 'clientStatus')
-      .where('client.id = :id', { id })
-      .select(['client', 'clientStatus'])
-    
-        const client = await queryBuilder.getOne()
-        console.log(client)
-        return client;
-      }
-
-    async deleteClient( id : Uuid) : Promise<ClientEntity | HttpException> {
-           try {
-            const client = await this.getOneClient(id)
-
-            if(!client) return new HttpException("Client not found " , 404);
-  
-            await this.clientRepository.softDelete(id);
-  
-            return client
-           } catch (error : any ) {
-                 return new HttpException(error.message , 500)
-           }
-    };
-
-
-     async findClients(filterDto: ClientFilterDto): Promise<ClientEntity[]> {
-        const queryBuilder = this.clientRepository.createQueryBuilder('clients');
-    
-        if (filterDto.fullName) {
-          queryBuilder.andWhere('clients.fullName LIKE :fullName', { fullName: `%${filterDto.fullName}%` });
-        }
-    
-        if (filterDto.phoneNumber) {
-          queryBuilder.andWhere('clients.phoneNumber LIKE :phoneNumber', { phoneNumber: `%${filterDto.phoneNumber}%` });
-        }
-    
-        if (filterDto.projectId) {
-          queryBuilder.andWhere('clients.projectId = :projectId', { projectId: filterDto.projectId });
-        }
-    
-        if (filterDto.establishmentDateFrom) {
-          queryBuilder.andWhere('clients.establishmentDate >= :establishmentDateFrom', { establishmentDateFrom: filterDto.establishmentDateFrom });
-        }
-    
-        if (filterDto.establishmentDateTo) {
-          queryBuilder.andWhere('clients.establishmentDate <= :establishmentDateTo', { establishmentDateTo: filterDto.establishmentDateTo });
-        }
-    
-        if (filterDto.transactionStatus) {
-          queryBuilder.andWhere('clients.transactionStatus = :transactionStatus', { transactionStatus: filterDto.transactionStatus });
-        }
-    
-        if (filterDto.transactionStage) {
-          queryBuilder.andWhere('clients.transactionStage = :transactionStage', { transactionStage: filterDto.transactionStage });
-        }
-    
-        if (filterDto.active !== undefined) {
-          if (filterDto.active) {
-            queryBuilder.andWhere('clients.transactionStatus NOT IN (:...inactiveStatuses)', { inactiveStatuses: ['paused', 'lost'] });
-          } else {
-            queryBuilder.andWhere('clients.transactionStatus IN (:...inactiveStatuses)', { inactiveStatuses: ['paused', 'lost'] });
-          }
-        }
-    
-          const clients = await queryBuilder.getMany();
-
-        if (clients.length === 0) {
-            throw new HttpException('No clients found',404);
-        };
-        
-
-         return clients 
-      }
-    }
-
-
+		return clientResponse;
+	}
+}
