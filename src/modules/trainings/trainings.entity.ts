@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
 import { WithOutToDto } from "types";
 
 import { AbstractEntity } from "../../common/abstract.entity";
@@ -8,8 +7,8 @@ import { UseDto } from "../../decorators";
 
 import { TrainingsDto } from "./dto/trainings.dto";
 import { TrainingsCategories } from "./modules/categories/categories.entity";
-import { TrainingsViews } from "./modules/views/views.entity";
 import { TrainingsLikes } from "./modules/likes/likes.entity";
+import { TrainingsViews } from "./modules/views/views.entity";
 
 @Entity({ name: "trainings" })
 @UseDto(TrainingsDto)
@@ -40,29 +39,37 @@ export class TrainingsEntity extends AbstractEntity<TrainingsDto> {
 	published_at!: Date;
 
 	@Column({ type: "uuid", nullable: true })
-	primary_category_id!: Uuid;
+	primary_category_id!: string;
 
 	@OneToOne(() => TrainingsCategories)
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: TrainingsCategories;
 
 	@Column({ type: "uuid", nullable: true })
-	second_category_id?: Uuid;
+	second_category_id?: string;
 
 	@OneToOne(() => TrainingsCategories)
 	@JoinColumn({ name: "second_category_id" })
 	secondary_category!: TrainingsCategories;
 
-	@OneToMany(() => TrainingsViews, (TrainingsViews) => TrainingsViews.trainings, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
+	@OneToMany(
+		() => TrainingsViews,
+		(TrainingsViews) => TrainingsViews.trainings,
+		{
+			onDelete: "CASCADE",
+			onUpdate: "CASCADE",
+		},
+	)
 	views?: TrainingsViews[];
 
-	@OneToMany(() => TrainingsLikes, (TrainingsLikes) => TrainingsLikes.trainings, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
+	@OneToMany(
+		() => TrainingsLikes,
+		(TrainingsLikes) => TrainingsLikes.trainings,
+		{
+			onDelete: "CASCADE",
+			onUpdate: "CASCADE",
+		},
+	)
 	likes?: TrainingsLikes[];
 
 	static toDto(
@@ -81,7 +88,8 @@ export class TrainingsEntity extends AbstractEntity<TrainingsDto> {
 			second_category_id: entity.second_category_id ?? "",
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
-			primary_category: entity.primary_category ?? new TrainingsCategories(),
+			primary_category:
+				entity.primary_category ?? new TrainingsCategories(),
 			secondary_category:
 				entity.secondary_category ?? new TrainingsCategories(),
 		};

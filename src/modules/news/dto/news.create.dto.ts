@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsBoolean,
 	IsNotEmpty,
@@ -5,9 +6,6 @@ import {
 	IsString,
 	IsUUID,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
-
-import { Uuid } from "boilerplate.polyfill";
 
 export class CreateNewsDto {
 	@IsString()
@@ -44,7 +42,7 @@ export class CreateNewsDto {
 		example: "The first category of the news",
 		required: false,
 	})
-	primary_category_id!: Uuid;
+	primary_category_id!: string;
 
 	@IsOptional()
 	@IsUUID()
@@ -53,7 +51,7 @@ export class CreateNewsDto {
 		example: "The second category of the news",
 		required: false,
 	})
-	second_category_id!: Uuid;
+	second_category_id!: string;
 
 	@IsBoolean()
 	@ApiProperty({
@@ -81,5 +79,5 @@ export class CreateNewsDto {
 
 	@IsString()
 	@IsOptional()
-	user_id?: Uuid;
+	user_id?: string;
 }

@@ -1,13 +1,11 @@
 import { IsNotEmpty } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 export class CreateTrainingsLikesDto {
 	@IsNotEmpty()
-	user_id!: Uuid;
+	user_id!: string;
 
 	@IsNotEmpty()
-	trainings_id!: Uuid;
+	trainings_id!: string;
 }
 
 export class UpdateTrainingsLikesDto {}

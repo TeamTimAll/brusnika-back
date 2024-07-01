@@ -16,7 +16,6 @@ import { AgenciesEntity } from "../agencies/agencies.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 import { CommentEntity } from "../comments/comment.entity";
-import { TrainingEntity } from "../training/training.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 
 import { UserDto } from "./dtos/user.dto";
@@ -107,12 +106,6 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	// })
 	// projects?: ProjectEntity[];
 
-	@OneToMany(() => TrainingEntity, (train) => train.user, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	trainings?: TrainingEntity[];
-
 	@ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",
 		onUpdate: "NO ACTION",
@@ -162,7 +155,6 @@ export class UserEntity extends AbstractEntity<UserDto> {
 			status: entity.status ?? true,
 			// events: entity.events ?? [],
 			comments: entity.comments ?? [],
-			trainings: entity.trainings ?? [],
 			city: entity.city ?? new CitiesEntity(),
 			city_id: entity.city_id ?? "",
 			agency: entity.agency ?? new AgenciesEntity(),

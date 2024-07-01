@@ -2,21 +2,19 @@ import { HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
-import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
-import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { BasicService } from "../../generic/service";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
 
-import { TrainingsEntity } from "./trainings.entity";
 import { CreateTrainingsDto } from "./dto/trainings.create.dto";
-import { UpdateTrainingsDto } from "./dto/trainings.update.dto";
-import { TrainingsLikesService } from "./modules/likes/likes.service";
 import { LikeTrainingsDto } from "./dto/trainings.dto";
+import { UpdateTrainingsDto } from "./dto/trainings.update.dto";
+import { TrainingsNotFoundError } from "./errors/TrainingsNotFound.error";
 import { TrainingsCategoriesService } from "./modules/categories/categories.service";
 import { CreateTrainingsCategoriesDto } from "./modules/categories/dto/categories.dto";
-import { TrainingsNotFoundError } from "./errors/TrainingsNotFound.error";
+import { TrainingsLikesService } from "./modules/likes/likes.service";
 import { TrainingsViewsService } from "./modules/views/views.service";
+import { TrainingsEntity } from "./trainings.entity";
 
 @Injectable()
 export class TrainingsService extends BasicService<
@@ -80,11 +78,14 @@ export class TrainingsService extends BasicService<
 		return this.trainingsCategoriesService.findAll();
 	}
 
-	async r_findOne(id: Uuid, user: ICurrentUser): Promise<any> {
+	async r_findOne(id: string, user: ICurrentUser): Promise<unknown> {
 		const findOne = await this.repository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
-			.leftJoinAndSelect("trainings.secondary_category", "secondary_category")
+			.leftJoinAndSelect(
+				"trainings.secondary_category",
+				"secondary_category",
+			)
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
 			.leftJoinAndSelect(
@@ -114,14 +115,19 @@ export class TrainingsService extends BasicService<
 			});
 		}
 
-		return new ServiceResponse(["trainings data"], HttpStatus.OK, [findOne]);
+		return new ServiceResponse(["trainings data"], HttpStatus.OK, [
+			findOne,
+		]);
 	}
 
-	async r_findAll(): Promise<any> {
+	async r_findAll() {
 		return this.repository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
-			.leftJoinAndSelect("trainings.secondary_category", "secondary_category")
+			.leftJoinAndSelect(
+				"trainings.secondary_category",
+				"secondary_category",
+			)
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
 			.getMany();

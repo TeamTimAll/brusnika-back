@@ -2,21 +2,19 @@ import { HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
-import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
-import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { BasicService } from "../../generic/service";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
 
-import { NewsEntity } from "./news.entity";
 import { CreateNewsDto } from "./dto/news.create.dto";
-import { UpdateNewsDto } from "./dto/news.update.dto";
-import { NewsLikesService } from "./modules/likes/likes.service";
 import { LikeNewsDto } from "./dto/news.dto";
+import { UpdateNewsDto } from "./dto/news.update.dto";
+import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsCategoriesService } from "./modules/categories/categories.service";
 import { CreateNewsCategoriesDto } from "./modules/categories/dto/categories.dto";
-import { NewsNotFoundError } from "./errors/NewsNotFound.error";
+import { NewsLikesService } from "./modules/likes/likes.service";
 import { NewsViewsService } from "./modules/views/views.service";
+import { NewsEntity } from "./news.entity";
 
 @Injectable()
 export class NewsService extends BasicService<
@@ -80,7 +78,7 @@ export class NewsService extends BasicService<
 		return this.newsCategoriesService.findAll();
 	}
 
-	async r_findOne(id: Uuid, user: ICurrentUser): Promise<any> {
+	async r_findOne(id: string, user: ICurrentUser) {
 		const findOne = await this.repository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
@@ -117,7 +115,7 @@ export class NewsService extends BasicService<
 		return new ServiceResponse(["news data"], HttpStatus.OK, [findOne]);
 	}
 
-	async r_findAll(): Promise<any> {
+	async r_findAll() {
 		return this.repository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
