@@ -5,17 +5,14 @@ import { WithOutToDto } from "types";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
 
-import { NewsDto } from "./dto/news.dto";
-import { NewsCategories } from "./modules/categories/categories.entity";
-import { NewsLikes } from "./modules/likes/likes.entity";
-import { NewsViews } from "./modules/views/views.entity";
+import { TrainingsDto } from "./dto/trainings.dto";
+import { TrainingsCategories } from "./modules/categories/categories.entity";
+import { TrainingsLikes } from "./modules/likes/likes.entity";
+import { TrainingsViews } from "./modules/views/views.entity";
 
-@Entity({ name: "news" })
-@UseDto(NewsDto)
-export class NewsEntity extends AbstractEntity<NewsDto> {
-	@Column({ type: "uuid" })
-	userId!: string;
-
+@Entity({ name: "trainings" })
+@UseDto(TrainingsDto)
+export class TrainingsEntity extends AbstractEntity<TrainingsDto> {
 	@Column({ nullable: true, type: "varchar" })
 	title!: string;
 
@@ -44,33 +41,41 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
 	@Column({ type: "uuid", nullable: true })
 	primary_category_id!: string;
 
-	@OneToOne(() => NewsCategories)
+	@OneToOne(() => TrainingsCategories)
 	@JoinColumn({ name: "primary_category_id" })
-	primary_category?: NewsCategories;
+	primary_category?: TrainingsCategories;
 
 	@Column({ type: "uuid", nullable: true })
 	second_category_id?: string;
 
-	@OneToOne(() => NewsCategories)
+	@OneToOne(() => TrainingsCategories)
 	@JoinColumn({ name: "second_category_id" })
-	secondary_category!: NewsCategories;
+	secondary_category!: TrainingsCategories;
 
-	@OneToMany(() => NewsViews, (NewsViews) => NewsViews.news, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	views?: NewsViews[];
+	@OneToMany(
+		() => TrainingsViews,
+		(TrainingsViews) => TrainingsViews.trainings,
+		{
+			onDelete: "CASCADE",
+			onUpdate: "CASCADE",
+		},
+	)
+	views?: TrainingsViews[];
 
-	@OneToMany(() => NewsLikes, (NewsLikes) => NewsLikes.news, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	likes?: NewsLikes[];
+	@OneToMany(
+		() => TrainingsLikes,
+		(TrainingsLikes) => TrainingsLikes.trainings,
+		{
+			onDelete: "CASCADE",
+			onUpdate: "CASCADE",
+		},
+	)
+	likes?: TrainingsLikes[];
 
 	static toDto(
-		entity: Partial<WithOutToDto<NewsEntity>>,
-	): WithOutToDto<NewsEntity> {
-		const dto: WithOutToDto<NewsEntity> = {
+		entity: Partial<WithOutToDto<TrainingsEntity>>,
+	): WithOutToDto<TrainingsEntity> {
+		const dto: WithOutToDto<TrainingsEntity> = {
 			id: entity.id ?? "",
 			title: entity.title ?? "",
 			content: entity.content ?? "",
@@ -83,9 +88,10 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
 			second_category_id: entity.second_category_id ?? "",
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
-			primary_category: entity.primary_category ?? new NewsCategories(),
-			secondary_category: entity.secondary_category ?? new NewsCategories(),
-			userId: ""
+			primary_category:
+				entity.primary_category ?? new TrainingsCategories(),
+			secondary_category:
+				entity.secondary_category ?? new TrainingsCategories(),
 		};
 		return dto;
 	}

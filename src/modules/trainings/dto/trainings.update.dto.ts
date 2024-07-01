@@ -1,18 +1,18 @@
 import { IsOptional, IsString, IsUUID } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
-export class UpdateNewsDto {
+export class UpdateTrainingsDto {
 	@IsUUID()
 	@ApiProperty({
 		required: true,
-		description: "UUID of the news",
+		description: "UUID of the trainings",
 	})
 	id!: string;
 
 	@IsString()
 	@ApiProperty({
 		required: false,
-		description: "Title of the news",
+		description: "Title of the trainings",
 	})
 	@IsOptional()
 	title?: string;
@@ -20,7 +20,7 @@ export class UpdateNewsDto {
 	@IsString()
 	@ApiProperty({
 		required: false,
-		description: "Content of the news",
+		description: "Content of the trainings",
 	})
 	@IsOptional()
 	content?: string;

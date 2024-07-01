@@ -8,15 +8,11 @@ export class CommentDto extends BaseDto {
 	userId: string;
 
 	@ApiPropertyOptional()
-	eventId: string;
-
-	@ApiPropertyOptional()
 	comment: string;
 
 	constructor(commentEntity: CommentEntity) {
 		super(commentEntity);
 		this.userId = commentEntity.userId;
-		this.eventId = String(commentEntity.eventId);
 		this.comment = String(commentEntity.comment);
 	}
 }

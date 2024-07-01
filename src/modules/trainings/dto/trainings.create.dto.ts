@@ -1,4 +1,3 @@
-import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsBoolean,
 	IsNotEmpty,
@@ -6,13 +5,14 @@ import {
 	IsString,
 	IsUUID,
 } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateNewsDto {
+export class CreateTrainingsDto {
 	@IsString()
 	@IsNotEmpty()
 	@ApiProperty({
-		description: "The title of the news",
-		example: "The title of the news",
+		description: "The title of the trainings",
+		example: "The title of the trainings",
 		required: true,
 	})
 	title!: string;
@@ -20,7 +20,7 @@ export class CreateNewsDto {
 	@IsString()
 	@IsNotEmpty()
 	@ApiProperty({
-		description: "The content of the news",
+		description: "The content of the trainings",
 		example: "111212.html",
 		required: true,
 	})
@@ -29,7 +29,7 @@ export class CreateNewsDto {
 	@IsString()
 	@IsNotEmpty()
 	@ApiProperty({
-		description: "The cover image of the news",
+		description: "The cover image of the trainings",
 		example: "121212.png",
 		required: true,
 	})
@@ -38,8 +38,8 @@ export class CreateNewsDto {
 	@IsOptional()
 	@IsUUID()
 	@ApiProperty({
-		description: "The first category of the news",
-		example: "The first category of the news",
+		description: "The first category of the trainings",
+		example: "The first category of the trainings",
 		required: false,
 	})
 	primary_category_id!: string;
@@ -47,8 +47,8 @@ export class CreateNewsDto {
 	@IsOptional()
 	@IsUUID()
 	@ApiProperty({
-		description: "The second category of the news",
-		example: "The second category of the news",
+		description: "The second category of the trainings",
+		example: "The second category of the trainings",
 		required: false,
 	})
 	second_category_id!: string;

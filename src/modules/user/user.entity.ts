@@ -13,12 +13,9 @@ import { AbstractEntity } from "../../common/abstract.entity";
 import { RoleType } from "../../constants";
 import { UseDto } from "../../decorators";
 import { AgenciesEntity } from "../agencies/agencies.entity";
+import { BookingsEntity } from "../bookings/bookings.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 import { CommentEntity } from "../comments/comment.entity";
-import { EventsEntity } from "../events/events.entity";
-import { NewsEntity } from "../news/news.entity";
-import { TrainingEntity } from "../training/training.entity";
-import { BookingsEntity } from "../bookings/bookings.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 
 import { UserDto } from "./dtos/user.dto";
@@ -91,11 +88,11 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	@Column({ default: true })
 	status!: boolean;
 
-	@OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	events?: EventsEntity[];
+	// @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user, {
+	// 	onDelete: "CASCADE",
+	// 	onUpdate: "CASCADE",
+	// })
+	// events?: EventsEntity[];
 
 	@OneToMany(() => CommentEntity, (comment) => comment.user, {
 		onDelete: "CASCADE",
@@ -103,23 +100,11 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	})
 	comments?: CommentEntity[];
 
-	@OneToMany(() => NewsEntity, (news) => news.user, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	news?: NewsEntity[];
-
 	// @OneToMany(() => ProjectEntity, (project) => project.user, {
 	//   onDelete: 'CASCADE',
 	//   onUpdate: 'CASCADE',
 	// })
 	// projects?: ProjectEntity[];
-
-	@OneToMany(() => TrainingEntity, (train) => train.user, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	trainings?: TrainingEntity[];
 
 	@ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",
@@ -168,10 +153,8 @@ export class UserEntity extends AbstractEntity<UserDto> {
 			isPhoneVerified: entity.isPhoneVerified ?? true,
 			temporaryNumber: entity.temporaryNumber ?? "",
 			status: entity.status ?? true,
-			events: entity.events ?? [],
+			// events: entity.events ?? [],
 			comments: entity.comments ?? [],
-			news: entity.news ?? [],
-			trainings: entity.trainings ?? [],
 			city: entity.city ?? new CitiesEntity(),
 			city_id: entity.city_id ?? "",
 			agency: entity.agency ?? new AgenciesEntity(),

@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 
-export class NewsDto extends BaseDto {
+export class TrainingsDto extends BaseDto {
 	@IsString()
 	@IsNotEmpty()
 	title!: string;
@@ -17,11 +17,11 @@ export class NewsDto extends BaseDto {
 	coverImage!: string;
 }
 
-export class LikeNewsDto {
+export class LikeTrainingsDto {
 	@IsString()
 	@ApiProperty({
 		required: true,
-		description: "News id",
+		description: "Trainings id",
 	})
 	@IsNotEmpty()
 	id!: string;

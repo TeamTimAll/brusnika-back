@@ -52,7 +52,7 @@ export class EventsService {
 			throw new EventsNotFoundException();
 		}
 
-		await this.eventsRepository.merge(EventsEntity, updateEventsDto);
+		this.eventsRepository.merge(EventsEntity, updateEventsDto);
 
 		await this.eventsRepository.save(updateEventsDto);
 	}
@@ -72,7 +72,7 @@ export class EventsService {
 	}
 
 	async updateEventLike(id: string): Promise<void> {
-		const queryBuilder = await this.eventsRepository
+		const queryBuilder = this.eventsRepository
 			.createQueryBuilder("Events")
 			.where("Events.id = :id", { id });
 
@@ -82,12 +82,12 @@ export class EventsService {
 			throw new EventsNotFoundException();
 		}
 
-		event.likeCount++;
+		event["likeCount"]++;
 		await this.eventsRepository.save(event);
 	}
 
 	async updateEventView(id: string): Promise<void> {
-		const queryBuilder = await this.eventsRepository
+		const queryBuilder = this.eventsRepository
 			.createQueryBuilder("Events")
 			.where("Events.id = :id", { id });
 
@@ -97,7 +97,7 @@ export class EventsService {
 			throw new EventsNotFoundException();
 		}
 
-		event.views++; // Increment view count
+		event["views"]++; // Increment view count
 		await this.eventsRepository.save(event);
 	}
 }
