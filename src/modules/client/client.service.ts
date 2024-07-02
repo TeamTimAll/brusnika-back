@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ILike, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { calcPagination } from "../../lib/pagination";
@@ -28,23 +28,26 @@ export class ClientService {
 		return this.clientRepository.save(client);
 	}
 
-	quickSearch(text: string = "") {
-		return this.clientRepository.find({
-			select: {
-				id: true,
-				fullname: true,
-				phone_number: true,
-			},
-			where: [
+	quickSearch(text: string = "", user: ICurrentUser) {
+		return this.clientRepository
+			.createQueryBuilder("c")
+			.select(["id", "fullname", "phone_number"])
+			.limit(25)
+			.where(
+				"(c.agent_id = :client_agent_id or c.status = :client_status)",
 				{
-					fullname: ILike(`%${text}%`),
+					client_agent_id: user.user_id,
+					client_status: ClientTag.WEAK_FIXING,
 				},
+			)
+			.andWhere(
+				"(c.fullname ILIKE :fullname or c.phone_number ILIKE :phone_number)",
 				{
-					phone_number: ILike(`%${text}%`),
+					fullname: `%${text}%`,
+					phone_number: `%${text}%`,
 				},
-			],
-			take: 25,
-		});
+			)
+			.getRawMany();
 	}
 
 	async readAll(
@@ -102,10 +105,13 @@ export class ClientService {
 				"l",
 				"c.id = l.client_id",
 			)
-			.where("(c.agent_id = :client_agent_id or c.status = :client_status)", {
-				client_agent_id: user.user_id,
-				client_status: ClientTag.WEAK_FIXING,
-			})
+			.where(
+				"(c.agent_id = :client_agent_id or c.status = :client_status)",
+				{
+					client_agent_id: user.user_id,
+					client_status: ClientTag.WEAK_FIXING,
+				},
+			)
 			.groupBy("c.id");
 
 		if (dto.client_id) {

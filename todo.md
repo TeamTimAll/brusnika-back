@@ -59,10 +59,12 @@
 - [x] lead'larini ham qo'shib berish kerak. Project'ni ham qo'shish kerak. LeadOps qo'shish kerak emas.
 - [ ] "Проверить закрепление" da BPMSoft'ga ma'lumot jo'natish mock data bilan.
 - [x] agent bo'yicha olish. Agar status'i weak bo'ladigan bo'lsa hammaga ko'rsatish.
+    - [x] search'ga ham qo'shish.
 - [x] LeadState(active | on_pause | failed | success) bo'yicha client filter.
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?
+- [ ] bron qilinmagan premise'larni chiqarish.
 
 ### Agent
 - [ ] Agent gruhga qo'sha olish va olib tashlash
