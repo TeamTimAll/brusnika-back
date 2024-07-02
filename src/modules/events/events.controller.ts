@@ -15,8 +15,9 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
 import { UUIDParam, User } from "../../decorators";
-import { UserEntity } from "../user/user.entity";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { EventsDto } from "./dtos/events.dto";
@@ -33,22 +34,16 @@ export class EventsController {
 	@Post()
 	async createEvents(
 		@Body() createEventsDto: CreateEventsDto,
-		@User() user: UserEntity,
+		@User() user: ICurrentUser,
 	) {
-		const EventsEntity = await this.eventsService.createEvents(
-			user.id,
-			createEventsDto,
-		);
-
-		return EventsEntity.toDto();
+		return await this.eventsService.create(createEventsDto, user);
 	}
 
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: EventsDto })
-	async getSingleEvents(@UUIDParam("id") id: string): Promise<EventsDto> {
-		const entity = await this.eventsService.getSingleEvents(id);
-		return entity.toDto();
+	async getSingleEvents(@UUIDParam("id") id: string): Promise<any> {
+		return await this.eventsService.findOne(id);
 	}
 
 	@Put(":id")
@@ -57,14 +52,14 @@ export class EventsController {
 	updateEvents(
 		@UUIDParam("id") id: string,
 		@Body() updateEventsDto: UpdateEventsDto,
-	): Promise<void> {
-		return this.eventsService.updateEvents(id, updateEventsDto);
+	): Promise<any> {
+		return this.eventsService.update(id, updateEventsDto);
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	async deleteEvents(@UUIDParam("id") id: string): Promise<void> {
-		await this.eventsService.deleteEvents(id);
+	async deleteEvents(@UUIDParam("id") id: string): Promise<any> {
+		return await this.eventsService.remove(id);
 	}
 }
