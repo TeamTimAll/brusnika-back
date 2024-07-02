@@ -24,6 +24,7 @@ export class CalendarService {
 				client: {
 					id: true,
 					fullname: true,
+					phone_number: true,
 				},
 			},
 			relations: { project: true, client: true },
