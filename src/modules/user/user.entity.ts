@@ -126,8 +126,8 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.agent)
 	bookings?: BookingsEntity[];
 
-	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.premise)
-	visits?: BookingsEntity[];
+	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.agent)
+	visits?: VisitsEntity[];
 
 	static toDto(
 		entity: Partial<WithOutToDto<UserEntity>>,

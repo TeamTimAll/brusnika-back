@@ -41,6 +41,6 @@ export class ClientEntity extends AbstractEntity {
 	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.client)
 	bookings?: BookingsEntity[];
 
-	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.premise)
-	visits?: BookingsEntity[];
+	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.project)
+	visits?: VisitsEntity[];
 }

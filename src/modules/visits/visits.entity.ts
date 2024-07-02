@@ -3,9 +3,9 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { WithOutToDto } from "types";
 
 import { AbstractEntity } from "../../common/abstract.entity";
-import { UserEntity } from "../user/user.entity";
-import { PremisesEntity } from "../premises/premises.entity";
 import { ClientEntity } from "../client/client.entity";
+import { ProjectEntity } from "../projects/project.entity";
+import { UserEntity } from "../user/user.entity";
 
 export enum VisitStatus {
 	OPEN = "открыто",
@@ -23,18 +23,18 @@ export enum PuchaseOptions {
 @Entity({ name: "visits" })
 export class VisitsEntity extends AbstractEntity {
 	@ManyToOne(
-		() => PremisesEntity,
-		(PremisesEntity: PremisesEntity) => PremisesEntity.visits,
+		() => ProjectEntity,
+		(ProjectEntity: ProjectEntity) => ProjectEntity.visits,
 		{
 			onDelete: "SET NULL",
 			onUpdate: "NO ACTION",
 		},
 	)
-	@JoinColumn({ name: "premise_id" })
-	premise!: PremisesEntity;
+	@JoinColumn({ name: "project_id" })
+	project!: ProjectEntity;
 
 	@Column({ nullable: true, type: "uuid" })
-	premise_id?: string;
+	project_id?: string;
 
 	@ManyToOne(
 		() => ClientEntity,
@@ -81,8 +81,8 @@ export class VisitsEntity extends AbstractEntity {
 	): WithOutToDto<VisitsEntity> {
 		const dto: WithOutToDto<VisitsEntity> = {
 			id: entity.id ?? "",
-			premise: entity.premise ?? new PremisesEntity(),
-			premise_id: entity.premise_id ?? "",
+			project: entity.project ?? new ProjectEntity(),
+			project_id: entity.project_id ?? "",
 			client: entity.client ?? new ClientEntity(),
 			client_id: entity.client_id ?? "",
 			agent: entity.agent ?? new UserEntity(),
