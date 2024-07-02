@@ -102,9 +102,9 @@ export class ClientService {
 				"l",
 				"c.id = l.client_id",
 			)
-			.where("c.agent_id = :agent_id or c.status = :status", {
-				agent_id: user.user_id,
-				status: ClientTag.WEAK_FIXING,
+			.where("(c.agent_id = :client_agent_id or c.status = :client_status)", {
+				client_agent_id: user.user_id,
+				client_status: ClientTag.WEAK_FIXING,
 			})
 			.groupBy("c.id");
 
