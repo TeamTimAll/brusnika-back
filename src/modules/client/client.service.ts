@@ -27,16 +27,21 @@ export class ClientService {
 		return this.clientRepository.save(client);
 	}
 
-	quickSearch(fullname: string = "") {
+	quickSearch(text: string = "") {
 		return this.clientRepository.find({
 			select: {
 				id: true,
 				fullname: true,
 				phone_number: true,
 			},
-			where: {
-				fullname: ILike(`%${fullname}%`),
-			},
+			where: [
+				{
+					fullname: ILike(`%${text}%`),
+				},
+				{
+					phone_number: ILike(`%${text}%`),
+				},
+			],
 			take: 25,
 		});
 	}
@@ -55,28 +60,18 @@ export class ClientService {
 				"c.status as status",
 				"c.expiration_date as expiration_date",
 				"c.node as node",
-			]);
-
-		if (dto.client_id) {
-			queryBuilder = queryBuilder.andWhere("c.id = :client_id", {
-				client_id: dto.client_id,
-			});
-		}
-		if (dto.phone_number) {
-			queryBuilder = queryBuilder.andWhere(
-				"phone_number ilike :phone_number",
-				{
-					phone_number: `%${dto.phone_number}%`,
-				},
-			);
-		}
-		if (dto.project_id || dto.status || dto.state) {
-			queryBuilder = queryBuilder.innerJoin(
+				"COALESCE(JSON_AGG(l) FILTER (WHERE l.id IS NOT NULL), '[]') as leads",
+			])
+			.leftJoin(
 				(qb) => {
 					const query = qb
 						.select("l.*")
 						.addSelect("lop.status")
+						.addSelect(
+							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
+						)
 						.from(LeadsEntity, "l")
+						.leftJoin("projects", "p", "p.id = l.project_id")
 						.innerJoin(
 							(qb2) => {
 								const query = qb2
@@ -95,6 +90,7 @@ export class ClientService {
 						.where("l.client_id = c.id")
 						.groupBy("l.id")
 						.addGroupBy("lop.status")
+						.addGroupBy("p.id")
 						.limit(1)
 						.getQuery();
 
@@ -103,26 +99,36 @@ export class ClientService {
 				},
 				"l",
 				"c.id = l.client_id",
-			);
+			)
+			.groupBy("c.id");
 
-			if (dto.state) {
-				queryBuilder = queryBuilder.andWhere("l.state = :state", {
-					state: dto.state,
-				});
-			}
-			if (dto.project_id) {
-				queryBuilder = queryBuilder.andWhere(
-					"l.project_id = :project_id",
-					{
-						project_id: dto.project_id,
-					},
-				);
-			}
-			if (dto.status) {
-				queryBuilder = queryBuilder.andWhere("l.status = :status", {
-					status: dto.status,
-				});
-			}
+		if (dto.client_id) {
+			queryBuilder = queryBuilder.andWhere("c.id = :client_id", {
+				client_id: dto.client_id,
+			});
+		}
+		if (dto.phone_number) {
+			queryBuilder = queryBuilder.andWhere(
+				"phone_number ilike :phone_number",
+				{
+					phone_number: `%${dto.phone_number}%`,
+				},
+			);
+		}
+		if (dto.state) {
+			queryBuilder = queryBuilder.andWhere("l.state = :state", {
+				state: dto.state,
+			});
+		}
+		if (dto.project_id) {
+			queryBuilder = queryBuilder.andWhere("l.project_id = :project_id", {
+				project_id: dto.project_id,
+			});
+		}
+		if (dto.status) {
+			queryBuilder = queryBuilder.andWhere("l.status = :status", {
+				status: dto.status,
+			});
 		}
 		if (dto.actived_from_date) {
 			queryBuilder = queryBuilder.andWhere(
@@ -149,7 +155,7 @@ export class ClientService {
 
 		const clientResponse: ServiceResponse<ClientEntity[]> = {
 			links: calcPagination(clientCount, dto.page, dto.limit),
-			data: (await queryBuilder.execute()) as ClientEntity[],
+			data: await queryBuilder.getRawMany(),
 		};
 
 		return clientResponse;
