@@ -26,6 +26,7 @@ export class CalendarService {
 					fullname: true,
 				},
 			},
+			relations: { project: true, client: true },
 			where: { agent_id: user.user_id },
 		});
 
@@ -36,6 +37,7 @@ export class CalendarService {
 				fullname: "manager_name",
 				phone: "+99899" + Math.floor(Math.random() * 1000 * 1000 * 10),
 			};
+			return v;
 		});
 
 		return { /*bookings,*/ visits: visitsWithManager };
