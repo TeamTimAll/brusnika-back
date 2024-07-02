@@ -1,8 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
+import { CitiesService } from "../cities/cities.service";
 import { PremisesEntity, PremisesType } from "../premises/premises.entity";
+import { UserService } from "../user/user.service";
 
 import { CreateProjectDto } from "./dto/project.create.dto";
 import { UpdateProjectDto } from "./dto/projects.update.dto";
@@ -36,14 +40,20 @@ export class ProjectsService {
 	constructor(
 		@InjectRepository(ProjectEntity)
 		private projectsRepository: Repository<ProjectEntity>,
+
+		@Inject()
+		private citiesService: CitiesService,
+
+		@Inject()
+		private userService: UserService,
 	) {}
 
 	get repository(): Repository<ProjectEntity> {
 		return this.projectsRepository;
 	}
 
-	async getAllProjects(): Promise<GetAllProjectRaw[]> {
-		const rawResult = await this.projectsRepository
+	async getAllProjects(user?: ICurrentUser): Promise<GetAllProjectRaw[]> {
+		let projectQueryBuilder = this.projectsRepository
 			.createQueryBuilder("project")
 			.leftJoinAndSelect("project.buildings", "building")
 			.leftJoinAndSelect("building.premises", "premise")
@@ -62,12 +72,41 @@ export class ProjectsService {
 				"premise.type AS premise_type",
 				"COUNT(premise.id) AS premise_count",
 			])
-			.groupBy("project.id, premise.type")
-			.getRawMany<GetAllProjectRaw>();
+			.groupBy("project.id, premise.type");
+
+		if (user) {
+			const foundUser = await this.userService.repository.findOne({
+				select: ["city_id"],
+				where: {
+					id: user.user_id,
+				},
+			});
+
+			if (foundUser) {
+				const city = await this.citiesService.repository.findOne({
+					select: ["id"],
+					where: {
+						id: foundUser.city_id,
+					},
+				});
+
+				if (city) {
+					projectQueryBuilder = projectQueryBuilder.where(
+						"city_id = :city_id",
+						{
+							city_id: city.id,
+						},
+					);
+				}
+			}
+		}
+
+		const projects =
+			await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
 
 		const validTypes = Object.values(PremisesType);
 
-		const formattedResult = rawResult.reduce<GetAllProjectRaw[]>(
+		const formattedResult = projects.reduce<GetAllProjectRaw[]>(
 			(acc, row) => {
 				const projectId = row.id;
 

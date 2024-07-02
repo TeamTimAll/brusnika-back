@@ -1,23 +1,35 @@
-import { IsOptional, IsString } from "class-validator";
-import { Transform } from "class-transformer";
-
-import { NEWS_CATEGORIES } from "../news.entity";
+import { IsOptional, IsString, IsUUID } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class UpdateNewsDto {
+	@IsUUID()
+	@ApiProperty({
+		required: true,
+		description: "UUID of the news",
+	})
 	id!: string;
+
 	@IsString()
+	@ApiProperty({
+		required: false,
+		description: "Title of the news",
+	})
 	@IsOptional()
 	title?: string;
 
 	@IsString()
+	@ApiProperty({
+		required: false,
+		description: "Content of the news",
+	})
 	@IsOptional()
 	content?: string;
 
 	@IsString()
+	@ApiProperty({
+		required: false,
+		description: "Image URL",
+	})
 	@IsOptional()
-	coverImage?: string;
-
-	@IsOptional()
-	@Transform(({ value }) => value.toUpperCase())
-	category?: NEWS_CATEGORIES;
+	cover_image?: string;
 }

@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsString } from "class-validator";
-import { Transform } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
-import { NEWS_CATEGORIES } from "../news.entity";
 import { BaseDto } from "../../../common/dto/abstract.dto";
 
 export class NewsDto extends BaseDto {
@@ -16,8 +15,14 @@ export class NewsDto extends BaseDto {
 	@IsString()
 	@IsNotEmpty()
 	coverImage!: string;
+}
 
+export class LikeNewsDto {
+	@IsString()
+	@ApiProperty({
+		required: true,
+		description: "News id",
+	})
 	@IsNotEmpty()
-	@Transform(({ value }) => value.toUpperCase())
-	category!: NEWS_CATEGORIES;
+	id!: string;
 }

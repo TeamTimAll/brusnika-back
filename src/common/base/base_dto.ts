@@ -44,10 +44,8 @@ export class MetaDto<T = object> {
 }
 
 export class BaseDto<T = unknown> {
-	@ApiProperty({ type: MetaDto })
-	@IsDefined()
-	// @IsNotEmptyObject()
-	@IsObject()
+	@ApiProperty({ required: false, type: MetaDto })
+	@IsOptional()
 	@ValidateNested()
 	@Type(() => MetaDto)
 	meta!: MetaDto;

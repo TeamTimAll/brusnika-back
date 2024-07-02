@@ -55,6 +55,11 @@
 - [x] Client fullname bilan emas id'si bilan filter qilish.
 - [x] Read All'da client id qo'shish kerak.
 - [ ] Client ma'lumotlari auth bilan olinishi kerak. 
+- [ ] phone va fullname birgalikda quick search.
+- [ ] lead'larini ham qo'shib berish kerak. Project'ni ham qo'shish kerak. LeadOps qo'shish kerak emas.
+- [ ] "Проверить закрепление" da BPMSoft'ga ma'lumot jo'natish mock data bilan.
+- [ ] agent bo'yicha olish.
+- [ ] LeadState(active | on_pause | failed | success) bo'yicha client filter.
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?
@@ -62,31 +67,42 @@
 ### Agent
 - [ ] Agent gruhga qo'sha olish va olib tashlash
 
-Есть:
-    Auth        (Авторизация)
-    Agencies    (Агентства)
-    Booking     (Бронирование)
-    Building    (Здание)
-    Cities      (Города)
-    Client      (Клиент)
-    Events      (Мероприятия)
-    File-upload
-    News        (Новости)
-    Premises    (Помещение)
-    Projects    (Проекты)
-    Sections    (Разделы)
-    Training    (Обучение)
-    User        (Пользователь)
-    Lead        (Сделки)
-    Visits      (Запись на показ)
-    Calendar    (Календарь)
+### Booking
+- [ ] Nega create qilinganda project va building olinmayapti.
 
-Нету:
-    Форма NPS
-    Задачи
-    Заявка на ипотеку
-    Чат
-    Ипотечный калькулятор
-    Обмен
-    Аналитика
-    Администрирование
+### Project
+- [x] agent login/settings'dan tanlagan shahari bo'yicha project'larni ko'ra olishi kerak.
+- [ ] ~~filter city bo'yicha?~~
+    City:
+        Москва
+        Тюмень
+        Новосибирск
+        Екатеринбург
+        Сургут
+        Курган
+        Омск
+
+### News
+- [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
+
+### Events
+- [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
+
+### Trainning
+- [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
+
+### Calendar
+- [ ] manager entity bilan bog'liqlik.
+- [X] visits'ni premise'dan project'ga almashtirish.
+- [x] visits'da project, client, agent  ma'lumotlari kerak. 
+    project
+        - id
+        - name
+        - location
+    client
+        - id
+        - name
+    manager
+        - id
+        - name
+        - phone

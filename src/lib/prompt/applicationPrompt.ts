@@ -24,6 +24,7 @@ export enum ApplicationPromptID {
 	LEAD_NOT_FOUND_ERROR = 411,
 	BOOKING_NOT_FOUND_ERROR = 412,
 	VISIT_NOT_FOUND_ERROR = 413,
+	NEWS_NOT_FOUND_ERROR = 414,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -100,6 +101,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			"City not found error",
 			"Город не найден",
 			"City not found error",
+		],
+	},
+	[ApplicationPromptID.NEWS_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.NEWS_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "news_not_found_error",
+		promptLabels: [
+			"News not found error",
+			"News not found error",
+			"News not found error",
 		],
 	},
 	[ApplicationPromptID.PROJECT_NOT_FOUND_ERROR]: {
