@@ -61,5 +61,5 @@ export class ClientQuickSearchDto {
 	@ApiProperty({ required: false })
 	@IsString()
 	@IsOptional()
-	fullname?: string;
+	text?: string;
 }

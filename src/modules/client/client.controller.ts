@@ -24,7 +24,7 @@ export class ClientController {
 	@Get("/search")
 	async quickSearch(@Query() dto: ClientQuickSearchDto) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.clientService.quickSearch(dto.fullname);
+		metaData.data = await this.clientService.quickSearch(dto.text);
 		return metaData;
 	}
 
