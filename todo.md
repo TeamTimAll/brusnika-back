@@ -54,11 +54,11 @@
 - [x] Client fullname va phone bo'yicha quick search.
 - [x] Client fullname bilan emas id'si bilan filter qilish.
 - [x] Read All'da client id qo'shish kerak.
-- [ ] Client ma'lumotlari auth bilan olinishi kerak. 
+- [x] Client ma'lumotlari auth bilan olinishi kerak. 
 - [x] phone va fullname birgalikda quick search.
 - [x] lead'larini ham qo'shib berish kerak. Project'ni ham qo'shish kerak. LeadOps qo'shish kerak emas.
 - [ ] "Проверить закрепление" da BPMSoft'ga ma'lumot jo'natish mock data bilan.
-- [ ] agent bo'yicha olish.
+- [x] agent bo'yicha olish. Agar status'i weak bo'ladigan bo'lsa hammaga ko'rsatish.
 - [x] LeadState(active | on_pause | failed | success) bo'yicha client filter.
 
 ### Premises

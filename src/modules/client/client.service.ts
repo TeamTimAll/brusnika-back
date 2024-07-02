@@ -2,12 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, Repository } from "typeorm";
 
+import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { calcPagination } from "../../lib/pagination";
 import { ServiceResponse } from "../../types";
 import { LeadOpsEntity } from "../leads/lead_ops.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 
-import { ClientEntity } from "./client.entity";
+import { ClientEntity, ClientTag } from "./client.entity";
 import { ClientDto } from "./dto/client.dto";
 import { FilterClientDto } from "./dto/client.search.dto";
 
@@ -48,6 +49,7 @@ export class ClientService {
 
 	async readAll(
 		dto: FilterClientDto,
+		user: ICurrentUser,
 	): Promise<ServiceResponse<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
@@ -100,6 +102,10 @@ export class ClientService {
 				"l",
 				"c.id = l.client_id",
 			)
+			.where("(c.agent_id = :client_agent_id or c.status = :client_status)", {
+				client_agent_id: user.user_id,
+				client_status: ClientTag.WEAK_FIXING,
+			})
 			.groupBy("c.id");
 
 		if (dto.client_id) {
