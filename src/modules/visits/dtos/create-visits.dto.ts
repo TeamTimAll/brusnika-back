@@ -15,7 +15,7 @@ import { VisitStatus } from "../visits.entity";
 export class CreateVisitsDto {
 	@ApiProperty({ required: false, description: "ID of premise" })
 	@IsUUID()
-	premise_id?: string;
+	project_id?: string;
 
 	@ApiProperty({ required: false, description: "ID of client" })
 	@IsUUID()
