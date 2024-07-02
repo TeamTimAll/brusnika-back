@@ -92,7 +92,9 @@
 - [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
 
 ### Calendar
-- [ ] visits'da project, client, agent  ma'lumotlari kerak. 
+- [ ] manager entity bilan bog'liqlik.
+- [X] visits'ni premise'dan project'ga almashtirish.
+- [x] visits'da project, client, agent  ma'lumotlari kerak. 
     project
         - id
         - name
@@ -100,7 +102,7 @@
     client
         - id
         - name
-    agent
+    manager
         - id
         - name
         - phone

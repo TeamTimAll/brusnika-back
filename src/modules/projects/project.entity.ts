@@ -4,6 +4,7 @@ import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import { CitiesEntity } from "../cities/cities.entity";
+import { VisitsEntity } from "../visits/visits.entity";
 
 import { ProjectDto } from "./dto/projects.dto";
 
@@ -49,4 +50,7 @@ export class ProjectEntity extends AbstractEntity<ProjectDto, ProjectDto> {
 
 	@Column({ nullable: true, type: "uuid" })
 	city_id?: string;
+
+	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.project)
+	visits?: VisitsEntity[];
 }

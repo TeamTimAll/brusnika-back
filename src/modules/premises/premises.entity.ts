@@ -1,10 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
+import { BookingsEntity } from "../bookings/bookings.entity";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { SectionsEntity } from "../sections/sections.entity";
-import { BookingsEntity } from "../bookings/bookings.entity";
-import { VisitsEntity } from "../visits/visits.entity";
 
 export enum PremisesType {
 	APARTMENT = "apartment",
@@ -102,7 +101,4 @@ export class PremisesEntity extends AbstractEntity {
 
 	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.premise)
 	bookings?: BookingsEntity[];
-
-	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.premise)
-	visits?: BookingsEntity[];
 }
