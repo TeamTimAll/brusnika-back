@@ -18,7 +18,7 @@ import { BaseDto } from "../../common/base/base_dto";
 import { User } from "../../decorators";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { CreateProjectMetaDataDto } from "./dto/project.create.dto";
+import { CreateProjectDto, CreateProjectMetaDataDto } from "./dto/project.create.dto";
 import { UpdateProjectMetaDataDto } from "./dto/projects.update.dto";
 import { ProjectsService } from "./projects.service";
 
@@ -64,7 +64,7 @@ export class ProjectsController {
 			projectDto.meta.params.project_id,
 			projectDto.data,
 		);
-		metaData.data = updatedProject;
+		metaData.data = updatedProject as CreateProjectDto;
 		return metaData;
 	}
 
