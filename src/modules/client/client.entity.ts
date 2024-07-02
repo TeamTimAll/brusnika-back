@@ -1,8 +1,9 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
-import { LeadsEntity } from "../leads/leads.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
+import { LeadsEntity } from "../leads/leads.entity";
+import { UserEntity } from "../user/user.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 
 export enum ClientTag {
@@ -34,6 +35,13 @@ export class ClientEntity extends AbstractEntity {
 
 	@Column({ type: "text", nullable: true })
 	node?: string;
+
+	@ManyToOne(() => UserEntity)
+	@JoinColumn({ name: "agent_id" })
+	agent!: UserEntity;
+
+	@Column({ nullable: true, type: "uuid" })
+	agent_id?: string;
 
 	@OneToMany(() => LeadsEntity, (l) => l.client)
 	leads?: LeadsEntity[];
