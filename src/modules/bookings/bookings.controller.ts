@@ -25,6 +25,7 @@ import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { BookingsEntity } from "./bookings.entity";
 import { BookingsService } from "./bookings.service";
+import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
 import { CreateBookingsDto } from "./dtos/create-bookings.dto";
 import { UpdateBookingsDto } from "./dtos/update-bookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
@@ -87,34 +88,34 @@ export class BookingsController {
 		return metaData;
 	}
 	// ----------------------------@Get(":id")----------------------------------
-	@ApiOperation({ summary: "Get a single booking by ID" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				BookingsEntity.toDto({}),
-			),
-		},
-	})
-	@ApiResponse({
-		status: new BookingNotFoundError().status,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto()).setPrompt(
-				new BookingNotFoundError("'name' booking not found"),
-			),
-		},
-	})
-	@Get(":id")
-	async getSingleBooking(
-		@UUIDParam("id")
-		id: string,
-	) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const foundCity = await this.service.r_findOne(id);
-		metaData.data = foundCity;
-		return metaData;
-	}
+	// @ApiOperation({ summary: "Get a single booking by ID" })
+	// @ApiResponse({
+	// 	status: HttpStatus.OK,
+	// 	schema: {
+	// 		example: BaseDto.createFromDto(
+	// 			new BaseDto(),
+	// 			BookingsEntity.toDto({}),
+	// 		),
+	// 	},
+	// })
+	// @ApiResponse({
+	// 	status: new BookingNotFoundError().status,
+	// 	schema: {
+	// 		example: BaseDto.createFromDto(new BaseDto()).setPrompt(
+	// 			new BookingNotFoundError("'name' booking not found"),
+	// 		),
+	// 	},
+	// })
+	// @Get(":id")
+	// async getSingleBooking(
+	// 	@UUIDParam("id")
+	// 	id: string,
+	// ) {
+	// 	const metaData = BaseDto.createFromDto(new BaseDto());
+	// 	const foundCity = await this.service.r_findOne(id);
+	// 	metaData.data = foundCity;
+	// 	return metaData;
+	// }
 	// ---------------------------@Put(":id")-----------------------------------
 	@ApiOperation({ summary: "Update a booking by ID" })
 	@ApiResponse({
@@ -154,4 +155,10 @@ export class BookingsController {
 		return metaData;
 	}
 	// -----------------------------------------------------------------------
+	@Get("/not-booked-premises")
+	async readAllNotBookedPremises(dto: NotBookedPremisesFilter) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		metaData.data = await this.service.readAllNotBookedPremises(dto);
+		return metaData;
+	}
 }

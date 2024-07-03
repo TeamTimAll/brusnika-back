@@ -1,11 +1,15 @@
+import { Inject } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BasicService } from "../../generic/service";
+import { PremisesEntity } from "../premises/premises.entity";
+import { PremisesService } from "../premises/premises.service";
 
 import { BookingsEntity } from "./bookings.entity";
+import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
 import { CreateBookingsDto } from "./dtos/create-bookings.dto";
 import { UpdateBookingsDto } from "./dtos/update-bookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
@@ -15,7 +19,10 @@ export class BookingsService extends BasicService<
 	CreateBookingsDto,
 	UpdateBookingsDto
 > {
-	constructor(@InjectDataSource() dataSource: DataSource) {
+	constructor(
+		@InjectDataSource() dataSource: DataSource,
+		@Inject() private premiseService: PremisesService,
+	) {
 		super("bookings", BookingsEntity, dataSource);
 	}
 
@@ -35,6 +42,34 @@ export class BookingsService extends BasicService<
 		return this.repository.find({
 			where: { agent_id: user.user_id },
 		});
+	}
+
+	readAllNotBookedPremises(
+		filter: NotBookedPremisesFilter,
+	): Promise<PremisesEntity[]> {
+		let query = this.premiseService.repository
+			.createQueryBuilder("p")
+			.select("*")
+			.where("id NOT IN (SELECT DISTINCT premise_id FROM bookings)");
+
+		if (filter.type) {
+			query = query.andWhere("premise.type = :type", {
+				type: filter.type,
+			});
+		}
+
+		if (filter.project_id) {
+			query = query.andWhere("building.project_id = :project_id", {
+				project_id: filter.project_id,
+			});
+		}
+
+		if (filter.building_id) {
+			query = query.andWhere("premise.building_id = :building_id", {
+				building_id: filter.building_id,
+			});
+		}
+		return query.getRawMany();
 	}
 
 	async r_update(
