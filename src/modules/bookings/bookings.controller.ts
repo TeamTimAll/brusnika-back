@@ -25,6 +25,7 @@ import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { BookingsEntity } from "./bookings.entity";
 import { BookingsService } from "./bookings.service";
+import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
 import { CreateBookingsDto } from "./dtos/create-bookings.dto";
 import { UpdateBookingsDto } from "./dtos/update-bookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
@@ -155,9 +156,9 @@ export class BookingsController {
 	}
 	// -----------------------------------------------------------------------
 	@Get("/not-booked-premises")
-	async readAllNotBookedPremises() {
+	async readAllNotBookedPremises(dto: NotBookedPremisesFilter) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.service.readAllNotBookedPremises();
+		metaData.data = await this.service.readAllNotBookedPremises(dto);
 		return metaData;
 	}
 }
