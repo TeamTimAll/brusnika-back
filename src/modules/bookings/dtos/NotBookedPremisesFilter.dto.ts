@@ -7,6 +7,7 @@ export class NotBookedPremisesFilter {
 	@ApiProperty({
 		enum: PremisesType,
 		description: "Premises type",
+		required: false,
 	})
 	@IsOptional()
 	@IsEnum(PremisesType)
