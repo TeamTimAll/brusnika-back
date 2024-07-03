@@ -1,9 +1,12 @@
+import { Inject } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BasicService } from "../../generic/service";
+import { PremisesEntity } from "../premises/premises.entity";
+import { PremisesService } from "../premises/premises.service";
 
 import { BookingsEntity } from "./bookings.entity";
 import { CreateBookingsDto } from "./dtos/create-bookings.dto";
@@ -15,7 +18,10 @@ export class BookingsService extends BasicService<
 	CreateBookingsDto,
 	UpdateBookingsDto
 > {
-	constructor(@InjectDataSource() dataSource: DataSource) {
+	constructor(
+		@InjectDataSource() dataSource: DataSource,
+		@Inject() private premiseService: PremisesService,
+	) {
 		super("bookings", BookingsEntity, dataSource);
 	}
 
@@ -35,6 +41,14 @@ export class BookingsService extends BasicService<
 		return this.repository.find({
 			where: { agent_id: user.user_id },
 		});
+	}
+
+	readAllNotBookedPremises(): Promise<PremisesEntity[]> {
+		return this.premiseService.repository
+			.createQueryBuilder("p")
+			.select("*")
+			.where("id NOT IN (SELECT DISTINCT premise_id FROM bookings)")
+			.getRawMany();
 	}
 
 	async r_update(
