@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsNotEmpty, IsUUID } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsUUID } from "class-validator";
 
 import { PremisesType } from "../../leads/lead_ops.entity";
 
@@ -7,8 +7,9 @@ export class NotBookedPremisesFilter {
 	@ApiProperty({
 		enum: PremisesType,
 		description: "Premises type",
+		required: false,
 	})
-	@IsNotEmpty()
+	@IsOptional()
 	@IsEnum(PremisesType)
 	type?: PremisesType;
 

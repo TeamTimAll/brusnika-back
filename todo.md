@@ -64,7 +64,7 @@
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?
-- [ ] bron qilinmagan premise'larni chiqarish.
+- [x] bron qilinmagan premise'larni chiqarish.
 
 ### Agent
 - [ ] Agent gruhga qo'sha olish va olib tashlash
