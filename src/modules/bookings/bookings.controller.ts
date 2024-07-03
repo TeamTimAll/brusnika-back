@@ -156,7 +156,7 @@ export class BookingsController {
 	}
 	// -----------------------------------------------------------------------
 	@Get("/not-booked-premises")
-	async readAllNotBookedPremises(dto: NotBookedPremisesFilter) {
+	async readAllNotBookedPremises(@Query() dto: NotBookedPremisesFilter) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.service.readAllNotBookedPremises(dto);
 		return metaData;
