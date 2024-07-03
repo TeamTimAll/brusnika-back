@@ -10,14 +10,7 @@ export class NotBookedPremisesFilter {
 	})
 	@IsNotEmpty()
 	@IsEnum(PremisesType)
-	type!: PremisesType;
-
-	@ApiProperty({
-		example: "123e4567-e89b-12d3-a456-426614174000",
-	})
-	@IsNotEmpty()
-	@IsUUID()
-	project_id!: string;
+	type?: PremisesType;
 
 	@ApiProperty({
 		example: "123e4567-e89b-12d3-a456-426614174000",

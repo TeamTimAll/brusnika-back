@@ -53,19 +53,13 @@ export class BookingsService extends BasicService<
 			.where("id NOT IN (SELECT DISTINCT premise_id FROM bookings)");
 
 		if (filter.type) {
-			query = query.andWhere("premise.type = :type", {
+			query = query.andWhere("p.type = :type", {
 				type: filter.type,
 			});
 		}
 
-		if (filter.project_id) {
-			query = query.andWhere("building.project_id = :project_id", {
-				project_id: filter.project_id,
-			});
-		}
-
 		if (filter.building_id) {
-			query = query.andWhere("premise.building_id = :building_id", {
+			query = query.andWhere("p.building_id = :building_id", {
 				building_id: filter.building_id,
 			});
 		}
