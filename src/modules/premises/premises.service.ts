@@ -2,6 +2,9 @@ import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
 import { BasicService } from "../../generic/service";
+import { BuildingsEntity } from "../buildings/buildings.entity";
+import { ProjectEntity } from "../projects/project.entity";
+import { SectionsEntity } from "../sections/sections.entity";
 
 import { CreatePremisesDto } from "./dtos/create-premises.dto";
 import { PremisesFilterDto } from "./dtos/premises.dto";
@@ -46,9 +49,83 @@ export class PremisesService extends BasicService<
 	): Promise<PremisesEntity[]> {
 		let query = this.repository
 			.createQueryBuilder("premise")
-			.leftJoinAndSelect("premise.building", "building")
-			.leftJoinAndSelect("premise.section", "section")
-			.leftJoinAndSelect("building.project", "project");
+			.select([
+				"premise.id as id",
+				"premise.name as name",
+				"premise.type as type",
+				"premise.building as building",
+				"premise.building_id as building_id",
+				"premise.price as price",
+				"premise.size as size",
+				"premise.status as status",
+				"premise.purchase_option as purchaseOption",
+				"premise.number as number",
+				"premise.floor as floor",
+				"premise.photo as photo",
+				"premise.rooms as rooms",
+				"premise.photos as photos",
+				"premise.similiar_apartment_count as similiarApartmentCount",
+				"premise.title as title",
+				"premise.end_date as end_date",
+				"premise.mortage_payment as mortagePayment",
+				"premise.section_id as section_id",
+				"premise.is_open_booking as is_open_booking",
+				"premise.is_sold as is_sold",
+				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
+					'id', 							building.id,
+					'name', 						building.name,
+					'total_storage', 				building.total_storage,
+					'total_vacant_storage', 		building.total_vacant_storage,
+					'total_parking_space', 			building.total_parking_space,
+					'total_vacant_parking_space', 	building.total_vacant_parking_space,
+					'total_commercial', 			building.total_commercial,
+					'total_vacant_commercial', 		building.total_vacant_commercial,
+					'address', 						building.address,
+					'number_of_floors', 			building.number_of_floors,
+					'photos', 						building.photos,
+					'project_id', 					building.project_id,
+					'created_at', 					building."created_at",
+					'updated_at', 					building."updated_at"
+				)) as building`,
+				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
+					'id',			section.id,
+					'name',			section.name,
+					'building_id',	section.building_id
+				)) as section`,
+				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
+					'id',					project.id,
+					'name',					project.name,
+					'detailed_description',	project.detailed_description,
+					'brief_description',	project.brief_description,
+					'photo',				project.photo,
+					'price',				project.price,
+					'location',				project.location,
+					'long',					project.long,
+					'lat',					project.lat,
+					'link',					project.link,
+					'end_date',				project.end_date,
+					'city_id',				project.city_id
+				)) as project`,
+			])
+			.addSelect(
+				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
+			)
+			.leftJoin(
+				BuildingsEntity,
+				"building",
+				"building.id = premise.building_id",
+			)
+			.leftJoin(
+				SectionsEntity,
+				"section",
+				"section.id = premise.section_id",
+			)
+			.leftJoin(
+				ProjectEntity,
+				"project",
+				"project.id = building.project_id",
+			);
+
 		if (filter) {
 			if (filter.endYear) {
 				query = query.andWhere("project.end_date = :endYear", {
@@ -156,7 +233,7 @@ export class PremisesService extends BasicService<
 			}
 		}
 
-		const premises = await query.getMany();
+		const premises = await query.getRawMany<PremisesEntity>();
 
 		return premises;
 	}
