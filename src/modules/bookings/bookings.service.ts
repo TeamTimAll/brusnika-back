@@ -74,7 +74,7 @@ export class BookingsService extends BasicService<
 		const foundCity = await this.r_findOne(id);
 
 		if (!foundCity) {
-			throw new BookingNotFoundError(" not found");
+			throw new BookingNotFoundError("not found");
 		}
 
 		Object.assign(foundCity, dto, {

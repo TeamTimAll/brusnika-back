@@ -65,6 +65,7 @@
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?
 - [x] bron qilinmagan premise'larni chiqarish.
+- [ ] bron qilinganligi haqida ma'lumot kerak. `is_booked` ga o'xshagan
 
 ### Agent
 - [ ] Agent gruhga qo'sha olish va olib tashlash
