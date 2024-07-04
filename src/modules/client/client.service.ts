@@ -163,7 +163,16 @@ export class ClientService {
 
 		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
 
-		const clientCount = await this.clientRepository.count();
+		const clientCount = await this.clientRepository.count({
+			where: [
+				{
+					agent_id: user.user_id,
+				},
+				{
+					status: ClientTag.WEAK_FIXING,
+				},
+			],
+		});
 
 		const clientResponse: ServiceResponse<ClientEntity[]> = {
 			links: calcPagination(clientCount, dto.page, dto.limit),
