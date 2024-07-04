@@ -9,11 +9,11 @@ import { Reflector } from "@nestjs/core";
 import { type Request, type Response } from "express";
 
 import { BaseError } from "../common/base/baseError";
-import { BaseDto } from "../common/base/base_dto";
-import { ResponseStatusType } from "../common/enums/response_status_type_enum";
 import { InputValidationError } from "../common/errors/inputValidationError";
 import { CustomValidationError } from "../common/errors/valitationError";
 import { ApplicationPromptID } from "../lib/prompt/applicationPrompt";
+
+import { requestToMetaData } from "./meta-data-request";
 
 @Catch(CustomValidationError)
 export class HttpValidationErrorFilter
@@ -26,20 +26,14 @@ export class HttpValidationErrorFilter
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();
 
-		let dto = request.body as BaseDto;
-		if (dto instanceof BaseDto) {
-			dto = request.body as BaseDto;
-		} else {
-			dto = new BaseDto();
-		}
-		const metaData = BaseDto.createFromDto(dto);
-		dto.meta.type = ResponseStatusType.ERROR;
+		const dto = requestToMetaData(request);
+
 		dto.meta.prompt = new InputValidationError({
 			message: "validation error",
 			meta: exception,
 		});
 
-		response.status(HttpStatus.UNPROCESSABLE_ENTITY).json(metaData);
+		response.status(HttpStatus.UNPROCESSABLE_ENTITY).json(dto);
 	}
 }
 
@@ -50,24 +44,11 @@ export class HttpErrorFilter implements ExceptionFilter<BaseError> {
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();
 
-		let dto = request.body as BaseDto;
-		if (dto instanceof BaseDto) {
-			dto = request.body as BaseDto;
-		} else {
-			dto = new BaseDto();
-		}
-		const metaData = BaseDto.createFromDto(dto);
-		dto.meta.type = ResponseStatusType.ERROR;
+		const dto = requestToMetaData(request);
 
-		// Setting request query to meta param
-		for (const key in request.query) {
-			if (Object.prototype.hasOwnProperty.call(request.query, key)) {
-				const element = request.query[key];
-				metaData.meta.params[key] = element;
-			}
-		}
-		metaData.meta.prompt = exception;
-		response.status(exception.status).json(metaData);
+		dto.setPrompt(exception);
+
+		response.status(exception.status).json(dto);
 	}
 }
 
@@ -79,30 +60,26 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		const request = ctx.getRequest<Request>();
 		const status = exception.getStatus() as HttpStatus;
 
-		let dto = request.body as BaseDto;
-		if (dto instanceof BaseDto) {
-			dto = request.body as BaseDto;
-		} else {
-			dto = new BaseDto();
-		}
-		const metaData = BaseDto.createFromDto(dto);
-		dto.meta.type = ResponseStatusType.ERROR;
+		const dto = requestToMetaData(request);
 
 		let id = ApplicationPromptID.INTERNAL_SERVER_ERROR;
 		if (status === HttpStatus.NOT_FOUND) {
 			id = ApplicationPromptID.METHOD_NOT_FOUND_ERROR;
 		}
-		metaData.meta.prompt = new BaseError(
-			id,
-			{
-				message: exception.message,
-				meta: {
-					exception: exception.name,
+
+		dto.setPrompt(
+			new BaseError(
+				id,
+				{
+					message: exception.message,
+					meta: {
+						exception: exception.name,
+					},
 				},
-			},
-			status,
+				status,
+			),
 		);
 
-		response.status(status).json(metaData);
+		response.status(status).json(dto);
 	}
 }

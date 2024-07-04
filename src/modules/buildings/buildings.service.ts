@@ -35,9 +35,6 @@ export class BuildingsService extends BasicService<
 				relations: ["project"],
 			});
 		}
-		if (!buildings.length) {
-			throw new BuildingNotFoundError("buildings not found");
-		}
 		return buildings;
 	}
 
