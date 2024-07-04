@@ -99,10 +99,10 @@ export class PremisesEntity extends AbstractEntity {
 	@Column({ nullable: true })
 	section_id?: string;
 
-	@Column({ nullable: true , type: "boolean" })
+	@Column({ nullable: true, type: "boolean" })
 	is_open_booking!: boolean;
 
-	@Column({ nullable: true, type: "boolean" , default: false})
+	@Column({ nullable: true, type: "boolean", default: false })
 	is_sold!: boolean;
 
 	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.premise)
