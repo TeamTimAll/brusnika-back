@@ -92,4 +92,7 @@ tsconfig.build.tsbuildinfo
 
 #
 
-media
+media/*
+!media/project_default_image.jpg
+!media/building_default_image.jpg
+!media/premise_apartment_default_image.jpg
