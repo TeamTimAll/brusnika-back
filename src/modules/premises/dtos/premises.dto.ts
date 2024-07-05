@@ -10,6 +10,7 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
+import { Limit, Page } from "../../../decorators/pagination";
 import {
 	CommercialStatus,
 	PremisesType,
@@ -112,6 +113,14 @@ export class PremisesFilterDto {
 	ids?: string[];
 
 	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
+	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsDateString()
 	endYear?: Date;
@@ -203,4 +212,18 @@ export class PremisesFilterDto {
 	@IsOptional()
 	@IsEnum(PuchaseOptions)
 	purchaseOption?: PuchaseOptions;
+}
+
+export class PremisesIdsDto {
+	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
+	@ApiProperty({ required: false })
+	@IsUUID("4", { each: true })
+	ids?: string[];
 }
