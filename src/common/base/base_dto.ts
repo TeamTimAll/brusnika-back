@@ -7,6 +7,7 @@ import {
 	ValidateNested,
 } from "class-validator";
 
+import { createLink } from "../../lib/pagination";
 import { Links } from "../../types";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
 
@@ -60,6 +61,11 @@ export class BaseDto<T = unknown> {
 	setPrompt(error: BaseError) {
 		this.meta.type = ResponseStatusType.ERROR;
 		this.meta.prompt = error;
+		return this;
+	}
+
+	setLinks(links: Links) {
+		this.meta.links = createLink(links);
 		return this;
 	}
 

@@ -2,6 +2,8 @@ import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
 import { BasicService } from "../../generic/service";
+import { calcPagination } from "../../lib/pagination";
+import { ServiceResponse } from "../../types";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { ProjectEntity } from "../projects/project.entity";
 import { SectionsEntity } from "../sections/sections.entity";
@@ -20,80 +22,27 @@ export class PremisesService extends BasicService<
 		super("premises", PremisesEntity, dataSource);
 	}
 
-	readOne(id: string) {
-		return this.getPremisesFiltered({ id: id });
+	async readOne(id: string): Promise<PremisesEntity> {
+		const premises = await this.getPremisesFiltered({
+			id: id,
+			limit: 1,
+			page: 1,
+		});
+		if (!premises.data.length) {
+			return {} as PremisesEntity;
+		}
+		return premises.data[0];
 	}
 
-	getMultiplePremisesByIds(ids: string[]) {
-		return this.getPremisesFiltered({ ids: ids });
+	getMultiplePremisesByIds(ids: string[], limit: number, page: number) {
+		return this.getPremisesFiltered({ ids: ids, limit, page });
 	}
 
 	async getPremisesFiltered(
-		filter?: PremisesFilterDto,
-	): Promise<PremisesEntity[]> {
+		filter: PremisesFilterDto,
+	): Promise<ServiceResponse<PremisesEntity[]>> {
 		let query = this.repository
 			.createQueryBuilder("premise")
-			.select([
-				"premise.id as id",
-				"premise.name as name",
-				"premise.type as type",
-				"premise.building as building",
-				"premise.building_id as building_id",
-				"premise.price as price",
-				"premise.size as size",
-				"premise.status as status",
-				"premise.purchase_option as purchaseOption",
-				"premise.number as number",
-				"premise.floor as floor",
-				"premise.photo as photo",
-				"premise.rooms as rooms",
-				"premise.photos as photos",
-				"premise.similiar_apartment_count as similiarApartmentCount",
-				"premise.title as title",
-				"premise.end_date as end_date",
-				"premise.mortage_payment as mortagePayment",
-				"premise.section_id as section_id",
-				"premise.is_open_booking as is_open_booking",
-				"premise.is_sold as is_sold",
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-					'id', 							building.id,
-					'name', 						building.name,
-					'total_storage', 				building.total_storage,
-					'total_vacant_storage', 		building.total_vacant_storage,
-					'total_parking_space', 			building.total_parking_space,
-					'total_vacant_parking_space', 	building.total_vacant_parking_space,
-					'total_commercial', 			building.total_commercial,
-					'total_vacant_commercial', 		building.total_vacant_commercial,
-					'address', 						building.address,
-					'number_of_floors', 			building.number_of_floors,
-					'photos', 						building.photos,
-					'project_id', 					building.project_id,
-					'created_at', 					building."created_at",
-					'updated_at', 					building."updated_at"
-				)) as building`,
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-					'id',			section.id,
-					'name',			section.name,
-					'building_id',	section.building_id
-				)) as section`,
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-					'id',					project.id,
-					'name',					project.name,
-					'detailed_description',	project.detailed_description,
-					'brief_description',	project.brief_description,
-					'photo',				project.photo,
-					'price',				project.price,
-					'location',				project.location,
-					'long',					project.long,
-					'lat',					project.lat,
-					'link',					project.link,
-					'end_date',				project.end_date,
-					'city_id',				project.city_id
-				)) as project`,
-			])
-			.addSelect(
-				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
-			)
 			.leftJoin(
 				BuildingsEntity,
 				"building",
@@ -229,8 +178,86 @@ export class PremisesService extends BasicService<
 			}
 		}
 
+		const pageSize = (filter.page - 1) * filter.limit;
+		query = query.limit(filter.limit).offset(pageSize);
+
+		const premiseCount = (await query
+			.select("COUNT(premise.id)::int AS premise_count")
+			.getRawMany()) as unknown as Array<Record<"premise_count", number>>;
+
+		query = query
+			.select([
+				"premise.id as id",
+				"premise.name as name",
+				"premise.type as type",
+				"premise.building as building",
+				"premise.building_id as building_id",
+				"premise.price as price",
+				"premise.size as size",
+				"premise.status as status",
+				"premise.purchase_option as purchaseOption",
+				"premise.number as number",
+				"premise.floor as floor",
+				"premise.photo as photo",
+				"premise.rooms as rooms",
+				"premise.photos as photos",
+				"premise.similiar_apartment_count as similiarApartmentCount",
+				"premise.title as title",
+				"premise.end_date as end_date",
+				"premise.mortage_payment as mortagePayment",
+				"premise.section_id as section_id",
+				"premise.is_sold as is_sold",
+				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
+				'id', 							building.id,
+				'name', 						building.name,
+				'total_storage', 				building.total_storage,
+				'total_vacant_storage', 		building.total_vacant_storage,
+				'total_parking_space', 			building.total_parking_space,
+				'total_vacant_parking_space', 	building.total_vacant_parking_space,
+				'total_commercial', 			building.total_commercial,
+				'total_vacant_commercial', 		building.total_vacant_commercial,
+				'address', 						building.address,
+				'number_of_floors', 			building.number_of_floors,
+				'photos', 						building.photos,
+				'project_id', 					building.project_id,
+				'created_at', 					building."created_at",
+				'updated_at', 					building."updated_at"
+			)) as building`,
+				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
+				'id',			section.id,
+				'name',			section.name,
+				'building_id',	section.building_id
+			)) as section`,
+				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
+				'id',					project.id,
+				'name',					project.name,
+				'detailed_description',	project.detailed_description,
+				'brief_description',	project.brief_description,
+				'photo',				project.photo,
+				'price',				project.price,
+				'location',				project.location,
+				'long',					project.long,
+				'lat',					project.lat,
+				'link',					project.link,
+				'end_date',				project.end_date,
+				'city_id',				project.city_id
+			)) as project`,
+			])
+			.addSelect(
+				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
+			);
+
 		const premises = await query.getRawMany<PremisesEntity>();
 
-		return premises;
+		const premiseResponse: ServiceResponse<PremisesEntity[]> = {
+			links: calcPagination(
+				premiseCount[0].premise_count,
+				filter.page,
+				filter.limit,
+			),
+			data: premises,
+		};
+
+		return premiseResponse;
 	}
 }

@@ -4,7 +4,7 @@
 - [x] Project config'larini validation qilib config abstraction'dan olinishi kerak. Hozirda `proccess.env`'dan olinyapti. Config oqimini shakilantirish. ORM'da 2 ta config yozilgan. Sync bo'lishi izdan chiqadi.
 - [x] code format qo'shish?
 - [x] unit testing?
-- [ ] Seed qo'shish (logika jihatdan kelib chiqib)?
+- [x] Seed qo'shish (logika jihatdan kelib chiqib)?
 - [ ] Base service? Qayta takrorlanadigan CRUD'ni base service'ga olib o'tish. Yangi module qo'shish tezligini oshiradi, DRY'ni oldini oladi.
 - [x] auth service'da ok response'da `HttpException` ishlatilgan. Response abstraction kerak. Chunki `HttpException` Error'dan extend olgan. Bu degani `HttpException` tashalganda stack trace bilan chiqadi degani. Logger'da kelishmovchiliklar bo'ladi. Misol uchun info'ni ichida stack trace string keladi va bu debug qilishni qiyinlashtirib yuboradi.
 - [x] Error qolibi. Error code va message'larni bilan. Tillik yoki 1 ta tillik.

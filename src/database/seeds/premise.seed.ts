@@ -46,7 +46,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -69,7 +68,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -92,7 +90,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 
@@ -116,7 +113,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -139,7 +135,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -162,7 +157,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 
@@ -186,7 +180,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -209,7 +202,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -232,7 +224,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 
@@ -256,7 +247,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -279,7 +269,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -302,7 +291,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 
@@ -326,7 +314,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -349,7 +336,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -372,7 +358,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 
@@ -396,7 +381,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -419,7 +403,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -442,7 +425,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 
@@ -466,7 +448,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -489,7 +470,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 		{
@@ -512,7 +492,6 @@ export async function up(query: QueryBuilder<object>) {
 			title: "",
 			end_date: new Date(),
 			mortagePayment: 100,
-			is_open_booking: false,
 			is_sold: false,
 		},
 	];
