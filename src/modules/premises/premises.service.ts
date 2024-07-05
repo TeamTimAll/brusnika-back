@@ -21,103 +21,11 @@ export class PremisesService extends BasicService<
 	}
 
 	readOne(id: string) {
-		return this.repository.findOne({
-			where: {
-				id: id,
-			},
-			relations: {
-				section: true,
-				building: true,
-			},
-		});
+		return this.getPremisesFiltered({ id: id });
 	}
 
-	async getMultiplePremisesByIds(ids: string[]) {
-		const query = this.repository
-			.createQueryBuilder("premise")
-			.select([
-				"premise.id as id",
-				"premise.name as name",
-				"premise.type as type",
-				"premise.building as building",
-				"premise.building_id as building_id",
-				"premise.price as price",
-				"premise.size as size",
-				"premise.status as status",
-				"premise.purchase_option as purchaseOption",
-				"premise.number as number",
-				"premise.floor as floor",
-				"premise.photo as photo",
-				"premise.rooms as rooms",
-				"premise.photos as photos",
-				"premise.similiar_apartment_count as similiarApartmentCount",
-				"premise.title as title",
-				"premise.end_date as end_date",
-				"premise.mortage_payment as mortagePayment",
-				"premise.section_id as section_id",
-				"premise.is_open_booking as is_open_booking",
-				"premise.is_sold as is_sold",
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-					'id', 							building.id,
-					'name', 						building.name,
-					'total_storage', 				building.total_storage,
-					'total_vacant_storage', 		building.total_vacant_storage,
-					'total_parking_space', 			building.total_parking_space,
-					'total_vacant_parking_space', 	building.total_vacant_parking_space,
-					'total_commercial', 			building.total_commercial,
-					'total_vacant_commercial', 		building.total_vacant_commercial,
-					'address', 						building.address,
-					'number_of_floors', 			building.number_of_floors,
-					'photos', 						building.photos,
-					'project_id', 					building.project_id,
-					'created_at', 					building."created_at",
-					'updated_at', 					building."updated_at"
-				)) as building`,
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-					'id',			section.id,
-					'name',			section.name,
-					'building_id',	section.building_id
-				)) as section`,
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-					'id',					project.id,
-					'name',					project.name,
-					'detailed_description',	project.detailed_description,
-					'brief_description',	project.brief_description,
-					'photo',				project.photo,
-					'price',				project.price,
-					'location',				project.location,
-					'long',					project.long,
-					'lat',					project.lat,
-					'link',					project.link,
-					'end_date',				project.end_date,
-					'city_id',				project.city_id
-				)) as project`,
-			])
-			.addSelect(
-				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
-			)
-			.leftJoin(
-				BuildingsEntity,
-				"building",
-				"building.id = premise.building_id",
-			)
-			.leftJoin(
-				SectionsEntity,
-				"section",
-				"section.id = premise.section_id",
-			)
-			.leftJoin(
-				ProjectEntity,
-				"project",
-				"project.id = building.project_id",
-			)
-			.where("premise.id in (:...ids)", {
-				ids: ids,
-			});
-
-		const premises = await query.getRawMany<PremisesEntity>();
-
-		return premises;
+	getMultiplePremisesByIds(ids: string[]) {
+		return this.getPremisesFiltered({ ids: ids });
 	}
 
 	async getPremisesFiltered(
@@ -203,6 +111,18 @@ export class PremisesService extends BasicService<
 			);
 
 		if (filter) {
+			if (filter.id) {
+				query = query.andWhere("premise.id = :id", {
+					id: filter.id,
+				});
+			}
+
+			if (filter.ids && filter.ids.length) {
+				query = query.andWhere("premise.id in (:...ids)", {
+					ids: filter.ids,
+				});
+			}
+
 			if (filter.endYear) {
 				query = query.andWhere("project.end_date = :endYear", {
 					endYear: filter.endYear,

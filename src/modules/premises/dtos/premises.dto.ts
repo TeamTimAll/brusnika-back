@@ -108,6 +108,9 @@ export class PremisesDto extends BaseDto {
 }
 
 export class PremisesFilterDto {
+	id?: string;
+	ids?: string[];
+
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsDateString()
@@ -119,7 +122,7 @@ export class PremisesFilterDto {
 		required: false,
 	})
 	@IsOptional()
-	type!: PremisesType | undefined;
+	type?: PremisesType | undefined;
 
 	@ApiProperty({
 		example: "123e4567-e89b-12d3-a456-426614174000",
