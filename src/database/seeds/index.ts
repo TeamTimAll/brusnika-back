@@ -1,25 +1,30 @@
-import { DataSource, QueryBuilder } from "typeorm";
+import { DataSource } from "typeorm";
 
 import { ConfigManager } from "../../config";
-import {
-	PremisesEntity,
-	PremisesType,
-} from "../../modules/premises/premises.entity";
+
+import * as buildingSeed from "./building.seed";
+import * as citySeed from "./city.seed";
+import * as premiseSeed from "./premise.seed";
+import * as projectSeed from "./project.seed";
 
 ConfigManager.init();
 export const dataSource = new DataSource(ConfigManager.databaseConfig);
 
-async function up(query: QueryBuilder<object>) {
-	await query
-		.insert()
-		.into(PremisesEntity)
-		.values({ type: PremisesType.APARTMENT, floor: 5 })
-		.execute();
+// -----------------Planting seeds-----------------
+async function up(dataSource: DataSource) {
+	await citySeed.up(dataSource.createQueryBuilder());
+	await projectSeed.up(dataSource.createQueryBuilder());
+	await buildingSeed.up(dataSource.createQueryBuilder());
+	await premiseSeed.up(dataSource.createQueryBuilder());
 }
 
-async function down(query: QueryBuilder<object>) {
-	await query.delete().from(PremisesEntity).execute();
+async function down(dataSource: DataSource) {
+	await citySeed.down(dataSource.createQueryBuilder());
+	await projectSeed.down(dataSource.createQueryBuilder());
+	await buildingSeed.down(dataSource.createQueryBuilder());
+	await premiseSeed.down(dataSource.createQueryBuilder());
 }
+// ------------------------------------------------
 
 async function createDataSource() {
 	const command = process.argv[2];
@@ -31,15 +36,15 @@ async function createDataSource() {
 	}
 	await dataSource.initialize();
 
-	const query = dataSource.createQueryBuilder();
+	// const query = dataSource.createQueryBuilder();
 
 	switch (command) {
 		case "up": {
-			await up(query);
+			await up(dataSource);
 			break;
 		}
 		case "down": {
-			await down(query);
+			await down(dataSource);
 			break;
 		}
 	}
