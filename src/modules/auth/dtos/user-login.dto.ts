@@ -7,7 +7,7 @@ import {
 	IsMobilePhone,
 	IsNotEmpty,
 	IsNumber,
-	IsString
+	IsString,
 } from "class-validator";
 
 import { RoleType } from "../../../constants";
@@ -124,9 +124,9 @@ export class AuthResponeWithToken {
 
 export class AuthResponeWithData {
 	@ApiProperty({
-		example: "uuidv4",
+		example: 1,
 	})
-	user_id!: string;
+	user_id!: number;
 
 	@ApiProperty({
 		example: "sms sent | verified | ok",

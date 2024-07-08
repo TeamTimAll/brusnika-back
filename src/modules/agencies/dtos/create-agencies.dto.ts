@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
-	IsUUID,
-	IsString,
 	IsEmail,
-	IsOptional,
+	IsInt,
 	IsMobilePhone,
+	IsOptional,
+	IsString,
 } from "class-validator";
 
 export class CreateAgenciesDto {
@@ -13,8 +13,8 @@ export class CreateAgenciesDto {
 	title!: string;
 
 	@ApiProperty({ description: "The UUID of the city" })
-	@IsUUID()
-	city_id!: string;
+	@IsInt()
+	city_id!: number;
 
 	@ApiProperty({ description: "The legal name of the agency" })
 	@IsString()
@@ -80,8 +80,8 @@ export class CreateExistentAgenciesDto {
 	title!: string;
 
 	@ApiProperty({ description: "The UUID of the city" })
-	@IsUUID()
-	city_id!: string;
+	@IsInt()
+	city_id!: number;
 
 	@ApiProperty({ description: "The full name of the owner" })
 	@IsString()
