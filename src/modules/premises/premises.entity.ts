@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
+import { BookingsEntity } from "../bookings/bookings.entity";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { SectionsEntity } from "../sections/sections.entity";
 
@@ -42,8 +43,8 @@ export class PremisesEntity extends AbstractEntity {
 	@JoinColumn({ name: "building_id" })
 	building!: BuildingsEntity;
 
-	@Column({ nullable: true })
-	building_id?: string;
+	@Column({ type: "integer", nullable: true })
+	building_id?: number;
 
 	@Column({ nullable: true, type: "varchar" })
 	price!: number;
@@ -75,9 +76,6 @@ export class PremisesEntity extends AbstractEntity {
 	@Column({ nullable: true })
 	similiarApartmentCount!: number;
 
-	@Column({ nullable: true })
-	title!: string;
-
 	@Column({ nullable: true, type: "date" })
 	end_date!: Date;
 
@@ -95,6 +93,12 @@ export class PremisesEntity extends AbstractEntity {
 	@JoinColumn({ name: "section_id" })
 	section!: SectionsEntity;
 
-	@Column({ nullable: true })
-	section_id?: string;
+	@Column({ type: "integer", nullable: true })
+	section_id?: number;
+
+	@Column({ nullable: true, type: "boolean", default: false })
+	is_sold!: boolean;
+
+	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.premise)
+	bookings?: BookingsEntity[];
 }

@@ -2,29 +2,31 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsArray,
 	IsEnum,
+	IsInt,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
 	IsString,
 } from "class-validator";
+import { Type } from "class-transformer";
 
-import { CommercialStatus, PremisesType, PuchaseOptions } from "../premises.entity";
+import {
+	CommercialStatus,
+	PremisesType,
+	PuchaseOptions,
+} from "../premises.entity";
 
 export class CreatePremisesDto {
-	@ApiProperty({ description: "Name of the premise", required: false })
-	@IsString()
-	@IsOptional()
-	name?: string;
-
 	@ApiProperty({ description: "Type of the premise", enum: PremisesType })
 	@IsEnum(PremisesType)
 	@IsNotEmpty()
 	type: PremisesType | undefined;
 
 	@ApiProperty({ description: "Building ID", required: false })
-	@IsString()
+	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
-	building_id?: string;
+	building_id?: number;
 
 	@ApiProperty({ description: "Price of the premise", required: false })
 	@IsNumber()
@@ -83,11 +85,6 @@ export class CreatePremisesDto {
 	@IsOptional()
 	similiarApartmentCount?: number;
 
-	@ApiProperty({ description: "Title of the premise", required: false })
-	@IsString()
-	@IsOptional()
-	title?: string;
-
 	@ApiProperty({ description: "End date of the premise", required: false })
 	@IsString()
 	@IsOptional()
@@ -99,9 +96,10 @@ export class CreatePremisesDto {
 	mortagePayment?: number;
 
 	@ApiProperty({ description: "Section ID", required: false })
-	@IsString()
+	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
-	section_id?: string;
+	section_id?: number;
 
 	@ApiProperty({ description: "Purchase option", required: false })
 	@IsEnum(PuchaseOptions)

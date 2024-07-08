@@ -1,6 +1,10 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { AbstractEntity } from "../../common/abstract.entity";
+import { BookingsEntity } from "../bookings/bookings.entity";
+import { LeadsEntity } from "../leads/leads.entity";
+import { UserEntity } from "../user/user.entity";
+import { VisitsEntity } from "../visits/visits.entity";
 
 export enum ClientTag {
 	LEAD_VERIFICATION = "проверка лида",
@@ -32,6 +36,19 @@ export class ClientEntity extends AbstractEntity {
 	@Column({ type: "text", nullable: true })
 	node?: string;
 
-	// @OneToMany(() => LeadsEntity, (l) => l.client)
-	// leads?: LeadsEntity[];
+	@ManyToOne(() => UserEntity)
+	@JoinColumn({ name: "agent_id" })
+	agent!: UserEntity;
+
+	@Column({ nullable: true, type: "integer" })
+	agent_id?: number;
+
+	@OneToMany(() => LeadsEntity, (l) => l.client)
+	leads?: LeadsEntity[];
+
+	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.client)
+	bookings?: BookingsEntity[];
+
+	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.project)
+	visits?: VisitsEntity[];
 }

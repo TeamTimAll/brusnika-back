@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { PremisesBasketNotFoundError } from "./errors/PremisesBasketNotFound.error";
 import { PremisesBasketEntity } from "./premises_basket.entity";
 import { CreatePremisesBasketDto } from "./dtos/premises_basket_create.dto";
@@ -15,7 +13,7 @@ export class PremisesBasketService {
 		private upbRepository: Repository<PremisesBasketEntity>,
 	) {}
 
-	async getAllBasket(meta_id: Uuid) {
+	async getAllBasket(meta_id: number) {
 		const foundBasket = await this.upbRepository.find({
 			where: { meta: { id: meta_id } },
 		});

@@ -26,6 +26,8 @@ export class ClientDto {
 	@IsNotEmpty()
 	actived_date!: Date;
 
+	agent_id?: number;
+
 	@ApiProperty({ default: "some comment about client" })
 	@IsString()
 	@IsOptional()

@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { CreatePremisesBasketMetaDto } from "./dtos/premises_basket_meta_create.dto";
 import { PremisesBasketMetaNotFoundError } from "./errors/PremisesBasketMetaNotFound.error";
 import { PremisesBasketMetaEntity } from "./premises_basket_meta.entity";
@@ -15,7 +13,7 @@ export class PremisesBasketMetaService {
 		private cpbmRepository: Repository<PremisesBasketMetaEntity>,
 	) {}
 
-	async getAllBasketMeta(client_id: Uuid) {
+	async getAllBasketMeta(client_id: number) {
 		const foundBasket = await this.cpbmRepository.find({
 			where: { client: { id: client_id } },
 		});

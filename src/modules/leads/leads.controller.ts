@@ -1,9 +1,12 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
+import { createLink } from "../../lib/pagination";
 
 import { CreateLeadMetaDataDto } from "./dtos/leads.create.dto";
+import { LeadReadByFilter } from "./dtos/leads.dto";
+import { UpdateLeadDto } from "./dtos/leads.update.dto";
 import { LeadsService } from "./leads.service";
 
 @ApiTags("Leads")
@@ -18,11 +21,23 @@ export class LeadsController {
 		return metaData;
 	}
 
+	@Post("/change-status")
+	async changeStatus(@Query() dto: UpdateLeadDto) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		metaData.data = await this.dealsService.changeStatus(
+			dto.leadId,
+			dto.toStatus,
+		);
+		return metaData;
+	}
+
 	@Get()
 	// @ApiOkResponse({ type: LeadReadAll })
-	async readAll() {
+	async readAll(@Query() dto: LeadReadByFilter) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.dealsService.readAll();
+		const serviceResponse = await this.dealsService.readAll(dto);
+		metaData.data = serviceResponse.data;
+		metaData.meta.links = createLink(serviceResponse.links);
 		return metaData;
 	}
 }

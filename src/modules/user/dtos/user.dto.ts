@@ -1,19 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsBoolean,
 	IsDate,
 	IsDateString,
 	IsEmail,
 	IsEnum,
+	IsInt,
 	IsMobilePhone,
 	IsNumber,
 	IsOptional,
 	IsString,
-	IsUUID,
 	MaxLength,
 } from "class-validator";
-
-import { Uuid } from "boilerplate.polyfill";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { RoleType } from "../../../constants";
@@ -92,16 +91,19 @@ export class UserDto extends BaseDto {
 	@ApiProperty({ required: false })
 	isPhoneVerified?: boolean;
 
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({
 		required: false,
 	})
-	city_id?: Uuid;
+	city_id?: number;
 
 	@ApiProperty({ description: "The agency ID of the user" })
 	@IsOptional()
-	@IsUUID()
-	agency_id?: string;
+	@IsInt()
+	@Type(() => Number)
+	agency_id?: number;
+
 	status: boolean;
 
 	constructor(user: UserEntity) {
@@ -182,21 +184,23 @@ export class UserUpdateDto {
 	// @MaxDate(new Date('2015-01-01'), { message: 'Birth date must be before 2015-01-01' })
 	birthDate?: Date;
 
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
 	@ApiProperty({
 		required: false,
 		description: "The ID of the city where the user resides",
 	})
-	city_id?: Uuid;
+	city_id?: number;
 }
 
 export class UserFillDataDto {
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({
 		required: true,
 	})
-	id!: Uuid;
+	id!: number;
 
 	@IsString()
 	@ApiProperty({
@@ -210,11 +214,12 @@ export class UserFillDataDto {
 	})
 	lastName!: string;
 
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	city_id!: Uuid;
+	@IsInt()
+	@Type(() => Number)
+	city_id!: number;
 
 	@IsDateString()
 	@ApiProperty({ required: true })

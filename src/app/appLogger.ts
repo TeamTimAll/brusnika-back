@@ -26,10 +26,10 @@ export class AppLogger {
 
 	static initStream(logger: LoggerService) {
 		return {
-			write: function(message: string): void {
+			write: function (message: string): void {
 				// To remove the last newline character, used the `slice` function.
 				logger.log(message.slice(0, -1));
-			}
+			},
 		};
 	}
 }

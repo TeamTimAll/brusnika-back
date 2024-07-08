@@ -7,6 +7,8 @@ import {
 	ValidateNested,
 } from "class-validator";
 
+import { createLink } from "../../lib/pagination";
+import { Links } from "../../types";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
 
 import { BaseError } from "./baseError";
@@ -17,9 +19,19 @@ export class MetaPrompt {
 	meta!: object;
 }
 
+export class MetaLinks implements Links {
+	totalPage!: number;
+	currPage!: number;
+	limit!: number;
+	total!: number;
+}
+
 export class MetaDto<T = object> {
 	@IsOptional()
 	type: ResponseStatusType = ResponseStatusType.SUCCESS;
+
+	@IsOptional()
+	links!: MetaLinks;
 
 	@IsOptional()
 	taskId!: string;
@@ -33,10 +45,8 @@ export class MetaDto<T = object> {
 }
 
 export class BaseDto<T = unknown> {
-	@ApiProperty({ type: MetaDto })
-	@IsDefined()
-	// @IsNotEmptyObject()
-	@IsObject()
+	@ApiProperty({ required: false, type: MetaDto })
+	@IsOptional()
 	@ValidateNested()
 	@Type(() => MetaDto)
 	meta!: MetaDto;
@@ -51,6 +61,11 @@ export class BaseDto<T = unknown> {
 	setPrompt(error: BaseError) {
 		this.meta.type = ResponseStatusType.ERROR;
 		this.meta.prompt = error;
+		return this;
+	}
+
+	setLinks(links: Links) {
+		this.meta.links = createLink(links);
 		return this;
 	}
 

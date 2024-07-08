@@ -5,6 +5,7 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
+	Param,
 	Post,
 	Put,
 } from "@nestjs/common";
@@ -15,9 +16,10 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-import { UUIDParam, User } from "../../decorators";
-import { UserEntity } from "../user/user.entity";
+import { ICurrentUser } from "interfaces/current-user.interface";
+
+import { User } from "../../decorators";
+
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { EventsDto } from "./dtos/events.dto";
 import { UpdateEventsDto } from "./dtos/update-events.dto";
@@ -33,38 +35,32 @@ export class EventsController {
 	@Post()
 	async createEvents(
 		@Body() createEventsDto: CreateEventsDto,
-		@User() user: UserEntity,
+		@User() user: ICurrentUser,
 	) {
-		const EventsEntity = await this.eventsService.createEvents(
-			user.id,
-			createEventsDto,
-		);
-
-		return EventsEntity.toDto();
+		return await this.eventsService.create(createEventsDto, user);
 	}
 
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: EventsDto })
-	async getSingleEvents(@UUIDParam("id") id: Uuid): Promise<EventsDto> {
-		const entity = await this.eventsService.getSingleEvents(id);
-		return entity.toDto();
+	async getSingleEvents(@Param("id") id: number) {
+		return await this.eventsService.findOne(id);
 	}
 
 	@Put(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
 	updateEvents(
-		@UUIDParam("id") id: Uuid,
+		@Param("id") id: number,
 		@Body() updateEventsDto: UpdateEventsDto,
-	): Promise<void> {
-		return this.eventsService.updateEvents(id, updateEventsDto);
+	) {
+		return this.eventsService.update(id, updateEventsDto);
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	async deleteEvents(@UUIDParam("id") id: Uuid): Promise<void> {
-		await this.eventsService.deleteEvents(id);
+	async deleteEvents(@Param("id") id: number) {
+		return await this.eventsService.remove(id);
 	}
 }

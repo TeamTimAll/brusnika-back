@@ -2,7 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { ClientEntity } from "./client.entity";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { calcPagination } from "../../lib/pagination";
+import { ServiceResponse } from "../../types";
+import { LeadOpsEntity } from "../leads/lead_ops.entity";
+import { LeadsEntity } from "../leads/leads.entity";
+
+import { ClientEntity, ClientTag } from "./client.entity";
 import { ClientDto } from "./dto/client.dto";
 import { FilterClientDto } from "./dto/client.search.dto";
 
@@ -22,59 +28,123 @@ export class ClientService {
 		return this.clientRepository.save(client);
 	}
 
-	readAll() {
-		return this.clientRepository.find();
+	quickSearch(text: string = "", user: ICurrentUser) {
+		return this.clientRepository
+			.createQueryBuilder("c")
+			.select(["id", "fullname", "phone_number"])
+			.limit(25)
+			.where(
+				"(c.agent_id = :client_agent_id or c.status = :client_status)",
+				{
+					client_agent_id: user.user_id,
+					client_status: ClientTag.WEAK_FIXING,
+				},
+			)
+			.andWhere(
+				"(c.fullname ILIKE :fullname or c.phone_number ILIKE :phone_number)",
+				{
+					fullname: `%${text}%`,
+					phone_number: `%${text}%`,
+				},
+			)
+			.getRawMany();
 	}
 
-	readByFilter(dto: FilterClientDto): Promise<ClientEntity[]> {
+	async readAll(
+		dto: FilterClientDto,
+		user: ICurrentUser,
+	): Promise<ServiceResponse<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
-			.createQueryBuilder("client")
+			.createQueryBuilder("c")
 			.select([
-				"fullname",
-				"phone_number",
-				"actived_date",
-				"comment",
-				"status",
-				"expiration_date",
-				"node",
-			]);
+				"c.id as id",
+				"c.fullname as fullname",
+				"c.phone_number as phone_number",
+				"c.actived_date as actived_date",
+				"c.comment as comment",
+				"c.status as status",
+				"c.expiration_date as expiration_date",
+				"c.node as node",
+				"COALESCE(JSON_AGG(l) FILTER (WHERE l.id IS NOT NULL), '[]') as leads",
+			])
+			.leftJoin(
+				(qb) => {
+					const query = qb
+						.select("l.*")
+						.addSelect("lop.status")
+						.addSelect(
+							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
+						)
+						.from(LeadsEntity, "l")
+						.leftJoin("projects", "p", "p.id = l.project_id")
+						.innerJoin(
+							(qb2) => {
+								const query = qb2
+									.select("*")
+									.from(LeadOpsEntity, "lop")
+									.where("l.id = lop.lead_id")
+									.orderBy("lop.created_at", "DESC")
+									.limit(1)
+									.getQuery();
+								qb2.getQuery = () => `LATERAL (${query})`;
+								return qb2;
+							},
+							"lop",
+							"l.id = lop.lead_id",
+						)
+						.where("l.client_id = c.id")
+						.groupBy("l.id")
+						.addGroupBy("lop.status")
+						.addGroupBy("p.id")
+						.limit(1)
+						.getQuery();
 
-		if (dto.fullname) {
-			queryBuilder = queryBuilder.andWhere(
-				"client.fullname = :fullname",
-				{
-					fullname: dto.fullname,
+					qb.getQuery = () => `LATERAL (${query})`;
+					return qb;
 				},
-			);
+				"l",
+				"c.id = l.client_id",
+			)
+			.where(
+				"(c.agent_id = :client_agent_id or c.status = :client_status)",
+				{
+					client_agent_id: user.user_id,
+					client_status: ClientTag.WEAK_FIXING,
+				},
+			)
+			.groupBy("c.id");
+
+		if (dto.client_id) {
+			queryBuilder = queryBuilder.andWhere("c.id = :client_id", {
+				client_id: dto.client_id,
+			});
 		}
 		if (dto.phone_number) {
 			queryBuilder = queryBuilder.andWhere(
-				"phone_number = :phone_number",
+				"phone_number ilike :phone_number",
 				{
-					phone_number: dto.phone_number,
+					phone_number: `%${dto.phone_number}%`,
 				},
 			);
 		}
-		if (dto.project_id || dto.status) {
-			queryBuilder.innerJoin("leads", "l");
-
-			if (dto.project_id) {
-				queryBuilder = queryBuilder.andWhere("l.project_id = :project_id", {
-					project_id: dto.project_id,
-				});
-			}
-			if (dto.status) {
-				queryBuilder = queryBuilder.andWhere(
-					"l.status = :status",
-					{
-						status: dto.status,
-					},
-				);
-			}
+		if (dto.state) {
+			queryBuilder = queryBuilder.andWhere("l.state = :state", {
+				state: dto.state,
+			});
+		}
+		if (dto.project_id) {
+			queryBuilder = queryBuilder.andWhere("l.project_id = :project_id", {
+				project_id: dto.project_id,
+			});
+		}
+		if (dto.status) {
+			queryBuilder = queryBuilder.andWhere("l.status = :status", {
+				status: dto.status,
+			});
 		}
 		if (dto.actived_from_date) {
 			queryBuilder = queryBuilder.andWhere(
-				"actived_date >= :actived_from_date",
+				"c.actived_date >= :actived_from_date",
 				{
 					actived_from_date: dto.actived_from_date,
 				},
@@ -82,13 +152,33 @@ export class ClientService {
 		}
 		if (dto.actived_to_date) {
 			queryBuilder = queryBuilder.andWhere(
-				"actived_date <= :actived_to_date",
+				"c.actived_date <= :actived_to_date",
 				{
 					actived_to_date: dto.actived_to_date,
 				},
 			);
 		}
 
-		return queryBuilder.execute() as Promise<ClientEntity[]>;
+		const pageSize = (dto.page - 1) * dto.limit;
+
+		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
+
+		const clientCount = await this.clientRepository.count({
+			where: [
+				{
+					agent_id: user.user_id,
+				},
+				{
+					status: ClientTag.WEAK_FIXING,
+				},
+			],
+		});
+
+		const clientResponse: ServiceResponse<ClientEntity[]> = {
+			links: calcPagination(clientCount, dto.page, dto.limit),
+			data: await queryBuilder.getRawMany(),
+		};
+
+		return clientResponse;
 	}
 }

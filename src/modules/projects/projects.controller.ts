@@ -8,27 +8,35 @@ import {
 	Param,
 	Post,
 	Put,
+	UseGuards,
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
+import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BaseDto } from "../../common/base/base_dto";
+import { User } from "../../decorators";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { CreateProjectMetaDataDto } from "./dto/project.create.dto";
+import {
+	CreateProjectDto,
+	CreateProjectMetaDataDto,
+} from "./dto/project.create.dto";
 import { UpdateProjectMetaDataDto } from "./dto/projects.update.dto";
 import { ProjectsService } from "./projects.service";
 
 @ApiTags("Projects")
 @Controller("projects")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class ProjectsController {
 	constructor(private projectsService: ProjectsService) {}
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	async getAllProjects() {
+	async getAllProjects(@User() user?: ICurrentUser) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.projectsService.getAllProjects();
+		metaData.data = await this.projectsService.getAllProjects(user);
 		return metaData;
 	}
 
@@ -59,13 +67,13 @@ export class ProjectsController {
 			projectDto.meta.params.project_id,
 			projectDto.data,
 		);
-		metaData.data = updatedProject;
+		metaData.data = updatedProject as CreateProjectDto;
 		return metaData;
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.OK)
-	async deleteProject(@Param("id") id: Uuid) {
+	async deleteProject(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const deletedProject = await this.projectsService.deleteProject(id);
 		metaData.data = deletedProject;

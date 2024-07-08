@@ -1,25 +1,24 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsDateString,
 	IsEnum,
+	IsInt,
 	IsNumber,
 	IsNumberString,
 	IsOptional,
 	IsString,
-	IsUUID,
 } from "class-validator";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../../common/dto/abstract.dto";
-import { CommercialStatus, PremisesType, PuchaseOptions } from "../premises.entity";
+import { Limit, Page } from "../../../decorators/pagination";
+import {
+	CommercialStatus,
+	PremisesType,
+	PuchaseOptions,
+} from "../premises.entity";
 
 export class PremisesDto extends BaseDto {
-	@ApiProperty({ example: "Apartment 1" })
-	@IsOptional()
-	@IsString()
-	name?: string;
-
 	@ApiProperty({
 		enum: PremisesType,
 		required: true,
@@ -27,10 +26,11 @@ export class PremisesDto extends BaseDto {
 	@IsOptional()
 	type!: PremisesType | undefined;
 
-	@ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
+	@ApiProperty({ example: 1 })
 	@IsOptional()
-	@IsString()
-	building_id?: string;
+	@IsInt()
+	@Type(() => Number)
+	building_id?: number;
 
 	@ApiProperty({ example: "1000" })
 	@IsOptional()
@@ -71,11 +71,6 @@ export class PremisesDto extends BaseDto {
 	@IsNumber()
 	similiarApartmentCount?: number;
 
-	@ApiProperty({ example: "Apartment for rent" })
-	@IsOptional()
-	@IsString()
-	title?: string;
-
 	@ApiProperty({ example: "2022-01-01" })
 	@IsOptional()
 	@IsString()
@@ -91,10 +86,14 @@ export class PremisesDto extends BaseDto {
 	@IsString()
 	mortagePayment?: string;
 
-	@ApiProperty({ example: "123e4567-e 89b-12d3-a456-426614174000" ,required: false})
+	@ApiProperty({
+		example: 1,
+		required: false,
+	})
 	@IsOptional()
-	@IsString()
-	section_id?: string;
+	@IsInt()
+	@Type(() => Number)
+	section_id?: number;
 
 	@ApiProperty({ description: "Purchase option", required: false })
 	@IsOptional()
@@ -103,6 +102,17 @@ export class PremisesDto extends BaseDto {
 }
 
 export class PremisesFilterDto {
+	id?: number;
+	ids?: number[];
+
+	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsDateString()
@@ -114,16 +124,17 @@ export class PremisesFilterDto {
 		required: false,
 	})
 	@IsOptional()
-	type!: PremisesType | undefined;
+	type?: PremisesType | undefined;
 
 	@ApiProperty({
-		example: "123e4567-e89b-12d3-a456-426614174000",
+		example: 1,
 		description: "Section ID",
 		required: false,
 	})
 	@IsOptional()
-	@IsUUID()
-	section_id?: Uuid;
+	@IsInt()
+	@Type(() => Number)
+	section_id?: number;
 
 	@ApiProperty({ example: 3, required: false })
 	@IsOptional()
@@ -131,20 +142,22 @@ export class PremisesFilterDto {
 	rooms?: string;
 
 	@ApiProperty({
-		example: "123e4567-e89b-12d3-a456-426614174000",
+		example: 1,
 		required: false,
 	})
 	@IsOptional()
-	@IsUUID()
-	project_id?: Uuid;
+	@IsInt()
+	@Type(() => Number)
+	project_id?: number;
 
 	@ApiProperty({
-		example: "123e4567-e89b-12d3-a456-426614174000",
+		example: 1,
 		required: false,
 	})
 	@IsOptional()
-	@IsUUID()
-	building_id?: Uuid;
+	@IsInt()
+	@Type(() => Number)
+	building_id?: number;
 
 	@ApiProperty({ example: "1", required: false })
 	@IsOptional()
@@ -191,8 +204,22 @@ export class PremisesFilterDto {
 	@IsOptional()
 	status?: CommercialStatus;
 
-	@ApiProperty({ required: false, enum: PuchaseOptions})
+	@ApiProperty({ required: false, enum: PuchaseOptions })
 	@IsOptional()
 	@IsEnum(PuchaseOptions)
 	purchaseOption?: PuchaseOptions;
+}
+
+export class PremisesIdsDto {
+	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
+	@ApiProperty({ required: false })
+	@IsInt({ each: true })
+	ids?: number[];
 }

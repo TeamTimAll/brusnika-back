@@ -4,7 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
-	ParseArrayPipe,
+	Param,
 	Post,
 	Put,
 	Query,
@@ -16,14 +16,16 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDParam } from "../../decorators";
 
 import { CreatePremisesDto } from "./dtos/create-premises.dto";
-import { PremisesDto, PremisesFilterDto } from "./dtos/premises.dto";
+import {
+	PremisesDto,
+	PremisesFilterDto,
+	PremisesIdsDto,
+} from "./dtos/premises.dto";
 import { UpdatePremisesDto } from "./dtos/update-premises.dto";
+import { PremisesEntity } from "./premises.entity";
 import { PremisesService } from "./premises.service";
 
 @Controller("/premises")
@@ -42,31 +44,27 @@ export class PremisesController {
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto, isArray: true })
 	@Get()
 	async getPremises(@Query() filterDto: PremisesFilterDto) {
-		return await this.service.getPremisesFiltered(filterDto);
-	}
-
-	@ApiOperation({ summary: "Get unique number premises " })
-	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto, isArray: true })
-	@Get("/unique-number/")
-	async getUniqueNumberPremises(@Query() filterDto: PremisesFilterDto) {
-		return await this.service.getPremisesFiltered(filterDto);
+		const metaData = BaseDto.createFromDto(new BaseDto<PremisesEntity[]>());
+		const response = await this.service.getPremisesFiltered(filterDto);
+		metaData.setLinks(response.links);
+		metaData.data = response.data;
+		return metaData;
 	}
 
 	@ApiOperation({ summary: "Get a single city by ID" })
 	@Get(":id")
-	async getSinglePremises(@UUIDParam("id") id: Uuid) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
+	async getSinglePremises(@Param("id") id: number) {
+		const metaData = BaseDto.createFromDto<BaseDto, PremisesEntity>(
+			new BaseDto(),
+		);
 		metaData.data = await this.service.readOne(id);
 		return metaData;
 	}
 
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get("/cherry-pick/:ids")
-	async getMultiplePremisesByIds(
-		@Query("ids", new ParseArrayPipe({ optional: true }))
-		ids: Uuid[],
-	) {
-		if (!ids || !ids.length) {
+	async getMultiplePremisesByIds(@Query() dto: PremisesIdsDto) {
+		if (!dto.ids || !dto.ids.length) {
 			return [];
 		}
 		/*
@@ -74,17 +72,25 @@ export class PremisesController {
  			We need to check if it is a string or not. Because getMultiplePremisesByIds
 			function accepts array of strings.
 		*/
-		if (typeof ids === "string") {
-			ids = [ids];
+		if (typeof dto.ids === "string") {
+			dto.ids = [dto.ids];
 		}
-		return await this.service.getMultiplePremisesByIds(ids);
+		const metaData = BaseDto.createFromDto(new BaseDto<PremisesEntity[]>());
+		const response = await this.service.getMultiplePremisesByIds(
+			dto.ids,
+			dto.limit,
+			dto.page,
+		);
+		metaData.setLinks(response.links);
+		metaData.data = response.data;
+		return metaData;
 	}
 
 	@ApiOperation({ summary: "Update a premises by ID" })
 	@ApiAcceptedResponse()
 	@Put(":id")
 	async updatePremises(
-		@UUIDParam("id") id: Uuid,
+		@Param("id") id: number,
 		@Body() updatePremisesDto: UpdatePremisesDto,
 	) {
 		await this.service.update(id, updatePremisesDto);
@@ -93,7 +99,7 @@ export class PremisesController {
 	@ApiOperation({ summary: "Delete a premises by ID" })
 	@ApiAcceptedResponse()
 	@Delete(":id")
-	async deletePremises(@UUIDParam("id") id: Uuid) {
+	async deletePremises(@Param("id") id: number) {
 		await this.service.remove(id);
 	}
 }

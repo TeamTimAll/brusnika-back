@@ -1,42 +1,37 @@
-import
- { 
-    Controller ,
-//     HttpCode ,
-//     HttpStatus,
-    Get,
-    Body, 
-    Put,
-//     Param,
-    Post,
-} from '@nestjs/common';
+import {
+	Controller,
+	//     HttpCode ,
+	//     HttpStatus,
+	Get,
+	Body,
+	Put,
+	//     Param,
+	Post,
+} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 
-import { CommentsService } from './comments.service';
-import { AddCommentDto } from './dtos/comment.create.dto';
-import { CommentUpdateDto } from './dtos/comment.update.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { CommentsService } from "./comments.service";
+import { AddCommentDto } from "./dtos/comment.create.dto";
+import { CommentUpdateDto } from "./dtos/comment.update.dto";
 
-@Controller('comments')
-@ApiTags('comments')
-
+@Controller("comments")
+@ApiTags("comments")
 export class CommentsController {
+	constructor(private commentsService: CommentsService) {}
 
-     constructor( private  commentsService : CommentsService) {};
-      
-     @Get()
-//      @HttpCode(HttpStatus.OK)
-     async  getAll(){
-           return  this.commentsService.getAllComments()
-     }
+	@Get()
+	//      @HttpCode(HttpStatus.OK)
+	async getAll() {
+		return this.commentsService.getAllComments();
+	}
 
-      @Post()
-      async createComment( @Body() commentBody : AddCommentDto){
-          return this.commentsService.addComment(commentBody)
-     }
-    
-     @Put()
-     async updateComment( @Body() commentUpdate : CommentUpdateDto) {
-         return this.commentsService.updateComment(commentUpdate)
-     };
-};
+	@Post()
+	async createComment(@Body() commentBody: AddCommentDto) {
+		return this.commentsService.addComment(commentBody);
+	}
 
-
+	@Put()
+	async updateComment(@Body() commentUpdate: CommentUpdateDto) {
+		return this.commentsService.updateComment(commentUpdate);
+	}
+}

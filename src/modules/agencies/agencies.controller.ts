@@ -5,8 +5,9 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
-	Put,
+	Param,
 	Post,
+	Put,
 	Query,
 } from "@nestjs/common";
 import {
@@ -17,14 +18,14 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { UUIDParam, User } from "../../decorators";
-import { CreateAgenciesDto } from "./dtos/create-agencies.dto";
-import { AgenciesDto } from "./dtos/agencies.dto";
-import { UpdateAgenciesDto } from "./dtos/update-agencies.dto";
-import { AgenciesService } from "./agencies.service";
-import { Uuid } from "boilerplate.polyfill";
-import { ApiPageOkResponse } from "../../decorators";
 import { ICurrentUser } from "interfaces/current-user.interface";
+
+import { ApiPageOkResponse, User } from "../../decorators";
+
+import { AgenciesService } from "./agencies.service";
+import { AgenciesDto } from "./dtos/agencies.dto";
+import { CreateAgenciesDto } from "./dtos/create-agencies.dto";
+import { UpdateAgenciesDto } from "./dtos/update-agencies.dto";
 
 @Controller("/agencies")
 @ApiTags("Agencies")
@@ -48,7 +49,7 @@ export class AgenciesController {
 		required: false,
 	})
 	@ApiPageOkResponse({ type: AgenciesDto })
-	async getAgencies(@Query("name") name: string): Promise<any> {
+	async getAgencies(@Query("name") name: string): Promise<unknown> {
 		if (name) {
 			return this.service.findAllWithName(name);
 		} else {
@@ -59,7 +60,7 @@ export class AgenciesController {
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: AgenciesDto })
-	async getSingleAgencies(@UUIDParam("id") id: Uuid): Promise<any> {
+	async getSingleAgencies(@Param("id") id: number): Promise<unknown> {
 		return await this.service.findOne(id);
 	}
 
@@ -67,16 +68,16 @@ export class AgenciesController {
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
 	updateAgencies(
-		@UUIDParam("id") id: Uuid,
+		@Param("id") id: number,
 		@Body() updateAgenciesDto: UpdateAgenciesDto,
-	): Promise<any> {
+	): Promise<unknown> {
 		return this.service.update(id, updateAgenciesDto);
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	async deleteAgencies(@UUIDParam("id") id: Uuid): Promise<void> {
+	async deleteAgencies(@Param("id") id: number): Promise<void> {
 		await this.service.remove(id);
 	}
 }

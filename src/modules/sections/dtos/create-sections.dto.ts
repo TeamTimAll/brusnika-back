@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Uuid } from "boilerplate.polyfill";
-import { IsString, IsUUID } from "class-validator";
+import { Type } from "class-transformer";
+import { IsInt, IsString } from "class-validator";
 
 export class CreateSectionsDto {
 	@IsString()
@@ -11,7 +11,8 @@ export class CreateSectionsDto {
 	})
 	name!: string;
 
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({ required: false, description: "Building ID" })
-	building_id?: Uuid;
+	building_id?: number;
 }

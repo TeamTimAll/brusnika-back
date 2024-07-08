@@ -1,7 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsDateString,
+	IsInt,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
@@ -14,6 +15,7 @@ import { BaseDto } from "../../../common/base/base_dto";
 export class CreateProjectDto {
 	@ApiProperty({
 		required: true,
+		example: "Project Name",
 	})
 	@IsString()
 	@IsNotEmpty()
@@ -21,6 +23,7 @@ export class CreateProjectDto {
 
 	@ApiProperty({
 		required: true,
+		example: "Something deatiled about the project",
 	})
 	@IsNotEmpty()
 	@IsString()
@@ -28,6 +31,7 @@ export class CreateProjectDto {
 
 	@ApiProperty({
 		required: true,
+		example: "Brief description about the project",
 	})
 	@IsNotEmpty()
 	@IsString()
@@ -36,6 +40,7 @@ export class CreateProjectDto {
 	@ApiProperty({
 		required: true,
 		type: Number,
+		example: 0,
 	})
 	@IsNotEmpty()
 	@IsNumber()
@@ -43,6 +48,7 @@ export class CreateProjectDto {
 
 	@ApiProperty({
 		required: true,
+		example: "Some address and some street.",
 	})
 	@IsNotEmpty()
 	@IsString()
@@ -50,6 +56,7 @@ export class CreateProjectDto {
 
 	@ApiProperty({
 		required: true,
+		example: new Date(),
 	})
 	@IsNotEmpty()
 	@IsDateString()
@@ -61,28 +68,27 @@ export class CreateProjectDto {
 	@IsString()
 	photo!: string;
 
-	@ApiProperty()
+	@ApiProperty({ example: "0.00" })
 	@IsOptional()
 	@IsString()
 	long!: string;
 
-	@ApiProperty()
+	@ApiProperty({ example: "0.00" })
 	@IsOptional()
 	@IsString()
 	lat!: string;
+
+	@ApiProperty()
+	@IsInt()
+@Type(() => Number)
+	@IsNotEmpty()
+	city_id!: number;
 }
 
 export class CreateProjectMetaDataDto extends BaseDto<CreateProjectDto> {
 	@ApiProperty({
-		example: {
-			name: "Name",
-			detailed_description: "Something deatiled about the project",
-			brief_description: "Brief description about the project",
-			price: 0,
-			location: "Brief description about the project",
-			end_date: new Date(),
-			photo: "string",
-		} as CreateProjectDto,
+		oneOf: [{ $ref: getSchemaPath(CreateProjectDto) }],
+		type: () => CreateProjectDto,
 	})
 	@ValidateNested()
 	@Type(() => CreateProjectDto)

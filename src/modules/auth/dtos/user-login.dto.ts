@@ -1,16 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsBoolean,
 	IsDateString,
 	IsEmail,
+	IsInt,
 	IsMobilePhone,
 	IsNotEmpty,
 	IsNumber,
 	IsString,
-	IsUUID,
 } from "class-validator";
-
-import { Uuid } from "boilerplate.polyfill";
 
 import { RoleType } from "../../../constants";
 import {
@@ -40,17 +39,19 @@ export class AgentLoginDto {
 }
 
 export class AgentChooseAgencyDto {
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: Uuid;
+	@IsInt()
+	@Type(() => Number)
+	user_id!: number;
 
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	agency_id!: Uuid;
+	@IsInt()
+	@Type(() => Number)
+	agency_id!: number;
 
 	@IsDateString()
 	@ApiProperty({
@@ -60,11 +61,12 @@ export class AgentChooseAgencyDto {
 }
 
 export class AgentRegisterAgencyDto extends CreateAgenciesDto {
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: Uuid;
+	@IsInt()
+	@Type(() => Number)
+	user_id!: number;
 
 	@IsBoolean()
 	@ApiProperty({
@@ -74,11 +76,12 @@ export class AgentRegisterAgencyDto extends CreateAgenciesDto {
 }
 
 export class AgentRequestAgencyDto extends CreateExistentAgenciesDto {
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: Uuid;
+	@IsInt()
+	@Type(() => Number)
+	user_id!: number;
 }
 
 export class UserLoginVerifyCodeDto {
@@ -88,11 +91,12 @@ export class UserLoginVerifyCodeDto {
 	})
 	code!: number;
 
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: Uuid;
+	user_id!: number;
 }
 
 export class UserLoginResendCodeDto {
@@ -126,9 +130,9 @@ export class AuthResponeWithToken {
 
 export class AuthResponeWithData {
 	@ApiProperty({
-		example: "uuidv4",
+		example: 1,
 	})
-	user_id!: string;
+	user_id!: number;
 
 	@ApiProperty({
 		example: "sms sent | verified | ok",

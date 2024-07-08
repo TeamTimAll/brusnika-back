@@ -12,8 +12,6 @@ import { BuildingsService } from "../buildings/buildings.service";
 import { CreateBuilding } from "../buildings/dtos/building.create.dto";
 import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
 import { CitiesEntity } from "../cities/cities.entity";
-import { ClientStatusEntity } from "../client-status/client-status.entity";
-import { ClientStatusService } from "../client-status/client-status.service";
 import { ClientEntity } from "../client/client.entity";
 import { ClientService } from "../client/client.service";
 import { ClientNotFoundError } from "../client/errors/ClientNotFound.error";
@@ -65,7 +63,6 @@ describe(LeadsService.name, () => {
 					LeadsEntity,
 					LeadOpsEntity,
 					ClientEntity,
-					ClientStatusEntity,
 					ProjectEntity,
 					PremisesEntity,
 					BuildingsEntity,
@@ -79,7 +76,6 @@ describe(LeadsService.name, () => {
 				PremisesService,
 				BuildingsService,
 				ProjectsService,
-				ClientStatusService,
 			],
 		}).compile();
 
@@ -135,14 +131,14 @@ describe(LeadsService.name, () => {
 			name: "Test premise",
 			building_id: building.id,
 		});
-		input.clinet_id = client.id;
+		input.client_id = client.id;
 		input.agent_id = agent.id;
 		input.manager_id = manager.id;
 		input.premise_id = premise.data[0].id;
 		input.fee = 0;
 
 		expectedOutput = new LeadsEntity();
-		expectedOutput.clinet_id = client.id;
+		expectedOutput.client_id = client.id;
 		expectedOutput.agent_id = agent.id;
 		expectedOutput.manager_id = manager.id;
 		expectedOutput.premise_id = premise.data[0].id;
@@ -155,8 +151,6 @@ describe(LeadsService.name, () => {
 		await dataSource.createQueryBuilder().delete().from(LeadOpsEntity).execute();
 		// prettier-ignore
 		await dataSource.createQueryBuilder().delete().from(LeadsEntity).execute();
-		// prettier-ignore
-		await dataSource.createQueryBuilder().delete().from(ClientStatusEntity).execute();
 		// prettier-ignore
 		await dataSource.createQueryBuilder().delete().from(UserEntity).execute();
 		// prettier-ignore
@@ -176,7 +170,7 @@ describe(LeadsService.name, () => {
 		test("should return a lead", async () => {
 			const new_lead = await leadsService.create(input);
 			expect(new_lead).toMatchObject<Partial<LeadsEntity>>({
-				clinet_id: expectedOutput.clinet_id,
+				client_id: expectedOutput.client_id,
 				agent_id: expectedOutput.agent_id,
 				manager_id: expectedOutput.manager_id,
 				premise_id: expectedOutput.premise_id,
@@ -190,7 +184,7 @@ describe(LeadsService.name, () => {
 					JSON.stringify(input),
 				) as CreateLeadDto;
 
-				new_input.clinet_id = uuid();
+				new_input.client_id = uuid();
 				return await leadsService.create(new_input);
 			}).rejects.toThrow(ClientNotFoundError);
 		});
@@ -265,7 +259,7 @@ describe(LeadsService.name, () => {
 					address: "Test address",
 					number_of_floors: 0,
 					photos: [],
-					project_id: uuid(),
+					project_id: string(),
 				});
 
 				const new_premise =
@@ -287,7 +281,7 @@ describe(LeadsService.name, () => {
 			const leads = await leadsService.readAll();
 			leads.forEach((l) => {
 				expect(l).toMatchObject({
-					clinet_id: expect.any(String) as string,
+					client_id: expect.any(String) as string,
 					agent_id: expect.any(String) as string,
 					manager_id: expect.any(String) as string,
 					project_id: expect.any(String) as string,

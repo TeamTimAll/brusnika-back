@@ -1,70 +1,44 @@
 import {
-  IsPhoneNumber as isPhoneNumber,
-  registerDecorator,
-  ValidateIf,
-  type ValidationOptions,
-} from 'class-validator';
-
-import { isString } from 'lodash';
+	IsPhoneNumber as isPhoneNumber,
+	registerDecorator,
+	ValidateIf,
+	type ValidationOptions,
+} from "class-validator";
 
 export function IsPassword(
-  validationOptions?: ValidationOptions,
+	validationOptions?: ValidationOptions,
 ): PropertyDecorator {
-  return (object, propertyName) => {
-    registerDecorator({
-      propertyName: propertyName as string,
-      name: 'isPassword',
-      target: object.constructor,
-      constraints: [],
-      options: validationOptions,
-      validator: {
-        validate(value: string) {
-          return /^[\d!#$%&*@A-Z^a-z]*$/.test(value);
-        },
-      },
-    });
-  };
-};
-
-
-export function IsPhoneNumber(
-  validationOptions?: ValidationOptions & {
-    region?: Parameters<typeof isPhoneNumber>[0];
-  },
-)  
-
-: PropertyDecorator {
-  return isPhoneNumber(validationOptions?.region, {
-    message: 'error.phoneNumber',
-    ...validationOptions,
-  });
+	return (object, propertyName) => {
+		registerDecorator({
+			propertyName: propertyName as string,
+			name: "isPassword",
+			target: object.constructor,
+			constraints: [],
+			options: validationOptions,
+			validator: {
+				validate(value: string) {
+					return /^[\d!#$%&*@A-Z^a-z]*$/.test(value);
+				},
+			},
+		});
+	};
 }
 
-export function IsTmpKey(
-  validationOptions?: ValidationOptions,
+export function IsPhoneNumber(
+	validationOptions?: ValidationOptions & {
+		region?: Parameters<typeof isPhoneNumber>[0];
+	},
 ): PropertyDecorator {
-  return (object, propertyName) => {
-    registerDecorator({
-      propertyName: propertyName as string,
-      name: 'tmpKey',
-      target: object.constructor,
-      options: validationOptions,
-      validator: {
-        validate(value: string): boolean {
-          return isString(value) && /^tmp\//.test(value);
-        },
-        defaultMessage(): string {
-          return 'error.invalidTmpKey';
-        },
-      },
-    });
-  };
+	return isPhoneNumber(validationOptions?.region, {
+		message: "error.phoneNumber",
+		...validationOptions,
+	});
 }
 
 export function IsUndefinable(options?: ValidationOptions): PropertyDecorator {
-  return ValidateIf((_obj, value) => value !== undefined, options);
-};
+	return ValidateIf((_obj, value) => value !== undefined, options);
+}
 
 export function IsNullable(options?: ValidationOptions): PropertyDecorator {
-  return ValidateIf((_obj, value) => value !== null, options);
+	return ValidateIf((_obj, value) => value !== null, options);
 }

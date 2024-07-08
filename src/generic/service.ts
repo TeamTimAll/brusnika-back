@@ -7,8 +7,6 @@ import {
 	Repository,
 } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { ICurrentUser } from "../interfaces/current-user.interface";
 import { IFind, IFindBy, IFindOne } from "../interfaces/find.interface";
 import { ServiceResponse } from "../interfaces/serviceResponse.interface";
@@ -77,7 +75,7 @@ export class BasicService<
 	}
 
 	async update(
-		id: Uuid, // Assuming UUID is a string
+		id: number,
 		dto: UpdateDto,
 		currentUser?: ICurrentUser,
 	): Promise<ServiceResponse> {
@@ -106,7 +104,7 @@ export class BasicService<
 		);
 	}
 
-	async remove(id: string): Promise<ServiceResponse> {
+	async remove(id: number): Promise<ServiceResponse> {
 		await this.repository.delete(id);
 
 		return new ServiceResponse(
@@ -147,7 +145,7 @@ export class BasicService<
 	//   }
 
 	async findOne<E = unknown>(
-		id: Uuid,
+		id: number,
 		options?: IFindOne,
 	): Promise<ServiceResponse<E>> {
 		const findOne = await this.repository.findOne({

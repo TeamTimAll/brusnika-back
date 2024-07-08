@@ -1,8 +1,6 @@
 import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { BasicService } from "../../generic/service";
 import { ProjectNotFoundError } from "../../modules/projects/errors/ProjectNotFound.error";
 import { ProjectEntity } from "../../modules/projects/project.entity";
@@ -25,9 +23,9 @@ export class BuildingsService extends BasicService<
 		super("buildings", BuildingsEntity, dataSource);
 	}
 
-	async findAllBuilding(project_id?: Uuid) {
+	async findAllBuilding(project_id?: number) {
 		let buildings: BuildingsEntity[];
-		if (project_id && project_id.length) {
+		if (project_id) {
 			buildings = await this.r_findAll({
 				where: { project_id },
 				relations: ["project"],
@@ -36,9 +34,6 @@ export class BuildingsService extends BasicService<
 			buildings = await this.r_findAll({
 				relations: ["project"],
 			});
-		}
-		if (!buildings.length) {
-			throw new BuildingNotFoundError("buildings not found");
 		}
 		return buildings;
 	}
@@ -58,7 +53,7 @@ export class BuildingsService extends BasicService<
 		return newBuildings;
 	}
 
-	async updateBuilding(id: Uuid, dto: UpdateBuilding) {
+	async updateBuilding(id: number, dto: UpdateBuilding) {
 		const foundBuilding = await this.repository.find({ where: { id } });
 
 		if (!foundBuilding.length) {
@@ -71,7 +66,7 @@ export class BuildingsService extends BasicService<
 		return updatedBuilding;
 	}
 
-	async delete(id: Uuid) {
+	async delete(id: number) {
 		const building = await this.repository.findOne({
 			where: { id },
 		});

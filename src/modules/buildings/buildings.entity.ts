@@ -1,7 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { Uuid } from "boilerplate.polyfill";
-
 import { AbstractEntity } from "../../common/abstract.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
 import { WithOutToDto } from "../../types";
@@ -57,8 +55,8 @@ export class BuildingsEntity extends AbstractEntity {
 	@JoinColumn({ name: "project_id" })
 	project!: ProjectEntity;
 
-	@Column({ type: "uuid" })
-	project_id!: Uuid;
+	@Column({ type: "integer" })
+	project_id!: number;
 
 	@OneToMany(() => PremisesEntity, (Premises) => Premises.building)
 	premises?: PremisesEntity[];
@@ -73,7 +71,7 @@ export class BuildingsEntity extends AbstractEntity {
 		entity: Partial<WithOutToDto<BuildingsEntity>>,
 	): WithOutToDto<BuildingsEntity> {
 		const dto: WithOutToDto<BuildingsEntity> = {
-			id: entity.id ?? "",
+			id: entity.id ?? 0,
 			name: entity.name ?? "",
 			total_storage: entity.total_storage ?? 0,
 			total_vacant_storage: entity.total_vacant_storage ?? 0,
@@ -84,7 +82,7 @@ export class BuildingsEntity extends AbstractEntity {
 			address: entity.address ?? "",
 			number_of_floors: entity.number_of_floors ?? 0,
 			photos: entity.photos ?? [],
-			project_id: entity.project_id ?? "",
+			project_id: entity.project_id ?? 0,
 			project: entity.project ?? new ProjectEntity(),
 			premises: entity.premises ?? [],
 			sections: entity.sections ?? [],

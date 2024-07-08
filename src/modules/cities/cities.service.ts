@@ -1,8 +1,6 @@
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource, ILike } from "typeorm";
 
-
-import { Uuid } from "boilerplate.polyfill";
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BasicService } from "../../generic/service";
@@ -33,7 +31,7 @@ export class CitiesService extends BasicService<
 		return cities;
 	}
 
-	async r_findOne(id: Uuid): Promise<CitiesEntity> {
+	async r_findOne(id: number): Promise<CitiesEntity> {
 		const findOne = await this.repository.findOne({
 			where: { id },
 		});
@@ -46,7 +44,7 @@ export class CitiesService extends BasicService<
 	}
 
 	async r_update(
-		id: Uuid, // Assuming UUID is a string
+		id: number,
 		dto: UpdateCitiesDto,
 		currentUser?: ICurrentUser,
 	): Promise<CitiesEntity[]> {
@@ -66,7 +64,7 @@ export class CitiesService extends BasicService<
 		return [updatedData];
 	}
 
-	async r_remove(id: string): Promise<CitiesEntity[]> {
+	async r_remove(id: number): Promise<CitiesEntity[]> {
 		const foundCity = await this.r_findOne(id);
 		await this.repository.delete(id);
 		return [foundCity];
