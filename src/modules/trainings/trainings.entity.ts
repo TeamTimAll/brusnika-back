@@ -38,15 +38,15 @@ export class TrainingsEntity extends AbstractEntity<TrainingsDto> {
 	})
 	published_at!: Date;
 
-	@Column({ type: "uuid", nullable: true })
-	primary_category_id!: string;
+	@Column({ type: "integer", nullable: true })
+	primary_category_id!: number;
 
 	@OneToOne(() => TrainingsCategories)
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: TrainingsCategories;
 
-	@Column({ type: "uuid", nullable: true })
-	second_category_id?: string;
+	@Column({ type: "integer", nullable: true })
+	second_category_id?: number;
 
 	@OneToOne(() => TrainingsCategories)
 	@JoinColumn({ name: "second_category_id" })
@@ -76,7 +76,7 @@ export class TrainingsEntity extends AbstractEntity<TrainingsDto> {
 		entity: Partial<WithOutToDto<TrainingsEntity>>,
 	): WithOutToDto<TrainingsEntity> {
 		const dto: WithOutToDto<TrainingsEntity> = {
-			id: entity.id ?? "",
+			id: entity.id ?? 0,
 			title: entity.title ?? "",
 			content: entity.content ?? "",
 			cover_image: entity.cover_image ?? "",
@@ -84,8 +84,8 @@ export class TrainingsEntity extends AbstractEntity<TrainingsDto> {
 			is_extra_like_enabled: entity.is_extra_like_enabled ?? false,
 			extra_like_icon: entity.extra_like_icon ?? "",
 			published_at: entity.published_at ?? new Date(),
-			primary_category_id: entity.primary_category_id ?? "",
-			second_category_id: entity.second_category_id ?? "",
+			primary_category_id: entity.primary_category_id ?? 0,
+			second_category_id: entity.second_category_id ?? 0,
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
 			primary_category:

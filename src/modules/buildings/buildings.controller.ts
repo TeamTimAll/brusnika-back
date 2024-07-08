@@ -12,7 +12,7 @@ import {
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDParam, UUIDQuery } from "../../decorators";
+import { UUIDQuery } from "../../decorators";
 
 import { BuildingsService } from "./buildings.service";
 import { CreateBuildingMetaDto } from "./dtos/building.create.dto";
@@ -50,7 +50,7 @@ export class BuildingsController {
 	@HttpCode(HttpStatus.OK)
 	async update(
 		@Body() dto: UpdateBuildingMetaDataDto,
-		@UUIDParam("id") id: string,
+		@Param("id") id: number,
 	) {
 		const metaData = BaseDto.createFromDto(dto);
 		const updatedBuilding = await this.buildingsService.updateBuilding(
@@ -63,7 +63,7 @@ export class BuildingsController {
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.OK)
-	async delete(@Param("id") id: string) {
+	async delete(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const deletedBuilding = await this.buildingsService.delete(id);
 		metaData.data = deletedBuilding;

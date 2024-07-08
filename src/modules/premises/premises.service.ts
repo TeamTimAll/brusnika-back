@@ -22,7 +22,7 @@ export class PremisesService extends BasicService<
 		super("premises", PremisesEntity, dataSource);
 	}
 
-	async readOne(id: string): Promise<PremisesEntity> {
+	async readOne(id: number): Promise<PremisesEntity> {
 		const premises = await this.getPremisesFiltered({
 			id: id,
 			limit: 1,
@@ -34,7 +34,7 @@ export class PremisesService extends BasicService<
 		return premises.data[0];
 	}
 
-	getMultiplePremisesByIds(ids: string[], limit: number, page: number) {
+	getMultiplePremisesByIds(ids: number[], limit: number, page: number) {
 		return this.getPremisesFiltered({ ids: ids, limit, page });
 	}
 
@@ -57,7 +57,12 @@ export class PremisesService extends BasicService<
 				ProjectEntity,
 				"project",
 				"project.id = building.project_id",
-			);
+			)
+			.groupBy("premise.id")
+			.addGroupBy("building.id")
+			.addGroupBy("section.id")
+			.addGroupBy("project.id")
+			.orderBy("project.id", "ASC");
 
 		if (filter) {
 			if (filter.id) {

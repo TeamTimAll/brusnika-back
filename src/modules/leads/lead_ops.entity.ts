@@ -35,8 +35,8 @@ export class LeadOpsEntity extends AbstractEntity<LeadsDto> {
 	@JoinColumn({ name: "lead_id" })
 	lead!: LeadsEntity;
 
-	@Column()
-	lead_id!: string;
+	@Column({ type: "integer" })
+	lead_id!: number;
 
 	@Column({ enum: LeadOpStatus, default: LeadOpStatus.OPEN })
 	status!: LeadOpStatus;

@@ -18,7 +18,10 @@ import { BaseDto } from "../../common/base/base_dto";
 import { User } from "../../decorators";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { CreateProjectDto, CreateProjectMetaDataDto } from "./dto/project.create.dto";
+import {
+	CreateProjectDto,
+	CreateProjectMetaDataDto,
+} from "./dto/project.create.dto";
 import { UpdateProjectMetaDataDto } from "./dto/projects.update.dto";
 import { ProjectsService } from "./projects.service";
 
@@ -70,7 +73,7 @@ export class ProjectsController {
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.OK)
-	async deleteProject(@Param("id") id: string) {
+	async deleteProject(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const deletedProject = await this.projectsService.deleteProject(id);
 		metaData.data = deletedProject;

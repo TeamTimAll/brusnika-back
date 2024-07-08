@@ -113,15 +113,15 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	@JoinColumn({ name: "city_id" })
 	city!: CitiesEntity;
 
-	@Column({ nullable: true })
-	city_id?: string;
+	@Column({ type: "integer", nullable: true })
+	city_id?: number;
 
 	@ManyToOne(() => AgenciesEntity, (agency) => agency.user)
 	@JoinColumn({ name: "agency_id" })
 	agency!: AgenciesEntity;
 
-	@Column({ nullable: true })
-	agency_id?: string;
+	@Column({ type: "integer", nullable: true })
+	agency_id?: number;
 
 	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.agent)
 	bookings?: BookingsEntity[];
@@ -133,7 +133,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
 		entity: Partial<WithOutToDto<UserEntity>>,
 	): WithOutToDto<UserEntity> {
 		const dto: WithOutToDto<UserEntity> = {
-			id: entity.id ?? "",
+			id: entity.id ?? 0,
 			firstName: entity.firstName ?? "",
 			lastName: entity.lastName ?? "",
 			role: entity.role ?? RoleType.USER,
@@ -156,9 +156,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
 			// events: entity.events ?? [],
 			comments: entity.comments ?? [],
 			city: entity.city ?? new CitiesEntity(),
-			city_id: entity.city_id ?? "",
+			city_id: entity.city_id ?? 0,
 			agency: entity.agency ?? new AgenciesEntity(),
-			agency_id: entity.agency_id ?? "",
+			agency_id: entity.agency_id ?? 0,
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
 		};

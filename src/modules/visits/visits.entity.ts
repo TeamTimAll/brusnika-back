@@ -33,8 +33,8 @@ export class VisitsEntity extends AbstractEntity {
 	@JoinColumn({ name: "project_id" })
 	project!: ProjectEntity;
 
-	@Column({ nullable: true, type: "uuid" })
-	project_id?: string;
+	@Column({ nullable: true, type: "integer" })
+	project_id?: number;
 
 	@ManyToOne(
 		() => ClientEntity,
@@ -47,8 +47,8 @@ export class VisitsEntity extends AbstractEntity {
 	@JoinColumn({ name: "client_id" })
 	client!: ClientEntity;
 
-	@Column({ nullable: true, type: "uuid" })
-	client_id?: string;
+	@Column({ nullable: true, type: "integer" })
+	client_id?: number;
 
 	@ManyToOne(
 		() => UserEntity,
@@ -61,8 +61,8 @@ export class VisitsEntity extends AbstractEntity {
 	@JoinColumn({ name: "agent_id" })
 	agent!: UserEntity;
 
-	@Column({ nullable: true, type: "uuid" })
-	agent_id?: string;
+	@Column({ nullable: true, type: "integer" })
+	agent_id?: number;
 
 	@Column({ type: "date" })
 	date!: Date;
@@ -80,13 +80,13 @@ export class VisitsEntity extends AbstractEntity {
 		entity: Partial<WithOutToDto<VisitsEntity>>,
 	): WithOutToDto<VisitsEntity> {
 		const dto: WithOutToDto<VisitsEntity> = {
-			id: entity.id ?? "",
+			id: entity.id ?? 0,
 			project: entity.project ?? new ProjectEntity(),
-			project_id: entity.project_id ?? "",
+			project_id: entity.project_id ?? 0,
 			client: entity.client ?? new ClientEntity(),
-			client_id: entity.client_id ?? "",
+			client_id: entity.client_id ?? 0,
 			agent: entity.agent ?? new UserEntity(),
-			agent_id: entity.agent_id ?? "",
+			agent_id: entity.agent_id ?? 0,
 			date: entity.date ?? new Date(),
 			time: entity.time ?? new Date(),
 			// purchase_option: entity.purchase_option ?? PuchaseOptions.BILL,

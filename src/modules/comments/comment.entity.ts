@@ -9,8 +9,8 @@ import { CommentDto } from "./dtos/comment.dto";
 @Entity({ name: "comments" })
 @UseDto(CommentDto)
 export class CommentEntity extends AbstractEntity<CommentDto> {
-	@Column({ type: "uuid" })
-	userId!: string;
+	@Column({ type: "integer" })
+	user_id!: number;
 
 	@ManyToOne(() => UserEntity, (userEntity) => userEntity.comments, {
 		onDelete: "CASCADE",
@@ -19,19 +19,8 @@ export class CommentEntity extends AbstractEntity<CommentDto> {
 	@JoinColumn({ name: "user_id" })
 	user!: UserEntity;
 
-	// @ManyToOne(() => EventsEntity, (eventsEntity) => eventsEntity.comments, {
-	//   onDelete: 'CASCADE',
-	//   onUpdate: 'CASCADE',
-	// })
-
-	// @JoinColumn({ name: 'event_id' })
-	// event!: EventsEntity;
-
-	// @Column({ type: 'uuid' })
-	// eventId!: Uuid;
-
-	@Column({ nullable: true, type: "text" })
-	commentId?: string;
+	@Column({ nullable: true, type: "integer" })
+	comment_id?: number;
 
 	@Column({ nullable: true, type: "text" })
 	comment?: string;

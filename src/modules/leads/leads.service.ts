@@ -173,7 +173,7 @@ export class LeadsService {
 		};
 	}
 
-	async changeStatus(leadId: string, toStatus: LeadOpStatus) {
+	async changeStatus(leadId: number, toStatus: LeadOpStatus) {
 		const foundLead = await this.leadRepository.findOne({
 			where: {
 				id: leadId,

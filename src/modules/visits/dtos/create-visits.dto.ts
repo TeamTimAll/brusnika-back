@@ -15,16 +15,16 @@ import { VisitStatus } from "../visits.entity";
 export class CreateVisitsDto {
 	@ApiProperty({ required: false, description: "ID of premise" })
 	@IsUUID()
-	project_id?: string;
+	project_id?: number;
 
 	@ApiProperty({ required: false, description: "ID of client" })
 	@IsUUID()
-	client_id?: string;
+	client_id?: number;
 
 	@ApiProperty({ required: false, description: "ID of agent" })
 	@IsUUID()
 	@IsOptional()
-	agent_id?: string;
+	agent_id?: number;
 
 	@ApiProperty({ required: true, description: "Date of booking" })
 	@IsDateString()

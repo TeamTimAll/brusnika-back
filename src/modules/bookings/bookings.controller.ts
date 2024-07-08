@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	Param,
 	Post,
 	Put,
 	Query,
@@ -20,7 +21,7 @@ import {
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDParam, User } from "../../decorators";
+import { User } from "../../decorators";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { BookingsEntity } from "./bookings.entity";
@@ -129,7 +130,7 @@ export class BookingsController {
 	})
 	@Put(":id")
 	async updateCity(
-		@UUIDParam("id") id: string,
+		@Param("id") id: number,
 		@Body() updateBookingsDto: UpdateBookingsDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
@@ -149,7 +150,7 @@ export class BookingsController {
 		},
 	})
 	@Delete(":id")
-	async deleteCity(@UUIDParam("id") id: string) {
+	async deleteCity(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.service.r_remove(id);
 		return metaData;

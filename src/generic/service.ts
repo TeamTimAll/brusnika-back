@@ -75,7 +75,7 @@ export class BasicService<
 	}
 
 	async update(
-		id: string, // Assuming UUID is a string
+		id: number,
 		dto: UpdateDto,
 		currentUser?: ICurrentUser,
 	): Promise<ServiceResponse> {
@@ -104,7 +104,7 @@ export class BasicService<
 		);
 	}
 
-	async remove(id: string): Promise<ServiceResponse> {
+	async remove(id: number): Promise<ServiceResponse> {
 		await this.repository.delete(id);
 
 		return new ServiceResponse(
@@ -145,7 +145,7 @@ export class BasicService<
 	//   }
 
 	async findOne<E = unknown>(
-		id: string,
+		id: number,
 		options?: IFindOne,
 	): Promise<ServiceResponse<E>> {
 		const findOne = await this.repository.findOne({

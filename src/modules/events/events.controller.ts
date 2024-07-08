@@ -5,6 +5,7 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
+	Param,
 	Post,
 	Put,
 } from "@nestjs/common";
@@ -17,7 +18,7 @@ import {
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
-import { UUIDParam, User } from "../../decorators";
+import { User } from "../../decorators";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { EventsDto } from "./dtos/events.dto";
@@ -42,7 +43,7 @@ export class EventsController {
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: EventsDto })
-	async getSingleEvents(@UUIDParam("id") id: string): Promise<any> {
+	async getSingleEvents(@Param("id") id: number) {
 		return await this.eventsService.findOne(id);
 	}
 
@@ -50,16 +51,16 @@ export class EventsController {
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
 	updateEvents(
-		@UUIDParam("id") id: string,
+		@Param("id") id: number,
 		@Body() updateEventsDto: UpdateEventsDto,
-	): Promise<any> {
+	) {
 		return this.eventsService.update(id, updateEventsDto);
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	async deleteEvents(@UUIDParam("id") id: string): Promise<any> {
+	async deleteEvents(@Param("id") id: number) {
 		return await this.eventsService.remove(id);
 	}
 }

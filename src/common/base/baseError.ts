@@ -27,7 +27,7 @@ export class BaseError extends Error {
 		let prompt = new DefaultPrompt();
 		if (promptType === PromptType.APPLICATION) {
 			prompt = promptReader.getPromptById(id);
-		} else if (promptType == PromptType.POSTGRES) {
+		} else if (promptType === PromptType.POSTGRES) {
 			prompt = promptReader.getPromptByCode(code ?? "");
 		}
 

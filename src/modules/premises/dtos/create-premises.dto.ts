@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsArray,
 	IsEnum,
+	IsInt,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
@@ -26,9 +27,9 @@ export class CreatePremisesDto {
 	type: PremisesType | undefined;
 
 	@ApiProperty({ description: "Building ID", required: false })
-	@IsString()
+	@IsInt()
 	@IsOptional()
-	building_id?: string;
+	building_id?: number;
 
 	@ApiProperty({ description: "Price of the premise", required: false })
 	@IsNumber()
@@ -103,9 +104,9 @@ export class CreatePremisesDto {
 	mortagePayment?: number;
 
 	@ApiProperty({ description: "Section ID", required: false })
-	@IsString()
+	@IsInt()
 	@IsOptional()
-	section_id?: string;
+	section_id?: number;
 
 	@ApiProperty({ description: "Purchase option", required: false })
 	@IsEnum(PuchaseOptions)

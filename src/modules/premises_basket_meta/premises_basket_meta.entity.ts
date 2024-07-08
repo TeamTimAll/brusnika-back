@@ -15,20 +15,20 @@ export class PremisesBasketMetaEntity extends AbstractEntity<PremisesBasketMetaD
 	@JoinColumn({ name: "clinet_id" })
 	client!: ClientEntity;
 
-	@Column({ nullable: true })
-	clinet_id?: string;
+	@Column({ type: "integer", nullable: true })
+	clinet_id?: number;
 
 	@ManyToOne(() => AgenciesEntity)
 	@JoinColumn({ name: "agent_id" })
 	agent!: AgenciesEntity;
 
-	@Column({ nullable: true })
-	agent_id?: string;
+	@Column({ type: "integer", nullable: true })
+	agent_id?: number;
 
 	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "manager_id" })
 	manager!: UserEntity;
 
-	@Column({ nullable: true })
-	manager_id?: string;
+	@Column({ type: "integer", nullable: true })
+	manager_id?: number;
 }

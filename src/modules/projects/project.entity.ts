@@ -44,12 +44,12 @@ export class ProjectEntity extends AbstractEntity<ProjectDto, ProjectDto> {
 	@Column({ nullable: true, type: "date" })
 	end_date!: Date;
 
-	@ManyToOne(() => CitiesEntity)
+	@ManyToOne(() => CitiesEntity, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "city_id" })
 	city!: CitiesEntity;
 
-	@Column({ nullable: true, type: "uuid" })
-	city_id?: string;
+	@Column({ nullable: true, type: "integer" })
+	city_id?: number;
 
 	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.project)
 	visits?: VisitsEntity[];

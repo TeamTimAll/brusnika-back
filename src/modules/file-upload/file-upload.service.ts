@@ -1,6 +1,6 @@
 import * as fs from "fs"; // Import the 'fs' module for file system operations
 
-import { Injectable, HttpException, HttpStatus, Logger } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import * as mime from "mime-types";
 
 @Injectable()
@@ -28,11 +28,9 @@ export class FileUploadService {
 
 			// Build the complete file path
 			const filePath = `${this.uploadPath}/${randomName}`;
-			console.log(filePath);
 
 			// Write the file to the upload directory
-			const s = await fs.promises.writeFile(filePath, file.buffer);
-			console.log(s);
+			await fs.promises.writeFile(filePath, file.buffer);
 
 			return randomName; // Return the generated filename
 		} catch (error) {

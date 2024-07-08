@@ -6,15 +6,15 @@ import { NewsEntity } from "../../news.entity";
 
 @Entity("news_views")
 export class NewsViews extends AbstractEntity {
-	@Column({ type: "uuid", nullable: false })
-	user_id!: string;
+	@Column({ type: "integer", nullable: false })
+	user_id!: number;
 
 	@OneToOne(() => UserEntity)
 	@JoinColumn({ name: "user_id" })
 	user!: UserEntity;
 
-	@Column({ type: "uuid", nullable: false })
-	news_id!: string;
+	@Column({ type: "integer", nullable: false })
+	news_id!: number;
 
 	@ManyToOne(() => NewsEntity)
 	@JoinColumn({ name: "news_id" })

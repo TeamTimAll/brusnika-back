@@ -10,14 +10,16 @@ export class CitiesEntity extends AbstractEntity {
 	@Column({ nullable: true, type: "varchar" })
 	name!: string;
 
-	@OneToMany(() => UserEntity, (user) => user.city)
+	@OneToMany(() => UserEntity, (user) => user.city, {
+		onDelete: "CASCADE",
+	})
 	users?: WithOutToDto<UserEntity>[];
 
 	static toDto(
 		entity: Partial<WithOutToDto<CitiesEntity>>,
 	): WithOutToDto<CitiesEntity> {
 		const dto: WithOutToDto<CitiesEntity> = {
-			id: entity.id ?? "",
+			id: entity.id ?? 0,
 			name: entity.name ?? "",
 			users: entity.users ?? [],
 			createdAt: entity.createdAt ?? new Date(),

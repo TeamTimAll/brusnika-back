@@ -5,11 +5,11 @@ import {
 	HttpCode,
 	HttpStatus,
 	Post,
+	Query,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDQuery } from "../../decorators";
 
 import { CreatePremisesBasketMetaDataDto } from "./dtos/premises_basket_create.dto";
 import { PremisesBasketService } from "./premises_basket.service";
@@ -21,7 +21,7 @@ export class PremisesBasketController {
 
 	@Get("/")
 	@HttpCode(HttpStatus.ACCEPTED)
-	async getAllBasket(@UUIDQuery("meta_id") meta_id: string) {
+	async getAllBasket(@Query("meta_id") meta_id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.upbService.getAllBasket(meta_id);
 		return metaData;
@@ -31,9 +31,7 @@ export class PremisesBasketController {
 	@HttpCode(HttpStatus.CREATED)
 	async createBasketMeta(@Body() dto: CreatePremisesBasketMetaDataDto) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		const createdBasket = await this.upbService.createBasketMeta(
-			dto.data[0],
-		);
+		const createdBasket = await this.upbService.createBasketMeta(dto.data);
 		metaData.data = [createdBasket];
 		return metaData;
 	}

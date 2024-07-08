@@ -50,7 +50,7 @@ export class TrainingsController {
 
 	@Get(":id")
 	@ApiOperation({ summary: "Get trainings by id" })
-	async getTrainingsById(@Query("id") id: string, @User() user: ICurrentUser) {
+	async getTrainingsById(@Query("id") id: number, @User() user: ICurrentUser) {
 		return this.service.r_findOne(id, user);
 	}
 

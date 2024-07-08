@@ -1,7 +1,7 @@
 import { RoleType } from "../constants";
 
 export interface ICurrentUser {
-	user_id: string;
+	user_id: number;
 	username?: string;
 	email?: string;
 	role?: RoleType;
