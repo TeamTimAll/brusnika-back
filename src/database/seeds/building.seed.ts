@@ -6,7 +6,7 @@ import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
 
 function findProjectId(buildings: ProjectEntity[], name: string) {
-	return buildings.find((e) => e.name === name)?.id ?? "";
+	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
 export async function up(query: QueryBuilder<object>) {
@@ -28,7 +28,7 @@ export async function up(query: QueryBuilder<object>) {
 	>[] = [
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
-			name: "Дом 1",
+			name: "Москва Дом 1",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -44,7 +44,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
-			name: "Дом 2",
+			name: "Москва Дом 2",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -60,7 +60,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
-			name: "Дом 3",
+			name: "Москва Дом 3",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -77,7 +77,7 @@ export async function up(query: QueryBuilder<object>) {
 
 		{
 			project_id: findProjectId(projects, "Тюмень Проект"),
-			name: "Дом 1",
+			name: "Тюмень Дом 1",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -93,7 +93,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Тюмень Проект"),
-			name: "Дом 2",
+			name: "Тюмень Дом 2",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -109,7 +109,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Тюмень Проект"),
-			name: "Дом 3",
+			name: "Тюмень Дом 3",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -126,7 +126,7 @@ export async function up(query: QueryBuilder<object>) {
 
 		{
 			project_id: findProjectId(projects, "Новосибирск Проект"),
-			name: "Дом 1",
+			name: "Новосибирск Дом 1",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -142,7 +142,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Новосибирск Проект"),
-			name: "Дом 2",
+			name: "Новосибирск Дом 2",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -158,7 +158,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Новосибирск Проект"),
-			name: "Дом 3",
+			name: "Новосибирск Дом 3",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -175,7 +175,7 @@ export async function up(query: QueryBuilder<object>) {
 
 		{
 			project_id: findProjectId(projects, "Екатеринбург Проект"),
-			name: "Дом 1",
+			name: "Екатеринбург Дом 1",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -191,7 +191,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Екатеринбург Проект"),
-			name: "Дом 2",
+			name: "Екатеринбург Дом 2",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -207,7 +207,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Екатеринбург Проект"),
-			name: "Дом 3",
+			name: "Екатеринбург Дом 3",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -224,7 +224,7 @@ export async function up(query: QueryBuilder<object>) {
 
 		{
 			project_id: findProjectId(projects, "Сургут Проект"),
-			name: "Дом 1",
+			name: "Сургут Дом 1",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -240,7 +240,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Сургут Проект"),
-			name: "Дом 2",
+			name: "Сургут Дом 2",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -256,7 +256,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Сургут Проект"),
-			name: "Дом 3",
+			name: "Сургут Дом 3",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -273,7 +273,7 @@ export async function up(query: QueryBuilder<object>) {
 
 		{
 			project_id: findProjectId(projects, "Курган Проект"),
-			name: "Дом 1",
+			name: "Курган Дом 1",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -289,7 +289,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Курган Проект"),
-			name: "Дом 2",
+			name: "Курган Дом 2",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -305,7 +305,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Курган Проект"),
-			name: "Дом 3",
+			name: "Курган Дом 3",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -322,7 +322,7 @@ export async function up(query: QueryBuilder<object>) {
 
 		{
 			project_id: findProjectId(projects, "Омск Проект"),
-			name: "Дом 1",
+			name: "Омск Дом 1",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -338,7 +338,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Омск Проект"),
-			name: "Дом 2",
+			name: "Омск Дом 2",
 			address: "",
 			number_of_floors: 9,
 			photos: [
@@ -354,7 +354,7 @@ export async function up(query: QueryBuilder<object>) {
 		},
 		{
 			project_id: findProjectId(projects, "Омск Проект"),
-			name: "Дом 3",
+			name: "Омск Дом 3",
 			address: "",
 			number_of_floors: 9,
 			photos: [

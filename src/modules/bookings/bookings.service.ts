@@ -26,7 +26,7 @@ export class BookingsService extends BasicService<
 		super("bookings", BookingsEntity, dataSource);
 	}
 
-	async r_findOne(id: string): Promise<BookingsEntity> {
+	async r_findOne(id: number): Promise<BookingsEntity> {
 		const findOne = await this.repository.findOne({
 			where: { id },
 		});
@@ -67,7 +67,7 @@ export class BookingsService extends BasicService<
 	}
 
 	async r_update(
-		id: string, // Assuming UUID is a string
+		id: number,
 		dto: UpdateBookingsDto,
 		currentUser?: ICurrentUser,
 	): Promise<BookingsEntity[]> {
@@ -87,7 +87,7 @@ export class BookingsService extends BasicService<
 		return [updatedData];
 	}
 
-	async r_remove(id: string): Promise<BookingsEntity[]> {
+	async r_remove(id: number): Promise<BookingsEntity[]> {
 		const found = await this.r_findOne(id);
 		await this.repository.delete(id);
 		return [found];

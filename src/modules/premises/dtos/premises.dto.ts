@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsDateString,
 	IsEnum,
+	IsInt,
 	IsNumber,
 	IsNumberString,
 	IsOptional,
@@ -109,8 +110,8 @@ export class PremisesDto extends BaseDto {
 }
 
 export class PremisesFilterDto {
-	id?: string;
-	ids?: string[];
+	id?: number;
+	ids?: number[];
 
 	@ApiProperty({ required: false })
 	@Page()
@@ -224,6 +225,6 @@ export class PremisesIdsDto {
 	limit: number = 50;
 
 	@ApiProperty({ required: false })
-	@IsUUID("4", { each: true })
-	ids?: string[];
+	@IsInt({ each: true })
+	ids?: number[];
 }

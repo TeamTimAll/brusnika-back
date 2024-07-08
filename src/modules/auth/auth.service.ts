@@ -27,7 +27,7 @@ import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNo
 import { VerificationExistsError } from "./errors/VerificationExists.error";
 
 export type AuthRespone =
-	| { user_id: string; message: string; register_status: string }
+	| { user_id: number; message: string; register_status: string }
 	| { accessToken: string };
 
 @Injectable()

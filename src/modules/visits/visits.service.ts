@@ -5,10 +5,10 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BasicService } from "../../generic/service";
 
-import { VisitsEntity } from "./visits.entity";
 import { CreateVisitsDto } from "./dtos/create-visits.dto";
 import { UpdateVisitsDto } from "./dtos/update-visits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
+import { VisitsEntity } from "./visits.entity";
 
 export class VisitsService extends BasicService<
 	VisitsEntity,
@@ -25,7 +25,7 @@ export class VisitsService extends BasicService<
 		});
 	}
 
-	async r_findOne(id: string): Promise<VisitsEntity> {
+	async r_findOne(id: number): Promise<VisitsEntity> {
 		const findOne = await this.repository.findOne({
 			where: { id },
 		});
@@ -38,7 +38,7 @@ export class VisitsService extends BasicService<
 	}
 
 	async r_update(
-		id: string, // Assuming UUID is a string
+		id: number,
 		dto: UpdateVisitsDto,
 		currentUser?: ICurrentUser,
 	): Promise<VisitsEntity[]> {
@@ -58,7 +58,7 @@ export class VisitsService extends BasicService<
 		return [updatedData];
 	}
 
-	async r_remove(id: string): Promise<VisitsEntity[]> {
+	async r_remove(id: number): Promise<VisitsEntity[]> {
 		const foundCity = await this.r_findOne(id);
 		await this.repository.delete(id);
 		return [foundCity];

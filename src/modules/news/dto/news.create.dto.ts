@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsBoolean,
+	IsInt,
 	IsNotEmpty,
 	IsOptional,
 	IsString,
@@ -42,7 +43,7 @@ export class CreateNewsDto {
 		example: "The first category of the news",
 		required: false,
 	})
-	primary_category_id!: string;
+	primary_category_id!: number;
 
 	@IsOptional()
 	@IsUUID()
@@ -51,7 +52,7 @@ export class CreateNewsDto {
 		example: "The second category of the news",
 		required: false,
 	})
-	second_category_id!: string;
+	second_category_id!: number;
 
 	@IsBoolean()
 	@ApiProperty({
@@ -77,7 +78,7 @@ export class CreateNewsDto {
 	})
 	extra_like_icon!: string;
 
-	@IsString()
+	@IsInt()
 	@IsOptional()
-	user_id?: string;
+	user_id?: number;
 }

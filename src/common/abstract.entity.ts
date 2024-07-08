@@ -18,8 +18,8 @@ export const UseDto = <T>(dtoClass: Constructor<T>): ClassDecorator => {
 };
 
 export abstract class AbstractEntity<DTO extends BaseDto = BaseDto, O = never> {
-	@PrimaryGeneratedColumn("uuid")
-	id!: string;
+	@PrimaryGeneratedColumn()
+	id!: number;
 
 	@CreateDateColumn({ type: "timestamp" })
 	createdAt!: Date;

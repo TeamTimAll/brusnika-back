@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsUUID } from "class-validator";
+import { IsEnum, IsInt } from "class-validator";
 
 import { LeadOpStatus } from "../lead_ops.entity";
 
 export class UpdateLeadDto {
 	@ApiProperty()
-	@IsUUID("4")
-	leadId!: string;
+	@IsInt()
+	leadId!: number;
 
 	@ApiProperty({ enum: LeadOpStatus })
 	@IsEnum(LeadOpStatus)

@@ -2,27 +2,27 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsDateString,
 	IsEnum,
+	IsInt,
 	IsMilitaryTime,
-	IsOptional,
-	IsUUID,
+	IsOptional
 } from "class-validator";
 
 import { PuchaseOptions } from "../../premises/premises.entity";
 import { BookingStatus } from "../bookings.entity";
 
 export class CreateBookingsDto {
-	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of premise" })
-	premise_id?: string;
+	@IsInt()
+	premise_id?: number;
 
-	@IsUUID()
 	@ApiProperty({ required: false, description: "ID of client" })
-	client_id?: string;
+	@IsInt()
+	client_id?: number;
 
-	@IsUUID()
-	@IsOptional()
 	// @ApiProperty({ required: false, description: "ID of agent" })
-	agent_id?: string;
+	@IsOptional()
+	@IsInt()
+	agent_id?: number;
 
 	@IsDateString()
 	@ApiProperty({ required: true, description: "Date of booking" })

@@ -80,7 +80,7 @@ export class UserService {
 	//   return items.toPageDto(pageMetaDto);
 	// }
 
-	async getUser(userId: string, full = true): Promise<UserDto> {
+	async getUser(userId: number, full = true): Promise<UserDto> {
 		// const queryBuilder = await this.userRepository.createQueryBuilder('user');
 
 		// await queryBuilder.where('user.id = :userId', { userId });
@@ -132,7 +132,7 @@ export class UserService {
 	}
 
 	async updateUser(
-		id: string,
+		id: number,
 		updateEventsDto: Partial<UserDto>,
 	): Promise<unknown> {
 		const user = await this.findOne({
@@ -150,7 +150,7 @@ export class UserService {
 		});
 	}
 
-	async changePhone(id: string, dto: UserCreateDto): Promise<UserResponse> {
+	async changePhone(id: number, dto: UserCreateDto): Promise<UserResponse> {
 		const user = await this.findOne({
 			id,
 		});

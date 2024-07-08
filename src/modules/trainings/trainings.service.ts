@@ -78,7 +78,7 @@ export class TrainingsService extends BasicService<
 		return this.trainingsCategoriesService.findAll();
 	}
 
-	async r_findOne(id: string, user: ICurrentUser): Promise<unknown> {
+	async r_findOne(id: number, user: ICurrentUser): Promise<unknown> {
 		const findOne = await this.repository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")

@@ -40,8 +40,8 @@ export class ClientEntity extends AbstractEntity {
 	@JoinColumn({ name: "agent_id" })
 	agent!: UserEntity;
 
-	@Column({ nullable: true, type: "uuid" })
-	agent_id?: string;
+	@Column({ nullable: true, type: "integer" })
+	agent_id?: number;
 
 	@OneToMany(() => LeadsEntity, (l) => l.client)
 	leads?: LeadsEntity[];

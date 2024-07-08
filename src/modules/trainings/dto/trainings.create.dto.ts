@@ -1,11 +1,12 @@
+import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsBoolean,
+	IsInt,
 	IsNotEmpty,
 	IsOptional,
 	IsString,
 	IsUUID,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateTrainingsDto {
 	@IsString()
@@ -42,7 +43,7 @@ export class CreateTrainingsDto {
 		example: "The first category of the trainings",
 		required: false,
 	})
-	primary_category_id!: string;
+	primary_category_id!: number;
 
 	@IsOptional()
 	@IsUUID()
@@ -51,7 +52,7 @@ export class CreateTrainingsDto {
 		example: "The second category of the trainings",
 		required: false,
 	})
-	second_category_id!: string;
+	second_category_id!: number;
 
 	@IsBoolean()
 	@ApiProperty({
@@ -77,7 +78,7 @@ export class CreateTrainingsDto {
 	})
 	extra_like_icon!: string;
 
-	@IsString()
+	@IsInt()
 	@IsOptional()
-	user_id?: string;
+	user_id?: number;
 }

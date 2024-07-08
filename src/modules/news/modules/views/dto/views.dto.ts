@@ -1,11 +1,13 @@
-import { IsNotEmpty } from "class-validator";
+import { IsInt, IsNotEmpty } from "class-validator";
 
 export class CreateNewsViewsDto {
+	@IsInt()
 	@IsNotEmpty()
-	user_id!: string;
+	user_id!: number;
 
+	@IsInt()
 	@IsNotEmpty()
-	news_id!: string;
+	news_id!: number;
 }
 
 export class UpdateNewsViewsDto {}

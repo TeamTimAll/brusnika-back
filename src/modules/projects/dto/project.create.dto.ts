@@ -2,11 +2,11 @@ import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsDateString,
+	IsInt,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
 	IsString,
-	IsUUID,
 	ValidateNested,
 } from "class-validator";
 
@@ -79,9 +79,9 @@ export class CreateProjectDto {
 	lat!: string;
 
 	@ApiProperty()
-	@IsUUID("4")
+	@IsInt()
 	@IsNotEmpty()
-	city_id!: string;
+	city_id!: number;
 }
 
 export class CreateProjectMetaDataDto extends BaseDto<CreateProjectDto> {

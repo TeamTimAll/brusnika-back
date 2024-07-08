@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	Param,
 	Post,
 	Put,
 	Query,
@@ -18,15 +19,15 @@ import {
 } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDParam, User } from "../../decorators";
-import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { User } from "../../decorators";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { VisitsEntity } from "./visits.entity";
-import { VisitsService } from "./visits.service";
 import { CreateVisitsMetaDataDto } from "./dtos/create-visits.dto";
 import { UpdateVisitsMetaDataDto } from "./dtos/update-visits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
+import { VisitsEntity } from "./visits.entity";
+import { VisitsService } from "./visits.service";
 
 @ApiTags("Visits")
 @Controller("/visits")
@@ -107,8 +108,8 @@ export class VisitsController {
 	})
 	@Get(":id")
 	async getSingleCity(
-		@UUIDParam("id")
-		id: string,
+		@Param("id")
+		id: number,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		const foundCity = await this.service.r_findOne(id);
@@ -128,7 +129,7 @@ export class VisitsController {
 	})
 	@Put(":id")
 	async updateCity(
-		@UUIDParam("id") id: string,
+		@Param("id") id: number,
 		@Body() updateVisitsDto: UpdateVisitsMetaDataDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
@@ -149,7 +150,7 @@ export class VisitsController {
 		},
 	})
 	@Delete(":id")
-	async deleteCity(@UUIDParam("id") id: string) {
+	async deleteCity(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.service.r_remove(id);
 		return metaData;

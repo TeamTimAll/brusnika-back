@@ -78,7 +78,7 @@ export class NewsService extends BasicService<
 		return this.newsCategoriesService.findAll();
 	}
 
-	async r_findOne(id: string, user: ICurrentUser) {
+	async r_findOne(id: number, user: ICurrentUser) {
 		const findOne = await this.repository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")

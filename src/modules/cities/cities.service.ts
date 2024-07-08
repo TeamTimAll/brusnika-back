@@ -31,7 +31,7 @@ export class CitiesService extends BasicService<
 		return cities;
 	}
 
-	async r_findOne(id: string): Promise<CitiesEntity> {
+	async r_findOne(id: number): Promise<CitiesEntity> {
 		const findOne = await this.repository.findOne({
 			where: { id },
 		});
@@ -44,7 +44,7 @@ export class CitiesService extends BasicService<
 	}
 
 	async r_update(
-		id: string, // Assuming UUID is a string
+		id: number,
 		dto: UpdateCitiesDto,
 		currentUser?: ICurrentUser,
 	): Promise<CitiesEntity[]> {
@@ -64,7 +64,7 @@ export class CitiesService extends BasicService<
 		return [updatedData];
 	}
 
-	async r_remove(id: string): Promise<CitiesEntity[]> {
+	async r_remove(id: number): Promise<CitiesEntity[]> {
 		const foundCity = await this.r_findOne(id);
 		await this.repository.delete(id);
 		return [foundCity];

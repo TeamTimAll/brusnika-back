@@ -162,7 +162,7 @@ export class ProjectsService {
 		return newProject;
 	}
 
-	async getOneProject(id: string): Promise<ProjectEntity | null> {
+	async getOneProject(id: number): Promise<ProjectEntity | null> {
 		const project = await this.projectsRepository.findOne({
 			where: { id },
 			relations: {
@@ -186,7 +186,7 @@ export class ProjectsService {
 	}
 
 	async updateProject(
-		project_id: string,
+		project_id: number,
 		updateProjectDto: UpdateProjectDto,
 	): Promise<ProjectEntity> {
 		const project = await this.projectsRepository.findOne({
@@ -206,7 +206,7 @@ export class ProjectsService {
 		return updatedProject;
 	}
 
-	async deleteProject(id: string): Promise<ProjectEntity> {
+	async deleteProject(id: number): Promise<ProjectEntity> {
 		const project = await this.projectsRepository.findOne({
 			where: { id },
 		});

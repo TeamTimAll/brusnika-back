@@ -13,7 +13,7 @@ export class PremisesBasketService {
 		private upbRepository: Repository<PremisesBasketEntity>,
 	) {}
 
-	async getAllBasket(meta_id: string) {
+	async getAllBasket(meta_id: number) {
 		const foundBasket = await this.upbRepository.find({
 			where: { meta: { id: meta_id } },
 		});

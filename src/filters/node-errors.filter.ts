@@ -19,7 +19,7 @@ import { requestToMetaData } from "./meta-data-request";
 @Catch(AssertionError, RangeError, ReferenceError, SyntaxError, TypeError)
 export class NodeErrorFilter implements ExceptionFilter {
 	catch(exception: NodeErrorFilter, host: ArgumentsHost) {
-		console.log(exception);
+		console.error(exception);
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();

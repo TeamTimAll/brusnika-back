@@ -2,11 +2,11 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsDefined,
+	IsInt,
 	IsNotEmpty,
 	IsNotEmptyObject,
 	IsObject,
-	IsString,
-	ValidateNested,
+	ValidateNested
 } from "class-validator";
 
 import { MetaDto } from "../../../common/base/base_dto";
@@ -27,11 +27,11 @@ export class UpdateProjectMetaParams {
 
 	@ApiProperty({
 		required: true,
-		example: "e01286e7-ebb8-419f-96f7-9895aac17b4f",
+		example: 1,
 	})
 	@IsNotEmpty()
-	@IsString()
-	project_id!: string;
+	@IsInt()
+	project_id!: number;
 }
 
 export class UpdateProjectMetaDto extends MetaDto<UpdateProjectMetaParams> {

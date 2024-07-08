@@ -1,11 +1,13 @@
-import { IsNotEmpty } from "class-validator";
+import { IsInt, IsNotEmpty } from "class-validator";
 
 export class CreateTrainingsViewsDto {
+	@IsInt()
 	@IsNotEmpty()
-	user_id!: string;
+	user_id!: number;
 
+	@IsInt()
 	@IsNotEmpty()
-	trainings_id!: string;
+	trainings_id!: number;
 }
 
 export class UpdateTrainingsViewsDto {}

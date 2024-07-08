@@ -5,11 +5,11 @@ import {
 	IsDateString,
 	IsEmail,
 	IsEnum,
+	IsInt,
 	IsMobilePhone,
 	IsNumber,
 	IsOptional,
 	IsString,
-	IsUUID,
 	MaxLength,
 } from "class-validator";
 
@@ -90,16 +90,17 @@ export class UserDto extends BaseDto {
 	@ApiProperty({ required: false })
 	isPhoneVerified?: boolean;
 
-	@IsUUID()
+	@IsInt()
 	@ApiProperty({
 		required: false,
 	})
-	city_id?: string;
+	city_id?: number;
 
 	@ApiProperty({ description: "The agency ID of the user" })
 	@IsOptional()
-	@IsUUID()
-	agency_id?: string;
+	@IsInt()
+	agency_id?: number;
+
 	status: boolean;
 
 	constructor(user: UserEntity) {
@@ -180,21 +181,21 @@ export class UserUpdateDto {
 	// @MaxDate(new Date('2015-01-01'), { message: 'Birth date must be before 2015-01-01' })
 	birthDate?: Date;
 
-	@IsUUID()
+	@IsInt()
 	@IsOptional()
 	@ApiProperty({
 		required: false,
 		description: "The ID of the city where the user resides",
 	})
-	city_id?: string;
+	city_id?: number;
 }
 
 export class UserFillDataDto {
-	@IsUUID()
+	@IsInt()
 	@ApiProperty({
 		required: true,
 	})
-	id!: string;
+	id!: number;
 
 	@IsString()
 	@ApiProperty({
@@ -208,11 +209,11 @@ export class UserFillDataDto {
 	})
 	lastName!: string;
 
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	city_id!: string;
+	@IsInt()
+	city_id!: number;
 
 	@IsDateString()
 	@ApiProperty({ required: true })

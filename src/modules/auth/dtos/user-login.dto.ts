@@ -3,11 +3,11 @@ import {
 	IsBoolean,
 	IsDateString,
 	IsEmail,
+	IsInt,
 	IsMobilePhone,
 	IsNotEmpty,
 	IsNumber,
-	IsString,
-	IsUUID,
+	IsString
 } from "class-validator";
 
 import { RoleType } from "../../../constants";
@@ -38,17 +38,17 @@ export class AgentLoginDto {
 }
 
 export class AgentChooseAgencyDto {
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: string;
+	@IsInt()
+	user_id!: number;
 
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	agency_id!: string;
+	@IsInt()
+	agency_id!: number;
 
 	@IsDateString()
 	@ApiProperty({
@@ -58,11 +58,11 @@ export class AgentChooseAgencyDto {
 }
 
 export class AgentRegisterAgencyDto extends CreateAgenciesDto {
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: string;
+	@IsInt()
+	user_id!: number;
 
 	@IsBoolean()
 	@ApiProperty({
@@ -72,11 +72,11 @@ export class AgentRegisterAgencyDto extends CreateAgenciesDto {
 }
 
 export class AgentRequestAgencyDto extends CreateExistentAgenciesDto {
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: string;
+	@IsInt()
+	user_id!: number;
 }
 
 export class UserLoginVerifyCodeDto {
@@ -86,11 +86,11 @@ export class UserLoginVerifyCodeDto {
 	})
 	code!: number;
 
-	@IsUUID()
+	@IsInt()
 	@ApiProperty({
 		required: true,
 	})
-	user_id!: string;
+	user_id!: number;
 }
 
 export class UserLoginResendCodeDto {
