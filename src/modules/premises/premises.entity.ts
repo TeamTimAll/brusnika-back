@@ -26,6 +26,9 @@ export enum PuchaseOptions {
 
 @Entity({ name: "premises" })
 export class PremisesEntity extends AbstractEntity {
+	@Column({ nullable: true, type: "varchar" })
+	name!: string;
+
 	@Column({ nullable: false, type: "enum", enum: PremisesType })
 	type!: PremisesType;
 
