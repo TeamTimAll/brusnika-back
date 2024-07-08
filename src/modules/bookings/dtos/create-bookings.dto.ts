@@ -4,8 +4,9 @@ import {
 	IsEnum,
 	IsInt,
 	IsMilitaryTime,
-	IsOptional
+	IsOptional,
 } from "class-validator";
+import { Type } from "class-transformer";
 
 import { PuchaseOptions } from "../../premises/premises.entity";
 import { BookingStatus } from "../bookings.entity";
@@ -13,15 +14,18 @@ import { BookingStatus } from "../bookings.entity";
 export class CreateBookingsDto {
 	@ApiProperty({ required: false, description: "ID of premise" })
 	@IsInt()
+	@Type(() => Number)
 	premise_id?: number;
 
 	@ApiProperty({ required: false, description: "ID of client" })
 	@IsInt()
+	@Type(() => Number)
 	client_id?: number;
 
 	// @ApiProperty({ required: false, description: "ID of agent" })
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	agent_id?: number;
 
 	@IsDateString()
@@ -41,7 +45,7 @@ export class CreateBookingsDto {
 	purchase_option!: PuchaseOptions;
 
 	@IsOptional()
-	@IsEnum( BookingStatus)
+	@IsEnum(BookingStatus)
 	@ApiProperty({
 		required: false,
 		description: "Status of booking",

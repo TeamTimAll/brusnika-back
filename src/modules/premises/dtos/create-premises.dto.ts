@@ -8,6 +8,7 @@ import {
 	IsOptional,
 	IsString,
 } from "class-validator";
+import { Type } from "class-transformer";
 
 import {
 	CommercialStatus,
@@ -23,6 +24,7 @@ export class CreatePremisesDto {
 
 	@ApiProperty({ description: "Building ID", required: false })
 	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
 	building_id?: number;
 
@@ -95,6 +97,7 @@ export class CreatePremisesDto {
 
 	@ApiProperty({ description: "Section ID", required: false })
 	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
 	section_id?: number;
 

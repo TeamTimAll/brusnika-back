@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsNotEmpty, IsString } from "class-validator";
+import { Type } from "class-transformer";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 
@@ -23,6 +24,7 @@ export class LikeNewsDto {
 		description: "News id",
 	})
 	@IsInt()
+	@Type(() => Number)
 	@IsNotEmpty()
 	id!: number;
 }

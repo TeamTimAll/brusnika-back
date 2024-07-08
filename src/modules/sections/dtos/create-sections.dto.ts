@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import { IsInt, IsString } from "class-validator";
 
 export class CreateSectionsDto {
@@ -11,6 +12,7 @@ export class CreateSectionsDto {
 	name!: string;
 
 	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({ required: false, description: "Building ID" })
 	building_id?: number;
 }

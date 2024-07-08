@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsEmail,
 	IsInt,
@@ -14,6 +15,7 @@ export class CreateAgenciesDto {
 
 	@ApiProperty({ description: "The UUID of the city" })
 	@IsInt()
+	@Type(() => Number)
 	city_id!: number;
 
 	@ApiProperty({ description: "The legal name of the agency" })
@@ -81,6 +83,7 @@ export class CreateExistentAgenciesDto {
 
 	@ApiProperty({ description: "The UUID of the city" })
 	@IsInt()
+	@Type(() => Number)
 	city_id!: number;
 
 	@ApiProperty({ description: "The full name of the owner" })
