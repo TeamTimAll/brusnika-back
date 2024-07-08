@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Order } from "../../../constants";
@@ -81,6 +82,7 @@ export class LeadReadByFilter {
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	project_id?: number;
 
 	@ApiProperty({ required: false, enum: PremisesType })
@@ -96,6 +98,7 @@ export class LeadReadByFilter {
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	client_id?: number;
 
 	@ApiProperty({ required: false, enum: Order })

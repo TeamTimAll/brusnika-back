@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsBoolean,
 	IsInt,
@@ -79,6 +80,7 @@ export class CreateTrainingsDto {
 	extra_like_icon!: string;
 
 	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
 	user_id?: number;
 }

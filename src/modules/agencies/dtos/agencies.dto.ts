@@ -7,6 +7,7 @@ import {
 	IsString,
 	IsUUID,
 } from "class-validator";
+import { Type } from "class-transformer";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 
@@ -23,6 +24,7 @@ export class AgenciesDto extends BaseDto {
 	@ApiPropertyOptional({ description: "The UUID of the city" })
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	city_id?: number;
 
 	@ApiPropertyOptional({ description: "The legal name of the agency" })

@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsDateString,
 	IsEnum,
@@ -23,6 +24,7 @@ export class FilterClientDto {
 
 	@ApiProperty({ required: false })
 	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
 	client_id?: number;
 
@@ -33,6 +35,7 @@ export class FilterClientDto {
 
 	@ApiProperty({ required: false })
 	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
 	project_id?: number;
 

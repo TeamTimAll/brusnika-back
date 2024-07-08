@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import { IsInt, IsOptional, IsString } from "class-validator";
 
 export class UpdateNewsDto {
@@ -7,6 +8,7 @@ export class UpdateNewsDto {
 		description: "UUID of the news",
 	})
 	@IsInt()
+	@Type(() => Number)
 	id!: number;
 
 	@IsString()
