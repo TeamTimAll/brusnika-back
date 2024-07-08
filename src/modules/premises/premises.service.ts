@@ -57,12 +57,7 @@ export class PremisesService extends BasicService<
 				ProjectEntity,
 				"project",
 				"project.id = building.project_id",
-			)
-			.groupBy("premise.id")
-			.addGroupBy("building.id")
-			.addGroupBy("section.id")
-			.addGroupBy("project.id")
-			.orderBy("project.id", "ASC");
+			);
 
 		if (filter) {
 			if (filter.id) {
@@ -183,12 +178,19 @@ export class PremisesService extends BasicService<
 			}
 		}
 
-		const pageSize = (filter.page - 1) * filter.limit;
-		query = query.limit(filter.limit).offset(pageSize);
-
 		const premiseCount = await query
 			.select("COUNT(premise.id)::int AS premise_count")
 			.getRawMany<Record<"premise_count", number>>();
+
+		const pageSize = (filter.page - 1) * filter.limit;
+		query = query
+			.limit(filter.limit)
+			.offset(pageSize)
+			.groupBy("premise.id")
+			.addGroupBy("building.id")
+			.addGroupBy("section.id")
+			.addGroupBy("project.id")
+			.orderBy("project.id", "ASC");
 
 		query = query
 			.select([
