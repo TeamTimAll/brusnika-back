@@ -2,10 +2,10 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
 	IsDateString,
 	IsEnum,
+	IsInt,
 	IsMobilePhone,
 	IsOptional,
 	IsString,
-	IsUUID,
 } from "class-validator";
 
 import { Limit, Page } from "../../../decorators/pagination";
@@ -22,9 +22,9 @@ export class FilterClientDto {
 	limit: number = 50;
 
 	@ApiProperty({ required: false })
-	@IsUUID("4")
+	@IsInt()
 	@IsOptional()
-	client_id?: string;
+	client_id?: number;
 
 	@ApiProperty({ required: false })
 	@IsMobilePhone()
@@ -32,9 +32,9 @@ export class FilterClientDto {
 	phone_number?: string;
 
 	@ApiProperty({ required: false })
-	@IsUUID("4")
+	@IsInt()
 	@IsOptional()
-	project_id?: string;
+	project_id?: number;
 
 	@ApiProperty({ required: false })
 	@IsDateString()

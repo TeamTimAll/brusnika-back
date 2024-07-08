@@ -7,7 +7,6 @@ import {
 	IsNumberString,
 	IsOptional,
 	IsString,
-	IsUUID,
 } from "class-validator";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
@@ -19,11 +18,6 @@ import {
 } from "../premises.entity";
 
 export class PremisesDto extends BaseDto {
-	@ApiProperty({ example: "Apartment 1" })
-	@IsOptional()
-	@IsString()
-	name?: string;
-
 	@ApiProperty({
 		enum: PremisesType,
 		required: true,
@@ -31,10 +25,10 @@ export class PremisesDto extends BaseDto {
 	@IsOptional()
 	type!: PremisesType | undefined;
 
-	@ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
+	@ApiProperty({ example: 1 })
 	@IsOptional()
-	@IsString()
-	building_id?: string;
+	@IsInt()
+	building_id?: number;
 
 	@ApiProperty({ example: "1000" })
 	@IsOptional()
@@ -75,11 +69,6 @@ export class PremisesDto extends BaseDto {
 	@IsNumber()
 	similiarApartmentCount?: number;
 
-	@ApiProperty({ example: "Apartment for rent" })
-	@IsOptional()
-	@IsString()
-	title?: string;
-
 	@ApiProperty({ example: "2022-01-01" })
 	@IsOptional()
 	@IsString()
@@ -96,12 +85,12 @@ export class PremisesDto extends BaseDto {
 	mortagePayment?: string;
 
 	@ApiProperty({
-		example: "123e4567-e 89b-12d3-a456-426614174000",
+		example: 1,
 		required: false,
 	})
 	@IsOptional()
-	@IsString()
-	section_id?: string;
+	@IsInt()
+	section_id?: number;
 
 	@ApiProperty({ description: "Purchase option", required: false })
 	@IsOptional()
@@ -135,13 +124,13 @@ export class PremisesFilterDto {
 	type?: PremisesType | undefined;
 
 	@ApiProperty({
-		example: "123e4567-e89b-12d3-a456-426614174000",
+		example: 1,
 		description: "Section ID",
 		required: false,
 	})
 	@IsOptional()
-	@IsUUID()
-	section_id?: string;
+	@IsInt()
+	section_id?: number;
 
 	@ApiProperty({ example: 3, required: false })
 	@IsOptional()
@@ -149,20 +138,20 @@ export class PremisesFilterDto {
 	rooms?: string;
 
 	@ApiProperty({
-		example: "123e4567-e89b-12d3-a456-426614174000",
+		example: 1,
 		required: false,
 	})
 	@IsOptional()
-	@IsUUID()
-	project_id?: string;
+	@IsInt()
+	project_id?: number;
 
 	@ApiProperty({
-		example: "123e4567-e89b-12d3-a456-426614174000",
+		example: 1,
 		required: false,
 	})
 	@IsOptional()
-	@IsUUID()
-	building_id?: string;
+	@IsInt()
+	building_id?: number;
 
 	@ApiProperty({ example: "1", required: false })
 	@IsOptional()

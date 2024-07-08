@@ -75,8 +75,8 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	@JoinColumn({ name: "city_id" })
 	city!: CitiesEntity;
 
-	@Column({ nullable: true })
-	city_id?: string;
+	@Column({ type: "integer", nullable: true })
+	city_id?: number;
 
 	// @Column({ default: 0 })
 	// likeCount!: number;

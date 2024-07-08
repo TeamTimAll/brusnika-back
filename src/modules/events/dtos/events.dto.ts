@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEnum, IsOptional, IsUUID } from "class-validator";
+import { IsEnum, IsInt, IsOptional } from "class-validator";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { EVENT_FORMAT, EVENT_TYPES } from "../events.entity";
@@ -26,13 +26,13 @@ export class FilterEventsDto {
 	})
 	format!: EVENT_FORMAT;
 
-	@IsUUID()
 	@IsOptional()
 	@ApiProperty({
 		required: false,
 		description: "City id",
 	})
-	city_id!: string;
+	@IsInt()
+	city_id!: number;
 
 	@IsEnum(() => EVENT_TYPES)
 	@IsOptional()

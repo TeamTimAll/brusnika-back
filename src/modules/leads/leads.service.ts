@@ -128,7 +128,6 @@ export class LeadsService {
 				},
 				premise: {
 					id: true,
-					name: true,
 					type: true,
 					rooms: true,
 					floor: true,

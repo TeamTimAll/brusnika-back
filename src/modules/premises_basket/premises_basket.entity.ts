@@ -14,13 +14,13 @@ export class PremisesBasketEntity extends AbstractEntity<PremisesBasketDto> {
 	@JoinColumn({ name: "meta_id" })
 	meta!: PremisesBasketMetaEntity;
 
-	@Column({ nullable: true })
-	meta_id?: string;
+	@Column({ type: "integer", nullable: true })
+	meta_id?: number;
 
 	@ManyToOne(() => PremisesEntity)
 	@JoinColumn({ name: "premise_id" })
 	premises!: PremisesEntity[];
 
-	@Column({ nullable: true })
-	premise_id?: string;
+	@Column({ type: "integer", nullable: true })
+	premise_id?: number;
 }
