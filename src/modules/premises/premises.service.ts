@@ -57,7 +57,12 @@ export class PremisesService extends BasicService<
 				ProjectEntity,
 				"project",
 				"project.id = building.project_id",
-			);
+			)
+			.groupBy("premise.id")
+			.addGroupBy("building.id")
+			.addGroupBy("section.id")
+			.addGroupBy("project.id")
+			.orderBy("project.id", "ASC");
 
 		if (filter) {
 			if (filter.id) {
