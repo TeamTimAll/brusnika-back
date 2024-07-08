@@ -43,8 +43,8 @@ export class PremisesEntity extends AbstractEntity {
 	@JoinColumn({ name: "building_id" })
 	building!: BuildingsEntity;
 
-	@Column({ nullable: true })
-	building_id?: string;
+	@Column({ type: "integer", nullable: true })
+	building_id?: number;
 
 	@Column({ nullable: true, type: "varchar" })
 	price!: number;
@@ -96,8 +96,8 @@ export class PremisesEntity extends AbstractEntity {
 	@JoinColumn({ name: "section_id" })
 	section!: SectionsEntity;
 
-	@Column({ nullable: true })
-	section_id?: string;
+	@Column({ type: "integer", nullable: true })
+	section_id?: number;
 
 	@Column({ nullable: true, type: "boolean", default: false })
 	is_sold!: boolean;

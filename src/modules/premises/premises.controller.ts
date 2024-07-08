@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	Param,
 	Post,
 	Put,
 	Query,
@@ -16,7 +17,6 @@ import {
 } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDParam } from "../../decorators";
 
 import { CreatePremisesDto } from "./dtos/create-premises.dto";
 import {
@@ -53,7 +53,7 @@ export class PremisesController {
 
 	@ApiOperation({ summary: "Get a single city by ID" })
 	@Get(":id")
-	async getSinglePremises(@UUIDParam("id") id: string) {
+	async getSinglePremises(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto<BaseDto, PremisesEntity>(
 			new BaseDto(),
 		);
@@ -90,7 +90,7 @@ export class PremisesController {
 	@ApiAcceptedResponse()
 	@Put(":id")
 	async updatePremises(
-		@UUIDParam("id") id: string,
+		@Param("id") id: number,
 		@Body() updatePremisesDto: UpdatePremisesDto,
 	) {
 		await this.service.update(id, updatePremisesDto);
@@ -99,7 +99,7 @@ export class PremisesController {
 	@ApiOperation({ summary: "Delete a premises by ID" })
 	@ApiAcceptedResponse()
 	@Delete(":id")
-	async deletePremises(@UUIDParam("id") id: string) {
+	async deletePremises(@Param("id") id: number) {
 		await this.service.remove(id);
 	}
 }

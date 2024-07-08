@@ -1,32 +1,28 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsUUID, ValidateNested } from "class-validator";
+import { IsInt, IsNotEmpty, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
 export class CreatePremisesBasketMetaDto {
 	@ApiProperty()
-	@IsUUID("4")
+	@IsInt()
 	@IsNotEmpty()
-	client_id!: string;
+	client_id!: number;
 
 	@ApiProperty()
-	@IsUUID("4")
+	@IsInt()
 	@IsNotEmpty()
-	agent_id!: string;
+	agent_id!: number;
 
 	@ApiProperty()
-	@IsUUID("4")
+	@IsInt()
 	@IsNotEmpty()
-	project_id!: string;
+	project_id!: number;
 }
 
 export class CreatePremisesBasketMetaMetaDataDto extends BaseDto<CreatePremisesBasketMetaDto> {
-	@ApiProperty({
-		example: {
-			client_id: "a949e0ad-97cc-4dfa-81bb-efe191eb903b",
-		} as CreatePremisesBasketMetaDto,
-	})
+	@ApiProperty({})
 	@ValidateNested()
 	@Type(() => CreatePremisesBasketMetaDto)
 	declare data: CreatePremisesBasketMetaDto;

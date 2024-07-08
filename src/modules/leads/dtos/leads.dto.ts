@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsOptional, IsUUID } from "class-validator";
-import { v4 as uuid } from "uuid";
+import { IsEnum, IsInt, IsOptional } from "class-validator";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Order } from "../../../constants";
@@ -15,38 +14,38 @@ import { LeadState, LeadsEntity } from "../leads.entity";
 export class LeadsDto extends BaseDto {}
 
 export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
-	@ApiProperty({ default: uuid() })
-	id!: string;
+	@ApiProperty({ default: 1 })
+	id!: number;
 
 	@ApiProperty({ type: ClientEntity })
 	client!: ClientEntity;
 
 	@ApiProperty()
-	client_id?: string;
+	client_id?: number;
 
 	@ApiProperty()
 	agent!: UserEntity;
 
 	@ApiProperty()
-	agent_id?: string;
+	agent_id?: number;
 
 	@ApiProperty()
 	manager?: UserEntity;
 
 	@ApiProperty()
-	manager_id?: string;
+	manager_id?: number;
 
 	@ApiProperty()
 	project!: ProjectEntity;
 
 	@ApiProperty()
-	project_id?: string;
+	project_id?: number;
 
 	@ApiProperty()
 	premise!: PremisesEntity;
 
 	@ApiProperty()
-	premise_id?: string;
+	premise_id?: number;
 
 	@ApiProperty()
 	fee?: number;
@@ -81,8 +80,8 @@ export class LeadReadByFilter {
 
 	@ApiProperty({ required: false })
 	@IsOptional()
-	@IsUUID()
-	project_id?: string;
+	@IsInt()
+	project_id?: number;
 
 	@ApiProperty({ required: false, enum: PremisesType })
 	@IsOptional()
@@ -96,8 +95,8 @@ export class LeadReadByFilter {
 
 	@ApiProperty({ required: false })
 	@IsOptional()
-	@IsUUID("4")
-	client_id?: string;
+	@IsInt()
+	client_id?: number;
 
 	@ApiProperty({ required: false, enum: Order })
 	@IsOptional()

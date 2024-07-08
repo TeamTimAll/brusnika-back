@@ -11,7 +11,7 @@ import {
 } from "../../modules/premises/premises.entity";
 
 function findBuildingId(buildings: BuildingsEntity[], name: string) {
-	return buildings.find((e) => e.name === name)?.id ?? "";
+	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
 export async function up(query: QueryBuilder<object>) {

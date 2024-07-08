@@ -6,7 +6,7 @@ import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
 
 function findProjectId(buildings: ProjectEntity[], name: string) {
-	return buildings.find((e) => e.name === name)?.id ?? "";
+	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
 export async function up(query: QueryBuilder<object>) {

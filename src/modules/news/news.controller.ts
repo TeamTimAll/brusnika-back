@@ -50,7 +50,7 @@ export class NewsController {
 
 	@Get(":id")
 	@ApiOperation({ summary: "Get news by id" })
-	async getNewsById(@Query("id") id: string, @User() user: ICurrentUser) {
+	async getNewsById(@Query("id") id: number, @User() user: ICurrentUser) {
 		return this.service.r_findOne(id, user);
 	}
 

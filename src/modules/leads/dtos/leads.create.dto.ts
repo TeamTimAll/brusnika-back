@@ -1,36 +1,30 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import {
-	IsInt,
-	IsNotEmpty,
-	IsOptional,
-	IsUUID,
-	ValidateNested,
-} from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 import { LeadsEntity } from "../leads.entity";
 
 export class CreateLeadDto extends LeadsEntity {
-	@ApiProperty({ example: "uuidv4" })
+	@ApiProperty({ example: 1 })
 	@IsNotEmpty()
-	@IsUUID("4")
-	declare client_id: string;
+	@IsInt()
+	declare client_id: number;
 
-	@ApiProperty({ example: "uuidv4" })
+	@ApiProperty({ example: 1 })
 	@IsNotEmpty()
-	@IsUUID("4")
-	declare agent_id: string;
+	@IsInt()
+	declare agent_id: number;
 
-	@ApiProperty({ example: "uuidv4" })
+	@ApiProperty({ example: 1 })
 	@IsOptional()
-	@IsUUID("4")
-	declare manager_id?: string;
+	@IsInt()
+	declare manager_id?: number;
 
-	@ApiProperty({ example: "uuidv4" })
+	@ApiProperty({ example: 1 })
 	@IsNotEmpty()
-	@IsUUID("4")
-	declare premise_id: string;
+	@IsInt()
+	declare premise_id: number;
 
 	@ApiProperty({ example: 0 })
 	@IsNotEmpty()

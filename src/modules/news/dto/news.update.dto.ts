@@ -1,13 +1,13 @@
-import { IsOptional, IsString, IsUUID } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsInt, IsOptional, IsString } from "class-validator";
 
 export class UpdateNewsDto {
-	@IsUUID()
 	@ApiProperty({
 		required: true,
 		description: "UUID of the news",
 	})
-	id!: string;
+	@IsInt()
+	id!: number;
 
 	@IsString()
 	@ApiProperty({

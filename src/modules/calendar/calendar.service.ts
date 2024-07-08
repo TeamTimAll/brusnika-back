@@ -1,11 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { v4 as uuid } from "uuid";
 
 // import { BookingsService } from "../bookings/bookings.service";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { VisitsService } from "../visits/visits.service";
-import { NewsService } from "../news/news.service";
 import { EventsService } from "../events/events.service";
+import { NewsService } from "../news/news.service";
+import { VisitsService } from "../visits/visits.service";
 
 @Injectable()
 export class CalendarService {
@@ -41,9 +40,9 @@ export class CalendarService {
 		const events = await this.eventsService.findAll();
 
 		// This comes from CRM system.
-		const visitsWithManager = visits.map((v) => {
+		const visitsWithManager = visits.map((v, i) => {
 			v["manager"] = {
-				id: uuid(),
+				id: i + 1,
 				fullname: "manager_name",
 				phone: "+99899" + Math.floor(Math.random() * 1000 * 1000 * 10),
 			};

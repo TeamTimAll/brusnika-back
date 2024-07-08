@@ -24,36 +24,36 @@ export class LeadsEntity extends AbstractEntity<LeadsDto> {
 	@JoinColumn({ name: "client_id" })
 	client!: ClientEntity;
 
-	@Column({ nullable: true })
-	client_id?: string;
+	@Column({ type: "integer", nullable: true })
+	client_id?: number;
 
 	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "agent_id" })
 	agent!: UserEntity;
 
-	@Column({ nullable: true })
-	agent_id?: string;
+	@Column({ type: "integer", nullable: true })
+	agent_id?: number;
 
 	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "manager_id" })
 	manager?: UserEntity;
 
-	@Column({ nullable: true })
-	manager_id?: string;
+	@Column({ type: "integer", nullable: true })
+	manager_id?: number;
 
 	@ManyToOne(() => ProjectEntity)
 	@JoinColumn({ name: "project_id" })
 	project!: ProjectEntity;
 
-	@Column({ nullable: true })
-	project_id?: string;
+	@Column({ type: "integer", nullable: true })
+	project_id?: number;
 
 	@ManyToOne(() => PremisesEntity)
 	@JoinColumn({ name: "premise_id" })
 	premise!: PremisesEntity;
 
-	@Column({ nullable: true })
-	premise_id?: string;
+	@Column({ type: "integer", nullable: true })
+	premise_id?: number;
 
 	@Column({ nullable: true, type: "integer" })
 	fee?: number;

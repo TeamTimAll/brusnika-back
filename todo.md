@@ -110,3 +110,7 @@
         - id
         - name
         - phone
+
+# Users
+- [x] admin role ochish.
+- [x] hamma role uchun seed yozish.

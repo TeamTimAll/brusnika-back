@@ -6,15 +6,15 @@ import { NewsEntity } from "../../news.entity";
 
 @Entity("news_likes")
 export class NewsLikes extends AbstractEntity {
-	@Column("uuid")
-	user_id!: string;
+	@Column({ type: "integer" })
+	user_id!: number;
 
 	@OneToOne(() => UserEntity)
-	@JoinColumn({ name: "user_id"})
+	@JoinColumn({ name: "user_id" })
 	user!: UserEntity;
 
-	@Column("uuid")
-	news_id!: string;
+	@Column({ type: "integer" })
+	news_id!: number;
 
 	@OneToOne(() => NewsEntity)
 	@JoinColumn()

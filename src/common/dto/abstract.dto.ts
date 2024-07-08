@@ -2,7 +2,7 @@ import { AbstractEntity } from "../abstract.entity";
 
 // src/dto/abstract.dto.ts
 export abstract class BaseDto {
-	id!: string;
+	id!: number;
 	createdAt!: Date;
 	updatedAt!: Date;
 

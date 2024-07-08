@@ -13,7 +13,7 @@ export class PremisesBasketMetaService {
 		private cpbmRepository: Repository<PremisesBasketMetaEntity>,
 	) {}
 
-	async getAllBasketMeta(client_id: string) {
+	async getAllBasketMeta(client_id: number) {
 		const foundBasket = await this.cpbmRepository.find({
 			where: { client: { id: client_id } },
 		});

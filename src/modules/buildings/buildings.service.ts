@@ -53,7 +53,7 @@ export class BuildingsService extends BasicService<
 		return newBuildings;
 	}
 
-	async updateBuilding(id: string, dto: UpdateBuilding) {
+	async updateBuilding(id: number, dto: UpdateBuilding) {
 		const foundBuilding = await this.repository.find({ where: { id } });
 
 		if (!foundBuilding.length) {
@@ -66,7 +66,7 @@ export class BuildingsService extends BasicService<
 		return updatedBuilding;
 	}
 
-	async delete(id: string) {
+	async delete(id: number) {
 		const building = await this.repository.findOne({
 			where: { id },
 		});

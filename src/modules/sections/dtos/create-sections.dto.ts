@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsUUID } from "class-validator";
+import { IsInt, IsString } from "class-validator";
 
 export class CreateSectionsDto {
 	@IsString()
@@ -10,7 +10,7 @@ export class CreateSectionsDto {
 	})
 	name!: string;
 
-	@IsUUID()
+	@IsInt()
 	@ApiProperty({ required: false, description: "Building ID" })
-	building_id?: string;
+	building_id?: number;
 }
