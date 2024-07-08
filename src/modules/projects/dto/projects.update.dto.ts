@@ -6,7 +6,7 @@ import {
 	IsNotEmpty,
 	IsNotEmptyObject,
 	IsObject,
-	ValidateNested
+	ValidateNested,
 } from "class-validator";
 
 import { MetaDto } from "../../../common/base/base_dto";
@@ -17,14 +17,6 @@ import {
 } from "./project.create.dto";
 
 export class UpdateProjectMetaParams {
-	// @ApiProperty({
-	// 	required: false,
-	// 	example: "e01286e7-ebb8-419f-96f7-9895aac17b4f",
-	// })
-	// @IsOptional()
-	// @IsUUID()
-	// user_id?: string;
-
 	@ApiProperty({
 		required: true,
 		example: 1,

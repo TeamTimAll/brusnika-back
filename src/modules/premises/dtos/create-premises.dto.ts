@@ -16,11 +16,6 @@ import {
 } from "../premises.entity";
 
 export class CreatePremisesDto {
-	@ApiProperty({ description: "Name of the premise", required: false })
-	@IsString()
-	@IsOptional()
-	name?: string;
-
 	@ApiProperty({ description: "Type of the premise", enum: PremisesType })
 	@IsEnum(PremisesType)
 	@IsNotEmpty()
@@ -87,11 +82,6 @@ export class CreatePremisesDto {
 	@IsNumber()
 	@IsOptional()
 	similiarApartmentCount?: number;
-
-	@ApiProperty({ description: "Title of the premise", required: false })
-	@IsString()
-	@IsOptional()
-	title?: string;
 
 	@ApiProperty({ description: "End date of the premise", required: false })
 	@IsString()

@@ -50,7 +50,7 @@ export class SectionsController {
 	})
 	@ApiQuery({ name: "building_id", required: false })
 	@Get("/")
-	async getSections(@Query("building_id") building_id: string) {
+	async getSections(@Query("building_id") building_id: number) {
 		if (building_id) {
 			return await this.service.r_findAll({ where: { building_id } });
 		}

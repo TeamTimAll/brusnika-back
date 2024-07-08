@@ -1,10 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
-	IsUUID,
-	IsString,
-	IsOptional,
 	IsEmail,
+	IsInt,
 	IsMobilePhone,
+	IsOptional,
+	IsString,
+	IsUUID,
 } from "class-validator";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
@@ -21,8 +22,8 @@ export class AgenciesDto extends BaseDto {
 
 	@ApiPropertyOptional({ description: "The UUID of the city" })
 	@IsOptional()
-	@IsUUID()
-	city_id?: string;
+	@IsInt()
+	city_id?: number;
 
 	@ApiPropertyOptional({ description: "The legal name of the agency" })
 	@IsOptional()

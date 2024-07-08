@@ -27,8 +27,8 @@ export class AgenciesEntity extends AbstractEntity<AgenciesDto> {
 	@JoinColumn({ name: "city_id" })
 	city!: CitiesEntity;
 
-	@Column({ nullable: true })
-	city_id?: string;
+	@Column({ type: "integer", nullable: true })
+	city_id?: number;
 
 	@Column({ nullable: true, type: "varchar" })
 	legalName!: string | null;

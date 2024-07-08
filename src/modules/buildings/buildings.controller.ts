@@ -8,11 +8,11 @@ import {
 	Param,
 	Post,
 	Put,
+	Query,
 } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UUIDQuery } from "../../decorators";
 
 import { BuildingsService } from "./buildings.service";
 import { CreateBuildingMetaDto } from "./dtos/building.create.dto";
@@ -29,7 +29,7 @@ export class BuildingsController {
 		name: "project_id",
 		required: false,
 	})
-	async getAll(@UUIDQuery("project_id", true) project_id?: string) {
+	async getAll(@Query("project_id") project_id?: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.buildingsService.findAllBuilding(project_id);
 		return metaData;
