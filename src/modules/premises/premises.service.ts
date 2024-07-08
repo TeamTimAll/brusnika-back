@@ -186,14 +186,13 @@ export class PremisesService extends BasicService<
 		const pageSize = (filter.page - 1) * filter.limit;
 		query = query.limit(filter.limit).offset(pageSize);
 
-		const premiseCount = (await query
+		const premiseCount = await query
 			.select("COUNT(premise.id)::int AS premise_count")
-			.getRawMany()) as unknown as Array<Record<"premise_count", number>>;
+			.getRawMany<Record<"premise_count", number>>();
 
 		query = query
 			.select([
 				"premise.id as id",
-				"premise.name as name",
 				"premise.type as type",
 				"premise.building as building",
 				"premise.building_id as building_id",
@@ -207,7 +206,6 @@ export class PremisesService extends BasicService<
 				"premise.rooms as rooms",
 				"premise.photos as photos",
 				"premise.similiar_apartment_count as similiarApartmentCount",
-				"premise.title as title",
 				"premise.end_date as end_date",
 				"premise.mortage_payment as mortagePayment",
 				"premise.section_id as section_id",
@@ -256,7 +254,7 @@ export class PremisesService extends BasicService<
 
 		const premiseResponse: ServiceResponse<PremisesEntity[]> = {
 			links: calcPagination(
-				premiseCount[0].premise_count,
+				premiseCount.length ? premiseCount[0].premise_count : 0,
 				filter.page,
 				filter.limit,
 			),

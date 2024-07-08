@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsBoolean,
 	IsDate,
@@ -91,6 +92,7 @@ export class UserDto extends BaseDto {
 	isPhoneVerified?: boolean;
 
 	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({
 		required: false,
 	})
@@ -99,6 +101,7 @@ export class UserDto extends BaseDto {
 	@ApiProperty({ description: "The agency ID of the user" })
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	agency_id?: number;
 
 	status: boolean;
@@ -182,6 +185,7 @@ export class UserUpdateDto {
 	birthDate?: Date;
 
 	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
 	@ApiProperty({
 		required: false,
@@ -192,6 +196,7 @@ export class UserUpdateDto {
 
 export class UserFillDataDto {
 	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({
 		required: true,
 	})
@@ -213,6 +218,7 @@ export class UserFillDataDto {
 		required: true,
 	})
 	@IsInt()
+	@Type(() => Number)
 	city_id!: number;
 
 	@IsDateString()

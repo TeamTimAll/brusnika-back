@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsNotEmpty, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
 
 import { PremisesType } from "../../leads/lead_ops.entity";
 
@@ -18,5 +19,6 @@ export class NotBookedPremisesFilter {
 	})
 	@IsNotEmpty()
 	@IsInt()
+	@Type(() => Number)
 	building_id!: number;
 }

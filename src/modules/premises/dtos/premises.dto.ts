@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsDateString,
 	IsEnum,
@@ -28,6 +29,7 @@ export class PremisesDto extends BaseDto {
 	@ApiProperty({ example: 1 })
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	building_id?: number;
 
 	@ApiProperty({ example: "1000" })
@@ -90,6 +92,7 @@ export class PremisesDto extends BaseDto {
 	})
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	section_id?: number;
 
 	@ApiProperty({ description: "Purchase option", required: false })
@@ -130,6 +133,7 @@ export class PremisesFilterDto {
 	})
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	section_id?: number;
 
 	@ApiProperty({ example: 3, required: false })
@@ -143,6 +147,7 @@ export class PremisesFilterDto {
 	})
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	project_id?: number;
 
 	@ApiProperty({
@@ -151,6 +156,7 @@ export class PremisesFilterDto {
 	})
 	@IsOptional()
 	@IsInt()
+	@Type(() => Number)
 	building_id?: number;
 
 	@ApiProperty({ example: "1", required: false })

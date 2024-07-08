@@ -1,8 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import { IsInt, IsOptional, IsString } from "class-validator";
 
 export class UpdateTrainingsDto {
 	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({
 		required: true,
 		description: "UUID of the trainings",
