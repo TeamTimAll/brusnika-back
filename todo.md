@@ -61,6 +61,7 @@
 - [x] agent bo'yicha olish. Agar status'i weak bo'ladigan bo'lsa hammaga ko'rsatish.
     - [x] search'ga ham qo'shish.
 - [x] LeadState(active | on_pause | failed | success) bo'yicha client filter.
+- [ ] Client mock data qo'shib berish.
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?
@@ -96,6 +97,7 @@
 
 ### Calendar
 - [ ] manager entity bilan bog'liqlik.
+- [ ] mock'da qo'shib berish
 - [X] visits'ni premise'dan project'ga almashtirish.
 - [x] visits'da project, client, agent  ma'lumotlari kerak. 
     project
@@ -114,3 +116,7 @@
 # Users
 - [x] admin role ochish.
 - [x] hamma role uchun seed yozish.
+
+# Error handling
+- [x] prompt'dagi label'ni arraydan ```{ ru: "", uz: "", en: "" }``` ga o'tkazish
+- [ ] ---
