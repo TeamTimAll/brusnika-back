@@ -219,7 +219,9 @@ export class PremisesIdsDto {
 	@Limit()
 	limit: number = 50;
 
-	@ApiProperty({ required: false })
+	@ApiProperty({ required: false, type: [Number] })
 	@IsInt({ each: true })
+	@Type(() => Number)
+	@IsOptional()
 	ids?: number[];
 }

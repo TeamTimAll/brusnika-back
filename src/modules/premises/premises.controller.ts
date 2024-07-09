@@ -64,18 +64,19 @@ export class PremisesController {
 	@ApiResponse({ status: HttpStatus.OK, type: PremisesDto })
 	@Get("/cherry-pick/:ids")
 	async getMultiplePremisesByIds(@Query() dto: PremisesIdsDto) {
-		if (!dto.ids || !dto.ids.length) {
-			return [];
+		const metaData = BaseDto.createFromDto(new BaseDto<PremisesEntity[]>());
+		if (!dto.ids) {
+			metaData.data = [];
+			return metaData;
 		}
 		/*
 			If the query id is single, the @Query decorator returns a string.
  			We need to check if it is a string or not. Because getMultiplePremisesByIds
 			function accepts array of strings.
 		*/
-		if (typeof dto.ids === "string") {
+		if (typeof dto.ids === "number") {
 			dto.ids = [dto.ids];
 		}
-		const metaData = BaseDto.createFromDto(new BaseDto<PremisesEntity[]>());
 		const response = await this.service.getMultiplePremisesByIds(
 			dto.ids,
 			dto.limit,
