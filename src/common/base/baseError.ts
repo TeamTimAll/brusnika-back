@@ -1,6 +1,6 @@
 import { HttpStatus } from "@nestjs/common";
 
-import { DefaultPrompt, PromptType } from "../../lib/prompt/prompt";
+import { DefaultPrompt, PromptLabel, PromptType } from "../../lib/prompt/prompt";
 import { PromptReader } from "../../lib/prompt/promptReader";
 
 export interface IMetaError {
@@ -10,7 +10,7 @@ export interface IMetaError {
 
 export class BaseError extends Error {
 	public readonly id: number;
-	public readonly labels: string[];
+	public readonly labels: PromptLabel;
 	public readonly meta!: IMetaError;
 	public readonly status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 

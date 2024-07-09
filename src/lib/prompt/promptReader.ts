@@ -18,7 +18,7 @@ export class PromptReader {
 			promptType: "postgres",
 			promptCode: "",
 			promptCondition: "",
-			promptLabels: [],
+			promptLabels: { ru: "", uz: "", en: "" },
 		};
 		for (const key in this.prompts) {
 			if (Object.prototype.hasOwnProperty.call(this.prompts, key)) {
