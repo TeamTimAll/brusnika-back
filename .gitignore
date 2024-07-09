@@ -97,3 +97,5 @@ media/*
 !media/building_default_image.jpg
 !media/premise_apartment_default_image.jpg
 !media/user_default_avatar.png
+!media/premise_parking_default_image.jpg
+!media/premise_storeroom_default_image.jpg

@@ -1,19 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsEmail,
 	IsInt,
 	IsMobilePhone,
 	IsOptional,
 	IsString,
-	IsUUID,
 } from "class-validator";
-import { Type } from "class-transformer";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 
 export class AgenciesDto extends BaseDto {
 	@ApiProperty({ description: "The UUID of the user" })
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	userId!: string;
 
 	@ApiPropertyOptional({ description: "The title of the agency" })

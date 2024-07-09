@@ -3,9 +3,9 @@ import { Type } from "class-transformer";
 import {
 	IsDateString,
 	IsEnum,
+	IsInt,
 	IsMilitaryTime,
 	IsOptional,
-	IsUUID,
 	ValidateNested,
 } from "class-validator";
 
@@ -14,15 +14,18 @@ import { VisitStatus } from "../visits.entity";
 
 export class CreateVisitsDto {
 	@ApiProperty({ required: false, description: "ID of premise" })
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	project_id?: number;
 
 	@ApiProperty({ required: false, description: "ID of client" })
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	client_id?: number;
 
 	@ApiProperty({ required: false, description: "ID of agent" })
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	@IsOptional()
 	agent_id?: number;
 

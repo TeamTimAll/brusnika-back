@@ -195,6 +195,7 @@ export class PremisesService extends BasicService<
 		query = query
 			.select([
 				"premise.id as id",
+				"premise.name as name",
 				"premise.type as type",
 				"premise.building as building",
 				"premise.building_id as building_id",
