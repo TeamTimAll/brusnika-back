@@ -6,7 +6,6 @@ import {
 	IsNotEmpty,
 	IsOptional,
 	IsString,
-	IsUUID,
 } from "class-validator";
 
 export class CreateNewsDto {
@@ -38,7 +37,8 @@ export class CreateNewsDto {
 	cover_image!: string;
 
 	@IsOptional()
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({
 		description: "The first category of the news",
 		example: "The first category of the news",
@@ -47,7 +47,8 @@ export class CreateNewsDto {
 	primary_category_id!: number;
 
 	@IsOptional()
-	@IsUUID()
+	@IsInt()
+	@Type(() => Number)
 	@ApiProperty({
 		description: "The second category of the news",
 		example: "The second category of the news",
