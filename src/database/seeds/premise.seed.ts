@@ -9,9 +9,20 @@ import {
 	PremisesType,
 	PuchaseOptions,
 } from "../../modules/premises/premises.entity";
+import { SectionsEntity } from "../../modules/sections/sections.entity";
 
 function findBuildingId(buildings: BuildingsEntity[], name: string) {
 	return buildings.find((e) => e.name === name)?.id ?? 0;
+}
+
+function findSectionId(
+	buildings: SectionsEntity[],
+	building_id: number,
+	name: string,
+) {
+	return buildings.find(
+		(e) => e.name === name && e.building_id === building_id,
+	)?.id;
 }
 
 export async function up(query: QueryBuilder<object>) {
@@ -19,6 +30,18 @@ export async function up(query: QueryBuilder<object>) {
 		.select(["c.id AS id", "c.name AS name"])
 		.from(BuildingsEntity, "c")
 		.getRawMany<BuildingsEntity>();
+
+	const sections = await query
+		.createQueryBuilder()
+		.select([
+			"s.id AS id",
+			"s.name AS name",
+			"s.building_id AS building_id",
+		])
+		.from(SectionsEntity, "s")
+		.getRawMany<SectionsEntity>();
+
+	console.log(sections);
 
 	const premises: WithOutToDto<
 		Omit<
@@ -46,6 +69,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Москва Дом 1"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -67,6 +95,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Москва Дом 2"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -88,6 +121,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Москва Дом 3"),
+				"Секция 1",
+			),
 		},
 
 		{
@@ -110,6 +148,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Тюмень Дом 1"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -131,6 +174,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Тюмень Дом 2"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -152,6 +200,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Тюмень Дом 3"),
+				"Секция 1",
+			),
 		},
 
 		{
@@ -174,6 +227,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Новосибирск Дом 1"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -195,6 +253,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Новосибирск Дом 2"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -216,6 +279,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Новосибирск Дом 3"),
+				"Секция 1",
+			),
 		},
 
 		{
@@ -238,6 +306,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Екатеринбург Дом 1"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -259,6 +332,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Екатеринбург Дом 2"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -280,6 +358,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Екатеринбург Дом 3"),
+				"Секция 1",
+			),
 		},
 
 		{
@@ -302,6 +385,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Сургут Дом 1"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -323,6 +411,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Сургут Дом 2"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -344,6 +437,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Сургут Дом 3"),
+				"Секция 1",
+			),
 		},
 
 		{
@@ -366,6 +464,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Курган Дом 1"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -387,6 +490,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Курган Дом 2"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -408,6 +516,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Курган Дом 3"),
+				"Секция 1",
+			),
 		},
 
 		{
@@ -430,6 +543,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Омск Дом 1"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -451,6 +569,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Омск Дом 2"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-комнатная 30 м2",
@@ -472,6 +595,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Омск Дом 3"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-стоянка 30 м2",
@@ -493,6 +621,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Омск Дом 3"),
+				"Секция 1",
+			),
 		},
 		{
 			name: "1-кладовка 30 м2",
@@ -514,6 +647,11 @@ export async function up(query: QueryBuilder<object>) {
 			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
+			section_id: findSectionId(
+				sections,
+				findBuildingId(buildings, "Омск Дом 3"),
+				"Секция 1",
+			),
 		},
 	];
 
