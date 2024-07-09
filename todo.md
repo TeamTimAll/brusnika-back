@@ -61,7 +61,7 @@
 - [x] agent bo'yicha olish. Agar status'i weak bo'ladigan bo'lsa hammaga ko'rsatish.
     - [x] search'ga ham qo'shish.
 - [x] LeadState(active | on_pause | failed | success) bo'yicha client filter.
-- [ ] Client mock data qo'shib berish.
+- [x] Client mock data qo'shib berish.
 
 ### Premises
 - [ ] подъезд qo'shish kerak emasmi?

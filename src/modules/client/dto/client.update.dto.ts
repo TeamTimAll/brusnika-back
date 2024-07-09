@@ -1,11 +1,11 @@
-import {
-	IsString,
-	IsOptional,
-	IsDateString,
-	IsUUID,
-	IsNotEmpty,
-} from "class-validator";
 import { Type } from "class-transformer";
+import {
+	IsDateString,
+	IsInt,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+} from "class-validator";
 
 export class UpdateClientDto {
 	@IsOptional()
@@ -20,8 +20,9 @@ export class UpdateClientDto {
 	phoneNumber?: string;
 
 	@IsOptional()
-	@IsUUID()
-	projectId?: string;
+	@IsInt()
+	@Type(() => Number)
+	projectId?: number;
 
 	@IsOptional()
 	@IsString()

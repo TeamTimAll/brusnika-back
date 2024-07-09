@@ -5,8 +5,7 @@ import {
 	IsInt,
 	IsNotEmpty,
 	IsOptional,
-	IsString,
-	IsUUID,
+	IsString
 } from "class-validator";
 
 export class CreateTrainingsDto {
@@ -37,22 +36,24 @@ export class CreateTrainingsDto {
 	})
 	cover_image!: string;
 
-	@IsOptional()
-	@IsUUID()
 	@ApiProperty({
 		description: "The first category of the trainings",
 		example: "The first category of the trainings",
 		required: false,
 	})
+	@IsOptional()
+	@IsInt()
+	@Type(() => Number)
 	primary_category_id!: number;
 
-	@IsOptional()
-	@IsUUID()
 	@ApiProperty({
 		description: "The second category of the trainings",
 		example: "The second category of the trainings",
 		required: false,
 	})
+	@IsOptional()
+	@IsInt()
+	@Type(() => Number)
 	second_category_id!: number;
 
 	@IsBoolean()
