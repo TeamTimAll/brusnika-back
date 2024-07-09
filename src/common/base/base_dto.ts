@@ -11,11 +11,12 @@ import { createLink } from "../../lib/pagination";
 import { Links } from "../../types";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
 
+import { PromptLabel } from "lib/prompt/prompt";
 import { BaseError } from "./baseError";
 
 export class MetaPrompt {
 	id!: number;
-	labels!: string[];
+	labels!: PromptLabel;
 	meta!: object;
 }
 
@@ -85,7 +86,7 @@ export class BaseDto<T = unknown> {
 		// Filling prompt if it is null or undefined
 		dto.meta.prompt ??= new MetaPrompt();
 		dto.meta.prompt.id ??= 0;
-		dto.meta.prompt.labels ??= [];
+		dto.meta.prompt.labels ??= { ru: "", uz: "", en: "" };
 		dto.meta.prompt.meta ??= {};
 
 		// Filling data if it is null or undefined

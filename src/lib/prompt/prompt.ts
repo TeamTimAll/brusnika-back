@@ -8,12 +8,18 @@ export enum PromptType {
 	APPLICATION = 2,
 }
 
+export interface PromptLabel {
+	ru: string;
+	uz: string;
+	en: string;
+}
+
 export interface IPrompt<ID = number> {
 	promptId: ID;
 	promptType: IPromptType;
 	promptCode: string;
 	promptCondition: string;
-	promptLabels: string[];
+	promptLabels: PromptLabel;
 }
 
 export class DefaultPrompt implements IPrompt {
@@ -21,11 +27,11 @@ export class DefaultPrompt implements IPrompt {
 	promptType = "application" as IPromptType;
 	promptCode = "default_prompt_code";
 	promptCondition = "default_prompt_condition";
-	promptLabels = [
-		"Default prompt message",
-		"Default prompt message",
-		"Default prompt message",
-	];
+	promptLabels = {
+		ru: "Default prompt message",
+		uz: "Default prompt message",
+		en: "Default prompt message",
+	};
 }
 
 export type IPromptMap<T extends number = number> = {
