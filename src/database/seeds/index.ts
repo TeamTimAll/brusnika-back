@@ -7,6 +7,7 @@ import * as citySeed from "./city.seed";
 import * as premiseSeed from "./premise.seed";
 import * as projectSeed from "./project.seed";
 import * as userSeed from "./user.seed";
+import * as clientSeed from "./client.seed";
 
 ConfigManager.init();
 export const dataSource = new DataSource(ConfigManager.databaseConfig);
@@ -18,6 +19,7 @@ async function up(dataSource: DataSource) {
 	await buildingSeed.up(dataSource.createQueryBuilder());
 	await premiseSeed.up(dataSource.createQueryBuilder());
 	await userSeed.up(dataSource.createQueryBuilder());
+	await clientSeed.up(dataSource.createQueryBuilder());
 }
 
 async function down(dataSource: DataSource) {
@@ -26,6 +28,7 @@ async function down(dataSource: DataSource) {
 	await buildingSeed.down(dataSource.createQueryBuilder());
 	await premiseSeed.down(dataSource.createQueryBuilder());
 	await userSeed.down(dataSource.createQueryBuilder());
+	await clientSeed.down(dataSource.createQueryBuilder());
 }
 // ------------------------------------------------
 
