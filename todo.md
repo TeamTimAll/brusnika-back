@@ -119,4 +119,4 @@
 
 # Error handling
 - [x] prompt'dagi label'ni arraydan ```{ ru: "", uz: "", en: "" }``` ga o'tkazish
-- [ ] 
+- [ ] ---
