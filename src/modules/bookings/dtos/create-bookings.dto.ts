@@ -34,7 +34,7 @@ export class CreateBookingsDto {
 
 	@IsMilitaryTime()
 	@ApiProperty({ required: true, description: "Time of booking" })
-	time!: Date;
+	time!: string;
 
 	@IsEnum(PuchaseOptions)
 	@ApiProperty({

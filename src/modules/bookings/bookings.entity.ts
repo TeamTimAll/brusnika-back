@@ -68,7 +68,7 @@ export class BookingsEntity extends AbstractEntity {
 	date!: Date;
 
 	@Column({ type: "time" })
-	time!: Date;
+	time!: string;
 
 	@Column({ type: "enum", enum: PuchaseOptions })
 	purchase_option!: PuchaseOptions;
@@ -88,7 +88,7 @@ export class BookingsEntity extends AbstractEntity {
 			agent: entity.agent ?? new UserEntity(),
 			agent_id: entity.agent_id ?? 0,
 			date: entity.date ?? new Date(),
-			time: entity.time ?? new Date(),
+			time: entity.time ?? "00:00",
 			purchase_option: entity.purchase_option ?? PuchaseOptions.BILL,
 			status: entity.status ?? BookingStatus.OPEN,
 			createdAt: entity.createdAt ?? new Date(),

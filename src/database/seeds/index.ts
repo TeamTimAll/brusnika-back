@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 
 import { ConfigManager } from "../../config";
 
+import * as bookedSeed from "./booked.seed";
 import * as buildingSeed from "./building.seed";
 import * as citySeed from "./city.seed";
 import * as clientSeed from "./client.seed";
@@ -22,6 +23,7 @@ async function up(dataSource: DataSource) {
 	await premiseSeed.up(dataSource.createQueryBuilder());
 	await userSeed.up(dataSource.createQueryBuilder());
 	await clientSeed.up(dataSource.createQueryBuilder());
+	await bookedSeed.up(dataSource.createQueryBuilder());
 }
 
 async function down(dataSource: DataSource) {
@@ -30,8 +32,9 @@ async function down(dataSource: DataSource) {
 	await buildingSeed.down(dataSource.createQueryBuilder());
 	await sectionSeed.down(dataSource.createQueryBuilder());
 	await premiseSeed.down(dataSource.createQueryBuilder());
-	await userSeed.down(dataSource.createQueryBuilder());
 	await clientSeed.down(dataSource.createQueryBuilder());
+	await userSeed.down(dataSource.createQueryBuilder());
+	await bookedSeed.down(dataSource.createQueryBuilder());
 }
 // ------------------------------------------------
 
