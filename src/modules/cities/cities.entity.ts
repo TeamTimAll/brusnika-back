@@ -15,6 +15,12 @@ export class CitiesEntity extends AbstractEntity {
 	})
 	users?: WithOutToDto<UserEntity>[];
 
+	@Column({ nullable: false, type: "varchar", default: "0.00" })
+	long!: string;
+
+	@Column({ nullable: false, type: "varchar", default: "0.00" })
+	lat!: string;
+
 	static toDto(
 		entity: Partial<WithOutToDto<CitiesEntity>>,
 	): WithOutToDto<CitiesEntity> {
@@ -24,6 +30,8 @@ export class CitiesEntity extends AbstractEntity {
 			users: entity.users ?? [],
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
+			long: entity.long ?? "",
+			lat: entity.lat ?? "",
 		};
 		return dto;
 	}

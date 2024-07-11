@@ -80,7 +80,7 @@ export class CreateProjectDto {
 
 	@ApiProperty()
 	@IsInt()
-@Type(() => Number)
+	@Type(() => Number)
 	@IsNotEmpty()
 	city_id!: number;
 }
