@@ -9,6 +9,7 @@ import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExp
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
 
+import { UserLoginResendCodeDto } from "../../modules/auth/dtos/user-login.dto";
 import {
 	UserChangePhoneVerifyCodeDto,
 	UserCreateDto,
@@ -70,15 +71,6 @@ export class UserService {
 
 		return savedUser;
 	}
-
-	// async getUsers(
-	//   pageOptionsDto: UsersPageOptionsDto,
-	// ): Promise<PageDto<UserDto>> {
-	//   const queryBuilder = this.userRepository.createQueryBuilder('user');
-	//   const [items, pageMetaDto] = await queryBuilder.paginate(pageOptionsDto);
-
-	//   return items.toPageDto(pageMetaDto);
-	// }
 
 	async getUser(userId: number, full = true): Promise<UserDto> {
 		// const queryBuilder = await this.userRepository.createQueryBuilder('user');
@@ -215,11 +207,18 @@ export class UserService {
 		};
 	}
 
-	async agentLoginResendSmsCode(
+	async userResendSmsCode(
 		currentUser: ICurrentUser,
+		dto: UserLoginResendCodeDto,
 	): Promise<UserResponse> {
-		const user = await this.getUser(currentUser.user_id);
+		const user = await this.findOne({
+			id: currentUser.user_id,
+			temporaryNumber: dto.phone,
+		});
 
+		if (!user) {
+			throw new UserNotFoundError(`phone number: ${dto.phone}`);
+		}
 		if (!user.verification_code_sent_date) {
 			throw new NoVerificationCodeSentError();
 		}
