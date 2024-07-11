@@ -159,6 +159,15 @@ export class PremisesFilterDto {
 	@Type(() => Number)
 	building_id?: number;
 
+	@ApiProperty({
+		example: 1,
+		required: false,
+	})
+	@IsOptional()
+	@IsInt()
+	@Type(() => Number)
+	city_id?: number;
+
 	@ApiProperty({ example: "1", required: false })
 	@IsOptional()
 	@IsNumberString()
