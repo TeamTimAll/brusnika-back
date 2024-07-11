@@ -33,6 +33,12 @@ export interface GetAllProjectRaw extends ProjectRaw {
 	end_date: ProjectEntity["end_date"];
 	premise_type: PremisesEntity["type"];
 	premise_count: string;
+	city: {
+		id: number;
+		name: string;
+		lat: string;
+		long: string;
+	};
 }
 
 @Injectable()
@@ -52,11 +58,25 @@ export class ProjectsService {
 		return this.projectsRepository;
 	}
 
-	async getAllProjects(user?: ICurrentUser): Promise<GetAllProjectRaw[]> {
+	async getAllProjects(user: ICurrentUser): Promise<GetAllProjectRaw[]> {
+		const foundUser = await this.userService.repository.findOne({
+			select: ["city_id"],
+			where: {
+				id: user.user_id,
+			},
+		});
+
+		const city = await this.citiesService.repository.findOne({
+			select: ["id"],
+			where: {
+				id: foundUser!.city_id,
+			},
+		});
 		let projectQueryBuilder = this.projectsRepository
 			.createQueryBuilder("project")
 			.leftJoinAndSelect("project.buildings", "building")
 			.leftJoinAndSelect("building.premises", "premise")
+			.leftJoinAndSelect("project.city", "cities")
 			.select([
 				"project.id AS id",
 				"project.name AS name",
@@ -71,35 +91,14 @@ export class ProjectsService {
 				"project.end_date AS end_date",
 				"premise.type AS premise_type",
 				"COUNT(premise.id) AS premise_count",
+				"JSON_BUILD_OBJECT('id', cities.id, 'name', cities.name, 'lat', cities.lat, 'long', cities.long) as city",
 			])
-			.groupBy("project.id, premise.type");
-
-		if (user) {
-			const foundUser = await this.userService.repository.findOne({
-				select: ["city_id"],
-				where: {
-					id: user.user_id,
-				},
+			.groupBy("project.id")
+			.addGroupBy("premise.type")
+			.addGroupBy("cities.id")
+			.where("city_id = :city_id", {
+				city_id: city!.id,
 			});
-
-			if (foundUser) {
-				const city = await this.citiesService.repository.findOne({
-					select: ["id"],
-					where: {
-						id: foundUser.city_id,
-					},
-				});
-
-				if (city) {
-					projectQueryBuilder = projectQueryBuilder.where(
-						"city_id = :city_id",
-						{
-							city_id: city.id,
-						},
-					);
-				}
-			}
-		}
 
 		const projects =
 			await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
@@ -130,6 +129,12 @@ export class ProjectsService {
 						commercial_count: 0,
 						parking_count: 0,
 						storeroom_count: 0,
+						city: {
+							id: row.city.id,
+							name: row.city.name,
+							lat: row.city.lat,
+							long: row.city.long,
+						},
 					};
 					validTypes.forEach((type) => {
 						if (typeof project !== "undefined") {

@@ -34,7 +34,7 @@ export class ProjectsController {
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	async getAllProjects(@User() user?: ICurrentUser) {
+	async getAllProjects(@User() user: ICurrentUser) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
 		metaData.data = await this.projectsService.getAllProjects(user);
 		return metaData;
