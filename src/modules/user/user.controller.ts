@@ -18,6 +18,7 @@ import { RoleType } from "../../constants";
 import { Roles, User } from "../../decorators";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
+import { UserLoginResendCodeDto } from "../../modules/auth/dtos/user-login.dto";
 import {
 	UserChangePhoneVerifyCodeDto,
 	UserCreateDto,
@@ -25,7 +26,6 @@ import {
 	UserUpdateDto,
 } from "./dtos/user.dto";
 import { UserService } from "./user.service";
-// import { RolesGuard } from "../../guards/roles.guard";
 
 @Controller("users")
 @ApiTags("users")
@@ -67,5 +67,15 @@ export class UserController {
 		@User() user: ICurrentUser,
 	) {
 		return this.userService.verifySmsCode(user, dto);
+	}
+
+	@Post("/phone/resend-code")
+	@HttpCode(HttpStatus.ACCEPTED)
+	@ApiAcceptedResponse()
+	resendCodePhone(
+		@Body() dto: UserLoginResendCodeDto,
+		@User() user: ICurrentUser,
+	) {
+		return this.userService.userResendSmsCode(user, dto);
 	}
 }
