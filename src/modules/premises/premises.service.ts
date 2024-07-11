@@ -72,6 +72,12 @@ export class PremisesService extends BasicService<
 				});
 			}
 
+			if (filter.city_id) {
+				query = query.andWhere("project.city_id = :city_id", {
+					city_id: filter.city_id,
+				});
+			}
+
 			if (filter.endYear) {
 				query = query.andWhere("project.end_date = :endYear", {
 					endYear: filter.endYear,
