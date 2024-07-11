@@ -67,6 +67,7 @@
 - [ ] подъезд qo'shish kerak emasmi?
 - [x] bron qilinmagan premise'larni chiqarish.
 - [x] bron qilinganligi haqida ma'lumot kerak. `is_booked` ga o'xshagan
+- [ ] city bo'yicha filter.
 
 ### Agent
 - [ ] Agent gruhga qo'sha olish va olib tashlash
@@ -119,4 +120,4 @@
 
 # Error handling
 - [x] prompt'dagi label'ni arraydan ```{ ru: "", uz: "", en: "" }``` ga o'tkazish
-- [ ] ---
+- [x] token almashganda 500 error beryapti.
