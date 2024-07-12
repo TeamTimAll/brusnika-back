@@ -70,6 +70,9 @@ export class VisitsEntity extends AbstractEntity {
 	@Column({ type: "time" })
 	time!: Date;
 
+	@Column({ nullable: true, type: "text" })
+	note?: string;
+
 	// @Column({ type: "enum", enum: PuchaseOptions })
 	// purchase_option!: PuchaseOptions;
 
