@@ -35,6 +35,7 @@ export async function up(query: QueryBuilder<object>) {
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
 			status: true,
+			isPhoneVerified: true,
 			city_id: city.id,
 		},
 
@@ -55,6 +56,7 @@ export async function up(query: QueryBuilder<object>) {
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
 			status: true,
+			isPhoneVerified: true,
 			city_id: city.id,
 		},
 
@@ -75,6 +77,7 @@ export async function up(query: QueryBuilder<object>) {
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
 			status: true,
+			isPhoneVerified: true,
 			city_id: city.id,
 		},
 
@@ -95,6 +98,7 @@ export async function up(query: QueryBuilder<object>) {
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
 			status: false,
+			isPhoneVerified: true,
 			city_id: city.id,
 		},
 
@@ -115,6 +119,7 @@ export async function up(query: QueryBuilder<object>) {
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
 			status: true,
+			isPhoneVerified: true,
 			city_id: city.id,
 		},
 
@@ -135,6 +140,7 @@ export async function up(query: QueryBuilder<object>) {
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
 			status: true,
+			isPhoneVerified: true,
 			city_id: city.id,
 		},
 	];

@@ -6,6 +6,7 @@ import {
 	IsInt,
 	IsMilitaryTime,
 	IsOptional,
+	IsString,
 	ValidateNested,
 } from "class-validator";
 
@@ -40,6 +41,11 @@ export class CreateVisitsDto {
 	})
 	@IsMilitaryTime()
 	time!: Date;
+
+	@ApiProperty()
+	@IsOptional()
+	@IsString()
+	note?: string;
 
 	// @ApiProperty({
 	// 	required: true,

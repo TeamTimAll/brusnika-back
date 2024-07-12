@@ -5,6 +5,7 @@ import {
 	IsEnum,
 	IsInt,
 	IsMobilePhone,
+	IsNotEmpty,
 	IsOptional,
 	IsString,
 } from "class-validator";
@@ -65,4 +66,16 @@ export class ClientQuickSearchDto {
 	@IsString()
 	@IsOptional()
 	text?: string;
+}
+
+export class ClientSearchFromBmpsoft {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	fullname!: string;
+
+	@ApiProperty()
+	@IsMobilePhone()
+	@IsNotEmpty()
+	phone_number!: string;
 }

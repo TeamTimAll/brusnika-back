@@ -37,7 +37,7 @@ export class CalendarService {
 		});
 
 		const news = await this.newsService.r_findAll();
-		const events = await this.eventsService.findAll();
+		const events = await this.eventsService.r_findAll();
 
 		// This comes from CRM system.
 		const visitsWithManager = visits.map((v, i) => {

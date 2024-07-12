@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Post,
+	Query,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
@@ -7,7 +15,12 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { ClientService } from "./client.service";
-import { ClientQuickSearchDto, FilterClientDto } from "./dto/client.search.dto";
+import { DeleteClientDto } from "./dto/client-delete.dto";
+import {
+	ClientQuickSearchDto,
+	ClientSearchFromBmpsoft,
+	FilterClientDto,
+} from "./dto/client.search.dto";
 import { CreateClientMetaDataDto } from "./dto/create.client.dto";
 
 @ApiTags("Client")
@@ -46,6 +59,30 @@ export class ClientController {
 		const serviceResponse = await this.clientService.readAll(dto, user);
 		metaData.data = serviceResponse.data;
 		metaData.setLinks(serviceResponse.links);
+		return metaData;
+	}
+
+	@Get("/search-from-bmpsoft")
+	@ApiOkResponse({ type: CreateClientMetaDataDto })
+	async searchFromBmpsoft(
+		@User() user: ICurrentUser,
+		@Query() dto: ClientSearchFromBmpsoft,
+	) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		const serviceResponse = await this.clientService.searchFromBmpsoft(
+			dto,
+			user,
+		);
+		metaData.data = serviceResponse;
+		return metaData;
+	}
+
+	@Delete()
+	@ApiOkResponse({ type: CreateClientMetaDataDto })
+	async delete(@User() user: ICurrentUser, @Query() dto: DeleteClientDto) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		const serviceResponse = await this.clientService.delete(dto, user);
+		metaData.data = serviceResponse;
 		return metaData;
 	}
 }

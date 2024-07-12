@@ -8,20 +8,19 @@ import {
 	Param,
 	Post,
 	Put,
+	Query,
 	UseGuards,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
-import { ICurrentUser } from "interfaces/current-user.interface";
-
 import { BaseDto } from "../../common/base/base_dto";
-import { User } from "../../decorators";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import {
 	CreateProjectDto,
 	CreateProjectMetaDataDto,
 } from "./dto/project.create.dto";
+import { ProjectFilterDto } from "./dto/projects.dto";
 import { UpdateProjectMetaDataDto } from "./dto/projects.update.dto";
 import { ProjectsService } from "./projects.service";
 
@@ -34,9 +33,9 @@ export class ProjectsController {
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	async getAllProjects(@User() user?: ICurrentUser) {
+	async getAllProjects(@Query() dto: ProjectFilterDto) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.projectsService.getAllProjects(user);
+		metaData.data = await this.projectsService.getAllProjects(dto.city_id);
 		return metaData;
 	}
 

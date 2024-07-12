@@ -39,7 +39,7 @@ export class VisitsService extends BasicService<
 
 	async r_update(
 		id: number,
-		dto: UpdateVisitsDto,
+		dto: Partial<UpdateVisitsDto>,
 		currentUser?: ICurrentUser,
 	): Promise<VisitsEntity[]> {
 		const foundCity = await this.r_findOne(id);
