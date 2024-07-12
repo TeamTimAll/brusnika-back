@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Post,
+	Query,
+	UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
@@ -7,6 +15,7 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { ClientService } from "./client.service";
+import { DeleteClientDto } from "./dto/client-delete.dto";
 import {
 	ClientQuickSearchDto,
 	ClientSearchFromBmpsoft,
@@ -60,7 +69,19 @@ export class ClientController {
 		@Query() dto: ClientSearchFromBmpsoft,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		const serviceResponse = await this.clientService.searchFromBmpsoft(dto, user);
+		const serviceResponse = await this.clientService.searchFromBmpsoft(
+			dto,
+			user,
+		);
+		metaData.data = serviceResponse;
+		return metaData;
+	}
+
+	@Delete()
+	@ApiOkResponse({ type: CreateClientMetaDataDto })
+	async delete(@User() user: ICurrentUser, @Query() dto: DeleteClientDto) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		const serviceResponse = await this.clientService.delete(dto, user);
 		metaData.data = serviceResponse;
 		return metaData;
 	}

@@ -9,11 +9,13 @@ import { LeadOpsEntity } from "../leads/lead_ops.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 
 import { ClientEntity, ClientTag } from "./client.entity";
+import { DeleteClientDto } from "./dto/client-delete.dto";
 import { ClientDto } from "./dto/client.dto";
 import {
 	ClientSearchFromBmpsoft,
 	FilterClientDto,
 } from "./dto/client.search.dto";
+import { ClientNotFoundError } from "./errors/ClientNotFound.error";
 
 @Injectable()
 export class ClientService {
@@ -193,5 +195,27 @@ export class ClientService {
 		};
 
 		return clientResponse;
+	}
+
+	async delete(
+		dto: DeleteClientDto,
+		user: ICurrentUser,
+	): Promise<ClientEntity> {
+		const foundClient = await this.clientRepository.findOne({
+			select: {
+				id: true,
+			},
+			where: {
+				id: dto.client_id,
+				agent_id: user.user_id,
+			},
+		});
+
+		if (!foundClient) {
+			throw new ClientNotFoundError(`id: ${dto.client_id}`);
+		}
+
+		await this.clientRepository.delete({ id: foundClient.id });
+		return foundClient;
 	}
 }
