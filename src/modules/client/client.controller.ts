@@ -7,7 +7,11 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { ClientService } from "./client.service";
-import { ClientQuickSearchDto, FilterClientDto } from "./dto/client.search.dto";
+import {
+	ClientQuickSearchDto,
+	ClientSearchFromBmpsoft,
+	FilterClientDto,
+} from "./dto/client.search.dto";
 import { CreateClientMetaDataDto } from "./dto/create.client.dto";
 
 @ApiTags("Client")
@@ -46,6 +50,18 @@ export class ClientController {
 		const serviceResponse = await this.clientService.readAll(dto, user);
 		metaData.data = serviceResponse.data;
 		metaData.setLinks(serviceResponse.links);
+		return metaData;
+	}
+
+	@Get("/search-from-bmpsoft")
+	@ApiOkResponse({ type: CreateClientMetaDataDto })
+	async searchFromBmpsoft(
+		@User() user: ICurrentUser,
+		@Query() dto: ClientSearchFromBmpsoft,
+	) {
+		const metaData = BaseDto.createFromDto(new BaseDto());
+		const serviceResponse = await this.clientService.searchFromBmpsoft(dto, user);
+		metaData.data = serviceResponse;
 		return metaData;
 	}
 }
