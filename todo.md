@@ -121,3 +121,7 @@
 # Error handling
 - [x] prompt'dagi label'ni arraydan ```{ ru: "", uz: "", en: "" }``` ga o'tkazish
 - [x] token almashganda 500 error beryapti.
+
+- [x] Проверить закрепления qilish kerak. Client'ni BMPSoft'dan tekshirish kerak. Client ismi va telefon raqami orqali qidiriladi. BMPSoft'ga Agent fullname va phone number jo'natiladi.
+    Note: BMPSoft'ga ulanmagan.
+- [ ] Отмена показ килиш керак,

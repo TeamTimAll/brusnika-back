@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { calcPagination } from "../../lib/pagination";
@@ -10,7 +10,10 @@ import { LeadsEntity } from "../leads/leads.entity";
 
 import { ClientEntity, ClientTag } from "./client.entity";
 import { ClientDto } from "./dto/client.dto";
-import { FilterClientDto } from "./dto/client.search.dto";
+import {
+	ClientSearchFromBmpsoft,
+	FilterClientDto,
+} from "./dto/client.search.dto";
 
 @Injectable()
 export class ClientService {
@@ -48,6 +51,16 @@ export class ClientService {
 				},
 			)
 			.getRawMany();
+	}
+
+	async searchFromBmpsoft(dto: ClientSearchFromBmpsoft, _user: ICurrentUser) {
+		// Replace this with BMPSoft request
+		return this.clientRepository.findOne({
+			where: {
+				fullname: ILike(`%${dto.fullname}%`),
+				phone_number: dto.phone_number,
+			},
+		});
 	}
 
 	async readAll(
