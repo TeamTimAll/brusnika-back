@@ -1,6 +1,10 @@
 import { HttpStatus } from "@nestjs/common";
 
-import { DefaultPrompt, PromptLabel, PromptType } from "../../lib/prompt/prompt";
+import {
+	DefaultPrompt,
+	PromptLabel,
+	PromptType,
+} from "../../lib/prompt/prompt";
 import { PromptReader } from "../../lib/prompt/promptReader";
 
 export interface IMetaError {

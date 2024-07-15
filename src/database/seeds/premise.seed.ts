@@ -41,8 +41,6 @@ export async function up(query: QueryBuilder<object>) {
 		.from(SectionsEntity, "s")
 		.getRawMany<SectionsEntity>();
 
-	console.log(sections);
-
 	const premises: WithOutToDto<
 		Omit<
 			PremisesEntity,

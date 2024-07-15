@@ -7,10 +7,16 @@ import {
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
 import { RoleType } from "../constants";
 
 export const ROLES_KEY = "roles";
 export const Roles = (...roles: RoleType[]) => SetMetadata(ROLES_KEY, roles);
+
+interface IRequest extends Request {
+	user: ICurrentUser;
+}
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -27,7 +33,7 @@ export class RolesGuard implements CanActivate {
 			return true;
 		}
 
-		const { user } = context.switchToHttp().getRequest();
-		return requiredRoles.some((role) => user.roles?.includes(role));
+		const { user } = context.switchToHttp().getRequest<IRequest>();
+		return requiredRoles.some((role) => user.role === role);
 	}
 }

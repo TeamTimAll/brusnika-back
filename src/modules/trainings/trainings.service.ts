@@ -42,12 +42,13 @@ export class TrainingsService extends BasicService<
 			},
 		});
 		if (trainings && trainings.is_like_enabled) {
-			const isLiked = await this.trainingsLikesService.findOneBy({
-				where: {
-					trainings_id: trainings.id,
-					user_id: user.user_id,
-				},
-			});
+			const isLiked =
+				await this.trainingsLikesService.findOneBy<TrainingsEntity>({
+					where: {
+						trainings_id: trainings.id,
+						user_id: user.user_id,
+					},
+				});
 
 			if (isLiked && isLiked.data.length > 0) {
 				await this.trainingsLikesService.remove(isLiked.data[0].id);

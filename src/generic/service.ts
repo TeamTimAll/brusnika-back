@@ -166,12 +166,12 @@ export class BasicService<
 		]);
 	}
 
-	async findOneBy(options: IFindBy): Promise<ServiceResponse> {
+	async findOneBy<T>(options: IFindBy): Promise<ServiceResponse<T>> {
 		const findOneBy = await this.repository.findOne({
 			select: options.select,
 			relations: options.relations,
 			where: options.where,
-		} as FindOneOptions<T>);
+		} as FindOneOptions<unknown>);
 
 		if (!findOneBy) {
 			return new ServiceResponse(
@@ -180,8 +180,8 @@ export class BasicService<
 			);
 		}
 
-		return new ServiceResponse([`${this.param} data`], HttpStatus.OK, [
-			findOneBy,
+		return new ServiceResponse<T>([`${this.param} data`], HttpStatus.OK, [
+			findOneBy as unknown as T,
 		]);
 	}
 }

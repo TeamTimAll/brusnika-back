@@ -4,7 +4,10 @@ import { DataSource } from "typeorm";
 import { BasicService } from "../../../../generic/service";
 
 import { TrainingsCategories } from "./categories.entity";
-import { CreateTrainingsCategoriesDto, UpdateTrainingsCategoriesDto } from "./dto/categories.dto";
+import {
+	CreateTrainingsCategoriesDto,
+	UpdateTrainingsCategoriesDto,
+} from "./dto/categories.dto";
 
 export class TrainingsCategoriesService extends BasicService<
 	TrainingsCategories,

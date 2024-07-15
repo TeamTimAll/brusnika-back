@@ -3,6 +3,7 @@ import { IPromptMap } from "./prompt";
 export enum ApplicationPromptID {
 	// Auth Errors
 	UNAUTHORIZED_ERROR = 270,
+	USER_PASSWORD_IS_NOT_CORRECT_ERROR = 271,
 	// INVALID_TOKEN_ERROR = 271,
 	// TOKEN_EXPIRED_ERROR = 272,
 	// PERMISITION_DENIED_ERROR = 273,
@@ -79,6 +80,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Unauthorized error",
 			ru: "Ошибка доступа",
 			uz: "Unauthorized error",
+		},
+	},
+	[ApplicationPromptID.USER_PASSWORD_IS_NOT_CORRECT_ERROR]: {
+		promptId: ApplicationPromptID.USER_PASSWORD_IS_NOT_CORRECT_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "user_password_is_not_correct_error",
+		promptLabels: {
+			en: "The password is incorrect, check your keyboard layout",
+			ru: "Указан неверный пароль, проверьте раскладку клавиатуры",
+			uz: "The password is incorrect, check your keyboard layout",
 		},
 	},
 	[ApplicationPromptID.USER_NOT_FOUND_ERROR]: {
