@@ -7,11 +7,12 @@ import {
 	ValidateNested,
 } from "class-validator";
 
+import { PromptLabel } from "lib/prompt/prompt";
+
 import { createLink } from "../../lib/pagination";
 import { Links } from "../../types";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
 
-import { PromptLabel } from "lib/prompt/prompt";
 import { BaseError } from "./baseError";
 
 export class MetaPrompt {

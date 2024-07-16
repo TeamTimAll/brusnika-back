@@ -84,8 +84,9 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
 			primary_category: entity.primary_category ?? new NewsCategories(),
-			secondary_category: entity.secondary_category ?? new NewsCategories(),
-			user_id: 0
+			secondary_category:
+				entity.secondary_category ?? new NewsCategories(),
+			user_id: 0,
 		};
 		return dto;
 	}

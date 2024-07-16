@@ -12,6 +12,7 @@ import { UpdateNewsDto } from "./dto/news.update.dto";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsCategoriesService } from "./modules/categories/categories.service";
 import { CreateNewsCategoriesDto } from "./modules/categories/dto/categories.dto";
+import { NewsLikes } from "./modules/likes/likes.entity";
 import { NewsLikesService } from "./modules/likes/likes.service";
 import { NewsViewsService } from "./modules/views/views.service";
 import { NewsEntity } from "./news.entity";
@@ -42,7 +43,7 @@ export class NewsService extends BasicService<
 			},
 		});
 		if (news && news.is_like_enabled) {
-			const isLiked = await this.newsLikesService.findOneBy({
+			const isLiked = await this.newsLikesService.findOneBy<NewsLikes>({
 				where: {
 					news_id: news.id,
 					user_id: user.user_id,

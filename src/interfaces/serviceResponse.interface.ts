@@ -1,6 +1,6 @@
 // Service Response abstraction
 // Usage: to replacing the service output with a template
-export class ServiceResponse<T = any> {
+export class ServiceResponse<T = unknown> {
 	message: string[];
 	statusCode: number;
 	data: T[];

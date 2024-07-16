@@ -7,7 +7,7 @@ import { BaseDto } from "../../../common/base/base_dto";
 export class CreatePremisesBasketDto {
 	@ApiProperty()
 	@IsInt()
-@Type(() => Number)
+	@Type(() => Number)
 	@IsNotEmpty()
 	meta_id!: number;
 }

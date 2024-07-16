@@ -1,6 +1,6 @@
 /**
  * TypeOrm interface options is to use in our functions.
- *  @interface IFindBy - Interface
+ * IFindBy - Interface
  * * select - object
  * * relations - string[ ]
  * * where - object
