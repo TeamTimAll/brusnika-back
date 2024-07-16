@@ -50,7 +50,7 @@ export class BookingsService extends BasicService<
 		let query = this.premiseService.repository
 			.createQueryBuilder("p")
 			.select("*")
-			.where("id NOT IN (SELECT DISTINCT premise_id FROM bookings)");
+			.where("id NOT IN (SELECT DISTINCT premise_id FROM bookings WHERE premise_id IS NOT NULL)");
 
 		if (filter.type) {
 			query = query.andWhere("p.type = :type", {

@@ -8,6 +8,7 @@ import {
 	Param,
 	Post,
 	Put,
+	Query,
 } from "@nestjs/common";
 import {
 	ApiAcceptedResponse,
@@ -21,7 +22,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { User } from "../../decorators";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
-import { EventsDto } from "./dtos/events.dto";
+import { EventsDto, FilterEventsDto } from "./dtos/events.dto";
 import { UpdateEventsDto } from "./dtos/update-events.dto";
 import { EventsService } from "./events.service";
 
@@ -45,6 +46,13 @@ export class EventsController {
 	@ApiOkResponse({ type: EventsDto })
 	async getSingleEvents(@Param("id") id: number) {
 		return await this.eventsService.findOne(id);
+	}
+
+	@Get()
+	@HttpCode(HttpStatus.OK)
+	@ApiOkResponse({ type: EventsDto })
+	async readAll(@Query() dto: FilterEventsDto) {
+		return await this.eventsService.readAll(dto);
 	}
 
 	@Put(":id")
