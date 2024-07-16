@@ -5,6 +5,7 @@ import { DataSource } from "typeorm";
 import { BasicService } from "../../generic/service";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
+import { FilterEventsDto } from "./dtos/events.dto";
 import { type UpdateEventsDto } from "./dtos/update-events.dto";
 import { EventsEntity } from "./events.entity";
 
@@ -16,5 +17,15 @@ export class EventsService extends BasicService<
 > {
 	constructor(@InjectDataSource() dataSource: DataSource) {
 		super("events", EventsEntity, dataSource);
+	}
+
+	readAll(dto: FilterEventsDto) {
+		return this.repository.find({
+			where: {
+				city_id: dto.city_id,
+				type: dto.type,
+				format: dto.format,
+			},
+		});
 	}
 }
