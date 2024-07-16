@@ -127,4 +127,5 @@
 - [x] Отмена показ килиш керак,
 - [x] Weakly calendar. Calendarni hafta kunlariga chiqarish kerak. date beriladi. Shu date'dan hafta boshi va oxirgi kuni topiladi. Ma'lumot shu date'lar bilan qirqiladi. Hafta boshlanish nuqtasi tanlanishi kerak. Date range yoki 7 kunlik qilib chiqarish imkoniyatini chiqarish kerak.
 - [x] not-booked-premises API bo'sh array qaytaryapti.
-- [ ] event read all
+- [ ] event read all va city bo'yicha filter
+- [x] event'da dto ichida ko'p ma'lumotlar chiqarilmagan
