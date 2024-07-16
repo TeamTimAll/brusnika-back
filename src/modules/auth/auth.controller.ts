@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { type Request } from "express";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
 import { ApiErrorResponse } from "../../decorators/api_error_response";
 import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { UserCreateDto, UserFillDataDto } from "../user/dtos/user.dto";
@@ -110,6 +112,6 @@ export class AuthController {
 	@Get()
 	@UseGuards(JwtAuthGuard)
 	status(@Req() req: Request) {
-		return req["user"];
+		return req["user"] as ICurrentUser;
 	}
 }

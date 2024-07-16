@@ -9,31 +9,31 @@ export class CreateLeadDto extends LeadsEntity {
 	@ApiProperty({ example: 1 })
 	@IsNotEmpty()
 	@IsInt()
-@Type(() => Number)
+	@Type(() => Number)
 	declare client_id: number;
 
 	@ApiProperty({ example: 1 })
 	@IsNotEmpty()
 	@IsInt()
-@Type(() => Number)
+	@Type(() => Number)
 	declare agent_id: number;
 
 	@ApiProperty({ example: 1 })
 	@IsOptional()
 	@IsInt()
-@Type(() => Number)
+	@Type(() => Number)
 	declare manager_id?: number;
 
 	@ApiProperty({ example: 1 })
 	@IsNotEmpty()
 	@IsInt()
-@Type(() => Number)
+	@Type(() => Number)
 	declare premise_id: number;
 
 	@ApiProperty({ example: 0 })
 	@IsNotEmpty()
 	@IsInt()
-@Type(() => Number)
+	@Type(() => Number)
 	declare fee: number;
 }
 

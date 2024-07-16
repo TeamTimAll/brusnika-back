@@ -31,7 +31,7 @@ export async function up(query: QueryBuilder<object>) {
 			building_id: findBuildingId(buildings, "Москва Дом 1"),
 		},
 
-        {
+		{
 			name: "Секция 1",
 			building_id: findBuildingId(buildings, "Москва Дом 2"),
 		},
@@ -44,7 +44,7 @@ export async function up(query: QueryBuilder<object>) {
 			building_id: findBuildingId(buildings, "Москва Дом 2"),
 		},
 
-        {
+		{
 			name: "Секция 1",
 			building_id: findBuildingId(buildings, "Москва Дом 3"),
 		},

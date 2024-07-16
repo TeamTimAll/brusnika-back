@@ -32,6 +32,7 @@ export class FileUploadController {
 	})
 	@UseInterceptors(
 		FileInterceptor("image", {
+			// eslint-disable-next-line no-use-before-define, @typescript-eslint/unbound-method
 			fileFilter: FileUploadController.imageFileFilter,
 			limits: {
 				fileSize: 1024 * 1024 * 10 * 4, // Set the maximum file size limit (1 MB in this example)

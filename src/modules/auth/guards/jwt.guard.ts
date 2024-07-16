@@ -8,6 +8,7 @@ import { JwtService } from "@nestjs/jwt";
 import { type Request } from "express";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
+
 import { ConfigManager } from "../../../config";
 import { UnauthorizedError } from "../errors/Unauthorized.error";
 import { UserService } from "../../../modules/user/user.service";

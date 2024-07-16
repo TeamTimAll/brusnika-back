@@ -5,7 +5,7 @@ import {
 	IsInt,
 	IsNotEmpty,
 	IsOptional,
-	IsString
+	IsString,
 } from "class-validator";
 
 export class CreateTrainingsDto {

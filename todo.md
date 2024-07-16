@@ -125,3 +125,6 @@
 - [x] Проверить закрепления qilish kerak. Client'ni BMPSoft'dan tekshirish kerak. Client ismi va telefon raqami orqali qidiriladi. BMPSoft'ga Agent fullname va phone number jo'natiladi.
     Note: BMPSoft'ga ulanmagan.
 - [ ] Отмена показ килиш керак,
+- [ ] Weakly calendar. Calendarni hafta kunlariga chiqarish kerak. date beriladi. Shu date'dan hafta boshi va oxirgi kuni topiladi. Ma'lumot shu date'lar bilan qirqiladi. Hafta boshlanish nuqtasi tanlanishi kerak. Date range yoki 7 kunlik qilib chiqarish imkoniyatini chiqarish kerak.
+- [ ] not-booked-premises API bo'sh array qaytaryapti.
+- [ ] event read all

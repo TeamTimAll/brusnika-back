@@ -22,6 +22,7 @@ import {
 import { NoVerificationCodeSentError } from "./errors/NoVerificationCodeSent.error";
 import { UnauthorizedError } from "./errors/Unauthorized.error";
 import { UserEmailAlreadyExistsError } from "./errors/UserAlreadyExists.error";
+import { UserPasswordIsNotCorrectError } from "./errors/UserPasswordIsNotCorrect.error";
 import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "./errors/VerificationExists.error";
@@ -168,7 +169,6 @@ export class AuthService {
 	async loginAccount(loginDto: UserLoginDto): Promise<AuthRespone> {
 		const user = await this.userService.findOne({
 			email: loginDto.email,
-			password: loginDto.password,
 			role: RoleType.EMPLOYEE,
 		});
 
@@ -176,6 +176,10 @@ export class AuthService {
 			throw new UnauthorizedError(
 				`User not found. email: ${loginDto.email}`,
 			);
+		}
+
+		if (user.password !== loginDto.password) {
+			throw new UserPasswordIsNotCorrectError(`Email: ${loginDto.email}`);
 		}
 
 		const { password, ...result } = user;
