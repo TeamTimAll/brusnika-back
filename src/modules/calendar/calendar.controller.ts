@@ -13,6 +13,7 @@ import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { BaseDto } from "../../common/base/base_dto";
 
 import { CalendarService } from "./calendar.service";
+import { CalendarDto } from "./dto/calendar.dto";
 
 @ApiTags("Calendar")
 @Controller("/calendar")
@@ -35,10 +36,10 @@ export class CalendarController {
 	@Get()
 	async getCalendar(
 		@User() user: ICurrentUser,
-		@Query("city_id") _city_id: string,
+		@Query() dto: CalendarDto,
 	) {
 		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.service.getCalendar(user);
+		metaData.data = await this.service.getCalendar(user, dto);
 		return metaData;
 	}
 }
