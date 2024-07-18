@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
-	IsDateString,
 	IsEnum,
 	IsInt,
+	IsMilitaryTime,
 	IsNotEmpty,
 	IsString,
 } from "class-validator";
@@ -48,12 +48,12 @@ export class CreateEventsDto {
 	location!: string;
 
 	@ApiProperty({})
-	@IsDateString()
+	@IsMilitaryTime()
 	@IsNotEmpty()
 	start_time!: Date;
 
 	@ApiProperty({})
-	@IsDateString()
+	@IsMilitaryTime()
 	@IsNotEmpty()
 	end_time!: Date;
 
