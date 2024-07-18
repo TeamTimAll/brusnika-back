@@ -98,18 +98,18 @@ export class CalendarService {
 		return qb
 			.andWhere(
 				property +
-					" >= CAST(:date AS date) - (EXTRACT(isodow FROM CAST(:date AS date)) - :weekday) * INTERVAL '1 day'",
+					" >= CAST(:date AS date) - (EXTRACT(isodow FROM CAST(:date AS date)) - :weekday_start) * INTERVAL '1 day'",
 				{
 					date: date,
-					weekday: weekday,
+					weekday_start: weekday,
 				},
 			)
 			.andWhere(
 				property +
-					" < CAST(:date AS date) - (EXTRACT(isodow FROM CAST(:date AS date)) - :weekday) * INTERVAL '1 day'",
+					" < CAST(:date AS date) - (EXTRACT(isodow FROM CAST(:date AS date)) - :weekday_end) * INTERVAL '1 day'",
 				{
 					date: date,
-					weekday: weekday + 7,
+					weekday_end: weekday + 7,
 				},
 			);
 	}
