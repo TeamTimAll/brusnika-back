@@ -26,8 +26,13 @@ export class CalendarService {
 		let visitsQueryBuilder = this.visitsService.repository
 			.createQueryBuilder("v")
 			.select([
+				"v.id AS id",
 				"JSON_BUILD_OBJECT('id', p.id, 'name', p.name, 'location', p.location) AS project",
 				"JSON_BUILD_OBJECT('id', c.id, 'fullname', c.fullname, 'phone_number', c.phone_number) AS client",
+				"v.date AS date",
+				"v.time AS time",
+				"v.note AS note",
+				"v.status AS status",
 			])
 			.leftJoin("projects", "p", "p.id = v.project_id")
 			.leftJoin("clients", "c", "c.id = v.client_id")
