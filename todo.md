@@ -97,7 +97,7 @@
 - [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
 
 ### Calendar
-- [ ] manager entity bilan bog'liqlik.
+- [ ] ~~manager entity bilan bog'liqlik.~~
 - [ ] mock'da qo'shib berish
 - [X] visits'ni premise'dan project'ga almashtirish.
 - [x] visits'da project, client, agent  ma'lumotlari kerak. 
@@ -127,5 +127,8 @@
 - [x] Отмена показ килиш керак,
 - [x] Weakly calendar. Calendarni hafta kunlariga chiqarish kerak. date beriladi. Shu date'dan hafta boshi va oxirgi kuni topiladi. Ma'lumot shu date'lar bilan qirqiladi. Hafta boshlanish nuqtasi tanlanishi kerak. Date range yoki 7 kunlik qilib chiqarish imkoniyatini chiqarish kerak.
 - [x] not-booked-premises API bo'sh array qaytaryapti.
-- [ ] event read all va city bo'yicha filter
+- [x] event read all va city bo'yicha filter
 - [x] event'da dto ichida ko'p ma'lumotlar chiqarilmagan
+- [x] keycloak uchun mini-tiny server qilish.
+- [x] ma'lumot heshlash algaritmi. 
+- [x] user role'larni qo'shib berish.
