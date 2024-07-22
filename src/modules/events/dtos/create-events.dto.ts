@@ -1,15 +1,22 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
+	ArrayMinSize,
+	IsArray,
+	IsBoolean,
 	IsDateString,
 	IsEnum,
 	IsInt,
 	IsMilitaryTime,
 	IsNotEmpty,
+	IsOptional,
 	IsString,
+	ValidateNested,
 } from "class-validator";
 
 import { EVENT_FORMAT, EVENT_TYPES } from "../events.entity";
+
+import { ContactDto } from "./contact.dto";
 
 export class CreateEventsDto {
 	@ApiProperty({
@@ -82,4 +89,19 @@ export class CreateEventsDto {
 	@IsEnum(EVENT_FORMAT)
 	@IsNotEmpty()
 	format!: EVENT_FORMAT;
+
+	@ApiProperty({ default: false })
+	@IsBoolean()
+	@IsOptional()
+	is_banner?: boolean;
+
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(ContactDto) }],
+		type: () => [ContactDto],
+	})
+	@IsArray()
+	@ValidateNested({ each: true })
+	@ArrayMinSize(1)
+	@Type(() => ContactDto)
+	contacts!: ContactDto[];
 }

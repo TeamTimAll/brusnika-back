@@ -27,7 +27,7 @@ export class CalendarService {
 			.createQueryBuilder("v")
 			.select([
 				"v.id AS id",
-				"JSON_BUILD_OBJECT('id', p.id, 'name', p.name, 'location', p.location) AS project",
+				"JSON_BUILD_OBJECT('id', p.id, 'name', p.name, 'location', p.location, 'photo', p.photo) AS project",
 				"JSON_BUILD_OBJECT('id', c.id, 'fullname', c.fullname, 'phone_number', c.phone_number) AS client",
 				"v.date AS date",
 				"v.time AS time",
@@ -42,11 +42,39 @@ export class CalendarService {
 			.orderBy("v.date", "ASC");
 		let newsQueryBuilder = this.newsService.repository
 			.createQueryBuilder("n")
-			.select()
+			.select([
+				"n.user_id as user_id",
+				"n.title as title",
+				"n.content as content",
+				"n.cover_image as cover_image",
+				"n.is_like_enabled as is_like_enabled",
+				"n.is_extra_like_enabled as is_extra_like_enabled",
+				"n.extra_like_icon as extra_like_icon",
+				"n.published_at as published_at",
+				"n.primary_category_id as primary_category_id",
+				"n.second_category_id as second_category_id",
+			])
 			.orderBy("n.published_at", "ASC");
 		let eventsQueryBuilder = this.eventsService.repository
 			.createQueryBuilder("e")
-			.select()
+			.select([
+				"e.title as title",
+				"e.description as description",
+				"e.photo as photo",
+				"e.location as location",
+				"e.date as date",
+				"e.start_time as start_time",
+				"e.end_time as end_time",
+				"e.leader as leader",
+				"e.max_visitors as max_visitors",
+				"e.phone as phone",
+				"e.format as format",
+				"e.type as type",
+				"e.city_id as city_id",
+				"e.likeCount as likeCount",
+				"e.views as views",
+				"e.is_banner as is_banner",
+			])
 			.orderBy("e.date", "ASC");
 
 		if (dto.date && dto.weekday) {
