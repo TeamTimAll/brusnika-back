@@ -1,10 +1,9 @@
-import { HttpStatus, Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
 import { BasicService } from "../../generic/service";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
 
 import { CreateNewsDto } from "./dto/news.create.dto";
 import { LikeNewsDto } from "./dto/news.dto";
@@ -93,7 +92,7 @@ export class NewsService extends BasicService<
 				{ user_id: user.user_id },
 			)
 			.where("news.id = :id", { id })
-			.getRawAndEntities();
+			.getMany();
 
 		if (!findOne) {
 			throw new NewsNotFoundError(`'${id}' news not found`);
@@ -113,7 +112,7 @@ export class NewsService extends BasicService<
 			});
 		}
 
-		return new ServiceResponse(["news data"], HttpStatus.OK, [findOne]);
+		return findOne;
 	}
 
 	async r_findAll() {

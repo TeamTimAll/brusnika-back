@@ -26,6 +26,7 @@ export enum ApplicationPromptID {
 	BOOKING_NOT_FOUND_ERROR = 412,
 	VISIT_NOT_FOUND_ERROR = 413,
 	NEWS_NOT_FOUND_ERROR = 414,
+	EVENTS_NOT_FOUND_ERROR = 415,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -223,6 +224,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Visit not found error",
 			ru: "Визит не найден",
 			uz: "Visit not found error",
+		},
+	},
+	[ApplicationPromptID.EVENTS_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.EVENTS_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "events_not_found_error",
+		promptLabels: {
+			en: "Events not found error",
+			ru: "Events not found error",
+			uz: "Events not found error",
 		},
 	},
 	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {
