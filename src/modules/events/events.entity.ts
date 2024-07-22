@@ -1,9 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { CitiesEntity } from "../cities/cities.entity";
 import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
+import { CitiesEntity } from "../cities/cities.entity";
 
+import { ContactEntity } from "./contact.entity";
 import { EventsDto } from "./dtos/events.dto";
 
 export enum EVENT_TYPES {
@@ -78,12 +79,15 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	@Column({ type: "integer", nullable: true })
 	city_id?: number;
 
-	// @Column({ default: 0 })
-	// likeCount!: number;
+	@OneToMany(() => ContactEntity, (c) => c.event)
+	contacts?: ContactEntity[];
 
-	// @Column({ default: 0 })
-	// views!: number;
+	@Column({ default: 0 })
+	likeCount!: number;
 
-	// @OneToMany(() => CommentEntity, (comment) => comment.event)
-	// comments?: CommentEntity[];
+	@Column({ default: 0 })
+	views!: number;
+
+	@Column({ type: "boolean", default: false })
+	is_banner!: boolean;
 }

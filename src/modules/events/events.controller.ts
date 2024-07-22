@@ -17,10 +17,6 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { ICurrentUser } from "interfaces/current-user.interface";
-
-import { User } from "../../decorators";
-
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { EventsDto, FilterEventsDto } from "./dtos/events.dto";
 import { UpdateEventsDto } from "./dtos/update-events.dto";
@@ -34,25 +30,22 @@ export class EventsController {
 	@HttpCode(HttpStatus.CREATED)
 	@ApiCreatedResponse({ type: EventsDto })
 	@Post()
-	async createEvents(
-		@Body() createEventsDto: CreateEventsDto,
-		@User() user: ICurrentUser,
-	) {
-		return await this.eventsService.create(createEventsDto, user);
+	createEvents(@Body() createEventsDto: CreateEventsDto) {
+		return this.eventsService.createWithContacts(createEventsDto);
 	}
 
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: EventsDto })
-	async getSingleEvents(@Param("id") id: number) {
-		return await this.eventsService.findOne(id);
+	getSingleEvents(@Param("id") id: number) {
+		return this.eventsService.readOne(id);
 	}
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: EventsDto })
-	async readAll(@Query() dto: FilterEventsDto) {
-		return await this.eventsService.readAll(dto);
+	readAll(@Query() dto: FilterEventsDto) {
+		return this.eventsService.readAll(dto);
 	}
 
 	@Put(":id")
@@ -62,13 +55,13 @@ export class EventsController {
 		@Param("id") id: number,
 		@Body() updateEventsDto: UpdateEventsDto,
 	) {
-		return this.eventsService.update(id, updateEventsDto);
+		return this.eventsService.updateWithContacts(id, updateEventsDto);
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	async deleteEvents(@Param("id") id: number) {
-		return await this.eventsService.remove(id);
+	deleteEvents(@Param("id") id: number) {
+		return this.eventsService.remove(id);
 	}
 }

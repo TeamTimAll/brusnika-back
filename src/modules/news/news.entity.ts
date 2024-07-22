@@ -44,12 +44,12 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
 	@Column({ type: "integer", nullable: true })
 	primary_category_id!: number;
 
+	@Column({ type: "integer", nullable: true })
+	second_category_id?: number;
+
 	@OneToOne(() => NewsCategories)
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: NewsCategories;
-
-	@Column({ type: "integer", nullable: true })
-	second_category_id?: number;
 
 	@OneToOne(() => NewsCategories)
 	@JoinColumn({ name: "second_category_id" })
