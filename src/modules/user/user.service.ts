@@ -8,8 +8,8 @@ import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSe
 import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
-
 import { UserLoginResendCodeDto } from "../../modules/auth/dtos/user-login.dto";
+
 import {
 	UserChangePhoneVerifyCodeDto,
 	UserCreateDto,

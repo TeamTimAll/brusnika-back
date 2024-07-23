@@ -44,12 +44,12 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
 	@Column({ type: "integer", nullable: true })
 	primary_category_id!: number;
 
+	@Column({ type: "integer", nullable: true })
+	second_category_id?: number;
+
 	@OneToOne(() => NewsCategories)
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: NewsCategories;
-
-	@Column({ type: "integer", nullable: true })
-	second_category_id?: number;
 
 	@OneToOne(() => NewsCategories)
 	@JoinColumn({ name: "second_category_id" })
@@ -84,8 +84,9 @@ export class NewsEntity extends AbstractEntity<NewsDto> {
 			createdAt: entity.createdAt ?? new Date(),
 			updatedAt: entity.updatedAt ?? new Date(),
 			primary_category: entity.primary_category ?? new NewsCategories(),
-			secondary_category: entity.secondary_category ?? new NewsCategories(),
-			user_id: 0
+			secondary_category:
+				entity.secondary_category ?? new NewsCategories(),
+			user_id: 0,
 		};
 		return dto;
 	}

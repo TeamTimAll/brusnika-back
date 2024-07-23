@@ -3,6 +3,7 @@ import { IPromptMap } from "./prompt";
 export enum ApplicationPromptID {
 	// Auth Errors
 	UNAUTHORIZED_ERROR = 270,
+	USER_PASSWORD_IS_NOT_CORRECT_ERROR = 271,
 	// INVALID_TOKEN_ERROR = 271,
 	// TOKEN_EXPIRED_ERROR = 272,
 	// PERMISITION_DENIED_ERROR = 273,
@@ -25,6 +26,7 @@ export enum ApplicationPromptID {
 	BOOKING_NOT_FOUND_ERROR = 412,
 	VISIT_NOT_FOUND_ERROR = 413,
 	NEWS_NOT_FOUND_ERROR = 414,
+	EVENTS_NOT_FOUND_ERROR = 415,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -79,6 +81,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Unauthorized error",
 			ru: "Ошибка доступа",
 			uz: "Unauthorized error",
+		},
+	},
+	[ApplicationPromptID.USER_PASSWORD_IS_NOT_CORRECT_ERROR]: {
+		promptId: ApplicationPromptID.USER_PASSWORD_IS_NOT_CORRECT_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "user_password_is_not_correct_error",
+		promptLabels: {
+			en: "The password is incorrect, check your keyboard layout",
+			ru: "Указан неверный пароль, проверьте раскладку клавиатуры",
+			uz: "The password is incorrect, check your keyboard layout",
 		},
 	},
 	[ApplicationPromptID.USER_NOT_FOUND_ERROR]: {
@@ -211,6 +224,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Visit not found error",
 			ru: "Визит не найден",
 			uz: "Visit not found error",
+		},
+	},
+	[ApplicationPromptID.EVENTS_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.EVENTS_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "events_not_found_error",
+		promptLabels: {
+			en: "Events not found error",
+			ru: "Events not found error",
+			uz: "Events not found error",
 		},
 	},
 	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {

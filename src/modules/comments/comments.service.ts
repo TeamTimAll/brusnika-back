@@ -14,64 +14,40 @@ export class CommentsService {
 	) {}
 
 	async getAllComments(): Promise<CommentEntity[]> {
-		try {
-			return await this.commentRepository.find();
-		} catch (error) {
-			throw new HttpException("Internal server error", 500);
-		}
+		return await this.commentRepository.find();
 	}
 
 	async addComment(commentDto: AddCommentDto): Promise<CommentEntity> {
-		try {
-			const newComment = this.commentRepository.create(commentDto);
-			return await this.commentRepository.save(newComment);
-		} catch (error: any) {
-			console.log(error.message);
-			throw new HttpException("Failed to add comment", 500);
-		}
+		const newComment = this.commentRepository.create(commentDto);
+		return await this.commentRepository.save(newComment);
 	}
 
 	async deleteComment(commentId: string): Promise<CommentEntity> {
-		try {
-			const comment = await this.findOneComment(commentId);
-			await this.commentRepository.remove(comment);
-			return comment;
-		} catch (error: any) {
-			console.log(error.message);
-			throw new HttpException("Failed to delete comment", 500);
-		}
+		const comment = await this.findOneComment(commentId);
+		await this.commentRepository.remove(comment);
+		return comment;
 	}
 
 	async updateComment(
 		updateCommentDto: CommentUpdateDto,
 	): Promise<CommentEntity> {
-		try {
-			const { id, comment } = updateCommentDto;
-			const existingComment = await this.findOneComment(id);
-			existingComment.comment = comment;
-			return await this.commentRepository.save(existingComment);
-		} catch (error: any) {
-			console.log(error.message);
-			throw new HttpException("Failed to update comment", 500);
-		}
+		const { id, comment } = updateCommentDto;
+		const existingComment = await this.findOneComment(id);
+		existingComment.comment = comment;
+		return await this.commentRepository.save(existingComment);
 	}
 
-	private async findOneComment(commentId: any): Promise<CommentEntity> {
-		try {
-			const queryBuilder = await this.commentRepository
-				.createQueryBuilder("Comments")
-				.where("Comments.id = :id", { commentId });
+	private async findOneComment(commentId: unknown): Promise<CommentEntity> {
+		const queryBuilder = this.commentRepository
+			.createQueryBuilder("Comments")
+			.where("Comments.id = :id", { commentId });
 
-			const comment: CommentEntity | null = await queryBuilder.getOne();
+		const comment: CommentEntity | null = await queryBuilder.getOne();
 
-			if (!comment) {
-				throw new HttpException("Comment not found", 404);
-			}
-
-			return comment;
-		} catch (error: any) {
-			console.log(error.message);
-			throw new HttpException("Internal server error", 500);
+		if (!comment) {
+			throw new HttpException("Comment not found", 404);
 		}
+
+		return comment;
 	}
 }

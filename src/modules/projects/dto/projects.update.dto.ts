@@ -23,7 +23,7 @@ export class UpdateProjectMetaParams {
 	})
 	@IsNotEmpty()
 	@IsInt()
-@Type(() => Number)
+	@Type(() => Number)
 	project_id!: number;
 }
 

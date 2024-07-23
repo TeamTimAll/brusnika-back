@@ -97,7 +97,7 @@
 - [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
 
 ### Calendar
-- [ ] manager entity bilan bog'liqlik.
+- [ ] ~~manager entity bilan bog'liqlik.~~
 - [ ] mock'da qo'shib berish
 - [X] visits'ni premise'dan project'ga almashtirish.
 - [x] visits'da project, client, agent  ma'lumotlari kerak. 
@@ -122,6 +122,28 @@
 - [x] prompt'dagi label'ni arraydan ```{ ru: "", uz: "", en: "" }``` ga o'tkazish
 - [x] token almashganda 500 error beryapti.
 
-- [x] Проверить закрепления qilish kerak. Client'ni BMPSoft'dan tekshirish kerak. Client ismi va telefon raqami orqali qidiriladi. BMPSoft'ga Agent fullname va phone number jo'natiladi.
-    Note: BMPSoft'ga ulanmagan.
-- [ ] Отмена показ килиш керак,
+- [x] Проверить закрепления qilish kerak. Client'ni BPMSoft'dan tekshirish kerak. Client ismi va telefon raqami orqali qidiriladi. BPMSoft'ga Agent fullname va phone number jo'natiladi.
+    Note: BPMSoft'ga ulanmagan.
+- [x] Отмена показ килиш керак,
+- [x] Weakly calendar. Calendarni hafta kunlariga chiqarish kerak. date beriladi. Shu date'dan hafta boshi va oxirgi kuni topiladi. Ma'lumot shu date'lar bilan qirqiladi. Hafta boshlanish nuqtasi tanlanishi kerak. Date range yoki 7 kunlik qilib chiqarish imkoniyatini chiqarish kerak.
+- [x] not-booked-premises API bo'sh array qaytaryapti.
+- [x] event read all va city bo'yicha filter
+- [x] event'da dto ichida ko'p ma'lumotlar chiqarilmagan
+- [x] keycloak uchun mini-tiny server qilish.
+- [x] ma'lumot heshlash algaritmi. 
+- [x] user role'larni qo'shib berish.
+
+### 2024-07-22
+- [x] Contact entity qo'shish kerak va events bilan bog'liqlik kerak.
+- [x] Event'ga ```is_banner``` qo'shish kerak.
+- [x] Event update'da contact ham update bo'lishi kerak.
+- [x] Calendar'da events entity'ga e_ prefix qo'shilyapti. Shuni olib tashlash kerak.
+- [x] Calendar'da project photo'si kerak.
+- [x] News get one'da raw entity qaytarilgan. To'g'irlash kerak.
+- [x] Events'da views va likes count field'lar kerak.
+- [ ] Events'da kun bo'yicha filter kerak.
+- [ ] Events'ga like bosganda like count ko'payishi kerak. Dislike and like
+- [ ] Events'ga ```is_draft``` field qo'shib berish kerak.
+- [ ] Events'ga userlarni ham biriktirish kerak. User'ga taklif yuboriladi. User taklifni qabul qilishi yoki rad etishi mumkin.
+- [ ] Event'ga user'larni birikishni olib tashlash imkoniyati.
+- [ ] Event'ga user o'zi ham register qila oladi.

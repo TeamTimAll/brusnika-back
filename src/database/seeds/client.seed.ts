@@ -20,7 +20,6 @@ export async function up(query: QueryBuilder<object>) {
 			| "id"
 			| "leads"
 			| "agent"
-			| "leads"
 			| "bookings"
 			| "visits"
 			| "createdAt"

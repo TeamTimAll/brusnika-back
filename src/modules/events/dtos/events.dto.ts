@@ -17,31 +17,31 @@ export class EventsDto extends BaseDto {
 }
 
 export class FilterEventsDto {
-	@IsEnum(() => EVENT_FORMAT)
-	@IsOptional()
 	@ApiProperty({
 		required: false,
 		type: "enum",
 		enum: EVENT_FORMAT,
 		description: "Event format",
 	})
-	format!: EVENT_FORMAT;
-
+	@IsEnum(() => EVENT_FORMAT)
 	@IsOptional()
+	format?: EVENT_FORMAT;
+
 	@ApiProperty({
 		required: false,
 		description: "City id",
 	})
 	@IsInt()
 	@Type(() => Number)
-	city_id!: number;
-
-	@IsEnum(() => EVENT_TYPES)
 	@IsOptional()
+	city_id?: number;
+
 	@ApiProperty({
 		type: "enum",
 		enum: EVENT_TYPES,
 		required: false,
 	})
-	type!: EVENT_TYPES;
+	@IsEnum(() => EVENT_TYPES)
+	@IsOptional()
+	type?: EVENT_TYPES;
 }

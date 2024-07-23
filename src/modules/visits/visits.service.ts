@@ -41,7 +41,7 @@ export class VisitsService extends BasicService<
 		id: number,
 		dto: Partial<UpdateVisitsDto>,
 		currentUser?: ICurrentUser,
-	): Promise<VisitsEntity[]> {
+	): Promise<VisitsEntity> {
 		const foundCity = await this.r_findOne(id);
 
 		if (!foundCity) {
@@ -55,12 +55,12 @@ export class VisitsService extends BasicService<
 
 		const updatedData = await this.repository.save(foundCity);
 
-		return [updatedData];
+		return updatedData;
 	}
 
-	async r_remove(id: number): Promise<VisitsEntity[]> {
+	async r_remove(id: number): Promise<VisitsEntity> {
 		const foundCity = await this.r_findOne(id);
 		await this.repository.delete(id);
-		return [foundCity];
+		return foundCity;
 	}
 }

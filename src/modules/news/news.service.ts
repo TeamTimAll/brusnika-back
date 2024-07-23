@@ -1,10 +1,9 @@
-import { HttpStatus, Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
 import { BasicService } from "../../generic/service";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
 
 import { CreateNewsDto } from "./dto/news.create.dto";
 import { LikeNewsDto } from "./dto/news.dto";
@@ -12,6 +11,7 @@ import { UpdateNewsDto } from "./dto/news.update.dto";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsCategoriesService } from "./modules/categories/categories.service";
 import { CreateNewsCategoriesDto } from "./modules/categories/dto/categories.dto";
+import { NewsLikes } from "./modules/likes/likes.entity";
 import { NewsLikesService } from "./modules/likes/likes.service";
 import { NewsViewsService } from "./modules/views/views.service";
 import { NewsEntity } from "./news.entity";
@@ -42,7 +42,7 @@ export class NewsService extends BasicService<
 			},
 		});
 		if (news && news.is_like_enabled) {
-			const isLiked = await this.newsLikesService.findOneBy({
+			const isLiked = await this.newsLikesService.findOneBy<NewsLikes>({
 				where: {
 					news_id: news.id,
 					user_id: user.user_id,
@@ -92,7 +92,7 @@ export class NewsService extends BasicService<
 				{ user_id: user.user_id },
 			)
 			.where("news.id = :id", { id })
-			.getRawAndEntities();
+			.getMany();
 
 		if (!findOne) {
 			throw new NewsNotFoundError(`'${id}' news not found`);
@@ -112,7 +112,7 @@ export class NewsService extends BasicService<
 			});
 		}
 
-		return new ServiceResponse(["news data"], HttpStatus.OK, [findOne]);
+		return findOne;
 	}
 
 	async r_findAll() {
