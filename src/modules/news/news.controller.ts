@@ -60,10 +60,10 @@ export class NewsController {
 		return this.service.createNews(body, user);
 	}
 
-	@Post("like")
+	@Post("toggle-like")
 	@ApiOperation({ summary: "like news" })
-	async likeNews(@Body() body: LikeNewsDto, @User() user: ICurrentUser) {
-		return this.service.likeNews(body, user);
+	async toggleLike(@Body() body: LikeNewsDto, @User() user: ICurrentUser) {
+		return this.service.toggleLike(body, user);
 	}
 
 	@Put()
