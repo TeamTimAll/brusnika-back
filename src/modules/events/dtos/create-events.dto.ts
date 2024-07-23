@@ -95,6 +95,11 @@ export class CreateEventsDto {
 	@IsOptional()
 	is_banner?: boolean;
 
+	@ApiProperty({ default: false })
+	@IsBoolean()
+	@IsOptional()
+	is_draft?: boolean;
+
 	@ApiProperty({
 		oneOf: [{ $ref: getSchemaPath(ContactDto) }],
 		type: () => [ContactDto],
