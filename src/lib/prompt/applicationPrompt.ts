@@ -27,6 +27,7 @@ export enum ApplicationPromptID {
 	VISIT_NOT_FOUND_ERROR = 413,
 	NEWS_NOT_FOUND_ERROR = 414,
 	EVENTS_NOT_FOUND_ERROR = 415,
+	NEWS_LIKE_NOT_ENABLED_ERROR = 416,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -233,8 +234,19 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "events_not_found_error",
 		promptLabels: {
 			en: "Events not found error",
-			ru: "Events not found error",
+			ru: "Ошибка события не найдены",
 			uz: "Events not found error",
+		},
+	},
+	[ApplicationPromptID.NEWS_LIKE_NOT_ENABLED_ERROR]: {
+		promptId: ApplicationPromptID.NEWS_LIKE_NOT_ENABLED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "news_like_not_enabled_error",
+		promptLabels: {
+			en: "News like not enabled error",
+			ru: "Ошибка новости лайки не включены",
+			uz: "News like not enabled error",
 		},
 	},
 	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {

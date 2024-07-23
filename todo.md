@@ -140,10 +140,18 @@
 - [x] Calendar'da events entity'ga e_ prefix qo'shilyapti. Shuni olib tashlash kerak.
 - [x] Calendar'da project photo'si kerak.
 - [x] News get one'da raw entity qaytarilgan. To'g'irlash kerak.
+
+### 2024-07-23
 - [x] Events'da views va likes count field'lar kerak.
-- [ ] Events'da kun bo'yicha filter kerak.
-- [ ] Events'ga like bosganda like count ko'payishi kerak. Dislike and like
-- [ ] Events'ga ```is_draft``` field qo'shib berish kerak.
-- [ ] Events'ga userlarni ham biriktirish kerak. User'ga taklif yuboriladi. User taklifni qabul qilishi yoki rad etishi mumkin.
+- [x] Events'da kun bo'yicha filter kerak.
+- [x] Events'ga ```is_draft``` field qo'shib berish kerak.
+- [x] Events'ga like bosganda like count ko'payishi kerak. Dislike and like
+- [x] Events'ga userlarni ham biriktirish kerak. User'ga taklif yuboriladi. Userlarni biriktirish bluk import shaklida bo'lishi kerak.
+- [ ] User taklifni qabul qilishi yoki rad etishi mumkin.
+- [ ] Events'ga tag qo'shish kerak.
 - [ ] Event'ga user'larni birikishni olib tashlash imkoniyati.
 - [ ] Event'ga user o'zi ham register qila oladi.
+- [ ] Event'da accept qilganlarni count'ni chiqarish.
+- [ ] Event'da agar max_visitors sonidan tashqari yana invite qilmoqchi bo'lsa error chiqarish.
+- [ ] Front dev uchun domain ulash. URI: https://dev-dashboard-brusnika.teamtim.tech
+- [ ] Kontur server uchun ping qilish uchun API.

@@ -6,6 +6,9 @@ import { CitiesEntity } from "../cities/cities.entity";
 
 import { ContactEntity } from "./contact.entity";
 import { EventsDto } from "./dtos/events.dto";
+import { EventInvitionEntity } from "./event-invition.entity";
+import { EventLikesEntity } from "./event-likes.entity";
+import { EventViewsEntity } from "./event-views.entity";
 
 export enum EVENT_TYPES {
 	PRESENTATION = "presentation",
@@ -82,12 +85,27 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	@OneToMany(() => ContactEntity, (c) => c.event)
 	contacts?: ContactEntity[];
 
-	@Column({ default: 0 })
-	likeCount!: number;
-
-	@Column({ default: 0 })
-	views!: number;
-
 	@Column({ type: "boolean", default: false })
 	is_banner!: boolean;
+
+	@Column({ type: "boolean", default: false })
+	is_draft!: boolean;
+
+	@OneToMany(() => EventViewsEntity, (EventViews) => EventViews.events, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	views?: EventViewsEntity[];
+
+	@OneToMany(() => EventLikesEntity, (EventLikes) => EventLikes.events, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	likes?: EventLikesEntity[];
+
+	@OneToMany(() => EventInvitionEntity, (EventInvitionEntity) => EventInvitionEntity.event, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	invited_users?: EventInvitionEntity[];
 }
