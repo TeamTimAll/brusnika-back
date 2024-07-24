@@ -52,7 +52,7 @@ export class EventsService extends BasicService<
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
 			.where("e.id = :id", { id })
-			.getMany();
+			.getOne();
 		if (!foundEvent) {
 			throw new EventsNotFoundError(`id: ${id}`);
 		}
