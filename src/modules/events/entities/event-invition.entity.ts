@@ -1,12 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UserEntity } from "../user/user.entity";
+import { AbstractEntity } from "../../../common/abstract.entity";
+import { UserEntity } from "../../user/user.entity";
+import { EventsEntity } from "../events.entity";
 
-import { EventsEntity } from "./events.entity";
-
-@Entity("event_invition")
-export class EventInvitionEntity extends AbstractEntity {
+@Entity("event_invitation")
+export class EventInvitationEntity extends AbstractEntity {
 	@Column({ type: "integer" })
 	user_id!: number;
 

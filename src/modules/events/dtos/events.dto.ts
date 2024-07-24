@@ -1,6 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsDateString, IsEnum, IsInt, IsOptional } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import {
+	IsBoolean,
+	IsDateString,
+	IsEnum,
+	IsInt,
+	IsOptional,
+} from "class-validator";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 
@@ -60,4 +66,16 @@ export class FilterEventsDto {
 	@IsDateString()
 	@IsOptional()
 	date?: string;
+
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_draft?: boolean;
+
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_banner?: boolean;
 }

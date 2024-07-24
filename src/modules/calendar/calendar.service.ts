@@ -5,6 +5,7 @@ import { EventsEntity } from "modules/events/events.entity";
 import { NewsEntity } from "modules/news/news.entity";
 
 import { Weekdays, WeekdaysMap } from "../../common/enums/weekdays";
+import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { VisitsEntity } from "../../modules/visits/visits.entity";
 import { EventsService } from "../events/events.service";
@@ -43,6 +44,7 @@ export class CalendarService {
 		let newsQueryBuilder = this.newsService.repository
 			.createQueryBuilder("n")
 			.select([
+				"n.id as id",
 				"n.user_id as user_id",
 				"n.title as title",
 				"n.content as content",
@@ -58,6 +60,7 @@ export class CalendarService {
 		let eventsQueryBuilder = this.eventsService.repository
 			.createQueryBuilder("e")
 			.select([
+				"e.id as id",
 				"e.title as title",
 				"e.description as description",
 				"e.photo as photo",
@@ -94,6 +97,12 @@ export class CalendarService {
 				"e.date",
 				dto.date,
 				weekday,
+			);
+		}
+
+		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
+			eventsQueryBuilder = eventsQueryBuilder.andWhere(
+				"e.is_draft IS FALSE",
 			);
 		}
 

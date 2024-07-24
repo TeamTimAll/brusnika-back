@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UserEntity } from "../../modules/user/user.entity";
+import { AbstractEntity } from "../../../common/abstract.entity";
+import { UserEntity } from "../../user/user.entity";
 
-import { EventsEntity } from "./events.entity";
+import { EventsEntity } from "../events.entity";
 
 @Entity("event_views")
 @Unique(["user_id", "event_id"])

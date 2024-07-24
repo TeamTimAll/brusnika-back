@@ -3,10 +3,10 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
 
-import { ContactEntity } from "./contact.entity";
-import { EventInvitionEntity } from "./event-invition.entity";
-import { EventLikesEntity } from "./event-likes.entity";
-import { EventViewsEntity } from "./event-views.entity";
+import { ContactEntity } from "./entities/contact.entity";
+import { EventInvitationEntity } from "./entities/event-invition.entity";
+import { EventLikesEntity } from "./entities/event-likes.entity";
+import { EventViewsEntity } from "./entities/event-views.entity";
 import { EventsController } from "./events.controller";
 import { EventsEntity } from "./events.entity";
 import { EventsService } from "./events.service";
@@ -18,7 +18,7 @@ import { EventsService } from "./events.service";
 			ContactEntity,
 			EventViewsEntity,
 			EventLikesEntity,
-			EventInvitionEntity,
+			EventInvitationEntity,
 		]),
 		UserModule,
 	],

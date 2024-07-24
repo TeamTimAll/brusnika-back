@@ -27,7 +27,12 @@ import { JwtAuthGuard } from "../../modules/auth/guards/jwt.guard";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { EventsDto, FilterEventsDto } from "./dtos/events.dto";
-import { InviteUsersDto } from "./dtos/invite-users.dto";
+import {
+	AcceptInvitionDto,
+	DeleteUserInvitationDto,
+	InviteUsersDto,
+	JoinToEventDto,
+} from "./dtos/invite-users.dto";
 import { LikeEventDto } from "./dtos/like-event.dto";
 import { UpdateEventsDto } from "./dtos/update-events.dto";
 import { EventsService } from "./events.service";
@@ -46,18 +51,25 @@ export class EventsController {
 		return this.eventsService.createWithContacts(createEventsDto);
 	}
 
+	@Get()
+	@HttpCode(HttpStatus.OK)
+	@ApiOkResponse({ type: EventsDto })
+	readAll(@Query() dto: FilterEventsDto, @User() user: ICurrentUser) {
+		return this.eventsService.readAll(dto, user);
+	}
+
+	@Get("user-events")
+	@HttpCode(HttpStatus.OK)
+	@ApiOkResponse({ type: EventsDto })
+	userEvents(@User() user: ICurrentUser) {
+		return this.eventsService.userEvents(user);
+	}
+
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: EventsDto })
 	getSingleEvents(@Param("id") id: number, @User() user: ICurrentUser) {
 		return this.eventsService.readOne(id, user);
-	}
-
-	@Get()
-	@HttpCode(HttpStatus.OK)
-	@ApiOkResponse({ type: EventsDto })
-	readAll(@Query() dto: FilterEventsDto) {
-		return this.eventsService.readAll(dto);
 	}
 
 	@Post("toggle-like")
@@ -67,9 +79,30 @@ export class EventsController {
 	}
 
 	@Post("invite-users")
-	@ApiOperation({ summary: "toggle like events" })
+	@ApiOperation({ summary: "invite users" })
 	inviteUsers(@Body() body: InviteUsersDto) {
 		return this.eventsService.inviteUsers(body.id, body.user_ids);
+	}
+
+	@Post("join-to-event")
+	@ApiOperation({ summary: "join to event" })
+	joinToEvent(@Body() body: JoinToEventDto, @User() user: ICurrentUser) {
+		return this.eventsService.joinToEvent(body.id, user);
+	}
+
+	@Post("delete-user-invitation")
+	@ApiOperation({ summary: "delete user invitation" })
+	deleteUserInvitation(@Body() body: DeleteUserInvitationDto) {
+		return this.eventsService.deleteUserInvitation(body.id);
+	}
+
+	@Post("accept-invitation")
+	@ApiOperation({ summary: "accept invitation" })
+	acceptInvitation(
+		@Body() body: AcceptInvitionDto,
+		@User() user: ICurrentUser,
+	) {
+		return this.eventsService.acceptInvitation(body, user);
 	}
 
 	@Put(":id")

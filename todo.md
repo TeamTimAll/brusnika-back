@@ -147,11 +147,28 @@
 - [x] Events'ga ```is_draft``` field qo'shib berish kerak.
 - [x] Events'ga like bosganda like count ko'payishi kerak. Dislike and like
 - [x] Events'ga userlarni ham biriktirish kerak. User'ga taklif yuboriladi. Userlarni biriktirish bluk import shaklida bo'lishi kerak.
-- [ ] User taklifni qabul qilishi yoki rad etishi mumkin.
-- [ ] Events'ga tag qo'shish kerak.
-- [ ] Event'ga user'larni birikishni olib tashlash imkoniyati.
-- [ ] Event'ga user o'zi ham register qila oladi.
-- [ ] Event'da accept qilganlarni count'ni chiqarish.
-- [ ] Event'da agar max_visitors sonidan tashqari yana invite qilmoqchi bo'lsa error chiqarish.
+
+### 2024-07-24
+- [x] User taklifni qabul qilishi yoki rad etishi mumkin.
+- [x] Event'ga user'larni birikishni olib tashlash imkoniyati.
+- [x] Event'ga user o'zi ham register qila oladi.
+- [x] Event'da agar max_visitors sonidan tashqari yana invite qilmoqchi bo'lsa error chiqarish.
 - [x] Front dev uchun domain ulash. URI: https://dev-dashboard-brusnika.teamtim.tech
+- [x] Event'da accept qilganlarni count'ni chiqarish.
+- [x] My events api kerak.
+- [x] Event'ni read all qilganida is_draft true'larni chiqarmaslik. 
+    - [x] Calendar'da ham.
+    - [x] User'ga nisbattan olish kerak. Yani faqat Admin draft'larni ko'ra oladi.
+- [x] Event'da is_banner bilan query.
+
+---
+
+- [ ] Event'ga agency user'larni biriktirish.
+- [ ] Events'ni read all qilishda feature yoki all query beriladi. default feature bo'ladi. feature'da kelajakda rejalashtirilayotgan eventlar beriladi. all'da esa hammasi.
+- [ ] Events'ga tag qo'shish kerak.
+- [ ] Event'ga role bilan yasashi va invite qilishi.
+- [ ] Calendar'da user o'z eventini ko'rishi kerak va o'zi yasagan event'larni ham ko'rishi kerak.
+- [ ] Calendar'da news'ni olib tashlash kerak.
+- [ ] Calendar'da user o'z visit'larni ko'rishi kerak.
+- [ ] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
 - [ ] Kontur server uchun ping qilish uchun API.

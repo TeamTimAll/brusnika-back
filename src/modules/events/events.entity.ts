@@ -4,11 +4,11 @@ import { AbstractEntity } from "../../common/abstract.entity";
 import { UseDto } from "../../decorators";
 import { CitiesEntity } from "../cities/cities.entity";
 
-import { ContactEntity } from "./contact.entity";
+import { ContactEntity } from "./entities/contact.entity";
 import { EventsDto } from "./dtos/events.dto";
-import { EventInvitionEntity } from "./event-invition.entity";
-import { EventLikesEntity } from "./event-likes.entity";
-import { EventViewsEntity } from "./event-views.entity";
+import { EventInvitationEntity } from "./entities/event-invition.entity";
+import { EventLikesEntity } from "./entities/event-likes.entity";
+import { EventViewsEntity } from "./entities/event-views.entity";
 
 export enum EVENT_TYPES {
 	PRESENTATION = "presentation",
@@ -50,8 +50,8 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	@Column({ type: "varchar", nullable: true })
 	leader?: string;
 
-	@Column({ type: "int", nullable: true })
-	max_visitors?: number;
+	@Column({ type: "int", default: 0, nullable: true })
+	max_visitors!: number;
 
 	//contacts
 	@Column({ type: "varchar", nullable: true })
@@ -103,9 +103,9 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	})
 	likes?: EventLikesEntity[];
 
-	@OneToMany(() => EventInvitionEntity, (EventInvitionEntity) => EventInvitionEntity.event, {
+	@OneToMany(() => EventInvitationEntity, (EventInvitionEntity) => EventInvitionEntity.event, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
 	})
-	invited_users?: EventInvitionEntity[];
+	invited_users?: EventInvitationEntity[];
 }
