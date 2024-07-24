@@ -28,6 +28,9 @@ export enum ApplicationPromptID {
 	NEWS_NOT_FOUND_ERROR = 414,
 	EVENTS_NOT_FOUND_ERROR = 415,
 	NEWS_LIKE_NOT_ENABLED_ERROR = 416,
+	EVENT_INVITATION_NOT_FOUND_ERROR = 417,
+	EVENT_REACHED_MAXIMUM_VISITORS_ERROR = 418,
+	USER_ALREADY_REGISTERED_TO_EVENT_ERROR = 419,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -238,6 +241,28 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			uz: "Events not found error",
 		},
 	},
+	[ApplicationPromptID.EVENT_REACHED_MAXIMUM_VISITORS_ERROR]: {
+		promptId: ApplicationPromptID.EVENT_REACHED_MAXIMUM_VISITORS_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "event_reached_maximum_visitors_error",
+		promptLabels: {
+			en: "Event reached maximum visitors error",
+			ru: "Ошибка на мероприятии достигнуто максимальное количество посетителей.",
+			uz: "Event reached maximum visitors error",
+		},
+	},
+	[ApplicationPromptID.USER_ALREADY_REGISTERED_TO_EVENT_ERROR]: {
+		promptId: ApplicationPromptID.USER_ALREADY_REGISTERED_TO_EVENT_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "user_already_registered_to_event_error",
+		promptLabels: {
+			en: "User already registered to event error",
+			ru: "Ошибка пользователь уже зарегистрирован на событие",
+			uz: "User already registered to event error",
+		},
+	},
 	[ApplicationPromptID.NEWS_LIKE_NOT_ENABLED_ERROR]: {
 		promptId: ApplicationPromptID.NEWS_LIKE_NOT_ENABLED_ERROR,
 		promptType: "application",
@@ -247,6 +272,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "News like not enabled error",
 			ru: "Ошибка новости лайки не включены",
 			uz: "News like not enabled error",
+		},
+	},
+	[ApplicationPromptID.EVENT_INVITATION_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.EVENT_INVITATION_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "event_invition_not_found_error",
+		promptLabels: {
+			en: "Event invition not found error",
+			ru: "Ошибка мероприятие не найдено.",
+			uz: "Event invition not found error",
 		},
 	},
 	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {

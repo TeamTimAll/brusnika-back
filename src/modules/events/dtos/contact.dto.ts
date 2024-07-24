@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
-import { ContactEntity } from "../contact.entity";
+import { ContactEntity } from "../entities/contact.entity";
 
 export class ContactDto
 	implements
