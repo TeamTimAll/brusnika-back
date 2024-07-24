@@ -153,5 +153,5 @@
 - [ ] Event'ga user o'zi ham register qila oladi.
 - [ ] Event'da accept qilganlarni count'ni chiqarish.
 - [ ] Event'da agar max_visitors sonidan tashqari yana invite qilmoqchi bo'lsa error chiqarish.
-- [ ] Front dev uchun domain ulash. URI: https://dev-dashboard-brusnika.teamtim.tech
+- [x] Front dev uchun domain ulash. URI: https://dev-dashboard-brusnika.teamtim.tech
 - [ ] Kontur server uchun ping qilish uchun API.
