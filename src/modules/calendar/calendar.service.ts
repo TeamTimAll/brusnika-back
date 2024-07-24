@@ -71,8 +71,6 @@ export class CalendarService {
 				"e.format as format",
 				"e.type as type",
 				"e.city_id as city_id",
-				"e.likeCount as likeCount",
-				"e.views as views",
 				"e.is_banner as is_banner",
 			])
 			.orderBy("e.date", "ASC");
