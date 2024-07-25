@@ -1,49 +1,34 @@
 import {
+	Body,
 	Controller,
 	Get,
-	Body,
 	Post,
 	Put,
-	HttpStatus,
-	UseGuards,
 	Query,
+	UseGuards,
 } from "@nestjs/common";
-import {
-	ApiBearerAuth,
-	ApiOperation,
-	ApiResponse,
-	ApiTags,
-} from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { JwtAuthGuard } from "../auth/guards/jwt.guard";
-import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { User } from "../../decorators";
-import { BaseDto } from "../../common/base/base_dto";
+import { RolesGuard } from "../../guards/roles.guard";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { TrainingsService } from "./trainings.service";
 import { CreateTrainingsDto } from "./dto/trainings.create.dto";
-import { UpdateTrainingsDto } from "./dto/trainings.update.dto";
-import { TrainingsEntity } from "./trainings.entity";
 import { LikeTrainingsDto } from "./dto/trainings.dto";
+import { UpdateTrainingsDto } from "./dto/trainings.update.dto";
 import { CreateTrainingsCategoriesDto } from "./modules/categories/dto/categories.dto";
+import { TrainingsService } from "./trainings.service";
 
 @Controller("trainings")
 @ApiTags("Trainings")
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TrainingsController {
 	constructor(private service: TrainingsService) {}
 
 	@Get()
 	@ApiOperation({ summary: "Get all trainings" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
-				TrainingsEntity.toDto({}),
-			]),
-		},
-	})
 	async getAllTrainings() {
 		return this.service.r_findAll();
 	}

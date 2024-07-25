@@ -16,7 +16,10 @@ import { BaseDto } from "../../common/base/base_dto";
 
 import { BuildingsService } from "./buildings.service";
 import { CreateBuildingMetaDto } from "./dtos/building.create.dto";
-import { UpdateBuildingMetaDataDto } from "./dtos/building.update.dto";
+import {
+	UpdateBuilding,
+	UpdateBuildingMetaDataDto,
+} from "./dtos/building.update.dto";
 
 @ApiTags("Buildings")
 @Controller("buildings")
@@ -57,7 +60,7 @@ export class BuildingsController {
 			id,
 			dto.data,
 		);
-		metaData.data = updatedBuilding;
+		metaData.data = updatedBuilding as UpdateBuilding;
 		return metaData;
 	}
 

@@ -1,7 +1,5 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import { RoleType } from "../../constants";
 import { CitiesEntity } from "../../modules/cities/cities.entity";
 import { UserEntity, UserRegisterStatus } from "../../modules/user/user.entity";
@@ -15,8 +13,9 @@ export async function up(query: QueryBuilder<object>) {
 		})
 		.limit(1)
 		.getRawMany<CitiesEntity>();
-	const users: WithOutToDto<
-		Omit<UserEntity, "id" | "city" | "agency" | "createdAt" | "updatedAt">
+	const users: Omit<
+		UserEntity,
+		"id" | "city" | "agency" | "createdAt" | "updatedAt"
 	>[] = [
 		{
 			firstName: "Jon",

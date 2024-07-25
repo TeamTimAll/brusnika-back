@@ -3,7 +3,7 @@ import { Request } from "express";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
-interface UserRequest extends Request {
+export interface UserRequest extends Request {
 	user: ICurrentUser;
 }
 

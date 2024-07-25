@@ -3,7 +3,6 @@ import {
 	Controller,
 	Delete,
 	Get,
-	HttpStatus,
 	Param,
 	Post,
 	Put,
@@ -22,9 +21,9 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { User } from "../../decorators";
+import { RolesGuard } from "../../guards/roles.guard";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { BookingsEntity } from "./bookings.entity";
 import { BookingsService } from "./bookings.service";
 import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
 import { CreateBookingsDto } from "./dtos/create-bookings.dto";
@@ -34,21 +33,12 @@ import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
 @ApiTags("Bookings")
 @Controller("/bookings")
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class BookingsController {
 	constructor(private service: BookingsService) {}
 
 	// -------------------------------@Post()-----------------------------------
 	@ApiOperation({ summary: "Create a booking" })
-	@ApiResponse({
-		status: HttpStatus.CREATED,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				BookingsEntity.toDto({}),
-			),
-		},
-	})
 	@Post()
 	createCity(@User() user: ICurrentUser, @Body() dto: CreateBookingsDto) {
 		dto.agent_id = user.user_id;
@@ -62,14 +52,6 @@ export class BookingsController {
 		required: false,
 	})
 	@ApiOperation({ summary: "Get all bookings" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
-				BookingsEntity.toDto({}),
-			]),
-		},
-	})
 	@Get()
 	@ApiResponse({
 		status: new BookingNotFoundError().status,
@@ -88,46 +70,8 @@ export class BookingsController {
 		metaData.data = await this.service.new_findAll(user);
 		return metaData;
 	}
-	// ----------------------------@Get(":id")----------------------------------
-	// @ApiOperation({ summary: "Get a single booking by ID" })
-	// @ApiResponse({
-	// 	status: HttpStatus.OK,
-	// 	schema: {
-	// 		example: BaseDto.createFromDto(
-	// 			new BaseDto(),
-	// 			BookingsEntity.toDto({}),
-	// 		),
-	// 	},
-	// })
-	// @ApiResponse({
-	// 	status: new BookingNotFoundError().status,
-	// 	schema: {
-	// 		example: BaseDto.createFromDto(new BaseDto()).setPrompt(
-	// 			new BookingNotFoundError("'name' booking not found"),
-	// 		),
-	// 	},
-	// })
-	// @Get(":id")
-	// async getSingleBooking(
-	// 	@UUIDParam("id")
-	// 	id: string,
-	// ) {
-	// 	const metaData = BaseDto.createFromDto(new BaseDto());
-	// 	const foundCity = await this.service.r_findOne(id);
-	// 	metaData.data = foundCity;
-	// 	return metaData;
-	// }
 	// ---------------------------@Put(":id")-----------------------------------
 	@ApiOperation({ summary: "Update a booking by ID" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto<BookingsEntity>(),
-				BookingsEntity.toDto({}),
-			),
-		},
-	})
 	@Put(":id")
 	async updateCity(
 		@Param("id") id: number,
@@ -140,15 +84,6 @@ export class BookingsController {
 	}
 	// ---------------------------@Delete(":id")-------------------------------
 	@ApiOperation({ summary: "Delete a booking by ID" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				BookingsEntity.toDto({}),
-			),
-		},
-	})
 	@Delete(":id")
 	async deleteCity(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());

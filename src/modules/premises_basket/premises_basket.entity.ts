@@ -1,15 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
+import { BaseEntity } from "../../common/base/base.entity";
 import { PremisesEntity } from "../premises/premises.entity";
 import { PremisesBasketMetaEntity } from "../premises_basket_meta/premises_basket_meta.entity";
 
-import { PremisesBasketDto } from "./dtos/premises_basket.dto";
-
 @Entity({ name: "premises_basket" })
-@UseDto(PremisesBasketDto)
-export class PremisesBasketEntity extends AbstractEntity<PremisesBasketDto> {
+export class PremisesBasketEntity extends BaseEntity {
 	@ManyToOne(() => PremisesBasketMetaEntity)
 	@JoinColumn({ name: "meta_id" })
 	meta!: PremisesBasketMetaEntity;

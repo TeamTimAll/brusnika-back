@@ -2,14 +2,12 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
 
 import { EventsEntity } from "modules/events/events.entity";
-import { NewsEntity } from "modules/news/news.entity";
 
 import { Weekdays, WeekdaysMap } from "../../common/enums/weekdays";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { VisitsEntity } from "../../modules/visits/visits.entity";
 import { EventsService } from "../events/events.service";
-import { NewsService } from "../news/news.service";
 import { VisitsService } from "../visits/visits.service";
 
 import { CalendarDto } from "./dto/calendar.dto";
@@ -18,8 +16,6 @@ import { CalendarDto } from "./dto/calendar.dto";
 export class CalendarService {
 	@Inject()
 	private visitsService!: VisitsService;
-	@Inject()
-	private newsService!: NewsService;
 	@Inject()
 	private eventsService!: EventsService;
 
@@ -41,22 +37,6 @@ export class CalendarService {
 				agent_id: user.user_id,
 			})
 			.orderBy("v.date", "ASC");
-		let newsQueryBuilder = this.newsService.repository
-			.createQueryBuilder("n")
-			.select([
-				"n.id as id",
-				"n.user_id as user_id",
-				"n.title as title",
-				"n.content as content",
-				"n.cover_image as cover_image",
-				"n.is_like_enabled as is_like_enabled",
-				"n.is_extra_like_enabled as is_extra_like_enabled",
-				"n.extra_like_icon as extra_like_icon",
-				"n.published_at as published_at",
-				"n.primary_category_id as primary_category_id",
-				"n.second_category_id as second_category_id",
-			])
-			.orderBy("n.published_at", "ASC");
 		let eventsQueryBuilder = this.eventsService.repository
 			.createQueryBuilder("e")
 			.select([
@@ -86,12 +66,6 @@ export class CalendarService {
 				dto.date,
 				weekday,
 			);
-			newsQueryBuilder = this.cutByWeekdayRange(
-				newsQueryBuilder,
-				"n.published_at",
-				dto.date,
-				weekday,
-			);
 			eventsQueryBuilder = this.cutByWeekdayRange(
 				eventsQueryBuilder,
 				"e.date",
@@ -107,7 +81,6 @@ export class CalendarService {
 		}
 
 		const visits = await visitsQueryBuilder.getRawMany<VisitsEntity>();
-		const news = await newsQueryBuilder.getRawMany<NewsEntity>();
 		const events = await eventsQueryBuilder.getRawMany<EventsEntity>();
 
 		// This comes from CRM system.
@@ -120,7 +93,7 @@ export class CalendarService {
 			return v;
 		});
 
-		return { visits: visitsWithManager, news, events };
+		return { visits: visitsWithManager, events };
 	}
 
 	// example for property: "e.date"

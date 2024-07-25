@@ -3,15 +3,14 @@ import { HttpStatus } from "@nestjs/common";
 import { BaseError } from "../../../common/base/baseError";
 import { ApplicationPromptID } from "../../../lib/prompt/applicationPrompt";
 
-export class UnauthorizedError extends BaseError {
+export class PermissionDeniedError extends BaseError {
 	constructor(message?: string) {
 		super(
-			ApplicationPromptID.UNAUTHORIZED_ERROR,
+			ApplicationPromptID.PERMISSION_DENIED_ERROR,
 			{
-				message: message ?? "",
+				message: message ?? "User role not allowed",
 			},
-			HttpStatus.UNAUTHORIZED,
+			HttpStatus.FORBIDDEN,
 		);
 	}
 }
-

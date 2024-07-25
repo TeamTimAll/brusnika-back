@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
+import { BaseEntity } from "../../common/base/base.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { SectionsEntity } from "../sections/sections.entity";
@@ -25,7 +25,7 @@ export enum PuchaseOptions {
 }
 
 @Entity({ name: "premises" })
-export class PremisesEntity extends AbstractEntity {
+export class PremisesEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	name!: string;
 

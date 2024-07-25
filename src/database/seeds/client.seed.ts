@@ -1,7 +1,5 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import { ClientEntity, ClientTag } from "../../modules/client/client.entity";
 import { UserEntity } from "../../modules/user/user.entity";
 
@@ -14,17 +12,15 @@ export async function up(query: QueryBuilder<object>) {
 		})
 		.getRawMany<UserEntity>();
 
-	const clients: WithOutToDto<
-		Omit<
-			ClientEntity,
-			| "id"
-			| "leads"
-			| "agent"
-			| "bookings"
-			| "visits"
-			| "createdAt"
-			| "updatedAt"
-		>
+	const clients: Omit<
+		ClientEntity,
+		| "id"
+		| "leads"
+		| "agent"
+		| "bookings"
+		| "visits"
+		| "createdAt"
+		| "updatedAt"
 	>[] = [
 		{
 			fullname: "Ivan Petrovich Ivanov",
