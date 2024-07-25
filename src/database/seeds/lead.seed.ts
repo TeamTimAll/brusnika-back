@@ -1,22 +1,18 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import { LeadOpStatus } from "../../modules/leads/lead_ops.entity";
 import { LeadState, LeadsEntity } from "../../modules/leads/leads.entity";
 
 export async function up(query: QueryBuilder<object>) {
-	const leads: WithOutToDto<
-		Omit<
-			LeadsEntity,
-			| "id"
-			| "client"
-			| "agent"
-			| "project"
-			| "premise"
-			| "createdAt"
-			| "updatedAt"
-		>
+	const leads: Omit<
+		LeadsEntity,
+		| "id"
+		| "client"
+		| "agent"
+		| "project"
+		| "premise"
+		| "createdAt"
+		| "updatedAt"
 	>[] = [
 		{
 			client_id: 1,

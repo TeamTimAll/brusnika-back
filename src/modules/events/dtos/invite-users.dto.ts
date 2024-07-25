@@ -5,6 +5,7 @@ import {
 	IsBoolean,
 	IsInt,
 	IsNotEmpty,
+	IsOptional,
 } from "class-validator";
 
 export class InviteUsersDto {
@@ -13,10 +14,15 @@ export class InviteUsersDto {
 	@IsNotEmpty()
 	id!: number;
 
+	@ApiProperty({ default: 1 })
+	@IsInt()
+	@IsOptional()
+	agency_id?: number;
+
 	@ApiProperty({ default: [1, 2, 3, 4] })
 	@IsArray()
 	@IsInt({ each: true })
-	@ArrayMinSize(1)
+	@ArrayMinSize(0)
 	user_ids!: number[];
 }
 

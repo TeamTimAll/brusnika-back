@@ -7,16 +7,12 @@ import {
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 
-import { ICurrentUser } from "interfaces/current-user.interface";
-
 import { RoleType } from "../constants";
+import { UserRequest } from "../decorators";
+import { PermissionDeniedError } from "../modules/auth/errors/PermissionDenied.error";
 
 export const ROLES_KEY = "roles";
-export const Roles = (...roles: RoleType[]) => SetMetadata(ROLES_KEY, roles);
-
-interface IRequest extends Request {
-	user: ICurrentUser;
-}
+export const Roles = (roles: RoleType[]) => SetMetadata(ROLES_KEY, roles);
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -25,15 +21,16 @@ export class RolesGuard implements CanActivate {
 	canActivate(
 		context: ExecutionContext,
 	): boolean | Promise<boolean> | Observable<boolean> {
-		const requiredRoles = this.reflector.getAllAndOverride<RoleType[]>(
-			Roles,
-			[context.getHandler(), context.getClass()],
-		);
+		const requiredRoles = this.reflector.getAllAndOverride<
+			RoleType[] | undefined
+		>(ROLES_KEY, [context.getHandler(), context.getClass()]);
 		if (!requiredRoles) {
 			return true;
 		}
-
-		const { user } = context.switchToHttp().getRequest<IRequest>();
-		return requiredRoles.some((role) => user.role === role);
+		const { user } = context.switchToHttp().getRequest<UserRequest>();
+		if (!requiredRoles.some((role) => role === user.role)) {
+			throw new PermissionDeniedError(`role: ${user.role}`);
+		}
+		return true;
 	}
 }

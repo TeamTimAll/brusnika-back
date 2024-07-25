@@ -11,6 +11,7 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { User } from "../../decorators";
+import { RolesGuard } from "../../guards/roles.guard";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
@@ -26,7 +27,7 @@ import { CreateClientMetaDataDto } from "./dto/create.client.dto";
 @ApiTags("Client")
 @Controller("client")
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ClientController {
 	constructor(private clientService: ClientService) {}
 

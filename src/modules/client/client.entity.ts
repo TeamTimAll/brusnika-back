@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
+import { BaseEntity } from "../../common/base/base.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 import { UserEntity } from "../user/user.entity";
@@ -14,7 +14,7 @@ export enum ClientTag {
 }
 
 @Entity({ name: "clients" })
-export class ClientEntity extends AbstractEntity {
+export class ClientEntity extends BaseEntity {
 	@Column({ type: "varchar", length: 255 })
 	fullname!: string;
 

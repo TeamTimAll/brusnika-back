@@ -1,13 +1,13 @@
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
 
-import { AbstractEntity } from "../../../common/abstract.entity";
+import { BaseEntity } from "../../../common/base/base.entity";
 import { UserEntity } from "../../user/user.entity";
 
 import { EventsEntity } from "../events.entity";
 
 @Entity("event_views")
 @Unique(["user_id", "event_id"])
-export class EventViewsEntity extends AbstractEntity {
+export class EventViewsEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	user_id!: number;
 

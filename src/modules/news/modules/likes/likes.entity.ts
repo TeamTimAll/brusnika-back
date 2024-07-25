@@ -1,12 +1,12 @@
 import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
 
-import { AbstractEntity } from "../../../../common/abstract.entity";
+import { BaseEntity } from "../../../../common/base/base.entity";
 import { UserEntity } from "../../../user/user.entity";
 import { NewsEntity } from "../../news.entity";
 
 @Entity("news_likes")
 @Unique(["user_id", "news_id"])
-export class NewsLikes extends AbstractEntity {
+export class NewsLikes extends BaseEntity {
 	@Column({ type: "integer" })
 	user_id!: number;
 

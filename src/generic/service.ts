@@ -104,7 +104,7 @@ export class BasicService<
 		);
 	}
 
-	async remove(id: number): Promise<ServiceResponse> {
+	async remove<T>(id: number): Promise<ServiceResponse<T>> {
 		await this.repository.delete(id);
 
 		return new ServiceResponse(

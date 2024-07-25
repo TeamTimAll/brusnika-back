@@ -9,6 +9,7 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
+import { Limit, Page } from "../../../decorators/pagination";
 
 export class EventsDto extends BaseDto {
 	@ApiPropertyOptional()
@@ -33,7 +34,20 @@ export enum EVENT_FORMAT {
 	OFFLINE = "offline",
 }
 
+export enum QueryType {
+	FEATURE = "FEATURE",
+	ALL = "ALL",
+}
+
 export class FilterEventsDto {
+	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
 	@ApiProperty({
 		required: false,
 		type: "enum",
@@ -43,6 +57,14 @@ export class FilterEventsDto {
 	@IsEnum(EVENT_FORMAT)
 	@IsOptional()
 	format?: EVENT_FORMAT;
+
+	@ApiProperty({
+		required: false,
+		enum: QueryType,
+		description:
+			"In this enum, Feature represents the default feature where events planned for the future are given, and All represents reading all events.",
+	})
+	query_type: QueryType = QueryType.FEATURE;
 
 	@ApiProperty({
 		required: false,

@@ -1,13 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
+import { BaseEntity } from "../../common/base/base.entity";
 import { ClientEntity } from "../client/client.entity";
 import { PremisesEntity } from "../premises/premises.entity";
 import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
 
-import { LeadsDto } from "./dtos/leads.dto";
 import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 
 export enum LeadState {
@@ -18,8 +16,7 @@ export enum LeadState {
 }
 
 @Entity({ name: "leads" })
-@UseDto(LeadsDto)
-export class LeadsEntity extends AbstractEntity<LeadsDto> {
+export class LeadsEntity extends BaseEntity {
 	@ManyToOne(() => ClientEntity)
 	@JoinColumn({ name: "client_id" })
 	client!: ClientEntity;

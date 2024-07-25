@@ -1,11 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
+import { BaseEntity } from "../../common/base/base.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 
 import { ContactEntity } from "./entities/contact.entity";
-import { EventsDto } from "./dtos/events.dto";
 import { EventInvitationEntity } from "./entities/event-invition.entity";
 import { EventLikesEntity } from "./entities/event-likes.entity";
 import { EventViewsEntity } from "./entities/event-views.entity";
@@ -24,8 +22,7 @@ export enum EVENT_FORMAT {
 }
 
 @Entity({ name: "events" })
-@UseDto(EventsDto)
-export class EventsEntity extends AbstractEntity<EventsDto> {
+export class EventsEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	title!: string;
 
@@ -91,6 +88,9 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	@Column({ type: "boolean", default: false })
 	is_draft!: boolean;
 
+	@Column({ type: "text", array: true, nullable: true })
+	tags?: string[];
+
 	@OneToMany(() => EventViewsEntity, (EventViews) => EventViews.events, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
@@ -103,9 +103,13 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	})
 	likes?: EventLikesEntity[];
 
-	@OneToMany(() => EventInvitationEntity, (EventInvitionEntity) => EventInvitionEntity.event, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
+	@OneToMany(
+		() => EventInvitationEntity,
+		(EventInvitionEntity) => EventInvitionEntity.event,
+		{
+			onDelete: "CASCADE",
+			onUpdate: "CASCADE",
+		},
+	)
 	invited_users?: EventInvitationEntity[];
 }

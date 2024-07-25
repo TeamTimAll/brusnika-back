@@ -1,7 +1,5 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
 
@@ -15,16 +13,14 @@ export async function up(query: QueryBuilder<object>) {
 		.from(ProjectEntity, "c")
 		.getRawMany<ProjectEntity>();
 
-	const buildings: WithOutToDto<
-		Omit<
-			BuildingsEntity,
-			| "id"
-			| "project"
-			| "total_apartment"
-			| "total_vacant_apartment"
-			| "createdAt"
-			| "updatedAt"
-		>
+	const buildings: Omit<
+		BuildingsEntity,
+		| "id"
+		| "project"
+		| "total_apartment"
+		| "total_vacant_apartment"
+		| "createdAt"
+		| "updatedAt"
 	>[] = [
 		{
 			project_id: findProjectId(projects, "Москва Проект"),

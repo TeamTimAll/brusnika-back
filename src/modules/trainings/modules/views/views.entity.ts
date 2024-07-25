@@ -1,11 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 
-import { AbstractEntity } from "../../../../common/abstract.entity";
+import { BaseEntity } from "../../../../common/base/base.entity";
 import { UserEntity } from "../../../user/user.entity";
 import { TrainingsEntity } from "../../trainings.entity";
 
 @Entity("trainings_views")
-export class TrainingsViews extends AbstractEntity {
+export class TrainingsViews extends BaseEntity {
 	@Column({ type: "integer", nullable: false })
 	user_id!: number;
 

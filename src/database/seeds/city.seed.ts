@@ -1,13 +1,9 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import { CitiesEntity } from "../../modules/cities/cities.entity";
 
 export async function up(query: QueryBuilder<object>) {
-	const cities: WithOutToDto<
-		Omit<CitiesEntity, "id" | "createdAt" | "updatedAt">
-	>[] = [
+	const cities: Omit<CitiesEntity, "id" | "createdAt" | "updatedAt">[] = [
 		{ name: "Москва", long: "37.6173", lat: "55.7558" },
 		{ name: "Тюмень", long: "65.5619", lat: "57.1553" },
 		{ name: "Новосибирск", long: "82.8964", lat: "54.9833" },

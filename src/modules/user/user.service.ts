@@ -3,12 +3,12 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, type FindOptionsWhere } from "typeorm";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { UserLoginResendCodeDto } from "../../modules/auth/dtos/user-login.dto";
 import { AuthRespone } from "../auth/auth.service";
 import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
 import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
-import { UserLoginResendCodeDto } from "../../modules/auth/dtos/user-login.dto";
 
 import {
 	UserChangePhoneVerifyCodeDto,
@@ -37,6 +37,10 @@ export class UserService {
 		const currentTime = new Date();
 		const elapsedTime = currentTime.getTime() - startTime.getTime();
 		return elapsedTime >= oneMinute;
+	}
+
+	readAll() {
+		return this.userRepository.find();
 	}
 
 	findOne(

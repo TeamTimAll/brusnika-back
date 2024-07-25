@@ -1,7 +1,5 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import { CitiesEntity } from "../../modules/cities/cities.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
 
@@ -15,8 +13,9 @@ export async function up(query: QueryBuilder<object>) {
 		.from(CitiesEntity, "c")
 		.getRawMany<CitiesEntity>();
 
-	const projects: WithOutToDto<
-		Omit<ProjectEntity, "id" | "city" | "createdAt" | "updatedAt">
+	const projects: Omit<
+		ProjectEntity,
+		"id" | "city" | "createdAt" | "updatedAt"
 	>[] = [
 		{
 			city_id: findCityId(cities, "Москва"),
