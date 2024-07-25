@@ -1,7 +1,5 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import { SectionsEntity } from "../../modules/sections/sections.entity";
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 
@@ -15,8 +13,9 @@ export async function up(query: QueryBuilder<object>) {
 		.from(BuildingsEntity, "c")
 		.getRawMany<BuildingsEntity>();
 
-	const sections: WithOutToDto<
-		Omit<SectionsEntity, "id" | "building" | "createdAt" | "updatedAt">
+	const sections: Omit<
+		SectionsEntity,
+		"id" | "building" | "createdAt" | "updatedAt"
 	>[] = [
 		{
 			name: "Секция 1",

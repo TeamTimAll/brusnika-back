@@ -161,14 +161,19 @@
     - [x] User'ga nisbattan olish kerak. Yani faqat Admin draft'larni ko'ra oladi.
 - [x] Event'da is_banner bilan query.
 
+### 2024-07-25
+- [x] Event'ga agency user'larni biriktirish. Agency id beriladi. Agar berilgan agency'da userlar soni event max_visitors sonidan ko'p bo'lsa error chiqarish kerak.
+- [x] Events'ni read all qilishda feature yoki all query beriladi. default feature bo'ladi. feature'da kelajakda rejalashtirilayotgan eventlar beriladi. all'da esa hammasi.
+- [x] Event'ga role bilan yasashi va invite qilishi. Ruxsat **админ**, **партнерский менеджер** role'larga beriladi.
+- [x] Event pagination.
+- [x] Events'ga tag qo'shish kerak.
+- [x] User'lar listini chiqarish kerak. Faqat **админ** va **партнерский менеджер** role olishi kerak. 
+- [x] Calendar'da news'ni olib tashlash kerak.
+
 ---
 
-- [ ] Event'ga agency user'larni biriktirish.
-- [ ] Events'ni read all qilishda feature yoki all query beriladi. default feature bo'ladi. feature'da kelajakda rejalashtirilayotgan eventlar beriladi. all'da esa hammasi.
-- [ ] Events'ga tag qo'shish kerak.
-- [ ] Event'ga role bilan yasashi va invite qilishi.
 - [ ] Calendar'da user o'z eventini ko'rishi kerak va o'zi yasagan event'larni ham ko'rishi kerak.
-- [ ] Calendar'da news'ni olib tashlash kerak.
 - [ ] Calendar'da user o'z visit'larni ko'rishi kerak.
 - [ ] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
+- [ ] BaseService ni o'chirib tashlash. Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
 - [ ] Kontur server uchun ping qilish uchun API.

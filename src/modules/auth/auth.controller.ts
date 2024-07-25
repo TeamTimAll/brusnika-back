@@ -5,6 +5,7 @@ import { type Request } from "express";
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { ApiErrorResponse } from "../../decorators/api_error_response";
+import { RolesGuard } from "../../guards/roles.guard";
 import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { UserCreateDto, UserFillDataDto } from "../user/dtos/user.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
@@ -110,7 +111,7 @@ export class AuthController {
 	}
 
 	@Get()
-	@UseGuards(JwtAuthGuard)
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	status(@Req() req: Request) {
 		return req["user"] as ICurrentUser;
 	}

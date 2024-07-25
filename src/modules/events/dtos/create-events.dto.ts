@@ -55,17 +55,17 @@ export class CreateEventsDto {
 	@IsNotEmpty()
 	location!: string;
 
-	@ApiProperty({})
+	@ApiProperty({ default: "00:00" })
 	@IsMilitaryTime()
 	@IsNotEmpty()
 	start_time!: Date;
 
-	@ApiProperty({})
+	@ApiProperty({ default: "00:00" })
 	@IsMilitaryTime()
 	@IsNotEmpty()
 	end_time!: Date;
 
-	@ApiProperty({})
+	@ApiProperty({ default: new Date() })
 	@IsDateString()
 	@IsNotEmpty()
 	date!: string;
@@ -109,4 +109,10 @@ export class CreateEventsDto {
 	@ArrayMinSize(1)
 	@Type(() => ContactDto)
 	contacts!: ContactDto[];
+
+	@ApiProperty({ required: false, default: [] })
+	@IsArray()
+	@IsString({ each: true })
+	@IsOptional()
+	tags?: string[];
 }

@@ -1,49 +1,34 @@
 import {
+	Body,
 	Controller,
 	Get,
-	Body,
 	Post,
 	Put,
-	HttpStatus,
-	UseGuards,
 	Query,
+	UseGuards,
 } from "@nestjs/common";
-import {
-	ApiBearerAuth,
-	ApiOperation,
-	ApiResponse,
-	ApiTags,
-} from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { JwtAuthGuard } from "../auth/guards/jwt.guard";
-import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { User } from "../../decorators";
-import { BaseDto } from "../../common/base/base_dto";
+import { RolesGuard } from "../../guards/roles.guard";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { NewsService } from "./news.service";
 import { CreateNewsDto } from "./dto/news.create.dto";
-import { UpdateNewsDto } from "./dto/news.update.dto";
-import { NewsEntity } from "./news.entity";
 import { LikeNewsDto } from "./dto/news.dto";
+import { UpdateNewsDto } from "./dto/news.update.dto";
 import { CreateNewsCategoriesDto } from "./modules/categories/dto/categories.dto";
+import { NewsService } from "./news.service";
 
 @Controller("news")
 @ApiTags("News")
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class NewsController {
 	constructor(private service: NewsService) {}
 
 	@Get()
 	@ApiOperation({ summary: "Get all news" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
-				NewsEntity.toDto({}),
-			]),
-		},
-	})
 	async getAllNews() {
 		return this.service.r_findAll();
 	}

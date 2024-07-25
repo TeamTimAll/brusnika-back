@@ -3,7 +3,6 @@ import {
 	Controller,
 	Delete,
 	Get,
-	HttpStatus,
 	Param,
 	Post,
 	Put,
@@ -12,9 +11,7 @@ import {
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { UserEntity } from "../../modules/user/user.entity";
 
-import { CitiesEntity } from "./cities.entity";
 import { CitiesService } from "./cities.service";
 import { CreateCitiesMetaDataDto } from "./dtos/create-cities.dto";
 import { UpdateCitiesMetaDataDto } from "./dtos/update-cities.dto";
@@ -27,15 +24,6 @@ export class CitiesController {
 
 	// -------------------------------@Post()-----------------------------------
 	@ApiOperation({ summary: "Create a city" })
-	@ApiResponse({
-		status: HttpStatus.CREATED,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				CitiesEntity.toDto({ name: "..." }),
-			),
-		},
-	})
 	@Post()
 	createCity(@Body() createCitiesDto: CreateCitiesMetaDataDto) {
 		const dto = createCitiesDto.data;
@@ -49,17 +37,6 @@ export class CitiesController {
 		required: false,
 	})
 	@ApiOperation({ summary: "Get all cities" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
-				CitiesEntity.toDto({
-					name: "...",
-					users: [UserEntity.toDto({})],
-				}),
-			]),
-		},
-	})
 	@Get()
 	@ApiResponse({
 		status: new CityNotFoundError().status,
@@ -82,18 +59,6 @@ export class CitiesController {
 	// ----------------------------@Get(":id")----------------------------------
 	@ApiOperation({ summary: "Get a single city by ID" })
 	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				CitiesEntity.toDto({
-					name: "...",
-					users: [UserEntity.toDto({})],
-				}),
-			),
-		},
-	})
-	@ApiResponse({
 		status: new CityNotFoundError().status,
 		schema: {
 			example: BaseDto.createFromDto(new BaseDto()).setPrompt(
@@ -113,18 +78,6 @@ export class CitiesController {
 	}
 	// ---------------------------@Put(":id")-----------------------------------
 	@ApiOperation({ summary: "Update a city by ID" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto<CitiesEntity>(),
-				CitiesEntity.toDto({
-					name: "...",
-					users: [UserEntity.toDto({})],
-				}),
-			),
-		},
-	})
 	@Put(":id")
 	async updateCity(
 		@Param("id") id: number,
@@ -138,18 +91,6 @@ export class CitiesController {
 	}
 	// ---------------------------@Delete(":id")-------------------------------
 	@ApiOperation({ summary: "Delete a city by ID" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				CitiesEntity.toDto({
-					name: "...",
-					users: [UserEntity.toDto({})],
-				}),
-			),
-		},
-	})
 	@Delete(":id")
 	async deleteCity(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());

@@ -14,6 +14,7 @@ import {
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
+import { RolesGuard } from "../../guards/roles.guard";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import {
@@ -27,7 +28,7 @@ import { ProjectsService } from "./projects.service";
 @ApiTags("Projects")
 @Controller("projects")
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProjectsController {
 	constructor(private projectsService: ProjectsService) {}
 

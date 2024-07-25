@@ -1,13 +1,12 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
+import { BaseEntity } from "../../common/base/base.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
-import { WithOutToDto } from "../../types";
 import { PremisesEntity } from "../premises/premises.entity";
 import { SectionsEntity } from "../sections/sections.entity";
 
 @Entity({ name: "buildings" })
-export class BuildingsEntity extends AbstractEntity {
+export class BuildingsEntity extends BaseEntity {
 	@Column()
 	name!: string;
 
@@ -46,7 +45,7 @@ export class BuildingsEntity extends AbstractEntity {
 	total_vacant_apartment!: number;
 
 	@Column({ type: "text", array: true, nullable: true })
-	photos: string[] = [];
+	photos?: string[];
 
 	@ManyToOne(() => ProjectEntity, (project) => project.buildings, {
 		onDelete: "CASCADE",
@@ -66,32 +65,4 @@ export class BuildingsEntity extends AbstractEntity {
 		(SectionsEntity) => SectionsEntity.building,
 	)
 	sections?: SectionsEntity[];
-
-	static toDto(
-		entity: Partial<WithOutToDto<BuildingsEntity>>,
-	): WithOutToDto<BuildingsEntity> {
-		const dto: WithOutToDto<BuildingsEntity> = {
-			id: entity.id ?? 0,
-			name: entity.name ?? "",
-			total_storage: entity.total_storage ?? 0,
-			total_vacant_storage: entity.total_vacant_storage ?? 0,
-			total_parking_space: entity.total_parking_space ?? 0,
-			total_vacant_parking_space: entity.total_vacant_parking_space ?? 0,
-			total_commercial: entity.total_commercial ?? 0,
-			total_vacant_commercial: entity.total_vacant_commercial ?? 0,
-			address: entity.address ?? "",
-			number_of_floors: entity.number_of_floors ?? 0,
-			photos: entity.photos ?? [],
-			project_id: entity.project_id ?? 0,
-			project: entity.project ?? new ProjectEntity(),
-			premises: entity.premises ?? [],
-			sections: entity.sections ?? [],
-			createdAt: entity.createdAt ?? new Date(),
-			updatedAt: entity.updatedAt ?? new Date(),
-			total_apartment: entity.total_apartment ?? 0,
-			total_vacant_apartment: entity.total_vacant_apartment ?? 0,
-		};
-
-		return dto;
-	}
 }

@@ -1,7 +1,5 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import {
 	CommercialStatus,
@@ -41,11 +39,9 @@ export async function up(query: QueryBuilder<object>) {
 		.from(SectionsEntity, "s")
 		.getRawMany<SectionsEntity>();
 
-	const premises: WithOutToDto<
-		Omit<
-			PremisesEntity,
-			"id" | "section" | "building" | "createdAt" | "updatedAt"
-		>
+	const premises: Omit<
+		PremisesEntity,
+		"id" | "section" | "building" | "createdAt" | "updatedAt"
 	>[] = [
 		{
 			name: "1-комнатная 30 м2",

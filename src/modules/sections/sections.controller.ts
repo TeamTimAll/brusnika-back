@@ -17,12 +17,9 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { BaseDto } from "../../common/base/base_dto";
-
 import { CreateSectionsDto } from "./dtos/create-sections.dto";
 import { SectionsDto } from "./dtos/sections.dto";
 import { UpdateSectionsDto } from "./dtos/update-sections.dto";
-import { SectionsEntity } from "./sections.entity";
 import { SectionsService } from "./sections.service";
 
 @Controller("/sections")
@@ -38,16 +35,6 @@ export class SectionsController {
 	}
 
 	@ApiOperation({ summary: "Get all Sections" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
-				SectionsEntity.toDto({
-					name: "...",
-				}),
-			]),
-		},
-	})
 	@ApiQuery({ name: "building_id", required: false })
 	@Get("/")
 	async getSections(@Query("building_id") building_id: number) {

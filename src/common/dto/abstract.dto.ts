@@ -1,4 +1,4 @@
-import { AbstractEntity } from "../abstract.entity";
+import { BaseEntity } from "../base/base.entity";
 
 // src/dto/abstract.dto.ts
 export abstract class BaseDto {
@@ -6,7 +6,7 @@ export abstract class BaseDto {
 	createdAt!: Date;
 	updatedAt!: Date;
 
-	constructor(entity: AbstractEntity) {
+	constructor(entity: BaseEntity) {
 		this.id = entity.id;
 		this.createdAt = entity.createdAt;
 		this.updatedAt = entity.updatedAt;

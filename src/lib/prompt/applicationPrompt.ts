@@ -4,9 +4,9 @@ export enum ApplicationPromptID {
 	// Auth Errors
 	UNAUTHORIZED_ERROR = 270,
 	USER_PASSWORD_IS_NOT_CORRECT_ERROR = 271,
+	PERMISSION_DENIED_ERROR = 273,
 	// INVALID_TOKEN_ERROR = 271,
 	// TOKEN_EXPIRED_ERROR = 272,
-	// PERMISITION_DENIED_ERROR = 273,
 
 	// Internal Errors
 	INPUT_VALIDATION_ERROR = 300,
@@ -85,6 +85,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Unauthorized error",
 			ru: "Ошибка доступа",
 			uz: "Unauthorized error",
+		},
+	},
+	[ApplicationPromptID.PERMISSION_DENIED_ERROR]: {
+		promptId: ApplicationPromptID.PERMISSION_DENIED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "permission_denied_error",
+		promptLabels: {
+			en: "Permission denied error",
+			ru: "Ошибка отказа в разрешении",
+			uz: "Permission denied error",
 		},
 	},
 	[ApplicationPromptID.USER_PASSWORD_IS_NOT_CORRECT_ERROR]: {
@@ -248,7 +259,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "event_reached_maximum_visitors_error",
 		promptLabels: {
 			en: "Event reached maximum visitors error",
-			ru: "Ошибка на мероприятии достигнуто максимальное количество посетителей.",
+			ru: "Превышено максимальное количество участников в мероприятии.",
 			uz: "Event reached maximum visitors error",
 		},
 	},

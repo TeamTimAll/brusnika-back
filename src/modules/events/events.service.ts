@@ -1,17 +1,25 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { DataSource, In, Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
+import { ServiceResponse } from "types";
 
 import { RoleType } from "../../constants";
-import { BasicService } from "../../generic/service";
+import { calcPagination } from "../../lib/pagination";
+import { AgenciesService } from "../../modules/agencies/agencies.service";
+import { AgencyNotFoundError } from "../../modules/agencies/errors/AgencyNotFound.error";
+import { CitiesService } from "../../modules/cities/cities.service";
+import { CityNotFoundError } from "../../modules/cities/errors/CityNotFound.error";
 import { UserNotFoundError } from "../../modules/user/errors/UserNotFound.error";
 import { UserService } from "../../modules/user/user.service";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
-import { FilterEventsDto } from "./dtos/events.dto";
-import { AcceptInvitionDto as AcceptInvitationDto } from "./dtos/invite-users.dto";
+import { FilterEventsDto, QueryType } from "./dtos/events.dto";
+import {
+	AcceptInvitionDto as AcceptInvitationDto,
+	InviteUsersDto,
+} from "./dtos/invite-users.dto";
 import { LikeEventDto } from "./dtos/like-event.dto";
 import { type UpdateEventsDto } from "./dtos/update-events.dto";
 import { ContactEntity } from "./entities/contact.entity";
@@ -24,18 +32,15 @@ import { UserAlreadyRegisteredToEventError } from "./errors/UserAlreadyRegistere
 import { EventsNotFoundError } from "./errors/events-not-found.error";
 import { EventsEntity } from "./events.entity";
 
-interface EventLikedResponse {
+export interface EventLikedResponse {
 	is_liked: boolean;
 }
 
 @Injectable()
-export class EventsService extends BasicService<
-	EventsEntity,
-	CreateEventsDto,
-	UpdateEventsDto
-> {
+export class EventsService {
 	constructor(
-		@InjectDataSource() dataSource: DataSource,
+		@InjectRepository(EventsEntity)
+		private eventRepository: Repository<EventsEntity>,
 		@InjectRepository(ContactEntity)
 		private contactsRepository: Repository<ContactEntity>,
 		@InjectRepository(EventLikesEntity)
@@ -46,12 +51,18 @@ export class EventsService extends BasicService<
 		private eventInvitationRepository: Repository<EventInvitationEntity>,
 		@Inject()
 		private userService: UserService,
-	) {
-		super("events", EventsEntity, dataSource);
+		@Inject()
+		private agenciesService: AgenciesService,
+		@Inject()
+		private citiesService: CitiesService,
+	) {}
+
+	get repository() {
+		return this.eventRepository;
 	}
 
 	async readOne(id: number, user: ICurrentUser) {
-		const foundEvent = await this.repository
+		const foundEvent = await this.eventRepository
 			.createQueryBuilder("e")
 			.leftJoinAndSelect("e.contacts", "contacts")
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
@@ -85,8 +96,9 @@ export class EventsService extends BasicService<
 		return foundEvent;
 	}
 
-	readAll(dto: FilterEventsDto, user: ICurrentUser) {
-		let eventsQuery = this.repository
+	async readAll(dto: FilterEventsDto, user: ICurrentUser) {
+		const pageSize = (dto.page - 1) * dto.limit;
+		let eventsQuery = this.eventRepository
 			.createQueryBuilder("e")
 			.leftJoinAndSelect("e.contacts", "contacts")
 			.leftJoinAndSelect("e.invited_users", "event_invition")
@@ -100,7 +112,12 @@ export class EventsService extends BasicService<
 			)
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views");
-
+		if (dto.query_type !== QueryType.ALL) {
+			const today_date = new Date();
+			eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
+				today_date: today_date,
+			});
+		}
 		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
 			eventsQuery = eventsQuery.andWhere("e.is_draft IS FALSE");
 		}
@@ -127,7 +144,15 @@ export class EventsService extends BasicService<
 				type: dto.type,
 			});
 		}
-		return eventsQuery.getMany();
+		const eventCount = await eventsQuery.getCount();
+
+		eventsQuery = eventsQuery.limit(dto.limit).offset(pageSize);
+
+		const eventsResponse: ServiceResponse<EventsEntity[]> = {
+			links: calcPagination(eventCount, dto.page, dto.limit),
+			data: await eventsQuery.getMany(),
+		};
+		return eventsResponse;
 	}
 
 	async userEvents(user: ICurrentUser) {
@@ -138,7 +163,7 @@ export class EventsService extends BasicService<
 		if (!foundInvitations) {
 			throw new EventInvitationNotFoundError(`user_id: ${user.user_id}`);
 		}
-		const foundEvent = await this.repository
+		const foundEvent = await this.eventRepository
 			.createQueryBuilder("e")
 			.leftJoinAndSelect("e.contacts", "contacts")
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
@@ -162,8 +187,15 @@ export class EventsService extends BasicService<
 	}
 
 	async createWithContacts(dto: CreateEventsDto) {
-		const event = this.repository.create(dto);
-		const newEvent = await this.repository.save(event);
+		const event = this.eventRepository.create(dto);
+		const foundCity = await this.citiesService.repository.findOne({
+			select: { id: true },
+			where: { id: dto.city_id },
+		});
+		if (!foundCity) {
+			throw new CityNotFoundError(`id: ${dto.city_id}`);
+		}
+		const newEvent = await this.eventRepository.save(event);
 		let contacts = this.contactsRepository.create(dto.contacts);
 		contacts = contacts.map((e) => {
 			e.event_id = event.id;
@@ -174,7 +206,7 @@ export class EventsService extends BasicService<
 	}
 
 	async updateWithContacts(id: number, dto: UpdateEventsDto) {
-		const foundEvent = await this.repository.findOne({
+		const foundEvent = await this.eventRepository.findOne({
 			where: {
 				id: id,
 			},
@@ -182,15 +214,15 @@ export class EventsService extends BasicService<
 		if (!foundEvent) {
 			throw new EventsNotFoundError(`id: ${id}`);
 		}
-		const mergedEvent = this.repository.merge(foundEvent, dto);
-		return await this.repository.save(mergedEvent);
+		const mergedEvent = this.eventRepository.merge(foundEvent, dto);
+		return await this.eventRepository.save(mergedEvent);
 	}
 
 	async toggleLike(
 		body: LikeEventDto,
 		user: ICurrentUser,
 	): Promise<EventLikedResponse> {
-		const event = await this.repository.findOne({
+		const event = await this.eventRepository.findOne({
 			where: {
 				id: body.id,
 			},
@@ -217,32 +249,45 @@ export class EventsService extends BasicService<
 		return { is_liked: true };
 	}
 
-	async inviteUsers(id: number, userIds: number[]) {
-		const foundEvent = await this.repository.findOne({
+	async inviteUsers(dto: InviteUsersDto) {
+		const foundEvent = await this.eventRepository.findOne({
 			select: { id: true, max_visitors: true },
 			where: {
-				id: id,
+				id: dto.id,
 			},
 		});
 		if (!foundEvent) {
-			throw new EventsNotFoundError(`id: ${id}`);
+			throw new EventsNotFoundError(`id: ${dto.id}`);
+		}
+		if (dto.agency_id) {
+			const foundAgency = await this.agenciesService.repository.findOne({
+				select: { id: true, user: { id: true } },
+				relations: { user: true },
+				where: { id: dto.agency_id },
+			});
+			if (!foundAgency) {
+				throw new AgencyNotFoundError(`agent_id: ${dto.agency_id}`);
+			}
+			foundAgency.user.forEach((e) => {
+				dto.user_ids.push(e.id);
+			});
 		}
 		const currentVisitors = await this.eventInvitationRepository.count({
-			where: { event_id: id, user_id: In(userIds) },
+			where: { event_id: dto.id, user_id: In(dto.user_ids) },
 		});
-		if (foundEvent.max_visitors < currentVisitors + userIds.length) {
+		if (foundEvent.max_visitors < currentVisitors + dto.user_ids.length) {
 			throw new EventReachedMaximumVisitorsError(
-				`${foundEvent.max_visitors} < ${currentVisitors + userIds.length}`,
+				`max visitors: ${foundEvent.max_visitors} < current visitors: ${currentVisitors + dto.user_ids.length}`,
 			);
 		}
 		const users = await this.userService.repository.find({
 			select: { id: true },
 			where: {
-				id: In(userIds),
+				id: In(dto.user_ids),
 			},
 		});
 		if (!users.length) {
-			throw new UserNotFoundError(`ids: ${userIds.join(", ")}`);
+			throw new UserNotFoundError(`ids: ${dto.user_ids.join(", ")}`);
 		}
 		const foundInvitations = await this.eventInvitationRepository.find({
 			select: { id: true, user_id: true },
@@ -281,7 +326,7 @@ export class EventsService extends BasicService<
 	}
 
 	async joinToEvent(event_id: number, user: ICurrentUser) {
-		const foundEvent = await this.repository.findOne({
+		const foundEvent = await this.eventRepository.findOne({
 			select: { id: true, max_visitors: true },
 			where: { id: event_id },
 		});
@@ -303,7 +348,7 @@ export class EventsService extends BasicService<
 		});
 		if (foundEvent.max_visitors < currentVisitors + 1) {
 			throw new EventReachedMaximumVisitorsError(
-				`${foundEvent.max_visitors} < ${currentVisitors + 1}`,
+				`max visitors: ${foundEvent.max_visitors} < current visitors: ${currentVisitors + 1}`,
 			);
 		}
 		const invitation = this.eventInvitationRepository.create({
@@ -314,7 +359,7 @@ export class EventsService extends BasicService<
 	}
 
 	async acceptInvitation(dto: AcceptInvitationDto, user: ICurrentUser) {
-		const foundEvent = await this.repository.findOne({
+		const foundEvent = await this.eventRepository.findOne({
 			select: { id: true },
 			where: { id: dto.event_id },
 		});
@@ -335,5 +380,17 @@ export class EventsService extends BasicService<
 		});
 		foundInvitation.is_accepted = dto.is_accepted;
 		return foundInvitation;
+	}
+
+	async remove(id: number) {
+		const foundEvent = await this.eventRepository.findOne({
+			select: { id: true },
+			where: { id: id },
+		});
+		if (!foundEvent) {
+			throw new EventsNotFoundError(`id: ${id}`);
+		}
+		await this.eventRepository.delete(id);
+		return foundEvent;
 	}
 }
