@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
+import { UserEntity } from "../../modules/user/user.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 
 import { ContactEntity } from "./entities/contact.entity";
@@ -68,6 +69,13 @@ export class EventsEntity extends BaseEntity {
 		nullable: false,
 	})
 	type!: EVENT_TYPES;
+
+	@ManyToOne(() => UserEntity)
+	@JoinColumn({ name: "create_by_id" })
+	create_by!: UserEntity;
+
+	@Column({ nullable: true, type: "integer" })
+	create_by_id?: number;
 
 	@ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",

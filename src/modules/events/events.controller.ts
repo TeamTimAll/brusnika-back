@@ -53,10 +53,15 @@ export class EventsController {
 	@HttpCode(HttpStatus.CREATED)
 	@ApiCreatedResponse({ type: EventsDto })
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
-	async createEvents(@Body() createEventsDto: CreateEventsDto) {
+	async createEvents(
+		@Body() createEventsDto: CreateEventsDto,
+		@User() user: ICurrentUser,
+	) {
 		const metaData = BaseDto.createFromDto(new BaseDto<EventsEntity>());
-		const response =
-			await this.eventsService.createWithContacts(createEventsDto);
+		const response = await this.eventsService.createWithContacts(
+			createEventsDto,
+			user,
+		);
 		metaData.data = response;
 		return metaData;
 	}

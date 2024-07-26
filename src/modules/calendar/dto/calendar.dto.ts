@@ -26,6 +26,11 @@ export class CalendarDto {
 	date?: string;
 
 	@ApiProperty({ required: false })
+	@IsDateString()
+	@IsOptional()
+	monthly_date?: string;
+
+	@ApiProperty({ required: false })
 	@IsInt()
 	@IsOptional()
 	city_id?: number;
