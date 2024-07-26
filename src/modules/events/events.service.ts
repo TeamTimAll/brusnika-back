@@ -164,10 +164,7 @@ export class EventsService {
 			select: { id: true, event_id: true },
 			where: { user_id: user.user_id },
 		});
-		if (!foundInvitations) {
-			throw new EventInvitationNotFoundError(`user_id: ${user.user_id}`);
-		}
-		const foundEvent = await this.eventRepository
+		let eventQuery = this.eventRepository
 			.createQueryBuilder("e")
 			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
 			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
@@ -182,11 +179,16 @@ export class EventsService {
 					return qb.where("i.is_accepted IS TRUE");
 				},
 			)
-			.where("e.id in (:...id)", {
+			.where("e.create_by_id = :create_by_id", {
+				create_by_id: user.user_id,
+			});
+		if (foundInvitations.length) {
+			eventQuery = eventQuery.orWhere("e.id in (:...id)", {
 				id: foundInvitations.map((e) => e.event_id),
-			})
-			.getMany();
-		if (!foundEvent) {
+			});
+		}
+		const foundEvent = await eventQuery.getMany();
+		if (!foundEvent.length) {
 			throw new EventsNotFoundError(`id: ${user.user_id}`);
 		}
 		return foundEvent;
