@@ -170,10 +170,11 @@
 - [x] User'lar listini chiqarish kerak. Faqat **админ** va **партнерский менеджер** role olishi kerak. 
 - [x] Calendar'da news'ni olib tashlash kerak.
 
----
-
-- [ ] Calendar'da user o'z eventini ko'rishi kerak va o'zi yasagan event'larni ham ko'rishi kerak.
-- [ ] Calendar'da user o'z visit'larni ko'rishi kerak.
-- [ ] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
+### 2024-07-26
+- [x] Calendar'da user o'z eventini ko'rishi kerak va o'zi yasagan event'larni ham ko'rishi kerak.
+- [x] Event contact update qilish.
+- [x] Event time da "HH:MM" formatda kiryapti, database'dan esa "HH:MM:SS" chiqyapti shuni "HH:MM"ga o'tkazish kerak.
+- [x] Calendar'da user o'z visit'larni ko'rishi kerak.
+- [x] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
 - [ ] BaseService ni o'chirib tashlash. Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
 - [ ] Kontur server uchun ping qilish uchun API.

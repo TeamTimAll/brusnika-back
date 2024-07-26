@@ -64,6 +64,8 @@ export class EventsService {
 	async readOne(id: number, user: ICurrentUser) {
 		const foundEvent = await this.eventRepository
 			.createQueryBuilder("e")
+			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
+			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
 			.leftJoinAndSelect("e.contacts", "contacts")
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
@@ -100,6 +102,8 @@ export class EventsService {
 		const pageSize = (dto.page - 1) * dto.limit;
 		let eventsQuery = this.eventRepository
 			.createQueryBuilder("e")
+			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
+			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
 			.leftJoinAndSelect("e.contacts", "contacts")
 			.leftJoinAndSelect("e.invited_users", "event_invition")
 			.loadRelationCountAndMap(
@@ -165,6 +169,8 @@ export class EventsService {
 		}
 		const foundEvent = await this.eventRepository
 			.createQueryBuilder("e")
+			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
+			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
 			.leftJoinAndSelect("e.contacts", "contacts")
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
@@ -186,8 +192,9 @@ export class EventsService {
 		return foundEvent;
 	}
 
-	async createWithContacts(dto: CreateEventsDto) {
+	async createWithContacts(dto: CreateEventsDto, user: ICurrentUser) {
 		const event = this.eventRepository.create(dto);
+		event.create_by_id = user.user_id;
 		const foundCity = await this.citiesService.repository.findOne({
 			select: { id: true },
 			where: { id: dto.city_id },
@@ -214,8 +221,30 @@ export class EventsService {
 		if (!foundEvent) {
 			throw new EventsNotFoundError(`id: ${id}`);
 		}
-		const mergedEvent = this.eventRepository.merge(foundEvent, dto);
-		return await this.eventRepository.save(mergedEvent);
+		await this.eventRepository.update(foundEvent.id, {
+			...dto,
+			contacts: undefined,
+		});
+		const updatedEvent = await this.eventRepository.findOne({
+			where: {
+				id: foundEvent.id,
+			},
+		});
+		if (dto.contacts.length && updatedEvent) {
+			await this.contactsRepository
+				.createQueryBuilder()
+				.delete()
+				.where("event_id = :event_id", { event_id: foundEvent.id })
+				.execute();
+			let contacts = this.contactsRepository.create(dto.contacts);
+			contacts = contacts.map((c) => {
+				c.event_id = foundEvent.id;
+				return c;
+			});
+			updatedEvent.contacts =
+				await this.contactsRepository.save(contacts);
+		}
+		return updatedEvent as EventsEntity;
 	}
 
 	async toggleLike(

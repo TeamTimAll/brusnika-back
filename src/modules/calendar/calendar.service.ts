@@ -46,8 +46,8 @@ export class CalendarService {
 				"e.photo as photo",
 				"e.location as location",
 				"e.date as date",
-				"e.start_time as start_time",
-				"e.end_time as end_time",
+				"to_char(e.start_time, 'HH24:MI') as start_time",
+				"to_char(e.end_time, 'HH24:MI') as end_time",
 				"e.leader as leader",
 				"e.max_visitors as max_visitors",
 				"e.phone as phone",
@@ -56,6 +56,15 @@ export class CalendarService {
 				"e.city_id as city_id",
 				"e.is_banner as is_banner",
 			])
+			.where(
+				"e.id IN (SELECT ei.event_id FROM event_invitation ei WHERE ei.user_id = :user_id)",
+				{
+					user_id: user.user_id,
+				},
+			)
+			.orWhere("e.create_by_id = :create_by_id", {
+				create_by_id: user.user_id,
+			})
 			.orderBy("e.date", "ASC");
 
 		if (dto.date && dto.weekday) {
@@ -71,6 +80,18 @@ export class CalendarService {
 				"e.date",
 				dto.date,
 				weekday,
+			);
+		}
+		if (dto.monthly_date) {
+			visitsQueryBuilder = this.cutByMonthlyRange(
+				visitsQueryBuilder,
+				"v.date",
+				dto.monthly_date,
+			);
+			eventsQueryBuilder = this.cutByMonthlyRange(
+				eventsQueryBuilder,
+				"e.date",
+				dto.monthly_date,
 			);
 		}
 
@@ -119,6 +140,21 @@ export class CalendarService {
 					date: date,
 					weekday_end: weekday + 7,
 				},
+			);
+	}
+
+	cutByMonthlyRange<T extends ObjectLiteral>(
+		qb: SelectQueryBuilder<T>,
+		property: string,
+		date: string,
+	) {
+		return qb
+			.andWhere(`${property} >= DATE_TRUNC('month', CAST(:date AS date))`, {
+				date: date,
+			})
+			.andWhere(
+				`${property} <= DATE_TRUNC('month', CAST(:date AS date)) + INTERVAL '1 month' - INTERVAL '1 millisecond'`,
+				{ date: date },
 			);
 	}
 }
