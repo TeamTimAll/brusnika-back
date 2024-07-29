@@ -42,7 +42,7 @@ export class UserEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	password!: string;
 
-	@Column({ nullable: true, type: "varchar" })
+	@Column({ nullable: true, type: "varchar", unique: true })
 	phone!: string | null;
 
 	@Column({ nullable: true, type: "date" })
