@@ -130,8 +130,8 @@ export class UserDto extends BaseDto {
 }
 
 export class UserCreateDto {
-	@IsMobilePhone()
 	@ApiProperty({ required: true })
+	@IsMobilePhone()
 	phone!: string;
 
 	role?: RoleType;

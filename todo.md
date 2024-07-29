@@ -176,5 +176,8 @@
 - [x] Event time da "HH:MM" formatda kiryapti, database'dan esa "HH:MM:SS" chiqyapti shuni "HH:MM"ga o'tkazish kerak.
 - [x] Calendar'da user o'z visit'larni ko'rishi kerak.
 - [x] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
-- [ ] BaseService ni o'chirib tashlash. Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
+- [x] Telefon raqam user'da unique bo'lishi kerak.
+- [ ] Agency update'dan BaseService update functionalityni olib tashlash kerak.
+- [ ] BaseService ni o'chirib tashlash.
+- [ ] Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
 - [ ] Kontur server uchun ping qilish uchun API.
