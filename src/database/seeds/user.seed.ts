@@ -88,7 +88,7 @@ export async function up(query: QueryBuilder<object>) {
 			email: "jondoeagentblocked@gmail.com",
 			username: "jonagentblocked",
 			password: "jondoeagentblocked",
-			phone: "71234567892",
+			phone: "71234567882",
 			birthDate: new Date("2001-09-11"),
 			workStartDate: null,
 			verification_code: null,
