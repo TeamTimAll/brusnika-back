@@ -8,9 +8,7 @@ import {
 	IsString,
 } from "class-validator";
 
-import { BaseDto } from "../../../common/dto/abstract.dto";
-
-export class AgenciesDto extends BaseDto {
+export class AgenciesDto {
 	@ApiProperty({ description: "The UUID of the user" })
 	@IsInt()
 	@Type(() => Number)

@@ -9,7 +9,7 @@ import {
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { RoleType } from "../../constants";
-import { AgenciesEntity } from "../agencies/agencies.entity";
+import { AgencyEntity } from "../agencies/agencies.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 import { CommentEntity } from "../comments/comment.entity";
@@ -110,9 +110,9 @@ export class UserEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	city_id?: number;
 
-	@ManyToOne(() => AgenciesEntity, (agency) => agency.user)
+	@ManyToOne(() => AgencyEntity, (agency) => agency.user)
 	@JoinColumn({ name: "agency_id" })
-	agency!: AgenciesEntity;
+	agency!: AgencyEntity;
 
 	@Column({ type: "integer", nullable: true })
 	agency_id?: number;

@@ -1,8 +1,14 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	Query,
+	UseInterceptors,
+} from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { BaseDto } from "../../common/base/base_dto";
-import { createLink } from "../../lib/pagination";
+import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
 import { CreateLeadMetaDataDto } from "./dtos/leads.create.dto";
 import { LeadReadByFilter } from "./dtos/leads.dto";
@@ -11,33 +17,23 @@ import { LeadsService } from "./leads.service";
 
 @ApiTags("Leads")
 @Controller("leads")
+@UseInterceptors(TransformInterceptor)
 export class LeadsController {
 	constructor(private dealsService: LeadsService) {}
 
 	@Post()
 	async create(@Body() lead: CreateLeadMetaDataDto) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.dealsService.create(lead.data);
-		return metaData;
+		return await this.dealsService.create(lead.data);
 	}
 
 	@Post("/change-status")
 	async changeStatus(@Query() dto: UpdateLeadDto) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.dealsService.changeStatus(
-			dto.leadId,
-			dto.toStatus,
-		);
-		return metaData;
+		return await this.dealsService.changeStatus(dto.leadId, dto.toStatus);
 	}
 
 	@Get()
 	// @ApiOkResponse({ type: LeadReadAll })
 	async readAll(@Query() dto: LeadReadByFilter) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const serviceResponse = await this.dealsService.readAll(dto);
-		metaData.data = serviceResponse.data;
-		metaData.meta.links = createLink(serviceResponse.links);
-		return metaData;
+		return await this.dealsService.readAll(dto);
 	}
 }

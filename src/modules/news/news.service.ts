@@ -1,8 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { InjectDataSource } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
-import { BasicService } from "../../generic/service";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 
 import { CreateNewsDto } from "./dto/news.create.dto";
@@ -12,7 +11,6 @@ import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsCategoriesService } from "./modules/categories/categories.service";
 import { CreateNewsCategoriesDto } from "./modules/categories/dto/categories.dto";
-import { NewsLikes } from "./modules/likes/likes.entity";
 import { NewsLikesService } from "./modules/likes/likes.service";
 import { NewsViewsService } from "./modules/views/views.service";
 import { NewsEntity } from "./news.entity";
@@ -22,14 +20,11 @@ interface NewsLikedResponse {
 }
 
 @Injectable()
-export class NewsService extends BasicService<
-	NewsEntity,
-	CreateNewsDto,
-	UpdateNewsDto
-> {
-	constructor(@InjectDataSource() dataSource: DataSource) {
-		super("news", NewsEntity, dataSource);
-	}
+export class NewsService {
+	constructor(
+		@InjectRepository(NewsEntity)
+		private newsRepository: Repository<NewsEntity>,
+	) {}
 
 	@Inject()
 	private newsLikesService!: NewsLikesService;
@@ -44,7 +39,7 @@ export class NewsService extends BasicService<
 		body: LikeNewsDto,
 		user: ICurrentUser,
 	): Promise<NewsLikedResponse> {
-		const news = await this.repository.findOne({
+		const news = await this.newsRepository.findOne({
 			where: {
 				id: body.id,
 			},
@@ -55,28 +50,29 @@ export class NewsService extends BasicService<
 		if (!news.is_like_enabled) {
 			throw new NewsLikeNotEnabledError();
 		}
-		const isLiked = await this.newsLikesService.findOneBy<NewsLikes>({
+		const isLiked = await this.newsLikesService.repository.findOne({
 			where: {
 				news_id: news.id,
 				user_id: user.user_id,
 			},
 		});
-		if (isLiked && isLiked.data.length > 0) {
-			await this.newsLikesService.remove(isLiked.data[0].id);
+		if (isLiked) {
+			await this.newsLikesService.repository.delete(isLiked.id);
 			return { is_liked: false };
 		}
-		await this.newsLikesService.create({
+		await this.newsLikesService.repository.save({
 			news_id: news.id,
 			user_id: user.user_id,
 		});
 		return { is_liked: true };
 	}
 
-	async createNews(dto: CreateNewsDto, user: ICurrentUser) {
-		return this.create({
-			...dto,
-			user_id: user.user_id,
-		});
+	async create(dto: CreateNewsDto, user: ICurrentUser) {
+		await this.newsCategoriesService.readOne(dto.primary_category_id);
+		await this.newsCategoriesService.readOne(dto.second_category_id);
+		const news = this.newsRepository.create(dto);
+		news.user_id = user.user_id;
+		return await this.newsRepository.save(news);
 	}
 
 	async createNewsCategory(dto: CreateNewsCategoriesDto) {
@@ -84,11 +80,11 @@ export class NewsService extends BasicService<
 	}
 
 	async getCategories() {
-		return this.newsCategoriesService.findAll();
+		return this.newsCategoriesService.readAll();
 	}
 
-	async r_findOne(id: number, user: ICurrentUser) {
-		const findOne = await this.repository
+	async readOne(id: number, user: ICurrentUser) {
+		const findOne = await this.newsRepository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
@@ -101,21 +97,21 @@ export class NewsService extends BasicService<
 				{ user_id: user.user_id },
 			)
 			.where("news.id = :id", { id })
-			.getMany();
+			.getOne();
 
 		if (!findOne) {
 			throw new NewsNotFoundError(`'${id}' news not found`);
 		}
 
-		const isViewed = await this.newsViewsService.findOneBy({
+		const isViewed = await this.newsViewsService.repository.findOne({
 			where: {
 				news_id: id,
 				user_id: user.user_id,
 			},
 		});
 
-		if (!isViewed || isViewed.data.length === 0) {
-			await this.newsViewsService.create({
+		if (!isViewed) {
+			await this.newsViewsService.repository.save({
 				news_id: id,
 				user_id: user.user_id,
 			});
@@ -124,13 +120,24 @@ export class NewsService extends BasicService<
 		return findOne;
 	}
 
-	async r_findAll() {
-		return this.repository
+	async readAll() {
+		return this.newsRepository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
 			.loadRelationCountAndMap("news.likes_count", "news.likes")
 			.loadRelationCountAndMap("news.views_count", "news.views")
 			.getMany();
+	}
+
+	async update(id: number, dto: UpdateNewsDto) {
+		const foundNews = await this.newsRepository.findOne({
+			where: { id: id },
+		});
+		if (!foundNews) {
+			throw new NewsNotFoundError(`id: ${id}`);
+		}
+		const mergedNews = this.newsRepository.merge(foundNews, dto);
+		return await this.newsRepository.save(mergedNews);
 	}
 }

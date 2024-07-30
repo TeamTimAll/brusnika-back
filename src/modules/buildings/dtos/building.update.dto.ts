@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsNotEmpty, IsString, ValidateNested } from "class-validator";
 
@@ -112,19 +112,8 @@ export class UpdateBuilding {
 
 export class UpdateBuildingMetaDataDto extends BaseDto<UpdateBuilding> {
 	@ApiProperty({
-		example: {
-			name: "building name",
-			total_storage: 22,
-			total_vacant_storage: 12,
-			total_apartment: 22,
-			total_vacant_apartment: 12,
-			total_parking_space: 33,
-			total_vacant_parking_space: 44,
-			total_commercial: 3,
-			total_vacant_commercial: 1,
-			address: "Somewhere for building address",
-			number_of_floors: 3,
-		} as UpdateBuilding,
+		oneOf: [{ $ref: getSchemaPath(UpdateBuilding) }],
+		type: () => UpdateBuilding,
 	})
 	@ValidateNested()
 	@Type(() => UpdateBuilding)

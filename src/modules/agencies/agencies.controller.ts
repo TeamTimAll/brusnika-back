@@ -9,9 +9,12 @@ import {
 	Post,
 	Put,
 	Query,
+	UseGuards,
+	UseInterceptors,
 } from "@nestjs/common";
 import {
 	ApiAcceptedResponse,
+	ApiBearerAuth,
 	ApiCreatedResponse,
 	ApiOkResponse,
 	ApiQuery,
@@ -21,25 +24,32 @@ import {
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { ApiPageOkResponse, User } from "../../decorators";
+import { RolesGuard } from "../../guards/roles.guard";
+import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { AgenciesService } from "./agencies.service";
+import { AgencyEntity } from "./agencies.entity";
+import { AgencyService } from "./agencies.service";
 import { AgenciesDto } from "./dtos/agencies.dto";
-import { CreateAgenciesDto } from "./dtos/create-agencies.dto";
-import { UpdateAgenciesDto } from "./dtos/update-agencies.dto";
+import { CreateAgenciesMetaDataDto } from "./dtos/create-agencies.dto";
+import { UpdateAgenciesMetaDataDto } from "./dtos/update-agencies.dto";
 
-@Controller("/agencies")
 @ApiTags("Agencies")
-export class AgenciesController {
-	constructor(private service: AgenciesService) {}
+@Controller("/agencies")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
+@UseInterceptors(TransformInterceptor)
+export class AgencyController {
+	constructor(private service: AgencyService) {}
 
 	@HttpCode(HttpStatus.CREATED)
 	@ApiCreatedResponse({ type: AgenciesDto })
 	@Post()
-	async createAgencies(
-		@Body() createAgenciesDto: CreateAgenciesDto,
+	async create(
+		@Body() dto: CreateAgenciesMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		return await this.service.create(createAgenciesDto, user);
+		return await this.service.create(dto.data, user);
 	}
 
 	@Get()
@@ -49,35 +59,31 @@ export class AgenciesController {
 		required: false,
 	})
 	@ApiPageOkResponse({ type: AgenciesDto })
-	async getAgencies(@Query("name") name: string): Promise<unknown> {
-		if (name) {
-			return this.service.findAllWithName(name);
-		} else {
-			return this.service.findAll();
-		}
+	async readAll(@Query("name") name?: string): Promise<AgencyEntity[]> {
+		return this.service.readAll(name);
 	}
 
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: AgenciesDto })
-	async getSingleAgencies(@Param("id") id: number): Promise<unknown> {
-		return await this.service.findOne(id);
+	async readOne(@Param("id") id: number): Promise<AgencyEntity> {
+		return await this.service.readOne(id);
 	}
 
 	@Put(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	updateAgencies(
+	update(
 		@Param("id") id: number,
-		@Body() updateAgenciesDto: UpdateAgenciesDto,
-	): Promise<unknown> {
-		return this.service.update(id, updateAgenciesDto);
+		@Body() dto: UpdateAgenciesMetaDataDto,
+	): Promise<AgencyEntity> {
+		return this.service.update(id, dto.data);
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	async deleteAgencies(@Param("id") id: number): Promise<void> {
-		await this.service.remove(id);
+	async delete(@Param("id") id: number): Promise<AgencyEntity> {
+		return await this.service.delete(id);
 	}
 }

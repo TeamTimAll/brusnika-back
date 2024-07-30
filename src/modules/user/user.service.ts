@@ -43,6 +43,18 @@ export class UserService {
 		return this.userRepository.find();
 	}
 
+	async readOne(id: number) {
+		const foundUser = await this.userRepository.findOne({
+			where: {
+				id: id,
+			},
+		});
+		if (!foundUser) {
+			throw new UserNotFoundError(`id: ${id}`);
+		}
+		return foundUser;
+	}
+
 	findOne(
 		findData: FindOptionsWhere<UserEntity>,
 	): Promise<UserEntity | null> {
@@ -76,7 +88,7 @@ export class UserService {
 		return savedUser;
 	}
 
-	async getUser(userId: number, full = true): Promise<UserDto> {
+	async getUser(userId: number, full = true): Promise<UserEntity> {
 		// const queryBuilder = await this.userRepository.createQueryBuilder('user');
 
 		// await queryBuilder.where('user.id = :userId', { userId });

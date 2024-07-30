@@ -1,10 +1,9 @@
-import { HttpStatus, Inject, Injectable } from "@nestjs/common";
-import { InjectDataSource } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
-import { BasicService } from "../../generic/service";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
+import { LikedResponse } from "../events/events.service";
 
 import { CreateTrainingsDto } from "./dto/trainings.create.dto";
 import { LikeTrainingsDto } from "./dto/trainings.dto";
@@ -17,58 +16,59 @@ import { TrainingsViewsService } from "./modules/views/views.service";
 import { TrainingsEntity } from "./trainings.entity";
 
 @Injectable()
-export class TrainingsService extends BasicService<
-	TrainingsEntity,
-	CreateTrainingsDto,
-	UpdateTrainingsDto
-> {
-	constructor(@InjectDataSource() dataSource: DataSource) {
-		super("trainings", TrainingsEntity, dataSource);
-	}
+export class TrainingsService {
+	constructor(
+		@InjectRepository(TrainingsEntity)
+		private trainingsRepository: Repository<TrainingsEntity>,
+	) {}
 
 	@Inject()
 	private trainingsLikesService!: TrainingsLikesService;
-
 	@Inject()
 	private trainingsCategoriesService!: TrainingsCategoriesService;
-
 	@Inject()
 	private trainingsViewsService!: TrainingsViewsService;
 
-	async likeTrainings(body: LikeTrainingsDto, user: ICurrentUser) {
-		const trainings = await this.repository.findOne({
+	async likeTrainings(
+		body: LikeTrainingsDto,
+		user: ICurrentUser,
+	): Promise<LikedResponse> {
+		const trainings = await this.trainingsRepository.findOne({
 			where: {
 				id: body.id,
 			},
 		});
 		if (trainings && trainings.is_like_enabled) {
-			const isLiked =
-				await this.trainingsLikesService.findOneBy<TrainingsEntity>({
+			const isLiked = await this.trainingsLikesService.repository.findOne(
+				{
 					where: {
 						trainings_id: trainings.id,
 						user_id: user.user_id,
 					},
-				});
+				},
+			);
 
-			if (isLiked && isLiked.data.length > 0) {
-				await this.trainingsLikesService.remove(isLiked.data[0].id);
-				return "Unliked";
+			if (isLiked) {
+				await this.trainingsLikesService.repository.delete(isLiked.id);
+				return { is_liked: false };
 			}
 
-			await this.trainingsLikesService.create({
+			await this.trainingsLikesService.repository.save({
 				trainings_id: trainings.id,
 				user_id: user.user_id,
 			});
 
-			return "Liked";
+			return { is_liked: true };
 		}
+		return { is_liked: false };
 	}
 
-	async createTrainings(dto: CreateTrainingsDto, user: ICurrentUser) {
-		return this.create({
-			...dto,
-			user_id: user.user_id,
-		});
+	async create(dto: CreateTrainingsDto, user: ICurrentUser) {
+		await this.trainingsCategoriesService.readOne(dto.primary_category_id);
+		await this.trainingsCategoriesService.readOne(dto.second_category_id);
+		const training = this.trainingsRepository.create(dto);
+		training.user_id = user.user_id;
+		return await this.trainingsRepository.save(training);
 	}
 
 	async createTrainingsCategory(dto: CreateTrainingsCategoriesDto) {
@@ -76,11 +76,11 @@ export class TrainingsService extends BasicService<
 	}
 
 	async getCategories() {
-		return this.trainingsCategoriesService.findAll();
+		return this.trainingsCategoriesService.readAll();
 	}
 
-	async r_findOne(id: number, user: ICurrentUser): Promise<unknown> {
-		const findOne = await this.repository
+	async readOne(id: number, user: ICurrentUser): Promise<unknown> {
+		const findOne = await this.trainingsRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
 			.leftJoinAndSelect(
@@ -96,33 +96,31 @@ export class TrainingsService extends BasicService<
 				{ user_id: user.user_id },
 			)
 			.where("trainings.id = :id", { id })
-			.getRawAndEntities();
+			.getOne();
 
 		if (!findOne) {
 			throw new TrainingsNotFoundError(`'${id}' trainings not found`);
 		}
 
-		const isViewed = await this.trainingsViewsService.findOneBy({
+		const isViewed = await this.trainingsViewsService.repository.findOne({
 			where: {
 				trainings_id: id,
 				user_id: user.user_id,
 			},
 		});
 
-		if (!isViewed || isViewed.data.length === 0) {
-			await this.trainingsViewsService.create({
+		if (!isViewed) {
+			await this.trainingsViewsService.repository.save({
 				trainings_id: id,
 				user_id: user.user_id,
 			});
 		}
 
-		return new ServiceResponse(["trainings data"], HttpStatus.OK, [
-			findOne,
-		]);
+		return findOne;
 	}
 
-	async r_findAll() {
-		return this.repository
+	async readAll() {
+		return this.trainingsRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
 			.leftJoinAndSelect(
@@ -132,5 +130,21 @@ export class TrainingsService extends BasicService<
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
 			.getMany();
+	}
+
+	async update(id: number, dto: UpdateTrainingsDto) {
+		const foundTraining = await this.trainingsRepository.findOne({
+			where: {
+				id: id,
+			},
+		});
+		if (!foundTraining) {
+			throw new TrainingsNotFoundError(`id: ${id}`);
+		}
+		const mergedTraining = this.trainingsRepository.merge(
+			foundTraining,
+			dto,
+		);
+		return await this.trainingsRepository.save(mergedTraining);
 	}
 }

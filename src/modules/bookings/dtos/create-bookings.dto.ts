@@ -1,13 +1,15 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsDateString,
 	IsEnum,
 	IsInt,
 	IsMilitaryTime,
 	IsOptional,
+	ValidateNested,
 } from "class-validator";
-import { Type } from "class-transformer";
 
+import { BaseDto } from "../../../common/base/base_dto";
 import { PuchaseOptions } from "../../premises/premises.entity";
 import { BookingStatus } from "../bookings.entity";
 
@@ -54,12 +56,12 @@ export class CreateBookingsDto {
 	status?: BookingStatus;
 }
 
-// export class CreateBookingsMetaDataDto extends BaseDto<CreateBookingsDto> {
-// 	// @ApiProperty({
-// 	// 	oneOf: [{ $ref: getSchemaPath(CreateBookingsDto) }],
-// 	// 	type: () => CreateBookingsDto,
-// 	// })
-// 	// @ValidateNested()
-// 	// @Type(() => CreateBookingsDto)
-// 	declare data: CreateBookingsDto;
-// }
+export class CreateBookingsMetaDataDto extends BaseDto<CreateBookingsDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(CreateBookingsDto) }],
+		type: () => CreateBookingsDto,
+	})
+	@ValidateNested()
+	@Type(() => CreateBookingsDto)
+	declare data: CreateBookingsDto;
+}

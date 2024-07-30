@@ -1,17 +1,17 @@
-import { InjectDataSource } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
-
-import { BasicService } from "../../../../generic/service";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 import { NewsViews } from "./views.entity";
-import { CreateNewsViewsDto, UpdateNewsViewsDto } from "./dto/views.dto";
 
-export class NewsViewsService extends BasicService<
-	NewsViews,
-	CreateNewsViewsDto,
-	UpdateNewsViewsDto
-> {
-	constructor(@InjectDataSource() dataSource: DataSource) {
-		super("newsViews", NewsViews, dataSource);
+@Injectable()
+export class NewsViewsService {
+	constructor(
+		@InjectRepository(NewsViews)
+		private newsViewsRepository: Repository<NewsViews>,
+	) {}
+
+	get repository(): Repository<NewsViews> {
+		return this.newsViewsRepository;
 	}
 }

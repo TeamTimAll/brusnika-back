@@ -6,7 +6,7 @@ import {
 	IsInt,
 	IsOptional,
 } from "class-validator";
-import { Transform } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
 import { RussianWeekdaysString } from "../../../common/enums/weekdays";
 
@@ -33,6 +33,7 @@ export class CalendarDto {
 	@ApiProperty({ required: false })
 	@IsInt()
 	@IsOptional()
+	@Type(() => Number)
 	city_id?: number;
 
 	@ApiProperty({ required: false })

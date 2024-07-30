@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsEmail,
@@ -6,42 +6,63 @@ import {
 	IsMobilePhone,
 	IsOptional,
 	IsString,
+	ValidateNested,
 } from "class-validator";
 
+import { BaseDto } from "../../../common/base/base_dto";
+
 export class CreateAgenciesDto {
-	@ApiProperty({ description: "The title of the agency" })
+	@ApiProperty({
+		default: "Louisville KY",
+		description: "The title of the agency",
+	})
 	@IsString()
 	title!: string;
 
-	@ApiProperty({ description: "The UUID of the city" })
+	@ApiProperty({ default: 1, description: "The id of the city" })
 	@IsInt()
 	@Type(() => Number)
 	city_id!: number;
 
-	@ApiProperty({ description: "The legal name of the agency" })
+	@ApiProperty({
+		default: "Louisville KY LLC",
+		description: "The legal name of the agency",
+	})
 	@IsString()
 	legalName?: string;
 
 	@ApiProperty({
+		default: "",
 		description: "The tax identification number of the agency",
 	})
 	@IsString()
 	inn?: string;
 
-	@ApiProperty({ description: "The phone number of the agency" })
+	@ApiProperty({
+		default: "78652385693",
+		description: "The phone number of the agency",
+	})
 	@IsMobilePhone()
 	phone?: string;
 
-	@ApiProperty({ description: "The email address of the agency" })
+	@ApiProperty({
+		default: "russian@gmail.com",
+		description: "The email address of the agency",
+	})
 	@IsEmail()
 	email?: string;
 
-	@ApiProperty({ description: "The full name of the owner", required: false })
+	@ApiProperty({
+		default: "Ivan",
+		description: "The full name of the owner",
+		required: false,
+	})
 	@IsOptional()
 	@IsString()
 	ownerFullName?: string;
 
 	@ApiProperty({
+		default: "78652385693",
 		description: "The phone number of the owner",
 		required: false,
 	})
@@ -49,17 +70,26 @@ export class CreateAgenciesDto {
 	@IsMobilePhone()
 	ownerPhone?: string;
 
-	@ApiProperty({ description: "Document for entry", required: false })
+	@ApiProperty({
+		default: "",
+		description: "Document for entry",
+		required: false,
+	})
 	@IsOptional()
 	@IsString()
 	entry_doc?: string;
 
-	@ApiProperty({ description: "Document for company card", required: false })
+	@ApiProperty({
+		default: "",
+		description: "Document for company card",
+		required: false,
+	})
 	@IsOptional()
 	@IsString()
 	company_card_doc?: string;
 
 	@ApiProperty({
+		default: "",
 		description: "Document for tax registration",
 		required: false,
 	})
@@ -68,6 +98,7 @@ export class CreateAgenciesDto {
 	tax_registration_doc?: string;
 
 	@ApiProperty({
+		default: "",
 		description: "Document for authority signatory",
 		required: false,
 	})
@@ -76,21 +107,44 @@ export class CreateAgenciesDto {
 	authority_signatory_doc?: string;
 }
 
+export class CreateAgenciesMetaDataDto extends BaseDto<CreateAgenciesDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(CreateAgenciesDto) }],
+		type: () => CreateAgenciesDto,
+	})
+	@ValidateNested()
+	@Type(() => CreateAgenciesDto)
+	declare data: CreateAgenciesDto;
+}
+
 export class CreateExistentAgenciesDto {
-	@ApiProperty({ description: "The title of the agency" })
+	@ApiProperty({
+		default: "Louisville KY",
+		description: "The title of the agency",
+	})
 	@IsString()
 	title!: string;
 
-	@ApiProperty({ description: "The UUID of the city" })
+	@ApiProperty({ default: 1, description: "The id of the city" })
 	@IsInt()
 	@Type(() => Number)
 	city_id!: number;
 
-	@ApiProperty({ description: "The full name of the owner" })
+	@ApiProperty({
+		default: "Ivan",
+		description: "The full name of the owner",
+		required: false,
+	})
+	@IsOptional()
 	@IsString()
-	ownerFullName!: string;
+	ownerFullName?: string;
 
-	@ApiProperty({ description: "The phone number of the owner" })
+	@ApiProperty({
+		default: "78652385693",
+		description: "The phone number of the owner",
+		required: false,
+	})
+	@IsOptional()
 	@IsMobilePhone()
-	ownerPhone!: string;
+	ownerPhone?: string;
 }

@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsBoolean,
@@ -12,15 +12,16 @@ import {
 	IsOptional,
 	IsString,
 	MaxLength,
+	ValidateNested,
 } from "class-validator";
 
-import { BaseDto } from "../../../common/dto/abstract.dto";
+import { BaseDto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
 import { UserEntity, UserRegisterStatus } from "../user.entity";
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
-export class UserDto extends BaseDto {
+export class UserDto {
 	@IsString()
 	@IsOptional()
 	firstName?: string | null;
@@ -107,7 +108,6 @@ export class UserDto extends BaseDto {
 	status: boolean;
 
 	constructor(user: UserEntity) {
-		super(user);
 		this.firstName = user.firstName;
 		this.lastName = user.lastName;
 		this.role = user.role;
@@ -137,12 +137,32 @@ export class UserCreateDto {
 	role?: RoleType;
 }
 
+export class UserCreateMetaDataDto extends BaseDto<UserCreateDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(UserCreateDto) }],
+		type: () => UserCreateDto,
+	})
+	@ValidateNested()
+	@Type(() => UserCreateDto)
+	declare data: UserCreateDto;
+}
+
 export class UserChangePhoneVerifyCodeDto {
 	@IsNumber()
 	@ApiProperty({
 		required: true,
 	})
 	code!: number;
+}
+
+export class UserChangePhoneVerifyCodeMetaDataDto extends BaseDto<UserChangePhoneVerifyCodeDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(UserChangePhoneVerifyCodeDto) }],
+		type: () => UserChangePhoneVerifyCodeDto,
+	})
+	@ValidateNested()
+	@Type(() => UserChangePhoneVerifyCodeDto)
+	declare data: UserChangePhoneVerifyCodeDto;
 }
 
 export class UserUpdateDto {
@@ -194,6 +214,16 @@ export class UserUpdateDto {
 	city_id?: number;
 }
 
+export class UserUpdateMetaDataDto extends BaseDto<UserUpdateDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(UserUpdateDto) }],
+		type: () => UserUpdateDto,
+	})
+	@ValidateNested()
+	@Type(() => UserUpdateDto)
+	declare data: UserUpdateDto;
+}
+
 export class UserFillDataDto {
 	@IsInt()
 	@Type(() => Number)
@@ -228,6 +258,16 @@ export class UserFillDataDto {
 	@IsEmail()
 	@ApiProperty({ required: true })
 	email!: string;
+}
+
+export class UserFillDataMetaDataDto extends BaseDto<UserFillDataDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(UserFillDataDto) }],
+		type: () => UserFillDataDto,
+	})
+	@ValidateNested()
+	@Type(() => UserFillDataDto)
+	declare data: UserFillDataDto;
 }
 
 export class UserLoginDto {

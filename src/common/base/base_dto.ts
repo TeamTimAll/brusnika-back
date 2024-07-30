@@ -1,3 +1,4 @@
+import { ExecutionContext, createParamDecorator } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
@@ -47,7 +48,7 @@ export class MetaDto<T = object> {
 }
 
 export class BaseDto<T = unknown> {
-	@ApiProperty({ required: false, type: MetaDto })
+	@ApiProperty({ required: false })
 	@IsOptional()
 	@ValidateNested()
 	@Type(() => MetaDto)
@@ -81,18 +82,25 @@ export class BaseDto<T = unknown> {
 		dto.meta ??= new MetaDto();
 		dto.meta.type ??= ResponseStatusType.SUCCESS;
 		// TODO: auto generate taskID if it is null or undefined
-		dto.meta.taskId = "";
+		// dto.meta.taskId = "";
 		dto.meta.params ??= {};
 
 		// Filling prompt if it is null or undefined
-		dto.meta.prompt ??= new MetaPrompt();
-		dto.meta.prompt.id ??= 0;
-		dto.meta.prompt.labels ??= { ru: "", uz: "", en: "" };
-		dto.meta.prompt.meta ??= {};
+		// dto.meta.prompt ??= new MetaPrompt();
+		// dto.meta.prompt.id ??= 0;
+		// dto.meta.prompt.labels ??= { ru: "", uz: "", en: "" };
+		// dto.meta.prompt.meta ??= {};
 
 		// Filling data if it is null or undefined
-		dto.data ??= data;
+		dto.data = data ? data : null;
 
 		return dto;
 	}
 }
+
+export const MetaData = createParamDecorator(
+	<T extends BaseDto>(data: T, _ctx: ExecutionContext) => {
+		const metaData = BaseDto.createFromDto(data ?? new BaseDto());
+		return metaData;
+	},
+);

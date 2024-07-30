@@ -8,6 +8,7 @@ import {
 	Post,
 	Put,
 	Query,
+	UseInterceptors,
 } from "@nestjs/common";
 import {
 	ApiAcceptedResponse,
@@ -17,38 +18,38 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { CreateSectionsDto } from "./dtos/create-sections.dto";
+import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+
+import { CreateSectionsMetaDataDto } from "./dtos/create-sections.dto";
 import { SectionsDto } from "./dtos/sections.dto";
-import { UpdateSectionsDto } from "./dtos/update-sections.dto";
+import { UpdateSectionsMetaDataDto } from "./dtos/update-sections.dto";
 import { SectionsService } from "./sections.service";
 
 @Controller("/sections")
 @ApiTags("Sections")
+@UseInterceptors(TransformInterceptor)
 export class SectionsController {
 	constructor(private service: SectionsService) {}
 
 	@ApiOperation({ summary: "Create a section" })
 	@ApiResponse({ status: HttpStatus.CREATED, type: SectionsDto })
 	@Post()
-	async createsection(@Body() createSectionsDto: CreateSectionsDto) {
-		return await this.service.create(createSectionsDto);
+	async createsection(@Body() dto: CreateSectionsMetaDataDto) {
+		return await this.service.create(dto.data);
 	}
 
 	@ApiOperation({ summary: "Get all Sections" })
 	@ApiQuery({ name: "building_id", required: false })
-	@Get("/")
+	@Get()
 	async getSections(@Query("building_id") building_id: number) {
-		if (building_id) {
-			return await this.service.r_findAll({ where: { building_id } });
-		}
-		return await this.service.r_findAll();
+		return await this.service.readAll(building_id);
 	}
 
 	@ApiOperation({ summary: "Get a single section by ID" })
 	@ApiResponse({ status: HttpStatus.OK, type: SectionsDto })
 	@Get(":id")
 	async getSinglesection(@Param("id") id: number) {
-		return await this.service.findOne(id);
+		return await this.service.readOne(id);
 	}
 
 	@ApiOperation({ summary: "Update a section by ID" })
@@ -56,15 +57,15 @@ export class SectionsController {
 	@Put(":id")
 	async updatesection(
 		@Param("id") id: number,
-		@Body() updateSectionsDto: UpdateSectionsDto,
+		@Body() dto: UpdateSectionsMetaDataDto,
 	) {
-		await this.service.update(id, updateSectionsDto);
+		return await this.service.update(id, dto.data);
 	}
 
 	@ApiOperation({ summary: "Delete a section by ID" })
 	@ApiAcceptedResponse()
 	@Delete(":id")
 	async deletesection(@Param("id") id: number) {
-		await this.service.remove(id);
+		return await this.service.delete(id);
 	}
 }

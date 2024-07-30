@@ -1,9 +1,11 @@
 import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { TrainingsLikes } from "./likes.entity";
 import { TrainingsLikesService } from "./likes.service";
 
 @Module({
-	imports: [],
+	imports: [TypeOrmModule.forFeature([TrainingsLikes])],
 	providers: [TrainingsLikesService],
 	exports: [TrainingsLikesService],
 })

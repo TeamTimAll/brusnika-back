@@ -5,7 +5,7 @@ import { CitiesEntity } from "../cities/cities.entity";
 import { UserEntity } from "../user/user.entity";
 
 @Entity({ name: "agencies" })
-export class AgenciesEntity extends BaseEntity {
+export class AgencyEntity extends BaseEntity {
 	@OneToMany(() => UserEntity, (userEntity) => userEntity.agency, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
@@ -55,6 +55,16 @@ export class AgenciesEntity extends BaseEntity {
 
 	@Column({ nullable: true, type: "varchar" })
 	authority_signatory_doc!: string | null;
+
+	@ManyToOne(() => UserEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
+	@JoinColumn({ name: "create_by_id" })
+	create_by!: UserEntity;
+
+	@Column({ nullable: true, type: "integer" })
+	create_by_id?: number;
 
 	// @Column({ nullable: true, type: 'varchar' })
 	// description!: string;

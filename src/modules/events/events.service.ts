@@ -3,16 +3,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
-import { ServiceResponse } from "types";
 
 import { RoleType } from "../../constants";
 import { calcPagination } from "../../lib/pagination";
-import { AgenciesService } from "../../modules/agencies/agencies.service";
+import { AgencyService } from "../../modules/agencies/agencies.service";
 import { AgencyNotFoundError } from "../../modules/agencies/errors/AgencyNotFound.error";
-import { CitiesService } from "../../modules/cities/cities.service";
-import { CityNotFoundError } from "../../modules/cities/errors/CityNotFound.error";
+import { CityService } from "../../modules/cities/cities.service";
 import { UserNotFoundError } from "../../modules/user/errors/UserNotFound.error";
 import { UserService } from "../../modules/user/user.service";
+import { ServiceResponse } from "../../types";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { FilterEventsDto, QueryType } from "./dtos/events.dto";
@@ -32,7 +31,7 @@ import { UserAlreadyRegisteredToEventError } from "./errors/UserAlreadyRegistere
 import { EventsNotFoundError } from "./errors/events-not-found.error";
 import { EventsEntity } from "./events.entity";
 
-export interface EventLikedResponse {
+export interface LikedResponse {
 	is_liked: boolean;
 }
 
@@ -52,9 +51,9 @@ export class EventsService {
 		@Inject()
 		private userService: UserService,
 		@Inject()
-		private agenciesService: AgenciesService,
+		private agenciesService: AgencyService,
 		@Inject()
-		private citiesService: CitiesService,
+		private citiesService: CityService,
 	) {}
 
 	get repository() {
@@ -152,10 +151,9 @@ export class EventsService {
 
 		eventsQuery = eventsQuery.limit(dto.limit).offset(pageSize);
 
-		const eventsResponse: ServiceResponse<EventsEntity[]> = {
-			links: calcPagination(eventCount, dto.page, dto.limit),
-			data: await eventsQuery.getMany(),
-		};
+		const eventsResponse = new ServiceResponse<EventsEntity[]>();
+		eventsResponse.links = calcPagination(eventCount, dto.page, dto.limit);
+		eventsResponse.data = await eventsQuery.getMany();
 		return eventsResponse;
 	}
 
@@ -194,16 +192,10 @@ export class EventsService {
 		return foundEvent;
 	}
 
-	async createWithContacts(dto: CreateEventsDto, user: ICurrentUser) {
+	async create(dto: CreateEventsDto, user: ICurrentUser) {
 		const event = this.eventRepository.create(dto);
 		event.create_by_id = user.user_id;
-		const foundCity = await this.citiesService.repository.findOne({
-			select: { id: true },
-			where: { id: dto.city_id },
-		});
-		if (!foundCity) {
-			throw new CityNotFoundError(`id: ${dto.city_id}`);
-		}
+		await this.citiesService.readOne(dto.city_id);
 		const newEvent = await this.eventRepository.save(event);
 		let contacts = this.contactsRepository.create(dto.contacts);
 		contacts = contacts.map((e) => {
@@ -214,7 +206,7 @@ export class EventsService {
 		return newEvent;
 	}
 
-	async updateWithContacts(id: number, dto: UpdateEventsDto) {
+	async update(id: number, dto: UpdateEventsDto) {
 		const foundEvent = await this.eventRepository.findOne({
 			where: {
 				id: id,
@@ -252,7 +244,7 @@ export class EventsService {
 	async toggleLike(
 		body: LikeEventDto,
 		user: ICurrentUser,
-	): Promise<EventLikedResponse> {
+	): Promise<LikedResponse> {
 		const event = await this.eventRepository.findOne({
 			where: {
 				id: body.id,
