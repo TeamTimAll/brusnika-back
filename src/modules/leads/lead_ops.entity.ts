@@ -1,9 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
+import { BaseEntity } from "../../common/base/base.entity";
 
-import { LeadsDto } from "./dtos/leads.dto";
 import { LeadsEntity } from "./leads.entity";
 
 export enum LeadOpStatus {
@@ -29,8 +27,7 @@ export enum PremisesType {
 }
 
 @Entity({ name: "lead_ops" })
-@UseDto(LeadsDto)
-export class LeadOpsEntity extends AbstractEntity<LeadsDto> {
+export class LeadOpsEntity extends BaseEntity {
 	@ManyToOne(() => LeadsEntity, (type) => type.lead_ops)
 	@JoinColumn({ name: "lead_id" })
 	lead!: LeadsEntity;

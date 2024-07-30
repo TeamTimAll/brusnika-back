@@ -3,7 +3,6 @@ import {
 	Controller,
 	Delete,
 	Get,
-	HttpStatus,
 	Param,
 	Post,
 	Put,
@@ -20,33 +19,24 @@ import {
 
 import { BaseDto } from "../../common/base/base_dto";
 import { User } from "../../decorators";
+import { RolesGuard } from "../../guards/roles.guard";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateVisitsMetaDataDto } from "./dtos/create-visits.dto";
 import { UpdateVisitsMetaDataDto } from "./dtos/update-visits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
-import { VisitsEntity } from "./visits.entity";
 import { VisitsService } from "./visits.service";
 
 @ApiTags("Visits")
 @Controller("/visits")
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class VisitsController {
 	constructor(private service: VisitsService) {}
 
 	// -------------------------------@Post()-----------------------------------
 	@ApiOperation({ summary: "Create a visit" })
-	@ApiResponse({
-		status: HttpStatus.CREATED,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				VisitsEntity.toDto({}),
-			),
-		},
-	})
 	@Post()
 	createCity(
 		@User() user: ICurrentUser,
@@ -64,14 +54,6 @@ export class VisitsController {
 		required: false,
 	})
 	@ApiOperation({ summary: "Get all visits" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto(), [
-				VisitsEntity.toDto({}),
-			]),
-		},
-	})
 	@Get()
 	@ApiResponse({
 		status: new VisitNotFoundError().status,
@@ -89,15 +71,6 @@ export class VisitsController {
 	}
 	// ----------------------------@Get(":id")----------------------------------
 	@ApiOperation({ summary: "Get a single visit by ID" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				VisitsEntity.toDto({}),
-			),
-		},
-	})
 	@ApiResponse({
 		status: new VisitNotFoundError().status,
 		schema: {
@@ -118,15 +91,6 @@ export class VisitsController {
 	}
 	// ---------------------------@Put(":id")-----------------------------------
 	@ApiOperation({ summary: "Update a visit by ID" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto<VisitsEntity>(),
-				VisitsEntity.toDto({}),
-			),
-		},
-	})
 	@Put(":id")
 	async updateCity(
 		@Param("id") id: number,
@@ -140,15 +104,6 @@ export class VisitsController {
 	}
 	// ---------------------------@Delete(":id")-------------------------------
 	@ApiOperation({ summary: "Delete a visit by ID" })
-	@ApiResponse({
-		status: HttpStatus.OK,
-		schema: {
-			example: BaseDto.createFromDto(
-				new BaseDto(),
-				VisitsEntity.toDto({}),
-			),
-		},
-	})
 	@Delete(":id")
 	async deleteCity(@Param("id") id: number) {
 		const metaData = BaseDto.createFromDto(new BaseDto());

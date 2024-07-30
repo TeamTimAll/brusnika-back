@@ -1,7 +1,5 @@
 import { QueryBuilder } from "typeorm";
 
-import { WithOutToDto } from "types";
-
 import {
 	BookingStatus,
 	BookingsEntity,
@@ -35,11 +33,9 @@ export async function up(query: QueryBuilder<object>) {
 		})
 		.getRawMany<UserEntity>();
 
-	const bookings: WithOutToDto<
-		Omit<
-			BookingsEntity,
-			"id" | "premise" | "client" | "agent" | "createdAt" | "updatedAt"
-		>
+	const bookings: Omit<
+		BookingsEntity,
+		"id" | "premise" | "client" | "agent" | "createdAt" | "updatedAt"
 	>[] = [
 		{
 			agent_id: agent.id,

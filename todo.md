@@ -140,10 +140,44 @@
 - [x] Calendar'da events entity'ga e_ prefix qo'shilyapti. Shuni olib tashlash kerak.
 - [x] Calendar'da project photo'si kerak.
 - [x] News get one'da raw entity qaytarilgan. To'g'irlash kerak.
+
+### 2024-07-23
 - [x] Events'da views va likes count field'lar kerak.
-- [ ] Events'da kun bo'yicha filter kerak.
-- [ ] Events'ga like bosganda like count ko'payishi kerak. Dislike and like
-- [ ] Events'ga ```is_draft``` field qo'shib berish kerak.
-- [ ] Events'ga userlarni ham biriktirish kerak. User'ga taklif yuboriladi. User taklifni qabul qilishi yoki rad etishi mumkin.
-- [ ] Event'ga user'larni birikishni olib tashlash imkoniyati.
-- [ ] Event'ga user o'zi ham register qila oladi.
+- [x] Events'da kun bo'yicha filter kerak.
+- [x] Events'ga ```is_draft``` field qo'shib berish kerak.
+- [x] Events'ga like bosganda like count ko'payishi kerak. Dislike and like
+- [x] Events'ga userlarni ham biriktirish kerak. User'ga taklif yuboriladi. Userlarni biriktirish bluk import shaklida bo'lishi kerak.
+
+### 2024-07-24
+- [x] User taklifni qabul qilishi yoki rad etishi mumkin.
+- [x] Event'ga user'larni birikishni olib tashlash imkoniyati.
+- [x] Event'ga user o'zi ham register qila oladi.
+- [x] Event'da agar max_visitors sonidan tashqari yana invite qilmoqchi bo'lsa error chiqarish.
+- [x] Front dev uchun domain ulash. URI: https://dev-dashboard-brusnika.teamtim.tech
+- [x] Event'da accept qilganlarni count'ni chiqarish.
+- [x] My events api kerak.
+- [x] Event'ni read all qilganida is_draft true'larni chiqarmaslik. 
+    - [x] Calendar'da ham.
+    - [x] User'ga nisbattan olish kerak. Yani faqat Admin draft'larni ko'ra oladi.
+- [x] Event'da is_banner bilan query.
+
+### 2024-07-25
+- [x] Event'ga agency user'larni biriktirish. Agency id beriladi. Agar berilgan agency'da userlar soni event max_visitors sonidan ko'p bo'lsa error chiqarish kerak.
+- [x] Events'ni read all qilishda feature yoki all query beriladi. default feature bo'ladi. feature'da kelajakda rejalashtirilayotgan eventlar beriladi. all'da esa hammasi.
+- [x] Event'ga role bilan yasashi va invite qilishi. Ruxsat **админ**, **партнерский менеджер** role'larga beriladi.
+- [x] Event pagination.
+- [x] Events'ga tag qo'shish kerak.
+- [x] User'lar listini chiqarish kerak. Faqat **админ** va **партнерский менеджер** role olishi kerak. 
+- [x] Calendar'da news'ni olib tashlash kerak.
+
+### 2024-07-26
+- [x] Calendar'da user o'z eventini ko'rishi kerak va o'zi yasagan event'larni ham ko'rishi kerak.
+- [x] Event contact update qilish.
+- [x] Event time da "HH:MM" formatda kiryapti, database'dan esa "HH:MM:SS" chiqyapti shuni "HH:MM"ga o'tkazish kerak.
+- [x] Calendar'da user o'z visit'larni ko'rishi kerak.
+- [x] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
+- [x] Telefon raqam user'da unique bo'lishi kerak.
+- [ ] Agency update'dan BaseService update functionalityni olib tashlash kerak.
+- [ ] BaseService ni o'chirib tashlash.
+- [ ] Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
+- [ ] Kontur server uchun ping qilish uchun API.

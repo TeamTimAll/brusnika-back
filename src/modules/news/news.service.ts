@@ -8,6 +8,7 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { CreateNewsDto } from "./dto/news.create.dto";
 import { LikeNewsDto } from "./dto/news.dto";
 import { UpdateNewsDto } from "./dto/news.update.dto";
+import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsCategoriesService } from "./modules/categories/categories.service";
 import { CreateNewsCategoriesDto } from "./modules/categories/dto/categories.dto";
@@ -15,6 +16,10 @@ import { NewsLikes } from "./modules/likes/likes.entity";
 import { NewsLikesService } from "./modules/likes/likes.service";
 import { NewsViewsService } from "./modules/views/views.service";
 import { NewsEntity } from "./news.entity";
+
+interface NewsLikedResponse {
+	is_liked: boolean;
+}
 
 @Injectable()
 export class NewsService extends BasicService<
@@ -35,32 +40,36 @@ export class NewsService extends BasicService<
 	@Inject()
 	private newsViewsService!: NewsViewsService;
 
-	async likeNews(body: LikeNewsDto, user: ICurrentUser) {
+	async toggleLike(
+		body: LikeNewsDto,
+		user: ICurrentUser,
+	): Promise<NewsLikedResponse> {
 		const news = await this.repository.findOne({
 			where: {
 				id: body.id,
 			},
 		});
-		if (news && news.is_like_enabled) {
-			const isLiked = await this.newsLikesService.findOneBy<NewsLikes>({
-				where: {
-					news_id: news.id,
-					user_id: user.user_id,
-				},
-			});
-
-			if (isLiked && isLiked.data.length > 0) {
-				await this.newsLikesService.remove(isLiked.data[0].id);
-				return "Unliked";
-			}
-
-			await this.newsLikesService.create({
+		if (!news) {
+			throw new NewsNotFoundError(`id: ${body.id}`);
+		}
+		if (!news.is_like_enabled) {
+			throw new NewsLikeNotEnabledError();
+		}
+		const isLiked = await this.newsLikesService.findOneBy<NewsLikes>({
+			where: {
 				news_id: news.id,
 				user_id: user.user_id,
-			});
-
-			return "Liked";
+			},
+		});
+		if (isLiked && isLiked.data.length > 0) {
+			await this.newsLikesService.remove(isLiked.data[0].id);
+			return { is_liked: false };
 		}
+		await this.newsLikesService.create({
+			news_id: news.id,
+			user_id: user.user_id,
+		});
+		return { is_liked: true };
 	}
 
 	async createNews(dto: CreateNewsDto, user: ICurrentUser) {

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsInt, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
+import { IsEnum, IsInt, IsOptional } from "class-validator";
 
 import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Order } from "../../../constants";
@@ -14,7 +14,7 @@ import { LeadState, LeadsEntity } from "../leads.entity";
 
 export class LeadsDto extends BaseDto {}
 
-export class LeadReadAll implements Omit<LeadsEntity, "toDto"> {
+export class LeadReadAll implements LeadsEntity {
 	@ApiProperty({ default: 1 })
 	id!: number;
 

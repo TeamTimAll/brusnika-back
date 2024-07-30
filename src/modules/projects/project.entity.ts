@@ -1,16 +1,12 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
+import { BaseEntity } from "../../common/base/base.entity";
 import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 
-import { ProjectDto } from "./dto/projects.dto";
-
 @Entity({ name: "projects" })
-@UseDto(ProjectDto)
-export class ProjectEntity extends AbstractEntity<ProjectDto, ProjectDto> {
+export class ProjectEntity extends BaseEntity {
 	@Column({ nullable: true })
 	name!: string;
 

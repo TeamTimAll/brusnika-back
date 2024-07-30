@@ -1,15 +1,16 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
 
-import { AbstractEntity } from "../../../../common/abstract.entity";
+import { BaseEntity } from "../../../../common/base/base.entity";
 import { UserEntity } from "../../../user/user.entity";
 import { NewsEntity } from "../../news.entity";
 
 @Entity("news_views")
-export class NewsViews extends AbstractEntity {
+@Unique(["user_id", "news_id"])
+export class NewsViews extends BaseEntity {
 	@Column({ type: "integer", nullable: false })
 	user_id!: number;
 
-	@OneToOne(() => UserEntity)
+	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "user_id" })
 	user!: UserEntity;
 

@@ -1,11 +1,13 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
+import { BaseEntity } from "../../common/base/base.entity";
+import { UserEntity } from "../../modules/user/user.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 
-import { ContactEntity } from "./contact.entity";
-import { EventsDto } from "./dtos/events.dto";
+import { ContactEntity } from "./entities/contact.entity";
+import { EventInvitationEntity } from "./entities/event-invition.entity";
+import { EventLikesEntity } from "./entities/event-likes.entity";
+import { EventViewsEntity } from "./entities/event-views.entity";
 
 export enum EVENT_TYPES {
 	PRESENTATION = "presentation",
@@ -21,8 +23,7 @@ export enum EVENT_FORMAT {
 }
 
 @Entity({ name: "events" })
-@UseDto(EventsDto)
-export class EventsEntity extends AbstractEntity<EventsDto> {
+export class EventsEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	title!: string;
 
@@ -47,8 +48,8 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	@Column({ type: "varchar", nullable: true })
 	leader?: string;
 
-	@Column({ type: "int", nullable: true })
-	max_visitors?: number;
+	@Column({ type: "int", default: 0, nullable: true })
+	max_visitors!: number;
 
 	//contacts
 	@Column({ type: "varchar", nullable: true })
@@ -69,6 +70,13 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	})
 	type!: EVENT_TYPES;
 
+	@ManyToOne(() => UserEntity)
+	@JoinColumn({ name: "create_by_id" })
+	create_by!: UserEntity;
+
+	@Column({ nullable: true, type: "integer" })
+	create_by_id?: number;
+
 	@ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",
 		onUpdate: "NO ACTION",
@@ -82,12 +90,34 @@ export class EventsEntity extends AbstractEntity<EventsDto> {
 	@OneToMany(() => ContactEntity, (c) => c.event)
 	contacts?: ContactEntity[];
 
-	@Column({ default: 0 })
-	likeCount!: number;
-
-	@Column({ default: 0 })
-	views!: number;
-
 	@Column({ type: "boolean", default: false })
 	is_banner!: boolean;
+
+	@Column({ type: "boolean", default: false })
+	is_draft!: boolean;
+
+	@Column({ type: "text", array: true, nullable: true })
+	tags?: string[];
+
+	@OneToMany(() => EventViewsEntity, (EventViews) => EventViews.events, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	views?: EventViewsEntity[];
+
+	@OneToMany(() => EventLikesEntity, (EventLikes) => EventLikes.events, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	likes?: EventLikesEntity[];
+
+	@OneToMany(
+		() => EventInvitationEntity,
+		(EventInvitionEntity) => EventInvitionEntity.event,
+		{
+			onDelete: "CASCADE",
+			onUpdate: "CASCADE",
+		},
+	)
+	invited_users?: EventInvitationEntity[];
 }

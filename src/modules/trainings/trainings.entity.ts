@@ -1,18 +1,13 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
 
-import { WithOutToDto } from "types";
+import { BaseEntity } from "../../common/base/base.entity";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
-
-import { TrainingsDto } from "./dto/trainings.dto";
 import { TrainingsCategories } from "./modules/categories/categories.entity";
 import { TrainingsLikes } from "./modules/likes/likes.entity";
 import { TrainingsViews } from "./modules/views/views.entity";
 
 @Entity({ name: "trainings" })
-@UseDto(TrainingsDto)
-export class TrainingsEntity extends AbstractEntity<TrainingsDto> {
+export class TrainingsEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	title!: string;
 
@@ -71,28 +66,4 @@ export class TrainingsEntity extends AbstractEntity<TrainingsDto> {
 		},
 	)
 	likes?: TrainingsLikes[];
-
-	static toDto(
-		entity: Partial<WithOutToDto<TrainingsEntity>>,
-	): WithOutToDto<TrainingsEntity> {
-		const dto: WithOutToDto<TrainingsEntity> = {
-			id: entity.id ?? 0,
-			title: entity.title ?? "",
-			content: entity.content ?? "",
-			cover_image: entity.cover_image ?? "",
-			is_like_enabled: entity.is_like_enabled ?? false,
-			is_extra_like_enabled: entity.is_extra_like_enabled ?? false,
-			extra_like_icon: entity.extra_like_icon ?? "",
-			published_at: entity.published_at ?? new Date(),
-			primary_category_id: entity.primary_category_id ?? 0,
-			second_category_id: entity.second_category_id ?? 0,
-			createdAt: entity.createdAt ?? new Date(),
-			updatedAt: entity.updatedAt ?? new Date(),
-			primary_category:
-				entity.primary_category ?? new TrainingsCategories(),
-			secondary_category:
-				entity.secondary_category ?? new TrainingsCategories(),
-		};
-		return dto;
-	}
 }

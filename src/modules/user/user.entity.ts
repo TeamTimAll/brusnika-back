@@ -7,18 +7,13 @@ import {
 	VirtualColumn,
 } from "typeorm";
 
-import { WithOutToDto } from "types";
-
-import { AbstractEntity } from "../../common/abstract.entity";
+import { BaseEntity } from "../../common/base/base.entity";
 import { RoleType } from "../../constants";
-import { UseDto } from "../../decorators";
 import { AgenciesEntity } from "../agencies/agencies.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 import { CommentEntity } from "../comments/comment.entity";
 import { VisitsEntity } from "../visits/visits.entity";
-
-import { UserDto } from "./dtos/user.dto";
 
 export enum UserRegisterStatus {
 	CREATED = "created",
@@ -28,8 +23,7 @@ export enum UserRegisterStatus {
 }
 
 @Entity({ name: "users" })
-@UseDto(UserDto)
-export class UserEntity extends AbstractEntity<UserDto> {
+export class UserEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	firstName!: string | null;
 
@@ -48,7 +42,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
 	@Column({ nullable: true, type: "varchar" })
 	password!: string;
 
-	@Column({ nullable: true, type: "varchar" })
+	@Column({ nullable: true, type: "varchar", unique: true })
 	phone!: string | null;
 
 	@Column({ nullable: true, type: "date" })
@@ -128,41 +122,4 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
 	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.agent)
 	visits?: VisitsEntity[];
-
-	static toDto(
-		entity: Partial<WithOutToDto<UserEntity>>,
-	): WithOutToDto<UserEntity> {
-		const dto: WithOutToDto<UserEntity> = {
-			id: entity.id ?? 0,
-			firstName: entity.firstName ?? "",
-			lastName: entity.lastName ?? "",
-			role: entity.role ?? RoleType.USER,
-			email: entity.email ?? "",
-			username: entity.username ?? "",
-			password: entity.password ?? "",
-			phone: entity.phone ?? "",
-			birthDate: entity.birthDate ?? new Date(),
-			workStartDate: entity.workStartDate ?? new Date(),
-			verification_code: entity.verification_code ?? 0,
-			verification_code_sent_date:
-				entity.verification_code_sent_date ?? new Date(),
-			avatar: entity.avatar ?? "",
-			register_status:
-				entity.register_status ?? UserRegisterStatus.CREATED,
-			fullName: entity.fullName ?? "",
-			isPhoneVerified: entity.isPhoneVerified ?? true,
-			temporaryNumber: entity.temporaryNumber ?? "",
-			status: entity.status ?? true,
-			// events: entity.events ?? [],
-			comments: entity.comments ?? [],
-			city: entity.city ?? new CitiesEntity(),
-			city_id: entity.city_id ?? 0,
-			agency: entity.agency ?? new AgenciesEntity(),
-			agency_id: entity.agency_id ?? 0,
-			createdAt: entity.createdAt ?? new Date(),
-			updatedAt: entity.updatedAt ?? new Date(),
-		};
-
-		return dto;
-	}
 }

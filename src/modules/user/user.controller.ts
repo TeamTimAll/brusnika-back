@@ -1,5 +1,3 @@
-import { log } from "console";
-
 import {
 	Body,
 	Controller,
@@ -14,10 +12,12 @@ import { ApiAcceptedResponse, ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
-import { Roles, User } from "../../decorators";
-import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { User } from "../../decorators";
+import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { UserLoginResendCodeDto } from "../../modules/auth/dtos/user-login.dto";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import {
 	UserChangePhoneVerifyCodeDto,
@@ -25,20 +25,28 @@ import {
 	UserDto,
 	UserUpdateDto,
 } from "./dtos/user.dto";
+import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
 
-@Controller("users")
 @ApiTags("users")
+@Controller("users")
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
 	constructor(private userService: UserService) {}
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	@Roles([RoleType.ADMIN, RoleType.USER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	async readAll(@User() _user: ICurrentUser) {
+		const metaData = BaseDto.createFromDto(new BaseDto<UserEntity[]>());
+		metaData.data = await this.userService.readAll();
+		return metaData;
+	}
+
+	@Get("/me")
+	@HttpCode(HttpStatus.OK)
 	async getUser(@User() user: ICurrentUser): Promise<UserDto> {
-		log("user", user);
 		return this.userService.getUser(user.user_id, false);
 	}
 

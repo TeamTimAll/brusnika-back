@@ -1,8 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-import { WithOutToDto } from "types";
-
-import { AbstractEntity } from "../../common/abstract.entity";
+import { BaseEntity } from "../../common/base/base.entity";
 import { ClientEntity } from "../client/client.entity";
 import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
@@ -21,7 +19,7 @@ export enum PuchaseOptions {
 }
 
 @Entity({ name: "visits" })
-export class VisitsEntity extends AbstractEntity {
+export class VisitsEntity extends BaseEntity {
 	@ManyToOne(
 		() => ProjectEntity,
 		(ProjectEntity: ProjectEntity) => ProjectEntity.visits,
@@ -78,25 +76,4 @@ export class VisitsEntity extends AbstractEntity {
 
 	@Column({ default: VisitStatus.OPEN, enum: VisitStatus })
 	status!: VisitStatus;
-
-	static toDto(
-		entity: Partial<WithOutToDto<VisitsEntity>>,
-	): WithOutToDto<VisitsEntity> {
-		const dto: WithOutToDto<VisitsEntity> = {
-			id: entity.id ?? 0,
-			project: entity.project ?? new ProjectEntity(),
-			project_id: entity.project_id ?? 0,
-			client: entity.client ?? new ClientEntity(),
-			client_id: entity.client_id ?? 0,
-			agent: entity.agent ?? new UserEntity(),
-			agent_id: entity.agent_id ?? 0,
-			date: entity.date ?? new Date(),
-			time: entity.time ?? new Date(),
-			// purchase_option: entity.purchase_option ?? PuchaseOptions.BILL,
-			status: entity.status ?? VisitStatus.OPEN,
-			createdAt: entity.createdAt ?? new Date(),
-			updatedAt: entity.updatedAt ?? new Date(),
-		};
-		return dto;
-	}
 }

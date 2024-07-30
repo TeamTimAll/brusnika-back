@@ -1,9 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsEnum, IsInt, IsOptional } from "class-validator";
-
 import {
-	RussianWeekdaysString
-} from "../../../common/enums/weekdays";
+	IsBoolean,
+	IsDateString,
+	IsEnum,
+	IsInt,
+	IsOptional,
+} from "class-validator";
+import { Transform } from "class-transformer";
+
+import { RussianWeekdaysString } from "../../../common/enums/weekdays";
 
 export class CalendarDto {
 	@ApiProperty({
@@ -21,7 +26,18 @@ export class CalendarDto {
 	date?: string;
 
 	@ApiProperty({ required: false })
+	@IsDateString()
+	@IsOptional()
+	monthly_date?: string;
+
+	@ApiProperty({ required: false })
 	@IsInt()
 	@IsOptional()
 	city_id?: number;
+
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_draft?: boolean;
 }

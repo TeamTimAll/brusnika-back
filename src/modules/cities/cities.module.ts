@@ -11,5 +11,6 @@ import { CitiesService } from "./cities.service";
 	imports: [TypeOrmModule.forFeature([CitiesEntity]), UserModule],
 	providers: [CitiesService],
 	controllers: [CitiesController],
+	exports: [CitiesService],
 })
 export class CitiesModule {}

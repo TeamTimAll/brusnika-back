@@ -2,13 +2,12 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
 
 import { EventsEntity } from "modules/events/events.entity";
-import { NewsEntity } from "modules/news/news.entity";
 
 import { Weekdays, WeekdaysMap } from "../../common/enums/weekdays";
+import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { VisitsEntity } from "../../modules/visits/visits.entity";
 import { EventsService } from "../events/events.service";
-import { NewsService } from "../news/news.service";
 import { VisitsService } from "../visits/visits.service";
 
 import { CalendarDto } from "./dto/calendar.dto";
@@ -17,8 +16,6 @@ import { CalendarDto } from "./dto/calendar.dto";
 export class CalendarService {
 	@Inject()
 	private visitsService!: VisitsService;
-	@Inject()
-	private newsService!: NewsService;
 	@Inject()
 	private eventsService!: EventsService;
 
@@ -40,41 +37,34 @@ export class CalendarService {
 				agent_id: user.user_id,
 			})
 			.orderBy("v.date", "ASC");
-		let newsQueryBuilder = this.newsService.repository
-			.createQueryBuilder("n")
-			.select([
-				"n.user_id as user_id",
-				"n.title as title",
-				"n.content as content",
-				"n.cover_image as cover_image",
-				"n.is_like_enabled as is_like_enabled",
-				"n.is_extra_like_enabled as is_extra_like_enabled",
-				"n.extra_like_icon as extra_like_icon",
-				"n.published_at as published_at",
-				"n.primary_category_id as primary_category_id",
-				"n.second_category_id as second_category_id",
-			])
-			.orderBy("n.published_at", "ASC");
 		let eventsQueryBuilder = this.eventsService.repository
 			.createQueryBuilder("e")
 			.select([
+				"e.id as id",
 				"e.title as title",
 				"e.description as description",
 				"e.photo as photo",
 				"e.location as location",
 				"e.date as date",
-				"e.start_time as start_time",
-				"e.end_time as end_time",
+				"to_char(e.start_time, 'HH24:MI') as start_time",
+				"to_char(e.end_time, 'HH24:MI') as end_time",
 				"e.leader as leader",
 				"e.max_visitors as max_visitors",
 				"e.phone as phone",
 				"e.format as format",
 				"e.type as type",
 				"e.city_id as city_id",
-				"e.likeCount as likeCount",
-				"e.views as views",
 				"e.is_banner as is_banner",
 			])
+			.where(
+				"e.id IN (SELECT ei.event_id FROM event_invitation ei WHERE ei.user_id = :user_id)",
+				{
+					user_id: user.user_id,
+				},
+			)
+			.orWhere("e.create_by_id = :create_by_id", {
+				create_by_id: user.user_id,
+			})
 			.orderBy("e.date", "ASC");
 
 		if (dto.date && dto.weekday) {
@@ -85,12 +75,6 @@ export class CalendarService {
 				dto.date,
 				weekday,
 			);
-			newsQueryBuilder = this.cutByWeekdayRange(
-				newsQueryBuilder,
-				"n.published_at",
-				dto.date,
-				weekday,
-			);
 			eventsQueryBuilder = this.cutByWeekdayRange(
 				eventsQueryBuilder,
 				"e.date",
@@ -98,9 +82,26 @@ export class CalendarService {
 				weekday,
 			);
 		}
+		if (dto.monthly_date) {
+			visitsQueryBuilder = this.cutByMonthlyRange(
+				visitsQueryBuilder,
+				"v.date",
+				dto.monthly_date,
+			);
+			eventsQueryBuilder = this.cutByMonthlyRange(
+				eventsQueryBuilder,
+				"e.date",
+				dto.monthly_date,
+			);
+		}
+
+		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
+			eventsQueryBuilder = eventsQueryBuilder.andWhere(
+				"e.is_draft IS FALSE",
+			);
+		}
 
 		const visits = await visitsQueryBuilder.getRawMany<VisitsEntity>();
-		const news = await newsQueryBuilder.getRawMany<NewsEntity>();
 		const events = await eventsQueryBuilder.getRawMany<EventsEntity>();
 
 		// This comes from CRM system.
@@ -113,7 +114,7 @@ export class CalendarService {
 			return v;
 		});
 
-		return { visits: visitsWithManager, news, events };
+		return { visits: visitsWithManager, events };
 	}
 
 	// example for property: "e.date"
@@ -139,6 +140,21 @@ export class CalendarService {
 					date: date,
 					weekday_end: weekday + 7,
 				},
+			);
+	}
+
+	cutByMonthlyRange<T extends ObjectLiteral>(
+		qb: SelectQueryBuilder<T>,
+		property: string,
+		date: string,
+	) {
+		return qb
+			.andWhere(`${property} >= DATE_TRUNC('month', CAST(:date AS date))`, {
+				date: date,
+			})
+			.andWhere(
+				`${property} <= DATE_TRUNC('month', CAST(:date AS date)) + INTERVAL '1 month' - INTERVAL '1 millisecond'`,
+				{ date: date },
 			);
 	}
 }

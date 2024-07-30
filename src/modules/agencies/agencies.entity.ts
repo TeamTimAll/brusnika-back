@@ -1,21 +1,17 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
-import { UserEntity } from "../user/user.entity";
+import { BaseEntity } from "../../common/base/base.entity";
 import { CitiesEntity } from "../cities/cities.entity";
-
-import { AgenciesDto } from "./dtos/agencies.dto";
+import { UserEntity } from "../user/user.entity";
 
 @Entity({ name: "agencies" })
-@UseDto(AgenciesDto)
-export class AgenciesEntity extends AbstractEntity<AgenciesDto> {
+export class AgenciesEntity extends BaseEntity {
 	@OneToMany(() => UserEntity, (userEntity) => userEntity.agency, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
 	})
 	@JoinColumn({ name: "userId" })
-	user!: UserEntity;
+	user!: UserEntity[];
 
 	@Column({ nullable: true, type: "varchar" })
 	title!: string;

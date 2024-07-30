@@ -4,9 +4,9 @@ export enum ApplicationPromptID {
 	// Auth Errors
 	UNAUTHORIZED_ERROR = 270,
 	USER_PASSWORD_IS_NOT_CORRECT_ERROR = 271,
+	PERMISSION_DENIED_ERROR = 273,
 	// INVALID_TOKEN_ERROR = 271,
 	// TOKEN_EXPIRED_ERROR = 272,
-	// PERMISITION_DENIED_ERROR = 273,
 
 	// Internal Errors
 	INPUT_VALIDATION_ERROR = 300,
@@ -27,6 +27,10 @@ export enum ApplicationPromptID {
 	VISIT_NOT_FOUND_ERROR = 413,
 	NEWS_NOT_FOUND_ERROR = 414,
 	EVENTS_NOT_FOUND_ERROR = 415,
+	NEWS_LIKE_NOT_ENABLED_ERROR = 416,
+	EVENT_INVITATION_NOT_FOUND_ERROR = 417,
+	EVENT_REACHED_MAXIMUM_VISITORS_ERROR = 418,
+	USER_ALREADY_REGISTERED_TO_EVENT_ERROR = 419,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -81,6 +85,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Unauthorized error",
 			ru: "Ошибка доступа",
 			uz: "Unauthorized error",
+		},
+	},
+	[ApplicationPromptID.PERMISSION_DENIED_ERROR]: {
+		promptId: ApplicationPromptID.PERMISSION_DENIED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "permission_denied_error",
+		promptLabels: {
+			en: "Permission denied error",
+			ru: "Ошибка отказа в разрешении",
+			uz: "Permission denied error",
 		},
 	},
 	[ApplicationPromptID.USER_PASSWORD_IS_NOT_CORRECT_ERROR]: {
@@ -233,8 +248,52 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "events_not_found_error",
 		promptLabels: {
 			en: "Events not found error",
-			ru: "Events not found error",
+			ru: "Ошибка события не найдены",
 			uz: "Events not found error",
+		},
+	},
+	[ApplicationPromptID.EVENT_REACHED_MAXIMUM_VISITORS_ERROR]: {
+		promptId: ApplicationPromptID.EVENT_REACHED_MAXIMUM_VISITORS_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "event_reached_maximum_visitors_error",
+		promptLabels: {
+			en: "Event reached maximum visitors error",
+			ru: "Превышено максимальное количество участников в мероприятии.",
+			uz: "Event reached maximum visitors error",
+		},
+	},
+	[ApplicationPromptID.USER_ALREADY_REGISTERED_TO_EVENT_ERROR]: {
+		promptId: ApplicationPromptID.USER_ALREADY_REGISTERED_TO_EVENT_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "user_already_registered_to_event_error",
+		promptLabels: {
+			en: "User already registered to event error",
+			ru: "Ошибка пользователь уже зарегистрирован на событие",
+			uz: "User already registered to event error",
+		},
+	},
+	[ApplicationPromptID.NEWS_LIKE_NOT_ENABLED_ERROR]: {
+		promptId: ApplicationPromptID.NEWS_LIKE_NOT_ENABLED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "news_like_not_enabled_error",
+		promptLabels: {
+			en: "News like not enabled error",
+			ru: "Ошибка новости лайки не включены",
+			uz: "News like not enabled error",
+		},
+	},
+	[ApplicationPromptID.EVENT_INVITATION_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.EVENT_INVITATION_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "event_invition_not_found_error",
+		promptLabels: {
+			en: "Event invition not found error",
+			ru: "Ошибка мероприятие не найдено.",
+			uz: "Event invition not found error",
 		},
 	},
 	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {

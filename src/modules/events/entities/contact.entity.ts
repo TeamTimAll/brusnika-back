@@ -1,11 +1,10 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-
-import { EventsEntity } from "./events.entity";
+import { BaseEntity } from "../../../common/base/base.entity";
+import { EventsEntity } from "../events.entity";
 
 @Entity({ name: "contacts" })
-export class ContactEntity extends AbstractEntity {
+export class ContactEntity extends BaseEntity {
 	@Column({ type: "varchar" })
 	fullname!: string;
 

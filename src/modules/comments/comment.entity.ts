@@ -1,14 +1,10 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
-import { AbstractEntity } from "../../common/abstract.entity";
-import { UseDto } from "../../decorators";
+import { BaseEntity } from "../../common/base/base.entity";
 import { UserEntity } from "../user/user.entity";
 
-import { CommentDto } from "./dtos/comment.dto";
-
 @Entity({ name: "comments" })
-@UseDto(CommentDto)
-export class CommentEntity extends AbstractEntity<CommentDto> {
+export class CommentEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	user_id!: number;
 
