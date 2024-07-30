@@ -9,9 +9,7 @@ import {
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 
-import { BaseDto } from "../../../common/dto/abstract.dto";
-
-export class ProjectDto extends BaseDto {
+export class ProjectDto {
 	@IsNotEmpty()
 	@IsString()
 	title!: string;

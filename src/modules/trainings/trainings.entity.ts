@@ -1,6 +1,14 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+} from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
+import { UserEntity } from "../user/user.entity";
 
 import { TrainingsCategories } from "./modules/categories/categories.entity";
 import { TrainingsLikes } from "./modules/likes/likes.entity";
@@ -46,6 +54,13 @@ export class TrainingsEntity extends BaseEntity {
 	@OneToOne(() => TrainingsCategories)
 	@JoinColumn({ name: "second_category_id" })
 	secondary_category!: TrainingsCategories;
+
+	@ManyToOne(() => UserEntity)
+	@JoinColumn({ name: "user_id" })
+	user!: UserEntity;
+
+	@Column({ nullable: true, type: "integer" })
+	user_id?: number;
 
 	@OneToMany(
 		() => TrainingsViews,

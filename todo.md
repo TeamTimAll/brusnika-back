@@ -26,7 +26,7 @@
     - [x] Filter field `actived_to_date`
     - [x] Filter field `status`
 - [x] Client entity ma'lumotlari:
-    - [x] F.I.SH
+    - [x] I S
     - [x] Telfon raqam
     - [x] Project
     - [x] Actived_date[from | to] (Дата первичного заведения “от” и “до”)
@@ -176,8 +176,61 @@
 - [x] Event time da "HH:MM" formatda kiryapti, database'dan esa "HH:MM:SS" chiqyapti shuni "HH:MM"ga o'tkazish kerak.
 - [x] Calendar'da user o'z visit'larni ko'rishi kerak.
 - [x] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
+
+### 2024-07-29
 - [x] Telefon raqam user'da unique bo'lishi kerak.
-- [ ] Agency update'dan BaseService update functionalityni olib tashlash kerak.
-- [ ] BaseService ni o'chirib tashlash.
-- [ ] Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
+- [x] BaseService ni o'chirib tashlash. Yani API qolibini bir xil ko'rinishga keltirish.
+    - [x] Agencies Service
+        - [x] API [GET]:    /agencies
+        - [x] API [GET]:    /agencies/:id
+        - [x] API [POST]:   /agencies
+        - [x] API [PUT]:    /agencies/:id
+        - [x] API [DELETE]: /agencies/:id
+    - [x] Bookings Service
+        - [x] API [GET]:    /bookings
+        - [x] API [GET]:    /bookings/:id
+        - [x] API [POST]:   /bookings
+        - [x] API [PUT]:    /bookings/:id
+        - [x] API [DELETE]: /bookings/:id
+    - [x] Buildings Service
+        - [x] API [GET]:    /buildings
+        - [x] API [GET]:    /buildings/:id
+        - [x] API [POST]:   /buildings
+        - [x] API [PUT]:    /buildings/:id
+        - [x] API [DELETE]: /buildings/:id
+    - [x] Cities Service
+        - [x] API [GET]:    /cities
+        - [x] API [GET]:    /cities/:id
+        - [x] API [POST]:   /cities
+        - [x] API [PUT]:    /cities/:id
+        - [x] API [DELETE]: /cities/:id
+    - [x] Categories Service
+    - [x] Likes Service
+    - [x] Views Service
+    - [x] Trainings Service
+        - [x] API [GET]:    /trainings
+        - [x] API [GET]:    /trainings/:id
+        - [x] API [POST]:   /trainings
+        - [x] API [PUT]:    /trainings/:id
+        - [x] API [DELETE]: /trainings/:id
+    - [x] News Service
+        - [x] API [GET]:    /news
+        - [x] API [GET]:    /news/:id
+        - [x] API [POST]:   /news
+        - [x] API [PUT]:    /news/:id
+        - [x] API [DELETE]: /news/:id
+    - [x] Premises Service
+    - [x] Sections Service
+- [x] Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
+
+---
+
+- [ ] User email'ni update qilganda verify qilishi kerak.
+- [ ] Event read one'da user invatition bilan chiqishi kerak. User'ning fullname, photo, agency.
+- [ ] Event read'da is_liked field qo'shib berish.
+- [ ] Event read'da is_joind field qo'shib berish.
+- [ ] Event pagination xato ishlayapti.
+- [ ] Event invatition'ni accept qilish uchun API.
+- [ ] Booking'da 5 tadan ortiq create qila olmasin.
+- [ ] User o'z agency'sini o'zgartira olishi kerak.
 - [ ] Kontur server uchun ping qilish uchun API.

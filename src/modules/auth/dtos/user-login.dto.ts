@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsBoolean,
@@ -9,8 +9,10 @@ import {
 	IsNotEmpty,
 	IsNumber,
 	IsString,
+	ValidateNested,
 } from "class-validator";
 
+import { BaseDto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
 import {
 	CreateAgenciesDto,
@@ -28,6 +30,16 @@ export class UserLoginDto {
 	@IsNotEmpty()
 	@IsString()
 	readonly password!: string;
+}
+
+export class UserLoginMetaDataDto extends BaseDto<UserLoginDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(UserLoginDto) }],
+		type: () => UserLoginDto,
+	})
+	@ValidateNested()
+	@Type(() => UserLoginDto)
+	declare data: UserLoginDto;
 }
 
 export class AgentLoginDto {
@@ -60,6 +72,16 @@ export class AgentChooseAgencyDto {
 	startWorkDate!: Date;
 }
 
+export class AgentChooseAgencyMetaDataDto extends BaseDto<AgentChooseAgencyDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(AgentChooseAgencyDto) }],
+		type: () => AgentChooseAgencyDto,
+	})
+	@ValidateNested()
+	@Type(() => AgentChooseAgencyDto)
+	declare data: AgentChooseAgencyDto;
+}
+
 export class AgentRegisterAgencyDto extends CreateAgenciesDto {
 	@ApiProperty({
 		required: true,
@@ -75,6 +97,16 @@ export class AgentRegisterAgencyDto extends CreateAgenciesDto {
 	isOwner!: boolean;
 }
 
+export class AgentRegisterAgencyMetaDataDto extends BaseDto<AgentRegisterAgencyDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(AgentRegisterAgencyDto) }],
+		type: () => AgentRegisterAgencyDto,
+	})
+	@ValidateNested()
+	@Type(() => AgentRegisterAgencyDto)
+	declare data: AgentRegisterAgencyDto;
+}
+
 export class AgentRequestAgencyDto extends CreateExistentAgenciesDto {
 	@ApiProperty({
 		required: true,
@@ -82,6 +114,16 @@ export class AgentRequestAgencyDto extends CreateExistentAgenciesDto {
 	@IsInt()
 	@Type(() => Number)
 	user_id!: number;
+}
+
+export class AgentRequestAgencyMetaDataDto extends BaseDto<AgentRequestAgencyDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(AgentRequestAgencyDto) }],
+		type: () => AgentRequestAgencyDto,
+	})
+	@ValidateNested()
+	@Type(() => AgentRequestAgencyDto)
+	declare data: AgentRequestAgencyDto;
 }
 
 export class UserLoginVerifyCodeDto {
@@ -99,12 +141,32 @@ export class UserLoginVerifyCodeDto {
 	user_id!: number;
 }
 
+export class UserLoginVerifyCodeMetaDataDto extends BaseDto<UserLoginVerifyCodeDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(UserLoginVerifyCodeDto) }],
+		type: () => UserLoginVerifyCodeDto,
+	})
+	@ValidateNested()
+	@Type(() => UserLoginVerifyCodeDto)
+	declare data: UserLoginVerifyCodeDto;
+}
+
 export class UserLoginResendCodeDto {
 	@ApiProperty({
 		required: true,
 	})
 	@IsMobilePhone()
 	readonly phone!: string;
+}
+
+export class UserLoginResendCodeMetaDataDto extends BaseDto<UserLoginResendCodeDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(UserLoginResendCodeDto) }],
+		type: () => UserLoginResendCodeDto,
+	})
+	@ValidateNested()
+	@Type(() => UserLoginResendCodeDto)
+	declare data: UserLoginResendCodeDto;
 }
 
 export class LoginSuccess {

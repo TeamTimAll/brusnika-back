@@ -33,6 +33,18 @@ export class ClientService {
 		return this.clientRepository.save(client);
 	}
 
+	async readOne(id: number) {
+		const foundClient = await this.clientRepository.findOne({
+			where: {
+				id: id,
+			},
+		});
+		if (!foundClient) {
+			throw new ClientNotFoundError(`id: ${id}`);
+		}
+		return foundClient;
+	}
+
 	quickSearch(text: string = "", user: ICurrentUser) {
 		return this.clientRepository
 			.createQueryBuilder("c")
@@ -52,7 +64,7 @@ export class ClientService {
 					phone_number: `%${text}%`,
 				},
 			)
-			.getRawMany();
+			.getMany();
 	}
 
 	async searchFromBmpsoft(dto: ClientSearchFromBmpsoft, _user: ICurrentUser) {
@@ -189,11 +201,9 @@ export class ClientService {
 			],
 		});
 
-		const clientResponse: ServiceResponse<ClientEntity[]> = {
-			links: calcPagination(clientCount, dto.page, dto.limit),
-			data: await queryBuilder.getRawMany(),
-		};
-
+		const clientResponse = new ServiceResponse<ClientEntity[]>();
+		clientResponse.links = calcPagination(clientCount, dto.page, dto.limit);
+		clientResponse.data = await queryBuilder.getRawMany();
 		return clientResponse;
 	}
 

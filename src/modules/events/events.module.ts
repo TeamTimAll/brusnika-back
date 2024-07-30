@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AgenciesModule } from "../../modules/agencies/agencies.module";
-import { CitiesModule } from "../../modules/cities/cities.module";
+import { CityModule } from "../../modules/cities/cities.module";
 import { UserModule } from "../../modules/user/user.module";
 
 import { ContactEntity } from "./entities/contact.entity";
@@ -24,7 +24,7 @@ import { EventsService } from "./events.service";
 		]),
 		UserModule,
 		AgenciesModule,
-		CitiesModule,
+		CityModule,
 	],
 	providers: [EventsService],
 	controllers: [EventsController],

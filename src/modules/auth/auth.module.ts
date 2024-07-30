@@ -4,6 +4,7 @@ import { PassportModule } from "@nestjs/passport";
 
 import { ConfigManager } from "../../config";
 import { AgenciesModule } from "../agencies/agencies.module";
+import { CityModule } from "../cities/cities.module";
 import { UserModule } from "../user/user.module";
 
 import { AuthController } from "./auth.controller";
@@ -19,8 +20,8 @@ import { AuthService } from "./auth.service";
 		}),
 		UserModule,
 		AgenciesModule,
+		CityModule,
 	],
-
 	controllers: [AuthController],
 	providers: [AuthService],
 })

@@ -1,7 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { CityService } from "../cities/cities.service";
 import { PremisesEntity, PremisesType } from "../premises/premises.entity";
 
 import { CreateProjectDto } from "./dto/project.create.dto";
@@ -37,11 +38,17 @@ export interface GetAllProjectRaw extends ProjectRaw {
 	};
 }
 
+export interface UniqueEndDateResponse {
+	end_date: Date;
+}
+
 @Injectable()
-export class ProjectsService {
+export class ProjectService {
 	constructor(
 		@InjectRepository(ProjectEntity)
 		private projectsRepository: Repository<ProjectEntity>,
+		@Inject()
+		private cityService: CityService,
 	) {}
 
 	get repository(): Repository<ProjectEntity> {
@@ -143,10 +150,10 @@ export class ProjectsService {
 		return formattedResult;
 	}
 
-	async createProjects(createProjectDto: CreateProjectDto) {
-		const newProject = await this.projectsRepository.save(createProjectDto);
-
-		return newProject;
+	async create(dto: CreateProjectDto) {
+		await this.cityService.readOne(dto.city_id);
+		const project = this.projectsRepository.create(dto);
+		return await this.projectsRepository.save(project);
 	}
 
 	async getOneProject(id: number): Promise<ProjectEntity | null> {
@@ -159,7 +166,7 @@ export class ProjectsService {
 		return project;
 	}
 
-	async getUniqueEndDates() {
+	async getUniqueEndDates(): Promise<UniqueEndDateResponse[]> {
 		const uniqueEndDates = await this.projectsRepository
 			.createQueryBuilder("project")
 			.select("DISTINCT project.end_date", "end_date")
@@ -169,40 +176,45 @@ export class ProjectsService {
 			throw new ProjectNotFoundError("Project dates not found");
 		}
 
-		return uniqueEndDates.map((entry) => ({ end_date: entry.end_date }));
+		return uniqueEndDates.map<UniqueEndDateResponse>((entry) => ({
+			end_date: entry.end_date,
+		}));
 	}
 
-	async updateProject(
+	async update(
 		project_id: number,
-		updateProjectDto: UpdateProjectDto,
+		dto: UpdateProjectDto,
 	): Promise<ProjectEntity> {
 		const project = await this.projectsRepository.findOne({
 			where: { id: project_id },
 		});
-
 		if (!project) {
-			throw new ProjectNotFoundError("Project not found");
+			throw new ProjectNotFoundError(`id: ${project_id}`);
 		}
-
-		const updatedProject = this.projectsRepository.merge(
-			project,
-			updateProjectDto,
-		);
+		await this.cityService.readOne(dto.city_id);
+		const updatedProject = this.projectsRepository.merge(project, dto);
 		await this.projectsRepository.save(updatedProject);
-
 		return updatedProject;
 	}
 
-	async deleteProject(id: number): Promise<ProjectEntity> {
+	async delete(id: number): Promise<ProjectEntity> {
 		const project = await this.projectsRepository.findOne({
 			where: { id },
 		});
-
 		if (!project) {
-			throw new ProjectNotFoundError("Project not found");
+			throw new ProjectNotFoundError(`id: ${id}`);
 		}
-
 		await this.projectsRepository.remove(project);
 		return project;
+	}
+
+	async readOne(id: number) {
+		const foundProject = await this.projectsRepository.findOne({
+			where: { id: id },
+		});
+		if (!foundProject) {
+			throw new ProjectNotFoundError(`id: ${id}`);
+		}
+		return foundProject;
 	}
 }

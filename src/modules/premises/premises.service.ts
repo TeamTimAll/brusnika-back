@@ -1,25 +1,44 @@
-import { InjectDataSource } from "@nestjs/typeorm";
-import { DataSource } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
-import { BasicService } from "../../generic/service";
 import { calcPagination } from "../../lib/pagination";
 import { ServiceResponse } from "../../types";
 import { BuildingsEntity } from "../buildings/buildings.entity";
+import { BuildingsService } from "../buildings/buildings.service";
 import { ProjectEntity } from "../projects/project.entity";
 import { SectionsEntity } from "../sections/sections.entity";
+import { SectionsService } from "../sections/sections.service";
 
 import { CreatePremisesDto } from "./dtos/create-premises.dto";
 import { PremisesFilterDto } from "./dtos/premises.dto";
 import { UpdatePremisesDto } from "./dtos/update-premises.dto";
 import { PremisesEntity } from "./premises.entity";
 
-export class PremisesService extends BasicService<
-	PremisesEntity,
-	CreatePremisesDto,
-	UpdatePremisesDto
-> {
-	constructor(@InjectDataSource() dataSource: DataSource) {
-		super("premises", PremisesEntity, dataSource);
+@Injectable()
+export class PremisesService {
+	constructor(
+		@InjectRepository(PremisesEntity)
+		private premiseRepository: Repository<PremisesEntity>,
+		@Inject()
+		private buildingService: BuildingsService,
+		@Inject()
+		private sectionService: SectionsService,
+	) {}
+
+	get repository(): Repository<PremisesEntity> {
+		return this.premiseRepository;
+	}
+
+	async create(dto: CreatePremisesDto) {
+		if (typeof dto.building_id !== "undefined") {
+			await this.buildingService.readOne(dto.building_id);
+		}
+		if (typeof dto.section_id !== "undefined") {
+			await this.sectionService.readOne(dto.section_id);
+		}
+		const premise = this.premiseRepository.create(dto);
+		return await this.premiseRepository.save(premise);
 	}
 
 	async readOne(id: number): Promise<PremisesEntity> {
@@ -34,6 +53,24 @@ export class PremisesService extends BasicService<
 		return premises.data[0];
 	}
 
+	async update(id: number, dto: UpdatePremisesDto) {
+		const foundPremise = await this.readOne(id);
+		if (typeof dto.building_id !== "undefined") {
+			await this.buildingService.readOne(dto.building_id);
+		}
+		if (typeof dto.section_id !== "undefined") {
+			await this.sectionService.readOne(dto.section_id);
+		}
+		const mergedPremise = this.premiseRepository.merge(foundPremise, dto);
+		return await this.premiseRepository.save(mergedPremise);
+	}
+
+	async delete(id: number) {
+		const foundPremise = await this.readOne(id);
+		await this.premiseRepository.delete(foundPremise.id);
+		return foundPremise;
+	}
+
 	getMultiplePremisesByIds(ids: number[], limit: number, page: number) {
 		return this.getPremisesFiltered({ ids: ids, limit, page });
 	}
@@ -41,7 +78,7 @@ export class PremisesService extends BasicService<
 	async getPremisesFiltered(
 		filter: PremisesFilterDto,
 	): Promise<ServiceResponse<PremisesEntity[]>> {
-		let query = this.repository
+		let query = this.premiseRepository
 			.createQueryBuilder("premise")
 			.leftJoin(
 				BuildingsEntity,
@@ -261,15 +298,13 @@ export class PremisesService extends BasicService<
 
 		const premises = await query.getRawMany<PremisesEntity>();
 
-		const premiseResponse: ServiceResponse<PremisesEntity[]> = {
-			links: calcPagination(
-				premiseCount.length ? premiseCount[0].premise_count : 0,
-				filter.page,
-				filter.limit,
-			),
-			data: premises,
-		};
-
+		const premiseResponse = new ServiceResponse<PremisesEntity[]>();
+		premiseResponse.links = calcPagination(
+			premiseCount.length ? premiseCount[0].premise_count : 0,
+			filter.page,
+			filter.limit,
+		);
+		premiseResponse.data = premises;
 		return premiseResponse;
 	}
 }

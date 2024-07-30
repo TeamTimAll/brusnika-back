@@ -1,4 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	ArrayMinSize,
 	IsArray,
@@ -6,7 +7,10 @@ import {
 	IsInt,
 	IsNotEmpty,
 	IsOptional,
+	ValidateNested,
 } from "class-validator";
+
+import { BaseDto } from "../../../common/base/base_dto";
 
 export class InviteUsersDto {
 	@ApiProperty({ default: 1 })
@@ -26,6 +30,16 @@ export class InviteUsersDto {
 	user_ids!: number[];
 }
 
+export class InviteUsersMetaDataDto extends BaseDto<InviteUsersDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(InviteUsersDto) }],
+		type: () => InviteUsersDto,
+	})
+	@ValidateNested()
+	@Type(() => InviteUsersDto)
+	declare data: InviteUsersDto;
+}
+
 export class DeleteUserInvitationDto {
 	@ApiProperty({ default: 1 })
 	@IsInt()
@@ -33,11 +47,31 @@ export class DeleteUserInvitationDto {
 	id!: number;
 }
 
+export class DeleteUserInvitationMetaDataDto extends BaseDto<DeleteUserInvitationDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(DeleteUserInvitationDto) }],
+		type: () => DeleteUserInvitationDto,
+	})
+	@ValidateNested()
+	@Type(() => DeleteUserInvitationDto)
+	declare data: DeleteUserInvitationDto;
+}
+
 export class JoinToEventDto {
 	@ApiProperty({ default: 1 })
 	@IsInt()
 	@IsNotEmpty()
 	id!: number;
+}
+
+export class JoinToEventMetaDataDto extends BaseDto<JoinToEventDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(JoinToEventDto) }],
+		type: () => JoinToEventDto,
+	})
+	@ValidateNested()
+	@Type(() => JoinToEventDto)
+	declare data: JoinToEventDto;
 }
 
 export class AcceptInvitionDto {
@@ -50,4 +84,14 @@ export class AcceptInvitionDto {
 	@IsBoolean()
 	@IsNotEmpty()
 	is_accepted!: boolean;
+}
+
+export class AcceptInvitionMetaDataDto extends BaseDto<AcceptInvitionDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(AcceptInvitionDto) }],
+		type: () => AcceptInvitionDto,
+	})
+	@ValidateNested()
+	@Type(() => AcceptInvitionDto)
+	declare data: AcceptInvitionDto;
 }

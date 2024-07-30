@@ -6,12 +6,13 @@ import {
 	Post,
 	Query,
 	UseGuards,
+	UseInterceptors,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
-import { BaseDto } from "../../common/base/base_dto";
 import { User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
+import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
@@ -28,6 +29,7 @@ import { CreateClientMetaDataDto } from "./dto/create.client.dto";
 @Controller("client")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
+@UseInterceptors(TransformInterceptor)
 export class ClientController {
 	constructor(private clientService: ClientService) {}
 
@@ -37,10 +39,8 @@ export class ClientController {
 		@User() user: ICurrentUser,
 		@Body() dto: CreateClientMetaDataDto,
 	) {
-		const metaData = BaseDto.createFromDto(dto);
 		dto.data.agent_id = user.user_id;
-		metaData.data = await this.clientService.create(dto.data);
-		return metaData;
+		return await this.clientService.create(dto.data);
 	}
 
 	@Get("/search")
@@ -48,19 +48,13 @@ export class ClientController {
 		@User() user: ICurrentUser,
 		@Query() dto: ClientQuickSearchDto,
 	) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.clientService.quickSearch(dto.text, user);
-		return metaData;
+		return await this.clientService.quickSearch(dto.text, user);
 	}
 
 	@Get()
 	@ApiOkResponse({ type: CreateClientMetaDataDto })
 	async readAll(@User() user: ICurrentUser, @Query() dto: FilterClientDto) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const serviceResponse = await this.clientService.readAll(dto, user);
-		metaData.data = serviceResponse.data;
-		metaData.setLinks(serviceResponse.links);
-		return metaData;
+		return await this.clientService.readAll(dto, user);
 	}
 
 	@Get("/search-from-bmpsoft")
@@ -69,21 +63,12 @@ export class ClientController {
 		@User() user: ICurrentUser,
 		@Query() dto: ClientSearchFromBmpsoft,
 	) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const serviceResponse = await this.clientService.searchFromBmpsoft(
-			dto,
-			user,
-		);
-		metaData.data = serviceResponse;
-		return metaData;
+		return await this.clientService.searchFromBmpsoft(dto, user);
 	}
 
 	@Delete()
 	@ApiOkResponse({ type: CreateClientMetaDataDto })
 	async delete(@User() user: ICurrentUser, @Query() dto: DeleteClientDto) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const serviceResponse = await this.clientService.delete(dto, user);
-		metaData.data = serviceResponse;
-		return metaData;
+		return await this.clientService.delete(dto, user);
 	}
 }

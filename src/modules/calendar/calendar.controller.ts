@@ -1,4 +1,11 @@
-import { Controller, Get, HttpStatus, Query, UseGuards } from "@nestjs/common";
+import {
+	Controller,
+	Get,
+	HttpStatus,
+	Query,
+	UseGuards,
+	UseInterceptors,
+} from "@nestjs/common";
 import {
 	ApiBearerAuth,
 	ApiOperation,
@@ -7,9 +14,9 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { BaseDto } from "../../common/base/base_dto";
 import { User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
+import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
@@ -20,10 +27,9 @@ import { CalendarDto } from "./dto/calendar.dto";
 @Controller("/calendar")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
+@UseInterceptors(TransformInterceptor)
 export class CalendarController {
 	constructor(private service: CalendarService) {}
-
-	// ------------------------------@Get()-------------------------------------
 
 	@ApiQuery({
 		name: "city_id",
@@ -36,8 +42,6 @@ export class CalendarController {
 	})
 	@Get()
 	async getCalendar(@User() user: ICurrentUser, @Query() dto: CalendarDto) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.service.getCalendar(user, dto);
-		return metaData;
+		return await this.service.getCalendar(user, dto);
 	}
 }

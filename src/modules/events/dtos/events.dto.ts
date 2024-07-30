@@ -8,10 +8,9 @@ import {
 	IsOptional,
 } from "class-validator";
 
-import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Limit, Page } from "../../../decorators/pagination";
 
-export class EventsDto extends BaseDto {
+export class EventsDto {
 	@ApiPropertyOptional()
 	title?: string;
 

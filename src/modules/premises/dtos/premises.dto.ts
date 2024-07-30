@@ -10,7 +10,6 @@ import {
 	IsString,
 } from "class-validator";
 
-import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Limit, Page } from "../../../decorators/pagination";
 import {
 	CommercialStatus,
@@ -18,7 +17,7 @@ import {
 	PuchaseOptions,
 } from "../premises.entity";
 
-export class PremisesDto extends BaseDto {
+export class PremisesDto {
 	@ApiProperty({
 		enum: PremisesType,
 		required: true,

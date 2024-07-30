@@ -31,6 +31,9 @@ export enum ApplicationPromptID {
 	EVENT_INVITATION_NOT_FOUND_ERROR = 417,
 	EVENT_REACHED_MAXIMUM_VISITORS_ERROR = 418,
 	USER_ALREADY_REGISTERED_TO_EVENT_ERROR = 419,
+	TRAININGS_CATEGORY_NOT_FOUND_ERROR = 420,
+	NEWS_CATEGORY_NOT_FOUND_ERROR = 421,
+	SECTION_NOT_FOUND_ERROR = 422,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -94,7 +97,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "permission_denied_error",
 		promptLabels: {
 			en: "Permission denied error",
-			ru: "Ошибка отказа в разрешении",
+			ru: "Доступ запрещен.",
 			uz: "Permission denied error",
 		},
 	},
@@ -371,6 +374,39 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Lead not found error",
 			ru: "Ошибка лида не найдена",
 			uz: "Lead not found error",
+		},
+	},
+	[ApplicationPromptID.TRAININGS_CATEGORY_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.TRAININGS_CATEGORY_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "trainings_category_not_found_error",
+		promptLabels: {
+			en: "Trainings category not found error",
+			ru: "Категория тренингов не найдена ошибка",
+			uz: "Trainings category not found error",
+		},
+	},
+	[ApplicationPromptID.NEWS_CATEGORY_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.NEWS_CATEGORY_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "news_category_not_found_error",
+		promptLabels: {
+			en: "News category not found error",
+			ru: "Категория новостей не найдена ошибка",
+			uz: "News category not found error",
+		},
+	},
+	[ApplicationPromptID.SECTION_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.SECTION_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "section_not_found_error",
+		promptLabels: {
+			en: "Section not found error",
+			ru: "Ошибка «Раздел не найден»",
+			uz: "Section not found error",
 		},
 	},
 };

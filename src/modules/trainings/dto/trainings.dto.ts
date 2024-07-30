@@ -1,10 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsInt, IsNotEmpty, IsString, ValidateNested } from "class-validator";
 
-import { BaseDto } from "../../../common/dto/abstract.dto";
+import { BaseDto } from "../../../common/base/base_dto";
 
-export class TrainingsDto extends BaseDto {
+export class TrainingsDto {
 	@IsString()
 	@IsNotEmpty()
 	title!: string;
@@ -27,4 +27,14 @@ export class LikeTrainingsDto {
 	})
 	@IsNotEmpty()
 	id!: number;
+}
+
+export class LikeTrainingsMetaDataDto extends BaseDto<LikeTrainingsDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(LikeTrainingsDto) }],
+		type: () => LikeTrainingsDto,
+	})
+	@ValidateNested()
+	@Type(() => LikeTrainingsDto)
+	declare data: LikeTrainingsDto;
 }

@@ -7,7 +7,7 @@ import { AuthModule } from "./auth/auth.module";
 import { BookingsModule } from "./bookings/bookings.module";
 import { BuildingsModule } from "./buildings/buildings.module";
 import { CalendarModule } from "./calendar/calendar.module";
-import { CitiesModule } from "./cities/cities.module";
+import { CityModule } from "./cities/cities.module";
 import { ClientModule } from "./client/client.module";
 import { CommentsModule } from "./comments/comments.module";
 import { EventsModule } from "./events/events.module";
@@ -35,7 +35,7 @@ import { VisitsModule } from "./visits/visits.module";
 		ClientModule,
 		TrainingsModule,
 		LeadsModule,
-		CitiesModule,
+		CityModule,
 		FileUploadModule,
 		NewsModule,
 		CommentsModule,

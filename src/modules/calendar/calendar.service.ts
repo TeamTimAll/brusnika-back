@@ -149,9 +149,12 @@ export class CalendarService {
 		date: string,
 	) {
 		return qb
-			.andWhere(`${property} >= DATE_TRUNC('month', CAST(:date AS date))`, {
-				date: date,
-			})
+			.andWhere(
+				`${property} >= DATE_TRUNC('month', CAST(:date AS date))`,
+				{
+					date: date,
+				},
+			)
 			.andWhere(
 				`${property} <= DATE_TRUNC('month', CAST(:date AS date)) + INTERVAL '1 month' - INTERVAL '1 millisecond'`,
 				{ date: date },

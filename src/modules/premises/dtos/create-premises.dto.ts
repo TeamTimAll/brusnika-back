@@ -1,4 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsArray,
 	IsEnum,
@@ -7,9 +8,10 @@ import {
 	IsNumber,
 	IsOptional,
 	IsString,
+	ValidateNested,
 } from "class-validator";
-import { Type } from "class-transformer";
 
+import { BaseDto } from "../../../common/base/base_dto";
 import {
 	CommercialStatus,
 	PremisesType,
@@ -105,4 +107,14 @@ export class CreatePremisesDto {
 	@IsEnum(PuchaseOptions)
 	@IsOptional()
 	purchaseOption?: PuchaseOptions;
+}
+
+export class CreatePremisesMetaDataDto extends BaseDto<CreatePremisesDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(CreatePremisesDto) }],
+		type: () => CreatePremisesDto,
+	})
+	@ValidateNested()
+	@Type(() => CreatePremisesDto)
+	declare data: CreatePremisesDto;
 }

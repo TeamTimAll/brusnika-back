@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 
@@ -42,11 +42,11 @@ export class NewsEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	second_category_id?: number;
 
-	@OneToOne(() => NewsCategories)
+	@ManyToOne(() => NewsCategories)
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: NewsCategories;
 
-	@OneToOne(() => NewsCategories)
+	@ManyToOne(() => NewsCategories)
 	@JoinColumn({ name: "second_category_id" })
 	secondary_category!: NewsCategories;
 

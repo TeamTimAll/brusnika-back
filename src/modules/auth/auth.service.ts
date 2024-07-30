@@ -3,9 +3,8 @@ import { JwtService } from "@nestjs/jwt";
 
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { AgenciesEntity } from "../agencies/agencies.entity";
-import { AgenciesService } from "../agencies/agencies.service";
-import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
+import { AgencyService } from "../agencies/agencies.service";
+import { CityService } from "../cities/cities.service";
 import { UserCreateDto, UserFillDataDto } from "../user/dtos/user.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserRegisterStatus } from "../user/user.entity";
@@ -36,7 +35,8 @@ export class AuthService {
 	constructor(
 		private jwtService: JwtService,
 		private userService: UserService,
-		private agenciesService: AgenciesService,
+		private agenciesService: AgencyService,
+		private cityService: CityService,
 	) {}
 
 	async agentRegister(body: UserCreateDto): Promise<AuthRespone> {
@@ -72,20 +72,22 @@ export class AuthService {
 		};
 	}
 
-	async agentFillData(body: UserFillDataDto): Promise<AuthRespone> {
-		const user = await this.userService.getUser(body.id);
+	async agentFillData(dto: UserFillDataDto): Promise<AuthRespone> {
+		const user = await this.userService.getUser(dto.id);
 
 		const foundUser = await this.userService.findOne({
-			email: body.email,
+			email: dto.email,
 		});
 
 		if (foundUser) {
-			throw new UserEmailAlreadyExistsError(`email: ${body.email}`);
+			throw new UserEmailAlreadyExistsError(`email: ${dto.email}`);
 		}
+
+		await this.cityService.readOne(dto.city_id);
 
 		await this.userService.updateUser(user.id, {
 			register_status: UserRegisterStatus.ATTACHMENT,
-			...body,
+			...dto,
 		});
 
 		return {
@@ -97,11 +99,7 @@ export class AuthService {
 
 	async agentChooseAgency(body: AgentChooseAgencyDto): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
-
-		const agency = await this.agenciesService.findOne(body.agency_id);
-		if (!agency?.data) {
-			throw new AgencyNotFoundError();
-		}
+		await this.agenciesService.readOne(body.agency_id);
 		await this.userService.updateUser(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
 			agency_id: body.agency_id,
@@ -121,17 +119,20 @@ export class AuthService {
 	): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
 
-		const newAgency = await this.agenciesService.create<AgenciesEntity>({
-			city_id: body.city_id,
-			email: body.email,
-			inn: body.email,
-			legalName: body.legalName,
-			phone: body.phone,
-			title: body.title,
-		});
+		const newAgency = await this.agenciesService.create(
+			{
+				city_id: body.city_id,
+				email: body.email,
+				inn: body.email,
+				legalName: body.legalName,
+				phone: body.phone,
+				title: body.title,
+			},
+			{ user_id: user.id, role: user.role },
+		);
 		await this.userService.updateUser(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
-			agency_id: newAgency.data[0].id,
+			agency_id: newAgency.id,
 		});
 
 		return {
@@ -147,15 +148,18 @@ export class AuthService {
 	): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
 
-		const newAgency = await this.agenciesService.create<AgenciesEntity>({
-			city_id: body.city_id,
-			ownerFullName: body.ownerFullName,
-			ownerPhone: body.ownerPhone,
-			title: body.title,
-		});
+		const newAgency = await this.agenciesService.create(
+			{
+				city_id: body.city_id,
+				ownerFullName: body.ownerFullName,
+				ownerPhone: body.ownerPhone,
+				title: body.title,
+			},
+			{ user_id: user.id, role: user.role },
+		);
 		await this.userService.updateUser(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
-			agency_id: newAgency.data[0].id,
+			agency_id: newAgency.id,
 		});
 
 		return {

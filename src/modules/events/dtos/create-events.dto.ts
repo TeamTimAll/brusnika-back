@@ -14,6 +14,7 @@ import {
 	ValidateNested,
 } from "class-validator";
 
+import { BaseDto } from "../../../common/base/base_dto";
 import { EVENT_FORMAT, EVENT_TYPES } from "../events.entity";
 
 import { ContactDto } from "./contact.dto";
@@ -115,4 +116,14 @@ export class CreateEventsDto {
 	@IsString({ each: true })
 	@IsOptional()
 	tags?: string[];
+}
+
+export class CreateEventsMetaDataDto extends BaseDto<CreateEventsDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(CreateEventsDto) }],
+		type: () => CreateEventsDto,
+	})
+	@ValidateNested()
+	@Type(() => CreateEventsDto)
+	declare data: CreateEventsDto;
 }

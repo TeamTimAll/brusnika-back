@@ -9,20 +9,19 @@ import {
 	Post,
 	Put,
 	Query,
+	UseInterceptors,
 } from "@nestjs/common";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 
-import { BaseDto } from "../../common/base/base_dto";
+import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
 import { BuildingsService } from "./buildings.service";
 import { CreateBuildingMetaDto } from "./dtos/building.create.dto";
-import {
-	UpdateBuilding,
-	UpdateBuildingMetaDataDto,
-} from "./dtos/building.update.dto";
+import { UpdateBuildingMetaDataDto } from "./dtos/building.update.dto";
 
 @ApiTags("Buildings")
 @Controller("buildings")
+@UseInterceptors(TransformInterceptor)
 export class BuildingsController {
 	constructor(private buildingsService: BuildingsService) {}
 
@@ -32,21 +31,14 @@ export class BuildingsController {
 		name: "project_id",
 		required: false,
 	})
-	async getAll(@Query("project_id") project_id?: number) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.buildingsService.findAllBuilding(project_id);
-		return metaData;
+	async readAll(@Query("project_id") project_id?: number) {
+		return await this.buildingsService.readAll(project_id);
 	}
 
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	async create(@Body() dto: CreateBuildingMetaDto) {
-		const metaData = BaseDto.createFromDto(dto);
-		const createdBuilding = await this.buildingsService.createBuilding(
-			dto.data,
-		);
-		metaData.data = createdBuilding;
-		return metaData;
+		return await this.buildingsService.create(dto.data);
 	}
 
 	@Put(":id")
@@ -55,21 +47,12 @@ export class BuildingsController {
 		@Body() dto: UpdateBuildingMetaDataDto,
 		@Param("id") id: number,
 	) {
-		const metaData = BaseDto.createFromDto(dto);
-		const updatedBuilding = await this.buildingsService.updateBuilding(
-			id,
-			dto.data,
-		);
-		metaData.data = updatedBuilding as UpdateBuilding;
-		return metaData;
+		return await this.buildingsService.update(id, dto.data);
 	}
 
 	@Delete(":id")
 	@HttpCode(HttpStatus.OK)
 	async delete(@Param("id") id: number) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const deletedBuilding = await this.buildingsService.delete(id);
-		metaData.data = deletedBuilding;
-		return metaData;
+		return await this.buildingsService.delete(id);
 	}
 }

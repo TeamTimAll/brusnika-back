@@ -13,21 +13,20 @@ import {
 	ApiBearerAuth,
 	ApiOperation,
 	ApiQuery,
-	ApiResponse,
 	ApiTags,
 } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
-import { BaseDto } from "../../common/base/base_dto";
-import { User } from "../../decorators";
+import { ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 
 import { BookingsService } from "./bookings.service";
 import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
-import { CreateBookingsDto } from "./dtos/create-bookings.dto";
-import { UpdateBookingsDto } from "./dtos/update-bookings.dto";
+import { CreateBookingsMetaDataDto } from "./dtos/create-bookings.dto";
+import { UpdateBookingsMetaDataDto } from "./dtos/update-bookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
 
 @ApiTags("Bookings")
@@ -37,14 +36,13 @@ import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
 export class BookingsController {
 	constructor(private service: BookingsService) {}
 
-	// -------------------------------@Post()-----------------------------------
 	@ApiOperation({ summary: "Create a booking" })
+	@ApiErrorResponse(PremiseNotFoundError, 'id: "id"')
 	@Post()
-	createCity(@User() user: ICurrentUser, @Body() dto: CreateBookingsDto) {
-		dto.agent_id = user.user_id;
-		return this.service.create(dto);
+	create(@User() user: ICurrentUser, @Body() dto: CreateBookingsMetaDataDto) {
+		dto.data.agent_id = user.user_id;
+		return this.service.create(dto.data);
 	}
-	// ------------------------------@Get()-------------------------------------
 
 	@ApiQuery({
 		name: "client_id",
@@ -53,48 +51,31 @@ export class BookingsController {
 	})
 	@ApiOperation({ summary: "Get all bookings" })
 	@Get()
-	@ApiResponse({
-		status: new BookingNotFoundError().status,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto()).setPrompt(
-				new BookingNotFoundError("'name' booking not found"),
-			),
-		},
-	})
+	@ApiErrorResponse(BookingNotFoundError, "'name' booking not found")
 	async getBookings(
 		@User() user: ICurrentUser,
 		@Query("client_id") _client_id: string,
 	) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-
-		metaData.data = await this.service.new_findAll(user);
-		return metaData;
+		return await this.service.readAll(user);
 	}
-	// ---------------------------@Put(":id")-----------------------------------
+
 	@ApiOperation({ summary: "Update a booking by ID" })
 	@Put(":id")
 	async updateCity(
 		@Param("id") id: number,
-		@Body() updateBookingsDto: UpdateBookingsDto,
+		@Body() dto: UpdateBookingsMetaDataDto,
 	) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const updatedCity = await this.service.r_update(id, updateBookingsDto);
-		metaData.data = updatedCity;
-		return metaData;
+		return await this.service.update(id, dto.data);
 	}
-	// ---------------------------@Delete(":id")-------------------------------
+
 	@ApiOperation({ summary: "Delete a booking by ID" })
 	@Delete(":id")
 	async deleteCity(@Param("id") id: number) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.service.r_remove(id);
-		return metaData;
+		return await this.service.delete(id);
 	}
-	// -----------------------------------------------------------------------
+
 	@Get("/not-booked-premises")
 	async readAllNotBookedPremises(@Query() dto: NotBookedPremisesFilter) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.service.readAllNotBookedPremises(dto);
-		return metaData;
+		return await this.service.readAllNotBookedPremises(dto);
 	}
 }
