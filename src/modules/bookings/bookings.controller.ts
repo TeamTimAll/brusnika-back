@@ -8,6 +8,7 @@ import {
 	Put,
 	Query,
 	UseGuards,
+	UseInterceptors,
 } from "@nestjs/common";
 import {
 	ApiBearerAuth,
@@ -20,6 +21,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
+import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 
@@ -33,6 +35,7 @@ import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
 @Controller("/bookings")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
+@UseInterceptors(TransformInterceptor)
 export class BookingsController {
 	constructor(private service: BookingsService) {}
 
@@ -40,8 +43,7 @@ export class BookingsController {
 	@ApiErrorResponse(PremiseNotFoundError, 'id: "id"')
 	@Post()
 	create(@User() user: ICurrentUser, @Body() dto: CreateBookingsMetaDataDto) {
-		dto.data.agent_id = user.user_id;
-		return this.service.create(dto.data);
+		return this.service.create(dto.data, user);
 	}
 
 	@ApiQuery({

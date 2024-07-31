@@ -230,7 +230,7 @@
 - [x] Event read one'da user invatition bilan chiqishi kerak. User'ning fullname, photo, agency.
 - [x] Event read'da is_liked field qo'shib berish.
 - [x] Event read'da is_joind field qo'shib berish.
-- [ ] Event pagination xato ishlayapti.
+- [x] Event pagination xato ishlayapti.
+- [x] Booking'da 5 tadan ortiq create qila olmasin.
 - [ ] Event invatition'ni accept qilish uchun API.
-- [ ] Booking'da 5 tadan ortiq create qila olmasin.
 - [ ] User o'z agency'sini o'zgartira olishi kerak.

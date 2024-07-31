@@ -14,6 +14,9 @@ import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
 import { CreateBookingsDto } from "./dtos/create-bookings.dto";
 import { UpdateBookingsDto } from "./dtos/update-bookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
+import { MaxCreatableBookingCountReachedError } from "./errors/MaxCreatableBookingCountReached.error";
+
+const MAX_CREATABLE_BOOKING_COUNT = 5;
 
 @Injectable()
 export class BookingsService {
@@ -24,19 +27,31 @@ export class BookingsService {
 		@Inject() private clientService: ClientService,
 	) {}
 
-	async create(dto: CreateBookingsDto) {
+	async create(dto: CreateBookingsDto, user: ICurrentUser) {
 		if (typeof dto.premise_id !== "undefined") {
 			const foundPremise = await this.premiseService.readOne(
 				dto.premise_id,
 			);
-			if (!foundPremise) {
+			if (!foundPremise.id) {
 				throw new PremiseNotFoundError(`id: ${dto.premise_id}`);
 			}
 		}
 		if (typeof dto.client_id !== "undefined") {
 			await this.clientService.readOne(dto.client_id);
 		}
+		const userCreatedCount = await this.bookingRepository.count({
+			where: {
+				create_by_id: user.user_id,
+			},
+		});
+		if (userCreatedCount >= MAX_CREATABLE_BOOKING_COUNT) {
+			throw new MaxCreatableBookingCountReachedError(
+				`count: ${userCreatedCount}`,
+			);
+		}
 		const booking = this.bookingRepository.create(dto);
+		booking.agent_id = user.user_id;
+		booking.create_by_id = user.user_id;
 		return await this.bookingRepository.save(booking);
 	}
 

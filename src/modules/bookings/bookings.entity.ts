@@ -73,4 +73,11 @@ export class BookingsEntity extends BaseEntity {
 
 	@Column({ default: BookingStatus.OPEN, enum: BookingStatus })
 	status!: BookingStatus;
+
+	@ManyToOne(() => UserEntity)
+	@JoinColumn({ name: "create_by_id" })
+	create_by!: UserEntity;
+
+	@Column({ nullable: true, type: "integer" })
+	create_by_id?: number;
 }
