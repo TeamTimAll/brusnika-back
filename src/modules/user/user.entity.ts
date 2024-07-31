@@ -57,6 +57,12 @@ export class UserEntity extends BaseEntity {
 	@Column({ nullable: true, type: "timestamp" })
 	verification_code_sent_date!: Date | null;
 
+	@Column({ nullable: true, type: "int" })
+	email_verification_code!: number | null;
+
+	@Column({ nullable: true, type: "timestamp" })
+	email_verification_code_sent_date!: Date | null;
+
 	@Column({ nullable: true, type: "varchar" })
 	avatar!: string | null;
 
@@ -76,8 +82,14 @@ export class UserEntity extends BaseEntity {
 	@Column({ default: false })
 	isPhoneVerified?: boolean;
 
+	@Column({ default: false })
+	isEmailVerified?: boolean;
+
 	@Column({ nullable: true, type: "varchar" })
 	temporaryNumber!: string | null;
+
+	@Column({ nullable: true, type: "varchar" })
+	temporaryEmail!: string | null;
 
 	@Column({ default: true })
 	status!: boolean;

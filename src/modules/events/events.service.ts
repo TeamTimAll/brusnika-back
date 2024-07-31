@@ -12,6 +12,8 @@ import { CityService } from "../../modules/cities/cities.service";
 import { UserNotFoundError } from "../../modules/user/errors/UserNotFound.error";
 import { UserService } from "../../modules/user/user.service";
 import { ServiceResponse } from "../../types";
+import { AgencyEntity } from "../agencies/agencies.entity";
+import { UserEntity } from "../user/user.entity";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { FilterEventsDto, QueryType } from "./dtos/events.dto";
@@ -63,9 +65,30 @@ export class EventsService {
 	async readOne(id: number, user: ICurrentUser) {
 		const foundEvent = await this.eventRepository
 			.createQueryBuilder("e")
-			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
-			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
-			.leftJoinAndSelect("e.contacts", "contacts")
+			.leftJoinAndMapMany(
+				"e.contacts",
+				ContactEntity,
+				"contacts",
+				"contacts.event_id = e.id",
+			)
+			.leftJoinAndMapMany(
+				"e.invited_users",
+				EventInvitationEntity,
+				"invitation",
+				"invitation.event_id = e.id",
+			)
+			.leftJoinAndMapOne(
+				"invitation.user",
+				UserEntity,
+				"user",
+				"user.id = invitation.user_id",
+			)
+			.leftJoinAndMapOne(
+				"user.agency",
+				AgencyEntity,
+				"agency",
+				"agency.id = user.agency_id",
+			)
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
 			.loadRelationCountAndMap(
@@ -76,6 +99,39 @@ export class EventsService {
 					return qb.where("i.is_accepted IS TRUE");
 				},
 			)
+			.select([
+				"e.id",
+				"e.is_liked",
+				"e.is_joined",
+				"e.title",
+				"e.description",
+				"e.photo",
+				"e.location",
+				"e.date",
+				"e.start_time",
+				"e.end_time",
+				"e.leader",
+				"e.max_visitors",
+				"e.phone",
+				"e.format",
+				"e.type",
+				"e.is_banner",
+				"e.is_draft",
+				"e.tags",
+				"contacts.id",
+				"contacts.fullname",
+				"contacts.phone",
+				"invitation.id",
+				"invitation.is_accepted",
+				"user.id",
+				"user.avatar",
+				"user.fullName",
+				"agency.id",
+				"agency.title",
+			])
+			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
+			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
+			.setParameter("user_id", user.user_id)
 			.where("e.id = :id", { id })
 			.getOne();
 		if (!foundEvent) {
@@ -101,10 +157,32 @@ export class EventsService {
 		const pageSize = (dto.page - 1) * dto.limit;
 		let eventsQuery = this.eventRepository
 			.createQueryBuilder("e")
-			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
-			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
-			.leftJoinAndSelect("e.contacts", "contacts")
-			.leftJoinAndSelect("e.invited_users", "event_invition")
+			.leftJoinAndMapMany(
+				"e.contacts",
+				ContactEntity,
+				"contacts",
+				"contacts.event_id = e.id",
+			)
+			.leftJoinAndMapMany(
+				"e.invited_users",
+				EventInvitationEntity,
+				"invitation",
+				"invitation.event_id = e.id",
+			)
+			.leftJoinAndMapOne(
+				"invitation.user",
+				UserEntity,
+				"user",
+				"user.id = invitation.user_id",
+			)
+			.leftJoinAndMapOne(
+				"user.agency",
+				AgencyEntity,
+				"agency",
+				"agency.id = user.agency_id",
+			)
+			.loadRelationCountAndMap("e.likes_count", "e.likes")
+			.loadRelationCountAndMap("e.views_count", "e.views")
 			.loadRelationCountAndMap(
 				"e.accepted_invitation_count",
 				"e.invited_users",
@@ -113,8 +191,39 @@ export class EventsService {
 					return qb.where("i.is_accepted IS TRUE");
 				},
 			)
-			.loadRelationCountAndMap("e.likes_count", "e.likes")
-			.loadRelationCountAndMap("e.views_count", "e.views");
+			.select([
+				"e.id",
+				"e.is_liked",
+				"e.is_joined",
+				"e.title",
+				"e.description",
+				"e.photo",
+				"e.location",
+				"e.date",
+				"e.start_time",
+				"e.end_time",
+				"e.leader",
+				"e.max_visitors",
+				"e.phone",
+				"e.format",
+				"e.type",
+				"e.is_banner",
+				"e.is_draft",
+				"e.tags",
+				"contacts.id",
+				"contacts.fullname",
+				"contacts.phone",
+				"invitation.id",
+				"invitation.is_accepted",
+				"user.id",
+				"user.avatar",
+				"user.fullName",
+				"agency.id",
+				"agency.title",
+			])
+			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
+			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
+			.setParameter("user_id", user.user_id);
 		if (dto.query_type !== QueryType.ALL) {
 			const today_date = new Date();
 			eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
@@ -164,9 +273,30 @@ export class EventsService {
 		});
 		let eventQuery = this.eventRepository
 			.createQueryBuilder("e")
-			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
-			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
-			.leftJoinAndSelect("e.contacts", "contacts")
+			.leftJoinAndMapMany(
+				"e.contacts",
+				ContactEntity,
+				"contacts",
+				"contacts.event_id = e.id",
+			)
+			.leftJoinAndMapMany(
+				"e.invited_users",
+				EventInvitationEntity,
+				"invitation",
+				"invitation.event_id = e.id",
+			)
+			.leftJoinAndMapOne(
+				"invitation.user",
+				UserEntity,
+				"user",
+				"user.id = invitation.user_id",
+			)
+			.leftJoinAndMapOne(
+				"user.agency",
+				AgencyEntity,
+				"agency",
+				"agency.id = user.agency_id",
+			)
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
 			.loadRelationCountAndMap(
@@ -177,6 +307,39 @@ export class EventsService {
 					return qb.where("i.is_accepted IS TRUE");
 				},
 			)
+			.select([
+				"e.id",
+				"e.is_liked",
+				"e.is_joined",
+				"e.title",
+				"e.description",
+				"e.photo",
+				"e.location",
+				"e.date",
+				"e.start_time",
+				"e.end_time",
+				"e.leader",
+				"e.max_visitors",
+				"e.phone",
+				"e.format",
+				"e.type",
+				"e.is_banner",
+				"e.is_draft",
+				"e.tags",
+				"contacts.id",
+				"contacts.fullname",
+				"contacts.phone",
+				"invitation.id",
+				"invitation.is_accepted",
+				"user.id",
+				"user.avatar",
+				"user.fullName",
+				"agency.id",
+				"agency.title",
+			])
+			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
+			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
+			.setParameter("user_id", user.user_id)
 			.where("e.create_by_id = :create_by_id", {
 				create_by_id: user.user_id,
 			});
@@ -215,6 +378,7 @@ export class EventsService {
 		if (!foundEvent) {
 			throw new EventsNotFoundError(`id: ${id}`);
 		}
+		await this.citiesService.readOne(dto.city_id);
 		await this.eventRepository.update(foundEvent.id, {
 			...dto,
 			contacts: undefined,
