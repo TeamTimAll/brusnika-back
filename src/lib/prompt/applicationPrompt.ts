@@ -34,6 +34,7 @@ export enum ApplicationPromptID {
 	TRAININGS_CATEGORY_NOT_FOUND_ERROR = 420,
 	NEWS_CATEGORY_NOT_FOUND_ERROR = 421,
 	SECTION_NOT_FOUND_ERROR = 422,
+	MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR = 433,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -407,6 +408,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Section not found error",
 			ru: "Ошибка «Раздел не найден»",
 			uz: "Section not found error",
+		},
+	},
+	[ApplicationPromptID.MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR]: {
+		promptId: ApplicationPromptID.MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "max_creatable_booking_count_reached_error",
+		promptLabels: {
+			en: "Max creatable booking count reached error",
+			ru: "Ошибка: достигнуто максимальное количество создаваемых бронирований.",
+			uz: "Max creatable booking count reached error",
 		},
 	},
 };
