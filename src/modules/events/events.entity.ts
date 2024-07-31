@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	VirtualColumn,
+} from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { UserEntity } from "../../modules/user/user.entity";
@@ -120,4 +127,16 @@ export class EventsEntity extends BaseEntity {
 		},
 	)
 	invited_users?: EventInvitationEntity[];
+
+	@VirtualColumn({
+		query: () =>
+			"COALESCE((SELECT TRUE FROM event_likes el WHERE el.event_id = e.id AND el.user_id = :user_id LIMIT 1), FALSE)",
+	})
+	is_liked?: boolean;
+
+	@VirtualColumn({
+		query: () =>
+			"COALESCE((SELECT TRUE FROM event_invitation ei WHERE ei.event_id = e.id AND ei.user_id = :user_id LIMIT 1), FALSE)",
+	})
+	is_joined?: boolean;
 }

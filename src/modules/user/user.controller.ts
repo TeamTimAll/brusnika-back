@@ -20,6 +20,7 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { UserLoginResendCodeMetaDataDto } from "../../modules/auth/dtos/user-login.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
+import { UserChangeEmailMetaDataDto } from "./dtos/UserChangeEmail.dto";
 import {
 	UserChangePhoneVerifyCodeMetaDataDto,
 	UserCreateMetaDataDto,
@@ -53,7 +54,7 @@ export class UserController {
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
 	updateUser(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
-		return this.userService.updateUser(user.user_id, dto.data);
+		return this.userService.update(user.user_id, dto.data);
 	}
 
 	@Post("/phone")
@@ -65,7 +66,6 @@ export class UserController {
 	) {
 		return this.userService.changePhone(user.user_id, dto.data);
 	}
-
 	@Post("/phone/verify")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
@@ -74,6 +74,26 @@ export class UserController {
 		@User() user: ICurrentUser,
 	) {
 		return this.userService.verifySmsCode(user, dto.data);
+	}
+
+	@Post("/email")
+	@HttpCode(HttpStatus.ACCEPTED)
+	@ApiAcceptedResponse()
+	changeEmail(
+		@Body() dto: UserChangeEmailMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		return this.userService.changeEmail(user.user_id, dto.data);
+	}
+
+	@Post("/email/verify")
+	@HttpCode(HttpStatus.ACCEPTED)
+	@ApiAcceptedResponse()
+	verifyEmail(
+		@Body() dto: UserChangePhoneVerifyCodeMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		return this.userService.verifyEmail(user, dto.data);
 	}
 
 	@Post("/phone/resend-code")

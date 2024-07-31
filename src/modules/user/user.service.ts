@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, type FindOptionsWhere } from "typeorm";
+import { Repository } from "typeorm";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { UserLoginResendCodeDto } from "../../modules/auth/dtos/user-login.dto";
@@ -10,11 +10,8 @@ import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExp
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
 
-import {
-	UserChangePhoneVerifyCodeDto,
-	UserCreateDto,
-	type UserDto,
-} from "./dtos/user.dto";
+import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
+import { UserChangePhoneVerifyCodeDto, UserCreateDto } from "./dtos/user.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
@@ -53,12 +50,6 @@ export class UserService {
 			throw new UserNotFoundError(`id: ${id}`);
 		}
 		return foundUser;
-	}
-
-	findOne(
-		findData: FindOptionsWhere<UserEntity>,
-	): Promise<UserEntity | null> {
-		return this.userRepository.findOneBy(findData);
 	}
 
 	async findByUsernameOrEmail(
@@ -139,13 +130,11 @@ export class UserService {
 		// const user2Entity = await queryBuilder.getOne();
 	}
 
-	async updateUser(
+	async update(
 		id: number,
-		updateEventsDto: Partial<UserDto>,
+		updateEventsDto: Partial<UserEntity>,
 	): Promise<unknown> {
-		const user = await this.findOne({
-			id,
-		});
+		const user = await this.readOne(id);
 
 		if (!user) {
 			throw new UserNotFoundError();
@@ -153,20 +142,11 @@ export class UserService {
 
 		await this.userRepository.update(id, updateEventsDto);
 
-		return this.findOne({
-			id,
-		});
+		return this.readOne(id);
 	}
 
 	async changePhone(id: number, dto: UserCreateDto): Promise<UserResponse> {
-		const user = await this.findOne({
-			id,
-		});
-
-		if (!user) {
-			throw new UserNotFoundError();
-		}
-
+		const user = await this.readOne(id);
 		if (
 			user.verification_code_sent_date &&
 			!this.hasOneMinutePassed(user.verification_code_sent_date)
@@ -177,7 +157,7 @@ export class UserService {
 		// const randomNumber = Math.floor(100000 + Math.random() * 900000);
 		const randomNumber = 111111;
 
-		await this.updateUser(user.id, {
+		await this.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 			temporaryNumber: dto.phone,
@@ -188,6 +168,63 @@ export class UserService {
 		return {
 			user_id: user.id,
 			message: "sms sent",
+		};
+	}
+
+	async changeEmail(
+		id: number,
+		dto: UserChangeEmailDto,
+	): Promise<UserResponse> {
+		const user = await this.readOne(id);
+		if (
+			user.email_verification_code_sent_date &&
+			!this.hasOneMinutePassed(user.email_verification_code_sent_date)
+		) {
+			throw new VerificationExistsError();
+		}
+
+		const randomNumber = 111111;
+
+		await this.update(user.id, {
+			email_verification_code: randomNumber,
+			email_verification_code_sent_date: new Date(),
+			temporaryEmail: dto.email,
+		});
+
+		// todo send sms
+
+		return {
+			user_id: user.id,
+			message: "sms sent",
+		};
+	}
+
+	async verifyEmail(user: ICurrentUser, dto: UserChangePhoneVerifyCodeDto) {
+		const foundUser = await this.getUser(user.user_id);
+
+		if (!foundUser.isEmailVerified) {
+			throw new UserPhoneNotVerifiedError();
+		}
+		if (!foundUser.email_verification_code_sent_date) {
+			throw new NoVerificationCodeSentError();
+		}
+		if (this.hasOneMinutePassed(foundUser.email_verification_code_sent_date)) {
+			throw new VerificationCodeExpiredError();
+		}
+		if (foundUser.email_verification_code !== dto.code) {
+			throw new VerificationCodeIsNotCorrectError();
+		}
+
+		await this.update(foundUser.id, {
+			email: foundUser.temporaryEmail,
+			temporaryEmail: null,
+			email_verification_code: null,
+			email_verification_code_sent_date: null,
+			isEmailVerified: true,
+		});
+		return {
+			user_id: foundUser.id,
+			message: "Verification code is correct",
 		};
 	}
 
@@ -210,7 +247,7 @@ export class UserService {
 			throw new VerificationCodeIsNotCorrectError();
 		}
 
-		await this.updateUser(foundUser.id, {
+		await this.update(foundUser.id, {
 			phone: foundUser.temporaryNumber,
 			temporaryNumber: null,
 			verification_code: null,
@@ -224,32 +261,34 @@ export class UserService {
 	}
 
 	async userResendSmsCode(
-		currentUser: ICurrentUser,
+		user: ICurrentUser,
 		dto: UserLoginResendCodeDto,
 	): Promise<UserResponse> {
-		const user = await this.findOne({
-			id: currentUser.user_id,
-			temporaryNumber: dto.phone,
+		const foundUser = await this.userRepository.findOne({
+			where: {
+				id: user.user_id,
+				temporaryNumber: dto.phone,
+			},
 		});
 
-		if (!user) {
+		if (!foundUser) {
 			throw new UserNotFoundError(`phone number: ${dto.phone}`);
 		}
-		if (!user.verification_code_sent_date) {
+		if (!foundUser.verification_code_sent_date) {
 			throw new NoVerificationCodeSentError();
 		}
-		if (!this.hasOneMinutePassed(user.verification_code_sent_date)) {
+		if (!this.hasOneMinutePassed(foundUser.verification_code_sent_date)) {
 			throw new VerificationExistsError();
 		}
 		// const randomNumber = Math.floor(100000 + Math.random() * 900000);
 		const randomNumber = 111111;
 
 		// todo send sms
-		await this.updateUser(user.id, {
+		await this.update(foundUser.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
 
-		return { user_id: user.id, message: "sms sent" };
+		return { user_id: foundUser.id, message: "sms sent" };
 	}
 }

@@ -225,12 +225,12 @@
 
 ---
 
-- [ ] User email'ni update qilganda verify qilishi kerak.
-- [ ] Event read one'da user invatition bilan chiqishi kerak. User'ning fullname, photo, agency.
-- [ ] Event read'da is_liked field qo'shib berish.
-- [ ] Event read'da is_joind field qo'shib berish.
+- [x] User email'ni update qilganda verify qilishi kerak.
+- [x] Kontur server uchun ping qilish uchun API.
+- [x] Event read one'da user invatition bilan chiqishi kerak. User'ning fullname, photo, agency.
+- [x] Event read'da is_liked field qo'shib berish.
+- [x] Event read'da is_joind field qo'shib berish.
 - [ ] Event pagination xato ishlayapti.
 - [ ] Event invatition'ni accept qilish uchun API.
 - [ ] Booking'da 5 tadan ortiq create qila olmasin.
 - [ ] User o'z agency'sini o'zgartira olishi kerak.
-- [ ] Kontur server uchun ping qilish uchun API.
