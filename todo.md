@@ -177,7 +177,115 @@
 - [x] Calendar'da user o'z visit'larni ko'rishi kerak.
 - [x] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
 - [x] Telefon raqam user'da unique bo'lishi kerak.
-- [ ] Agency update'dan BaseService update functionalityni olib tashlash kerak.
-- [ ] BaseService ni o'chirib tashlash.
-- [ ] Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
-- [ ] Kontur server uchun ping qilish uchun API.
+- [x] BaseService ni o'chirib tashlash. Yani API qolibini bir xil ko'rinishga keltirish.
+    - [x] Agencies Service
+        - [x] API [GET]:    /agencies
+        - [x] API [GET]:    /agencies/:id
+        - [x] API [POST]:   /agencies
+        - [x] API [PUT]:    /agencies/:id
+        - [x] API [DELETE]: /agencies/:id
+    - [x] Bookings Service
+        - [x] API [GET]:    /bookings
+        - [x] API [GET]:    /bookings/:id
+        - [x] API [POST]:   /bookings
+        - [x] API [PUT]:    /bookings/:id
+        - [x] API [DELETE]: /bookings/:id
+    - [x] Buildings Service
+        - [x] API [GET]:    /buildings
+        - [x] API [GET]:    /buildings/:id
+        - [x] API [POST]:   /buildings
+        - [x] API [PUT]:    /buildings/:id
+        - [x] API [DELETE]: /buildings/:id
+    - [x] Cities Service
+        - [x] API [GET]:    /cities
+        - [x] API [GET]:    /cities/:id
+        - [x] API [POST]:   /cities
+        - [x] API [PUT]:    /cities/:id
+        - [x] API [DELETE]: /cities/:id
+    - [x] Categories Service
+    - [x] Likes Service
+    - [x] Views Service
+    - [x] Trainings Service
+        - [x] API [GET]:    /trainings
+        - [x] API [GET]:    /trainings/:id
+        - [x] API [POST]:   /trainings
+        - [x] API [PUT]:    /trainings/:id
+        - [x] API [DELETE]: /trainings/:id
+    - [x] News Service
+        - [x] API [GET]:    /news
+        - [x] API [GET]:    /news/:id
+        - [x] API [POST]:   /news
+        - [x] API [PUT]:    /news/:id
+        - [x] API [DELETE]: /news/:id
+    - [x] Premises Service
+    - [x] Sections Service
+- [x] Interceptors dan foydalangan holda meta data kirishini abstraction qilish. URL: https://docs.nestjs.com/interceptors
+
+---
+
+- [x] User email'ni update qilganda verify qilishi kerak.
+- [x] Kontur server uchun ping qilish uchun API.
+- [x] Event read one'da user invatition bilan chiqishi kerak. User'ning fullname, photo, agency.
+- [x] Event read'da is_liked field qo'shib berish.
+- [x] Event read'da is_joind field qo'shib berish.
+- [x] Event pagination xato ishlayapti.
+- [x] Booking'da 5 tadan ortiq create qila olmasin.
+- [ ] Event invatition'ni accept qilish uchun API.
+- [ ] User o'z agency'sini o'zgartira olishi kerak.
+- [ ] User listi uchun filter
+    - F.I.SH
+    - Shahar
+    - Role
+    - Register qilgan kuni
+    - Agency nomi bilan
+    - 
+- [ ] User register qilganda CRM'ga so'rov yuboradi. User status'i register'ga o'tkazib qo'yish kerak. Javob kelganidan keyin User status'i CRM'dan berilgan status bilan update qilishi kerak. CRM'dan o'chirib tashlansa block status'iga o'tkazib qo'yish kerak.
+
+## Admin role va role model
+
+### HEAD_OF_AGENCY (Руководитель агентства)
+- [ ] User'larni listni ko'ra oladi. User id bilan ham oladi.
+- [ ] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT'ga o'tkaza oladi.
+
+### AFFILIATE_MANAGER (Партнерский менеджер)
+- [ ] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT va HEAD_OF_AGENCY'ga o'tkaza oladi. HEAD_OF_AGENCY'dan AGENT role'iga ham o'tkaza oladi.
+- [ ] User'larni listni ko'ra oladi. User id bilan ham oladi.
+- [ ] User role'larni o'zgartira oladi.
+- [ ] Premise reklamasini generatsiya qila oladi.
+- [ ] Training create qila oladi.
+- [ ] News create qila oladi.
+- [ ] Event create qila oladi.
+- [ ] Contact'larni boshqaruvini qila oladi.
+- [ ] Project'larni boshqaruvini qila oladi.
+
+### ADMIN (Администратор)
+- [ ] Premise link create qila oladi.
+- [ ] Xohlagan user nomidan login qila olish imkoniyati.
+- [ ] OnBoarding module'ini o'chirishi yoki yoqishi mumkin.
+- [ ] Yangi xodimlar uchun bortga kirish ma'lumotlarini ko'rsatish muddatini belgilash (platformaga birinchi kirgan paytdan boshlab kunlar sonini ko'rsatuvchi joydagi).
+- [ ] Kalendar oyi davomida mumkin bo'lgan bron qilish sonini belgilash.
+- [ ] Lead'larni cancel qilinganligi sabablarini ko'ra olishi kerak.
+- [ ] User'ni role'ini o'zgartira oladi. ADMIN, AFFILIATE_MANAGER. Hamma user'ni block yoki unblock qila oladi.
+
+
+### Kounter server
+Brusnika API'dan olish kerak bo'lgan ma'lumotlar:
+- Project [https://erp-core.staging.brusnika.tech/parameters/v1/versions/fc5dbda9-fee2-4cf1-88d9-e8571683f5a8/construction-projects]
+- Building []
+- Section [https://erp-core.staging.brusnika.tech/parameters/v1/sections]
+- Premise [https://erp-core.staging.brusnika.tech/parameters/v1/premise]
+- Contact [https://clients-base.staging.brusnika.tech/v1/contact]
+- Lead [https://crm.brusnika.ru/crm/hs/bpm/deals]
+    - Lead Task: [https://crm.brusnika.ru/crm/hs/bpm/deal-tasks]
+- Task 
+- Time Slots [https://crm.brusnika.ru/crm/hs/ofo/FreeTime]
+- User
+    - Register
+    - Create
+- Client
+- Bron
+
+Brusnika API'lari
+- Contact API: [https://clients-base.staging.brusnika.tech/v1/contact]
+- Lead API: [https://crm.brusnika.ru/crm/hs/bpm/deals]
+- Lead Task API: [https://crm.brusnika.ru/crm/hs/bpm/deal-tasks]
