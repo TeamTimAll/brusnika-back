@@ -90,6 +90,12 @@ export class EventsService {
 				"agency",
 				"agency.id = user.agency_id",
 			)
+			.leftJoinAndMapOne(
+				"e.city",
+				CitiesEntity,
+				"city",
+				"city.id = e.city_id",
+			)
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
 			.loadRelationCountAndMap(
@@ -119,6 +125,8 @@ export class EventsService {
 				"e.is_banner",
 				"e.is_draft",
 				"e.tags",
+				"city.id",
+				"city.name",
 				"contacts.id",
 				"contacts.fullname",
 				"contacts.phone",
@@ -310,6 +318,12 @@ export class EventsService {
 				"agency",
 				"agency.id = user.agency_id",
 			)
+			.leftJoinAndMapOne(
+				"e.city",
+				CitiesEntity,
+				"city",
+				"city.id = e.city_id",
+			)
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
 			.loadRelationCountAndMap(
@@ -339,6 +353,8 @@ export class EventsService {
 				"e.is_banner",
 				"e.is_draft",
 				"e.tags",
+				"city.id",
+				"city.name",
 				"contacts.id",
 				"contacts.fullname",
 				"contacts.phone",
