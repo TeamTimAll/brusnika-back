@@ -4,7 +4,7 @@ import { Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { CitiesService } from "../cities/cities.service";
+import { CitiesModule } from "../cities/cities.module";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
@@ -19,9 +19,10 @@ import { ProjectsService } from "./projects.service";
 		}),
 
 		TypeOrmModule.forFeature([ProjectEntity, UserEntity]),
+		CitiesModule,
 	],
 	controllers: [ProjectsController],
-	providers: [ProjectsService, CitiesService, UserService],
+	providers: [ProjectsService, UserService],
 	exports: [ProjectsService],
 })
 export class ProjectsModule {}

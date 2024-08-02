@@ -5,7 +5,7 @@ import { CitiesEntity } from "../cities/cities.entity";
 import { UserEntity } from "../user/user.entity";
 
 @Entity({ name: "agencies" })
-export class AgenciesEntity extends BaseEntity {
+export class AgencyEntity extends BaseEntity {
 	@OneToMany(() => UserEntity, (userEntity) => userEntity.agency, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
