@@ -13,6 +13,7 @@ import { UserNotFoundError } from "../../modules/user/errors/UserNotFound.error"
 import { UserService } from "../../modules/user/user.service";
 import { ServiceResponse } from "../../types";
 import { AgencyEntity } from "../agencies/agencies.entity";
+import { CitiesEntity } from "../cities/cities.entity";
 import { UserEntity } from "../user/user.entity";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
@@ -181,6 +182,12 @@ export class EventsService {
 				"agency",
 				"agency.id = user.agency_id",
 			)
+			.leftJoinAndMapOne(
+				"e.city",
+				CitiesEntity,
+				"city",
+				"city.id = e.city_id",
+			)
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
 			.loadRelationCountAndMap(
@@ -210,6 +217,8 @@ export class EventsService {
 				"e.is_banner",
 				"e.is_draft",
 				"e.tags",
+				"city.id",
+				"city.name",
 				"contacts.id",
 				"contacts.fullname",
 				"contacts.phone",
@@ -231,7 +240,11 @@ export class EventsService {
 			});
 		}
 		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
-			eventsQuery = eventsQuery.andWhere("e.is_draft IS FALSE");
+			eventsQuery = eventsQuery
+				.andWhere("e.is_draft IS FALSE")
+				.orWhere("e.create_by_id = :create_by_id", {
+					create_by_id: user.user_id,
+				});
 		}
 		if (dto.is_banner) {
 			eventsQuery = eventsQuery.andWhere("e.is_banner IS TRUE");
