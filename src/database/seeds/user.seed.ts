@@ -36,9 +36,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 
 		{
@@ -60,9 +57,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 
 		{
@@ -84,9 +78,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 
 		{
@@ -108,9 +99,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: false,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 
 		{
@@ -132,9 +120,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 
 		{
@@ -156,9 +141,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 
 		{
@@ -180,9 +162,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 		{
 			phone: "2222222222",
@@ -203,9 +182,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 		{
 			phone: "2222222223",
@@ -226,9 +202,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 		{
 			phone: "2222222224",
@@ -249,9 +222,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 		{
 			phone: "2222222225",
@@ -272,9 +242,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 		{
 			phone: "2222222226",
@@ -295,9 +262,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 		{
 			phone: "2222222227",
@@ -318,9 +282,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 		{
 			phone: "2222222228",
@@ -341,9 +302,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 		{
 			phone: "2222222229",
@@ -364,9 +322,6 @@ export async function up(query: QueryBuilder<object>) {
 			status: true,
 			isPhoneVerified: true,
 			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporaryEmail: null
 		},
 	];
 
