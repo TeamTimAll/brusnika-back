@@ -22,7 +22,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { ApiPageOkResponse, User } from "../../decorators";
 
-import { AgenciesService } from "./agencies.service";
+import { AgencyService } from "./agencies.service";
 import { AgenciesDto } from "./dtos/agencies.dto";
 import { CreateAgenciesDto } from "./dtos/create-agencies.dto";
 import { UpdateAgenciesDto } from "./dtos/update-agencies.dto";
@@ -30,7 +30,7 @@ import { UpdateAgenciesDto } from "./dtos/update-agencies.dto";
 @Controller("/agencies")
 @ApiTags("Agencies")
 export class AgenciesController {
-	constructor(private service: AgenciesService) {}
+	constructor(private service: AgencyService) {}
 
 	@HttpCode(HttpStatus.CREATED)
 	@ApiCreatedResponse({ type: AgenciesDto })

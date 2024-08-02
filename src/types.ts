@@ -5,7 +5,7 @@ export interface Links {
 	total: number;
 }
 
-export interface ServiceResponse<T> {
-	links: Links;
-	data: T;
+export class ServiceResponse<T> {
+	links!: Links;
+	data = [] as T;
 }

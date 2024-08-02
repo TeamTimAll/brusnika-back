@@ -3,8 +3,8 @@ import { JwtService } from "@nestjs/jwt";
 
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { AgenciesEntity } from "../agencies/agencies.entity";
-import { AgenciesService } from "../agencies/agencies.service";
+import { AgencyEntity } from "../agencies/agencies.entity";
+import { AgencyService } from "../agencies/agencies.service";
 import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { UserCreateDto, UserFillDataDto } from "../user/dtos/user.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
@@ -36,7 +36,7 @@ export class AuthService {
 	constructor(
 		private jwtService: JwtService,
 		private userService: UserService,
-		private agenciesService: AgenciesService,
+		private agenciesService: AgencyService,
 	) {}
 
 	async agentRegister(body: UserCreateDto): Promise<AuthRespone> {
@@ -121,7 +121,7 @@ export class AuthService {
 	): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
 
-		const newAgency = await this.agenciesService.create<AgenciesEntity>({
+		const newAgency = await this.agenciesService.create<AgencyEntity>({
 			city_id: body.city_id,
 			email: body.email,
 			inn: body.email,
@@ -147,7 +147,7 @@ export class AuthService {
 	): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
 
-		const newAgency = await this.agenciesService.create<AgenciesEntity>({
+		const newAgency = await this.agenciesService.create<AgencyEntity>({
 			city_id: body.city_id,
 			ownerFullName: body.ownerFullName,
 			ownerPhone: body.ownerPhone,

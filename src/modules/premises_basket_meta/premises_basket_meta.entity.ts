@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
-import { AgenciesEntity } from "../agencies/agencies.entity";
+import { AgencyEntity } from "../agencies/agencies.entity";
 import { ClientEntity } from "../client/client.entity";
 import { UserEntity } from "../user/user.entity";
 
@@ -14,9 +14,9 @@ export class PremisesBasketMetaEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	clinet_id?: number;
 
-	@ManyToOne(() => AgenciesEntity)
+	@ManyToOne(() => AgencyEntity)
 	@JoinColumn({ name: "agent_id" })
-	agent!: AgenciesEntity;
+	agent!: AgencyEntity;
 
 	@Column({ type: "integer", nullable: true })
 	agent_id?: number;

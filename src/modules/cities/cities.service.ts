@@ -1,28 +1,28 @@
-import { InjectDataSource } from "@nestjs/typeorm";
-import { DataSource, ILike } from "typeorm";
-
-import { ICurrentUser } from "interfaces/current-user.interface";
-
-import { BasicService } from "../../generic/service";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ILike, Repository } from "typeorm";
 
 import { CitiesEntity } from "./cities.entity";
 import { CreateCitiesDto } from "./dtos/create-cities.dto";
 import { UpdateCitiesDto } from "./dtos/update-cities.dto";
 import { CityNotFoundError } from "./errors/CityNotFound.error";
 
-export class CitiesService extends BasicService<
-	CitiesEntity,
-	CreateCitiesDto,
-	UpdateCitiesDto
-> {
-	constructor(@InjectDataSource() dataSource: DataSource) {
-		super("cities", CitiesEntity, dataSource);
+@Injectable()
+export class CityService {
+	constructor(
+		@InjectRepository(CitiesEntity)
+		private cityRepository: Repository<CitiesEntity>,
+	) {}
+
+	async create(dto: CreateCitiesDto) {
+		const city = this.cityRepository.create(dto);
+		return await this.cityRepository.save(city);
 	}
 
-	async findAllWithName(name: string): Promise<CitiesEntity[]> {
-		const cities = await this.repository.find({
+	async readAll(name?: string): Promise<CitiesEntity[]> {
+		const cities = await this.cityRepository.find({
 			where: {
-				name: ILike(`%${name}%`),
+				name: name ? ILike(`%${name}%`) : undefined,
 			},
 		});
 		if (!cities.length) {
@@ -31,8 +31,8 @@ export class CitiesService extends BasicService<
 		return cities;
 	}
 
-	async r_findOne(id: number): Promise<CitiesEntity> {
-		const findOne = await this.repository.findOne({
+	async readOne(id: number): Promise<CitiesEntity> {
+		const findOne = await this.cityRepository.findOne({
 			where: { id },
 		});
 
@@ -43,30 +43,15 @@ export class CitiesService extends BasicService<
 		return findOne;
 	}
 
-	async r_update(
-		id: number,
-		dto: UpdateCitiesDto,
-		currentUser?: ICurrentUser,
-	): Promise<CitiesEntity[]> {
-		const foundCity = await this.r_findOne(id);
-
-		if (!foundCity) {
-			throw new CityNotFoundError("city not found");
-		}
-
-		Object.assign(foundCity, dto, {
-			updatedAt: new Date(),
-			updatedBy: currentUser?.user_id,
-		});
-
-		const updatedData = await this.repository.save(foundCity);
-
-		return [updatedData];
+	async update(id: number, dto: UpdateCitiesDto): Promise<CitiesEntity> {
+		const foundCity = await this.readOne(id);
+		const mergedCity = this.cityRepository.merge(foundCity, dto);
+		return await this.cityRepository.save(mergedCity);
 	}
 
-	async r_remove(id: number): Promise<CitiesEntity[]> {
-		const foundCity = await this.r_findOne(id);
-		await this.repository.delete(id);
-		return [foundCity];
+	async delete(id: number): Promise<CitiesEntity> {
+		const foundCity = await this.readOne(id);
+		await this.cityRepository.delete(id);
+		return foundCity;
 	}
 }

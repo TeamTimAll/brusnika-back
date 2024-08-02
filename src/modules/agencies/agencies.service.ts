@@ -4,17 +4,17 @@ import { DataSource, ILike } from "typeorm";
 import { BasicService } from "../../generic/service";
 import { ServiceResponse } from "../../interfaces/serviceResponse.interface";
 
-import { AgenciesEntity } from "./agencies.entity";
+import { AgencyEntity } from "./agencies.entity";
 import { CreateAgenciesDto } from "./dtos/create-agencies.dto";
 import { UpdateAgenciesDto } from "./dtos/update-agencies.dto";
 
-export class AgenciesService extends BasicService<
-	AgenciesEntity,
+export class AgencyService extends BasicService<
+	AgencyEntity,
 	CreateAgenciesDto,
 	UpdateAgenciesDto
 > {
 	constructor(@InjectDataSource() dataSource: DataSource) {
-		super("agencies", AgenciesEntity, dataSource);
+		super("agencies", AgencyEntity, dataSource);
 	}
 
 	async findAllWithName(name: string): Promise<ServiceResponse> {
