@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AgenciesModule } from "../../modules/agencies/agencies.module";
 import { CityModule } from "../../modules/cities/cities.module";
 import { UserModule } from "../../modules/user/user.module";
+import { NotificationModule } from "../notification/notification.module";
 
 import { ContactEntity } from "./entities/contact.entity";
 import { EventInvitationEntity } from "./entities/event-invition.entity";
@@ -25,6 +26,7 @@ import { EventsService } from "./events.service";
 		UserModule,
 		AgenciesModule,
 		CityModule,
+		NotificationModule,
 	],
 	providers: [EventsService],
 	controllers: [EventsController],

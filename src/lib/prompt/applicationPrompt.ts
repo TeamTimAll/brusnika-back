@@ -35,6 +35,7 @@ export enum ApplicationPromptID {
 	NEWS_CATEGORY_NOT_FOUND_ERROR = 421,
 	SECTION_NOT_FOUND_ERROR = 422,
 	MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR = 433,
+	NOTIFICATION_NOT_FOUND_ERROR = 434,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -254,6 +255,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Events not found error",
 			ru: "Ошибка события не найдены",
 			uz: "Events not found error",
+		},
+	},
+	[ApplicationPromptID.NOTIFICATION_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.NOTIFICATION_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "notification_not_found_error",
+		promptLabels: {
+			en: "Notification not found error",
+			ru: "Notification not found error",
+			uz: "Notification not found error",
 		},
 	},
 	[ApplicationPromptID.EVENT_REACHED_MAXIMUM_VISITORS_ERROR]: {

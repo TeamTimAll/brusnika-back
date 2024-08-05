@@ -36,8 +36,11 @@ export class NewsEntity extends BaseEntity {
 	})
 	published_at!: Date;
 
+	@Column({ type: "boolean", default: false })
+	is_banner!: boolean;
+
 	@Column({ type: "integer", nullable: true })
-	primary_category_id!: number;
+	primary_category_id?: number;
 
 	@Column({ type: "integer", nullable: true })
 	second_category_id?: number;

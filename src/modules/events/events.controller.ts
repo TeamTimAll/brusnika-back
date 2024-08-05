@@ -24,11 +24,12 @@ import {
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { RoleType } from "../../constants";
-import { User } from "../../decorators";
+import { ApiErrorResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../../modules/auth/guards/jwt.guard";
 
+import { BannerFilterDto } from "./dtos/BannerFilter.dto";
 import { CreateEventsMetaDataDto } from "./dtos/create-events.dto";
 import { EventsDto, FilterEventsDto } from "./dtos/events.dto";
 import {
@@ -36,9 +37,11 @@ import {
 	DeleteUserInvitationMetaDataDto,
 	InviteUsersMetaDataDto,
 	JoinToEventMetaDataDto,
+	LeaveInvitionMetaDataDto,
 } from "./dtos/invite-users.dto";
-import { LikeEventMetaDataDto } from "./dtos/like-event.dto";
+import { ToggleEventMetaDataDto } from "./dtos/toggle-event.dto";
 import { UpdateEventsMetaDataDto } from "./dtos/update-events.dto";
+import { EventInvitationNotFoundError } from "./errors/EventInvitionNotFound.error";
 import { EventsService } from "./events.service";
 
 @ApiTags("events")
@@ -74,6 +77,13 @@ export class EventsController {
 		return await this.eventsService.userEvents(user);
 	}
 
+	@Get("banner")
+	@HttpCode(HttpStatus.OK)
+	@ApiOkResponse({ type: EventsDto })
+	async banner(@User() user: ICurrentUser, @Query() dto: BannerFilterDto) {
+		return await this.eventsService.banner(dto, user);
+	}
+
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: EventsDto })
@@ -84,10 +94,17 @@ export class EventsController {
 	@Post("toggle-like")
 	@ApiOperation({ summary: "toggle like events" })
 	async toggleLike(
-		@Body() dto: LikeEventMetaDataDto,
+		@Body() dto: ToggleEventMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
 		return await this.eventsService.toggleLike(dto.data, user);
+	}
+
+	@Post("toggle-draft")
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@ApiOperation({ summary: "toggle draft events" })
+	async toggleDraft(@Body() dto: ToggleEventMetaDataDto) {
+		return await this.eventsService.toggleDraft(dto.data);
 	}
 
 	@Post("invite-users")
@@ -120,6 +137,16 @@ export class EventsController {
 		@User() user: ICurrentUser,
 	) {
 		return await this.eventsService.acceptInvitation(dto.data, user);
+	}
+
+	@Post("leave")
+	@ApiOperation({ summary: "leave from event" })
+	@ApiErrorResponse(EventInvitationNotFoundError, "event_id: 0, user_id: 0")
+	async leaveFromEvent(
+		@Body() dto: LeaveInvitionMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		return await this.eventsService.leaveFromEvent(dto.data, user);
 	}
 
 	@Put(":id")
