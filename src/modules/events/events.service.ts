@@ -231,7 +231,11 @@ export class EventsService {
 			});
 		}
 		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
-			eventsQuery = eventsQuery.andWhere("e.is_draft IS FALSE");
+			eventsQuery = eventsQuery
+				.andWhere("e.is_draft IS FALSE")
+				.orWhere("e.create_by_id = :create_by_id", {
+					create_by_id: user.user_id,
+				});
 		}
 		if (dto.is_banner) {
 			eventsQuery = eventsQuery.andWhere("e.is_banner IS TRUE");

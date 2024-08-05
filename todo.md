@@ -234,3 +234,60 @@
 - [x] Booking'da 5 tadan ortiq create qila olmasin.
 - [ ] Event invatition'ni accept qilish uchun API.
 - [ ] User o'z agency'sini o'zgartira olishi kerak.
+- [ ] User listi uchun filter
+    - F.I.SH
+    - Shahar
+    - Role
+    - Register qilgan kuni
+    - Agency nomi bilan
+    - 
+- [ ] User register qilganda CRM'ga so'rov yuboradi. User status'i register'ga o'tkazib qo'yish kerak. Javob kelganidan keyin User status'i CRM'dan berilgan status bilan update qilishi kerak. CRM'dan o'chirib tashlansa block status'iga o'tkazib qo'yish kerak.
+
+## Admin role va role model
+
+### HEAD_OF_AGENCY (Руководитель агентства)
+- [ ] User'larni listni ko'ra oladi. User id bilan ham oladi.
+- [ ] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT'ga o'tkaza oladi.
+
+### AFFILIATE_MANAGER (Партнерский менеджер)
+- [ ] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT va HEAD_OF_AGENCY'ga o'tkaza oladi. HEAD_OF_AGENCY'dan AGENT role'iga ham o'tkaza oladi.
+- [ ] User'larni listni ko'ra oladi. User id bilan ham oladi.
+- [ ] User role'larni o'zgartira oladi.
+- [ ] Premise reklamasini generatsiya qila oladi.
+- [ ] Training create qila oladi.
+- [ ] News create qila oladi.
+- [ ] Event create qila oladi.
+- [ ] Contact'larni boshqaruvini qila oladi.
+- [ ] Project'larni boshqaruvini qila oladi.
+
+### ADMIN (Администратор)
+- [ ] Premise link create qila oladi.
+- [ ] Xohlagan user nomidan login qila olish imkoniyati.
+- [ ] OnBoarding module'ini o'chirishi yoki yoqishi mumkin.
+- [ ] Yangi xodimlar uchun bortga kirish ma'lumotlarini ko'rsatish muddatini belgilash (platformaga birinchi kirgan paytdan boshlab kunlar sonini ko'rsatuvchi joydagi).
+- [ ] Kalendar oyi davomida mumkin bo'lgan bron qilish sonini belgilash.
+- [ ] Lead'larni cancel qilinganligi sabablarini ko'ra olishi kerak.
+- [ ] User'ni role'ini o'zgartira oladi. ADMIN, AFFILIATE_MANAGER. Hamma user'ni block yoki unblock qila oladi.
+
+
+### Kounter server
+Brusnika API'dan olish kerak bo'lgan ma'lumotlar:
+- Project [https://erp-core.staging.brusnika.tech/parameters/v1/versions/fc5dbda9-fee2-4cf1-88d9-e8571683f5a8/construction-projects]
+- Building []
+- Section [https://erp-core.staging.brusnika.tech/parameters/v1/sections]
+- Premise [https://erp-core.staging.brusnika.tech/parameters/v1/premise]
+- Contact [https://clients-base.staging.brusnika.tech/v1/contact]
+- Lead [https://crm.brusnika.ru/crm/hs/bpm/deals]
+    - Lead Task: [https://crm.brusnika.ru/crm/hs/bpm/deal-tasks]
+- Task 
+- Time Slots [https://crm.brusnika.ru/crm/hs/ofo/FreeTime]
+- User
+    - Register
+    - Create
+- Client
+- Bron
+
+Brusnika API'lari
+- Contact API: [https://clients-base.staging.brusnika.tech/v1/contact]
+- Lead API: [https://crm.brusnika.ru/crm/hs/bpm/deals]
+- Lead Task API: [https://crm.brusnika.ru/crm/hs/bpm/deal-tasks]
