@@ -2,7 +2,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsEnum, IsInt, IsOptional } from "class-validator";
 
-import { BaseDto } from "../../../common/dto/abstract.dto";
 import { Order } from "../../../constants";
 import { Limit, Page } from "../../../decorators/pagination";
 import { ClientEntity } from "../../client/client.entity";
@@ -12,7 +11,7 @@ import { UserEntity } from "../../user/user.entity";
 import { LeadOpStatus, LeadOpsEntity, PremisesType } from "../lead_ops.entity";
 import { LeadState, LeadsEntity } from "../leads.entity";
 
-export class LeadsDto extends BaseDto {}
+export class LeadsDto {}
 
 export class LeadReadAll implements LeadsEntity {
 	@ApiProperty({ default: 1 })

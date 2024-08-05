@@ -13,4 +13,4 @@ import { CityService } from "./cities.service";
 	controllers: [CityController],
 	exports: [CityService],
 })
-export class CitiesModule {}
+export class CityModule {}

@@ -1,81 +1,61 @@
-import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
-import { DataSource, Repository } from "typeorm";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
-import { BasicService } from "../../generic/service";
-import { ProjectNotFoundError } from "../../modules/projects/errors/ProjectNotFound.error";
-import { ProjectEntity } from "../../modules/projects/project.entity";
 import { CreateBuilding } from "../buildings/dtos/building.create.dto";
 import { UpdateBuilding } from "../buildings/dtos/building.update.dto";
+import { ProjectService } from "../projects/projects.service";
 
 import { BuildingsEntity } from "./buildings.entity";
 import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
 
-export class BuildingsService extends BasicService<
-	BuildingsEntity,
-	CreateBuilding,
-	UpdateBuilding
-> {
+@Injectable()
+export class BuildingsService {
 	constructor(
-		@InjectDataSource() dataSource: DataSource,
-		@InjectRepository(ProjectEntity)
-		private projectsRepository: Repository<ProjectEntity>,
-	) {
-		super("buildings", BuildingsEntity, dataSource);
-	}
+		@InjectRepository(BuildingsEntity)
+		private buildingRepository: Repository<BuildingsEntity>,
+		private projectService: ProjectService,
+	) {}
 
-	async findAllBuilding(project_id?: number) {
-		let buildings: BuildingsEntity[];
-		if (project_id) {
-			buildings = await this.r_findAll({
-				where: { project_id },
-				relations: ["project"],
-			});
-		} else {
-			buildings = await this.r_findAll({
-				relations: ["project"],
-			});
-		}
+	async readAll(project_id?: number) {
+		const buildings = await this.buildingRepository.find({
+			relations: { project: true },
+			where: {
+				project_id: project_id ? project_id : undefined,
+			},
+		});
 		return buildings;
 	}
 
-	async createBuilding(dto: CreateBuilding) {
-		const foundProject = await this.projectsRepository.find({
-			where: { id: dto.project_id },
+	async readOne(id: number) {
+		const foundBuiling = await this.buildingRepository.findOne({
+			where: {
+				id: id,
+			},
 		});
-
-		if (!foundProject.length) {
-			throw new ProjectNotFoundError(
-				`'${dto.project_id}' project not found`,
-			);
+		if (!foundBuiling) {
+			throw new BuildingNotFoundError(`id: ${id}`);
 		}
-
-		const newBuildings = await this.repository.save(dto);
-		return newBuildings;
+		return foundBuiling;
 	}
 
-	async updateBuilding(id: number, dto: UpdateBuilding) {
-		const foundBuilding = await this.repository.find({ where: { id } });
+	async create(dto: CreateBuilding) {
+		await this.projectService.readOne(dto.project_id);
+		return await this.buildingRepository.save(dto);
+	}
 
-		if (!foundBuilding.length) {
-			throw new BuildingNotFoundError(`'${id}' building not found`);
-		}
-		let updatedBuilding = this.repository.merge(foundBuilding[0], dto);
-
-		updatedBuilding = await this.repository.save(updatedBuilding);
-
-		return updatedBuilding;
+	async update(id: number, dto: UpdateBuilding) {
+		const foundBuilding = await this.readOne(id);
+		const mergedBuilding = this.buildingRepository.merge(
+			foundBuilding,
+			dto,
+		);
+		return await this.buildingRepository.save(mergedBuilding);
 	}
 
 	async delete(id: number) {
-		const building = await this.repository.findOne({
-			where: { id },
-		});
-
-		if (!building) {
-			throw new BuildingNotFoundError(`'${id}' building not found`);
-		}
-
-		await this.repository.remove(building);
+		const building = await this.readOne(id);
+		await this.buildingRepository.delete(building.id);
 		return building;
 	}
 }

@@ -1,13 +1,15 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
 	IsDateString,
 	IsEnum,
 	IsInt,
 	IsMilitaryTime,
 	IsOptional,
+	ValidateNested,
 } from "class-validator";
-import { Type } from "class-transformer";
 
+import { BaseDto } from "../../../common/base/base_dto";
 import { PuchaseOptions } from "../../premises/premises.entity";
 import { BookingStatus } from "../bookings.entity";
 
@@ -23,17 +25,17 @@ export class CreateBookingsDto {
 	client_id?: number;
 
 	// @ApiProperty({ required: false, description: "ID of agent" })
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
-	agent_id?: number;
+	// @IsOptional()
+	// @IsInt()
+	// @Type(() => Number)
+	// agent_id?: number;
 
+	@ApiProperty({ required: true, description: "Date of booking", default: new Date() })
 	@IsDateString()
-	@ApiProperty({ required: true, description: "Date of booking" })
 	date!: string;
 
+	@ApiProperty({ required: true, description: "Time of booking", default: "00:00" })
 	@IsMilitaryTime()
-	@ApiProperty({ required: true, description: "Time of booking" })
 	time!: string;
 
 	@IsEnum(PuchaseOptions)
@@ -54,12 +56,12 @@ export class CreateBookingsDto {
 	status?: BookingStatus;
 }
 
-// export class CreateBookingsMetaDataDto extends BaseDto<CreateBookingsDto> {
-// 	// @ApiProperty({
-// 	// 	oneOf: [{ $ref: getSchemaPath(CreateBookingsDto) }],
-// 	// 	type: () => CreateBookingsDto,
-// 	// })
-// 	// @ValidateNested()
-// 	// @Type(() => CreateBookingsDto)
-// 	declare data: CreateBookingsDto;
-// }
+export class CreateBookingsMetaDataDto extends BaseDto<CreateBookingsDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(CreateBookingsDto) }],
+		type: () => CreateBookingsDto,
+	})
+	@ValidateNested()
+	@Type(() => CreateBookingsDto)
+	declare data: CreateBookingsDto;
+}

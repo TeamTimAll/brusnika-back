@@ -1,9 +1,11 @@
 import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { NewsCategories } from "./categories.entity";
 import { NewsCategoriesService } from "./categories.service";
 
 @Module({
-	imports: [],
+	imports: [TypeOrmModule.forFeature([NewsCategories])],
 	providers: [NewsCategoriesService],
 	exports: [NewsCategoriesService],
 })

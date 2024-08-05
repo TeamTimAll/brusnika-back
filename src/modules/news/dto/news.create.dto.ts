@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsBoolean,
@@ -6,7 +6,10 @@ import {
 	IsNotEmpty,
 	IsOptional,
 	IsString,
+	ValidateNested,
 } from "class-validator";
+
+import { BaseDto } from "../../../common/base/base_dto";
 
 export class CreateNewsDto {
 	@IsString()
@@ -84,4 +87,14 @@ export class CreateNewsDto {
 	@Type(() => Number)
 	@IsOptional()
 	user_id?: number;
+}
+
+export class CreateNewsMetaDataDto extends BaseDto<CreateNewsDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(CreateNewsDto) }],
+		type: () => CreateNewsDto,
+	})
+	@ValidateNested()
+	@Type(() => CreateNewsDto)
+	declare data: CreateNewsDto;
 }

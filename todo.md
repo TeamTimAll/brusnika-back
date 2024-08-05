@@ -26,7 +26,7 @@
     - [x] Filter field `actived_to_date`
     - [x] Filter field `status`
 - [x] Client entity ma'lumotlari:
-    - [x] F.I.SH
+    - [x] I S
     - [x] Telfon raqam
     - [x] Project
     - [x] Actived_date[from | to] (Дата первичного заведения “от” и “до”)
@@ -176,6 +176,8 @@
 - [x] Event time da "HH:MM" formatda kiryapti, database'dan esa "HH:MM:SS" chiqyapti shuni "HH:MM"ga o'tkazish kerak.
 - [x] Calendar'da user o'z visit'larni ko'rishi kerak.
 - [x] Calendar'da berilgan sananing oyi bo'yicha ma'lumot chiqarish kerak.
+
+### 2024-07-29
 - [x] Telefon raqam user'da unique bo'lishi kerak.
 - [x] BaseService ni o'chirib tashlash. Yani API qolibini bir xil ko'rinishga keltirish.
     - [x] Agencies Service

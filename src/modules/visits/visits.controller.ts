@@ -8,18 +8,18 @@ import {
 	Put,
 	Query,
 	UseGuards,
+	UseInterceptors,
 } from "@nestjs/common";
 import {
 	ApiBearerAuth,
 	ApiOperation,
 	ApiQuery,
-	ApiResponse,
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { BaseDto } from "../../common/base/base_dto";
-import { User } from "../../decorators";
+import { ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
+import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
@@ -32,21 +32,16 @@ import { VisitsService } from "./visits.service";
 @Controller("/visits")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
+@UseInterceptors(TransformInterceptor)
 export class VisitsController {
 	constructor(private service: VisitsService) {}
 
-	// -------------------------------@Post()-----------------------------------
 	@ApiOperation({ summary: "Create a visit" })
 	@Post()
-	createCity(
-		@User() user: ICurrentUser,
-		@Body() createVisitsDto: CreateVisitsMetaDataDto,
-	) {
-		const dto = createVisitsDto.data;
-		dto.agent_id = user.user_id;
-		return this.service.create(dto);
+	create(@User() user: ICurrentUser, @Body() dto: CreateVisitsMetaDataDto) {
+		dto.data.agent_id = user.user_id;
+		return this.service.create(dto.data);
 	}
-	// ------------------------------@Get()-------------------------------------
 
 	@ApiQuery({
 		name: "name",
@@ -55,60 +50,33 @@ export class VisitsController {
 	})
 	@ApiOperation({ summary: "Get all visits" })
 	@Get()
-	@ApiResponse({
-		status: new VisitNotFoundError().status,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto()).setPrompt(
-				new VisitNotFoundError("'name' visit not found"),
-			),
-		},
-	})
+	@ApiErrorResponse(VisitNotFoundError, "'name' visit not found")
 	async getVisits(@User() user: ICurrentUser, @Query("name") _name: string) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-
-		metaData.data = await this.service.new_findAll(user);
-		return metaData;
+		return await this.service.readAll(user);
 	}
-	// ----------------------------@Get(":id")----------------------------------
+
 	@ApiOperation({ summary: "Get a single visit by ID" })
-	@ApiResponse({
-		status: new VisitNotFoundError().status,
-		schema: {
-			example: BaseDto.createFromDto(new BaseDto()).setPrompt(
-				new VisitNotFoundError("'name' visit not found"),
-			),
-		},
-	})
+	@ApiErrorResponse(VisitNotFoundError, "'name' visit not found")
 	@Get(":id")
 	async getSingleCity(
 		@Param("id")
 		id: number,
 	) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const foundCity = await this.service.r_findOne(id);
-		metaData.data = foundCity;
-		return metaData;
+		return await this.service.readOne(id);
 	}
-	// ---------------------------@Put(":id")-----------------------------------
+
 	@ApiOperation({ summary: "Update a visit by ID" })
 	@Put(":id")
 	async updateCity(
 		@Param("id") id: number,
-		@Body() updateVisitsDto: UpdateVisitsMetaDataDto,
+		@Body() dto: UpdateVisitsMetaDataDto,
 	) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		const dto = updateVisitsDto.data;
-		const updatedCity = await this.service.r_update(id, dto);
-		metaData.data = updatedCity;
-		return metaData;
+		return await this.service.update(id, dto.data);
 	}
-	// ---------------------------@Delete(":id")-------------------------------
+
 	@ApiOperation({ summary: "Delete a visit by ID" })
 	@Delete(":id")
 	async deleteCity(@Param("id") id: number) {
-		const metaData = BaseDto.createFromDto(new BaseDto());
-		metaData.data = await this.service.r_remove(id);
-		return metaData;
+		return await this.service.delete(id);
 	}
-	// -----------------------------------------------------------------------
 }

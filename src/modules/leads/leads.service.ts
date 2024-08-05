@@ -6,13 +6,10 @@ import { RoleType } from "../../constants";
 import { calcPagination } from "../../lib/pagination";
 import { ServiceResponse } from "../../types";
 import { BuildingsService } from "../buildings/buildings.service";
-import { BuildingNotFoundError } from "../buildings/errors/BuildingNotFound.error";
 import { ClientService } from "../client/client.service";
-import { ClientNotFoundError } from "../client/errors/ClientNotFound.error";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 import { PremisesService } from "../premises/premises.service";
-import { ProjectNotFoundError } from "../projects/errors/ProjectNotFound.error";
-import { ProjectsService } from "../projects/projects.service";
+import { ProjectService } from "../projects/projects.service";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserService } from "../user/user.service";
 
@@ -33,46 +30,26 @@ export class LeadsService {
 
 		// Services
 		private readonly clientService: ClientService,
-		private readonly prjectService: ProjectsService,
+		private readonly prjectService: ProjectService,
 		private readonly premisesService: PremisesService,
 		private readonly buildingsService: BuildingsService,
 		private readonly userService: UserService,
 	) {}
 
 	async create(lead: CreateLeadDto): Promise<LeadsEntity> {
-		const foundPremises = await this.premisesService.repository.findOne({
-			where: {
-				id: lead.premise_id,
-			},
-		});
-		if (!foundPremises) {
-			throw new PremiseNotFoundError(`premises id: ${lead.premise_id}`);
+		const foundPremises = await this.premisesService.readOne(
+			lead.premise_id,
+		);
+		if (!foundPremises.id) {
+			throw new PremiseNotFoundError(`premise_id: ${lead.premise_id}`);
 		}
-		const foundBuilding = await this.buildingsService.repository.findOne({
-			where: {
-				id: foundPremises.building_id ?? IsNull(),
-			},
-		});
-		if (!foundBuilding) {
-			throw new BuildingNotFoundError(`premises id: ${foundPremises.id}`);
-		}
-
-		const foundProject = await this.prjectService.repository.findOne({
-			where: {
-				id: foundBuilding.project_id ?? IsNull(),
-			},
-		});
-		if (!foundProject) {
-			throw new ProjectNotFoundError(`building id: ${foundBuilding.id}`);
-		}
-		const foundClinet = await this.clientService.repository.findOne({
-			where: {
-				id: lead.client_id,
-			},
-		});
-		if (!foundClinet) {
-			throw new ClientNotFoundError(`clinet id: ${lead.client_id}`);
-		}
+		const foundBuilding = await this.buildingsService.readOne(
+			foundPremises.building_id!,
+		);
+		const foundProject = await this.prjectService.readOne(
+			foundBuilding.project_id,
+		);
+		await this.clientService.readOne(lead.client_id);
 		const foundAgent = await this.userService.repository.findOne({
 			where: {
 				id: lead.agent_id ?? IsNull(),
@@ -166,10 +143,10 @@ export class LeadsService {
 
 		const leadsCount = await this.leadRepository.count();
 
-		return {
-			data: leads,
-			links: calcPagination(leadsCount, dto.page, dto.limit),
-		};
+		const leadResponse = new ServiceResponse<LeadsEntity[]>();
+		leadResponse.data = leads;
+		leadResponse.links = calcPagination(leadsCount, dto.page, dto.limit);
+		return leadResponse;
 	}
 
 	async changeStatus(leadId: number, toStatus: LeadOpStatus) {

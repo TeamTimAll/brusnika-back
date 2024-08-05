@@ -3,9 +3,8 @@ import { JwtService } from "@nestjs/jwt";
 
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { AgencyEntity } from "../agencies/agencies.entity";
 import { AgencyService } from "../agencies/agencies.service";
-import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
+import { CityService } from "../cities/cities.service";
 import { UserCreateDto, UserFillDataDto } from "../user/dtos/user.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserRegisterStatus } from "../user/user.entity";
@@ -37,10 +36,11 @@ export class AuthService {
 		private jwtService: JwtService,
 		private userService: UserService,
 		private agenciesService: AgencyService,
+		private cityService: CityService,
 	) {}
 
 	async agentRegister(body: UserCreateDto): Promise<AuthRespone> {
-		let user = await this.userService.findOne({
+		let user = await this.userService.repository.findOneBy({
 			phone: body.phone,
 		});
 
@@ -60,7 +60,7 @@ export class AuthService {
 
 		const randomNumber = 111111;
 
-		await this.userService.updateUser(user.id, {
+		await this.userService.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
@@ -72,20 +72,22 @@ export class AuthService {
 		};
 	}
 
-	async agentFillData(body: UserFillDataDto): Promise<AuthRespone> {
-		const user = await this.userService.getUser(body.id);
+	async agentFillData(dto: UserFillDataDto): Promise<AuthRespone> {
+		const user = await this.userService.getUser(dto.id);
 
-		const foundUser = await this.userService.findOne({
-			email: body.email,
+		const foundUser = await this.userService.repository.findOneBy({
+			email: dto.email,
 		});
 
 		if (foundUser) {
-			throw new UserEmailAlreadyExistsError(`email: ${body.email}`);
+			throw new UserEmailAlreadyExistsError(`email: ${dto.email}`);
 		}
 
-		await this.userService.updateUser(user.id, {
+		await this.cityService.readOne(dto.city_id);
+
+		await this.userService.update(user.id, {
 			register_status: UserRegisterStatus.ATTACHMENT,
-			...body,
+			...dto,
 		});
 
 		return {
@@ -97,12 +99,8 @@ export class AuthService {
 
 	async agentChooseAgency(body: AgentChooseAgencyDto): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
-
-		const agency = await this.agenciesService.findOne(body.agency_id);
-		if (!agency?.data) {
-			throw new AgencyNotFoundError();
-		}
-		await this.userService.updateUser(user.id, {
+		await this.agenciesService.readOne(body.agency_id);
+		await this.userService.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
 			agency_id: body.agency_id,
 			workStartDate: body.startWorkDate,
@@ -121,17 +119,20 @@ export class AuthService {
 	): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
 
-		const newAgency = await this.agenciesService.create<AgencyEntity>({
-			city_id: body.city_id,
-			email: body.email,
-			inn: body.email,
-			legalName: body.legalName,
-			phone: body.phone,
-			title: body.title,
-		});
-		await this.userService.updateUser(user.id, {
+		const newAgency = await this.agenciesService.create(
+			{
+				city_id: body.city_id,
+				email: body.email,
+				inn: body.email,
+				legalName: body.legalName,
+				phone: body.phone,
+				title: body.title,
+			},
+			{ user_id: user.id, role: user.role },
+		);
+		await this.userService.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
-			agency_id: newAgency.data[0].id,
+			agency_id: newAgency.id,
 		});
 
 		return {
@@ -147,15 +148,18 @@ export class AuthService {
 	): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
 
-		const newAgency = await this.agenciesService.create<AgencyEntity>({
-			city_id: body.city_id,
-			ownerFullName: body.ownerFullName,
-			ownerPhone: body.ownerPhone,
-			title: body.title,
-		});
-		await this.userService.updateUser(user.id, {
+		const newAgency = await this.agenciesService.create(
+			{
+				city_id: body.city_id,
+				ownerFullName: body.ownerFullName,
+				ownerPhone: body.ownerPhone,
+				title: body.title,
+			},
+			{ user_id: user.id, role: user.role },
+		);
+		await this.userService.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
-			agency_id: newAgency.data[0].id,
+			agency_id: newAgency.id,
 		});
 
 		return {
@@ -167,7 +171,7 @@ export class AuthService {
 	}
 
 	async loginAccount(loginDto: UserLoginDto): Promise<AuthRespone> {
-		const user = await this.userService.findOne({
+		const user = await this.userService.repository.findOneBy({
 			email: loginDto.email,
 			role: RoleType.EMPLOYEE,
 		});
@@ -221,7 +225,7 @@ export class AuthService {
 		// If a new agent is created, he needs to be sent to the data filling section.
 		// Otherwise, send him to his current step.
 		if (user.register_status === UserRegisterStatus.CREATED) {
-			await this.userService.updateUser(user.id, {
+			await this.userService.update(user.id, {
 				isPhoneVerified: true,
 				register_status: UserRegisterStatus.FILL_DATA,
 			});
@@ -236,7 +240,7 @@ export class AuthService {
 	async agentLoginResendSmsCode(
 		dto: UserLoginResendCodeDto,
 	): Promise<AuthRespone> {
-		const user = await this.userService.findOne({
+		const user = await this.userService.repository.findOneBy({
 			phone: dto.phone,
 		});
 
@@ -252,7 +256,7 @@ export class AuthService {
 
 		const randomNumber = 111111;
 
-		await this.userService.updateUser(user.id, {
+		await this.userService.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});

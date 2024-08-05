@@ -29,16 +29,16 @@ import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../../modules/auth/guards/jwt.guard";
 
-import { CreateEventsDto } from "./dtos/create-events.dto";
+import { CreateEventsMetaDataDto } from "./dtos/create-events.dto";
 import { EventsDto, FilterEventsDto } from "./dtos/events.dto";
 import {
-	AcceptInvitionDto,
-	DeleteUserInvitationDto,
-	InviteUsersDto,
-	JoinToEventDto,
+	AcceptInvitionMetaDataDto,
+	DeleteUserInvitationMetaDataDto,
+	InviteUsersMetaDataDto,
+	JoinToEventMetaDataDto,
 } from "./dtos/invite-users.dto";
-import { LikeEventDto } from "./dtos/like-event.dto";
-import { UpdateEventsDto } from "./dtos/update-events.dto";
+import { LikeEventMetaDataDto } from "./dtos/like-event.dto";
+import { UpdateEventsMetaDataDto } from "./dtos/update-events.dto";
 import { EventsService } from "./events.service";
 
 @ApiTags("events")
@@ -54,10 +54,10 @@ export class EventsController {
 	@ApiCreatedResponse({ type: EventsDto })
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	async createEvents(
-		@Body() dto: CreateEventsDto,
+		@Body() dto: CreateEventsMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		return await this.eventsService.create(dto, user);
+		return await this.eventsService.create(dto.data, user);
 	}
 
 	@Get()
@@ -83,44 +83,53 @@ export class EventsController {
 
 	@Post("toggle-like")
 	@ApiOperation({ summary: "toggle like events" })
-	async toggleLike(@Body() dto: LikeEventDto, @User() user: ICurrentUser) {
-		return await this.eventsService.toggleLike(dto, user);
+	async toggleLike(
+		@Body() dto: LikeEventMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		return await this.eventsService.toggleLike(dto.data, user);
 	}
 
 	@Post("invite-users")
 	@ApiOperation({ summary: "invite users" })
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
-	async inviteUsers(@Body() dto: InviteUsersDto) {
-		return await this.eventsService.inviteUsers(dto);
+	async inviteUsers(@Body() dto: InviteUsersMetaDataDto) {
+		return await this.eventsService.inviteUsers(dto.data);
 	}
 
 	@Post("join-to-event")
 	@ApiOperation({ summary: "join to event" })
-	async joinToEvent(@Body() dto: JoinToEventDto, @User() user: ICurrentUser) {
-		return await this.eventsService.joinToEvent(dto.id, user);
+	async joinToEvent(
+		@Body() dto: JoinToEventMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		return await this.eventsService.joinToEvent(dto.data.id, user);
 	}
 
 	@Post("delete-user-invitation")
 	@ApiOperation({ summary: "delete user invitation" })
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
-	async deleteUserInvitation(@Body() dto: DeleteUserInvitationDto) {
-		return await this.eventsService.deleteUserInvitation(dto.id);
+	async deleteUserInvitation(@Body() dto: DeleteUserInvitationMetaDataDto) {
+		return await this.eventsService.deleteUserInvitation(dto.data.id);
 	}
 
 	@Post("accept-invitation")
 	@ApiOperation({ summary: "accept invitation" })
 	async acceptInvitation(
-		@Body() dto: AcceptInvitionDto,
+		@Body() dto: AcceptInvitionMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		return await this.eventsService.acceptInvitation(dto, user);
+		return await this.eventsService.acceptInvitation(dto.data, user);
 	}
 
 	@Put(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	async updateEvents(@Param("id") id: number, @Body() dto: UpdateEventsDto) {
-		return await this.eventsService.update(id, dto);
+	async updateEvents(
+		@Param("id") id: number,
+		@Body() dto: UpdateEventsMetaDataDto,
+	) {
+		return await this.eventsService.update(id, dto.data);
 	}
 
 	@Delete(":id")

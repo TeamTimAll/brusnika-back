@@ -1,16 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsOptional, IsString } from "class-validator";
+import { IsOptional, IsString, ValidateNested } from "class-validator";
+
+import { BaseDto } from "../../../common/base/base_dto";
 
 export class UpdateNewsDto {
-	@ApiProperty({
-		required: true,
-		description: "UUID of the news",
-	})
-	@IsInt()
-	@Type(() => Number)
-	id!: number;
-
 	@IsString()
 	@ApiProperty({
 		required: false,
@@ -34,4 +28,14 @@ export class UpdateNewsDto {
 	})
 	@IsOptional()
 	cover_image?: string;
+}
+
+export class UpdateNewsMetaDataDto extends BaseDto<UpdateNewsDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(UpdateNewsDto) }],
+		type: () => UpdateNewsDto,
+	})
+	@ValidateNested()
+	@Type(() => UpdateNewsDto)
+	declare data: UpdateNewsDto;
 }

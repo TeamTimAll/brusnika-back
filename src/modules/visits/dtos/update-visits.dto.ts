@@ -10,6 +10,7 @@ import {
 	ValidateNested,
 } from "class-validator";
 
+import { BaseDto } from "../../../common/base/base_dto";
 import { VisitStatus } from "../visits.entity";
 
 export class UpdateVisitsDto {
@@ -60,7 +61,7 @@ export class UpdateVisitsDto {
 	status?: VisitStatus;
 }
 
-export class UpdateVisitsMetaDataDto {
+export class UpdateVisitsMetaDataDto extends BaseDto {
 	@ApiProperty({
 		oneOf: [{ $ref: getSchemaPath(UpdateVisitsDto) }],
 		type: () => UpdateVisitsDto,

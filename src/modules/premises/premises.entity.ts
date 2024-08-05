@@ -99,6 +99,9 @@ export class PremisesEntity extends BaseEntity {
 	@Column({ nullable: true, type: "boolean", default: false })
 	is_sold!: boolean;
 
-	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.premise)
+	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.premise, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
 	bookings?: BookingsEntity[];
 }
