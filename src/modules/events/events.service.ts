@@ -14,6 +14,7 @@ import { UserService } from "../../modules/user/user.service";
 import { ServiceResponse } from "../../types";
 import { AgencyEntity } from "../agencies/agencies.entity";
 import { UserEntity } from "../user/user.entity";
+import { CitiesEntity } from "../cities/cities.entity";
 
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { FilterEventsDto, QueryType } from "./dtos/events.dto";
