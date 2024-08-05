@@ -10,9 +10,9 @@ import { ApiTags } from "@nestjs/swagger";
 
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
-import { CreateLeadMetaDataDto } from "./dtos/leads.create.dto";
-import { LeadReadByFilter } from "./dtos/leads.dto";
-import { UpdateLeadDto } from "./dtos/leads.update.dto";
+import { CreateLeadMetaDataDto } from "./dtos/CreateLead.dto";
+import { LeadReadByFilterDto } from "./dtos/LeadReadByFilter.dto";
+import { UpdateLeadDto } from "./dtos/UpdateLead.dto";
 import { LeadsService } from "./leads.service";
 
 @ApiTags("Leads")
@@ -33,7 +33,7 @@ export class LeadsController {
 
 	@Get()
 	// @ApiOkResponse({ type: LeadReadAll })
-	async readAll(@Query() dto: LeadReadByFilter) {
+	async readAll(@Query() dto: LeadReadByFilterDto) {
 		return await this.dealsService.readAll(dto);
 	}
 }

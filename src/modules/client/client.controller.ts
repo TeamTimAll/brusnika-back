@@ -17,13 +17,11 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { ClientService } from "./client.service";
-import { DeleteClientDto } from "./dto/client-delete.dto";
-import {
-	ClientQuickSearchDto,
-	ClientSearchFromBmpsoft,
-	FilterClientDto,
-} from "./dto/client.search.dto";
-import { CreateClientMetaDataDto } from "./dto/create.client.dto";
+import { ClientQuickSearchDto } from "./dto/ClientQuickSearch.dto";
+import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
+import { CreateClientMetaDataDto } from "./dto/CreateClient.dto";
+import { DeleteClientDto } from "./dto/DeleteClient.dto";
+import { FilterClientDto } from "./dto/FilterClient.dto";
 
 @ApiTags("Client")
 @Controller("client")
@@ -61,7 +59,7 @@ export class ClientController {
 	@ApiOkResponse({ type: CreateClientMetaDataDto })
 	async searchFromBmpsoft(
 		@User() user: ICurrentUser,
-		@Query() dto: ClientSearchFromBmpsoft,
+		@Query() dto: ClientSearchFromBmpsoftDto,
 	) {
 		return await this.clientService.searchFromBmpsoft(dto, user);
 	}

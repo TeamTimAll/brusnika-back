@@ -11,8 +11,8 @@ import { PremisesService } from "../premises/premises.service";
 
 import { BookingsEntity } from "./bookings.entity";
 import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
-import { CreateBookingsDto } from "./dtos/create-bookings.dto";
-import { UpdateBookingsDto } from "./dtos/update-bookings.dto";
+import { CreateBookingsDto } from "./dtos/CreateBookings.dto";
+import { UpdateBookingsDto } from "./dtos/UpdateBookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
 import { MaxCreatableBookingCountReachedError } from "./errors/MaxCreatableBookingCountReached.error";
 

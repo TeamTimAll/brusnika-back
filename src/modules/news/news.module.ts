@@ -3,20 +3,20 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
 
-import { NewsCategoriesModule } from "./modules/categories/categories.module";
-import { NewsLikesModule } from "./modules/likes/likes.module";
-import { NewsViewsModule } from "./modules/views/views.module";
+import { NewsCategoryEntity } from "./entities/categories.entity";
+import { NewsLikeEntity } from "./entities/likes.entity";
 import { NewsController } from "./news.controller";
 import { NewsEntity } from "./news.entity";
 import { NewsService } from "./news.service";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([NewsEntity]),
+		TypeOrmModule.forFeature([
+			NewsEntity,
+			NewsCategoryEntity,
+			NewsLikeEntity,
+		]),
 		UserModule,
-		NewsLikesModule,
-		NewsCategoriesModule,
-		NewsViewsModule,
 	],
 	controllers: [NewsController],
 	providers: [NewsService],

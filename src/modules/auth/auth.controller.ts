@@ -4,23 +4,21 @@ import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { ApiErrorResponse } from "../../decorators/api_error_response";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
-import {
-	UserCreateMetaDataDto,
-	UserFillDataMetaDataDto,
-} from "../user/dtos/user.dto";
+import { UserCreateMetaDataDto } from "../user/dtos/UserCreate.dto";
+import { UserFillDataMetaDataDto } from "../user/dtos/UserFillData.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 
 import { AuthService } from "./auth.service";
+import { AgentChooseAgencyMetaDataDto } from "./dtos/AgentChooseAgency.dto";
+import { AgentRegisterAgencyMetaDataDto } from "./dtos/AgentRegisterAgency.dto";
+import { AgentRequestAgencyMetaDataDto } from "./dtos/AgentRequestAgency.dto";
 import {
-	AgentChooseAgencyMetaDataDto,
-	AgentRegisterAgencyMetaDataDto,
-	AgentRequestAgencyMetaDataDto,
 	AuthResponeWithData,
 	AuthResponeWithToken,
-	UserLoginMetaDataDto,
-	UserLoginResendCodeMetaDataDto,
-	UserLoginVerifyCodeMetaDataDto,
-} from "./dtos/user-login.dto";
+} from "./dtos/AuthResponeWithToken.dto";
+import { UserLoginMetaDataDto } from "./dtos/UserLogin.dto";
+import { UserLoginResendCodeMetaDataDto } from "./dtos/UserLoginResendCode.dto";
+import { UserLoginVerifyCodeMetaDataDto } from "./dtos/UserLoginVerifyCode.dto";
 import { NoVerificationCodeSentError } from "./errors/NoVerificationCodeSent.error";
 import { UnauthorizedError } from "./errors/Unauthorized.error";
 import { UserEmailAlreadyExistsError } from "./errors/UserAlreadyExists.error";

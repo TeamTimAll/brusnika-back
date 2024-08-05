@@ -3,8 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, Repository } from "typeorm";
 
 import { CitiesEntity } from "./cities.entity";
-import { CreateCitiesDto } from "./dtos/create-cities.dto";
-import { UpdateCitiesDto } from "./dtos/update-cities.dto";
+import { CreateCitiesDto } from "./dtos/CreateCities.dto";
+import { UpdateCitiesDto } from "./dtos/UpdateCities.dto";
 import { CityNotFoundError } from "./errors/CityNotFound.error";
 
 @Injectable()

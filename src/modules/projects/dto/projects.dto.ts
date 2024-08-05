@@ -1,13 +1,4 @@
-import {
-	IsDateString,
-	IsInt,
-	IsNotEmpty,
-	IsNumber,
-	IsOptional,
-	IsString,
-} from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class ProjectDto {
 	@IsNotEmpty()
@@ -33,12 +24,4 @@ export class ProjectDto {
 	@IsNotEmpty()
 	@IsDateString()
 	end_date!: Date;
-}
-
-export class ProjectFilterDto {
-	@ApiProperty({ required: false })
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
-	city_id?: number;
 }

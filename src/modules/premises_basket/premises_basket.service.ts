@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 
 import { PremisesBasketNotFoundError } from "./errors/PremisesBasketNotFound.error";
 import { PremisesBasketEntity } from "./premises_basket.entity";
-import { CreatePremisesBasketDto } from "./dtos/premises_basket_create.dto";
+import { CreatePremisesBasketDto } from "./dtos/CreatePremisesBasket.dto";
 
 @Injectable()
 export class PremisesBasketService {

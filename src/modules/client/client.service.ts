@@ -9,12 +9,10 @@ import { LeadOpsEntity } from "../leads/lead_ops.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 
 import { ClientEntity, ClientTag } from "./client.entity";
-import { DeleteClientDto } from "./dto/client-delete.dto";
-import { ClientDto } from "./dto/client.dto";
-import {
-	ClientSearchFromBmpsoft,
-	FilterClientDto,
-} from "./dto/client.search.dto";
+import { ClientDto } from "./dto/Client.dto";
+import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
+import { DeleteClientDto } from "./dto/DeleteClient.dto";
+import { FilterClientDto } from "./dto/FilterClient.dto";
 import { ClientNotFoundError } from "./errors/ClientNotFound.error";
 
 @Injectable()
@@ -67,7 +65,10 @@ export class ClientService {
 			.getMany();
 	}
 
-	async searchFromBmpsoft(dto: ClientSearchFromBmpsoft, _user: ICurrentUser) {
+	async searchFromBmpsoft(
+		dto: ClientSearchFromBmpsoftDto,
+		_user: ICurrentUser,
+	) {
 		// Replace this with BMPSoft request
 		return this.clientRepository.findOne({
 			where: {

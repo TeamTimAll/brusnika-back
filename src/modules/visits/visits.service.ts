@@ -8,8 +8,8 @@ import { ClientService } from "../client/client.service";
 import { ProjectService } from "../projects/projects.service";
 import { UserService } from "../user/user.service";
 
-import { CreateVisitsDto } from "./dtos/create-visits.dto";
-import { UpdateVisitsDto } from "./dtos/update-visits.dto";
+import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
+import { UpdateVisitsDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
 import { VisitsEntity } from "./visits.entity";
 

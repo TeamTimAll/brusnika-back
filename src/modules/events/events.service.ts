@@ -21,16 +21,14 @@ import {
 import { NotificationService } from "../notification/notification.service";
 import { UserEntity } from "../user/user.entity";
 
+import { AcceptInvitionDto } from "./dtos/AcceptInvition.dto";
 import { BannerFilterDto } from "./dtos/BannerFilter.dto";
-import { CreateEventsDto } from "./dtos/create-events.dto";
-import { FilterEventsDto, QueryType } from "./dtos/events.dto";
-import {
-	AcceptInvitionDto as AcceptInvitationDto,
-	InviteUsersDto,
-	LeaveInvitionDto,
-} from "./dtos/invite-users.dto";
-import { ToggleEventDto } from "./dtos/toggle-event.dto";
-import { type UpdateEventsDto } from "./dtos/update-events.dto";
+import { CreateEventsDto } from "./dtos/CreateEvents.dto";
+import { FilterEventsDto, QueryType } from "./dtos/FilterEvents.dto";
+import { InviteUsersDto } from "./dtos/InviteUsers.dto";
+import { LeaveInvitionDto } from "./dtos/LeaveInvition.dto";
+import { ToggleEventDto } from "./dtos/ToggleEvent.dto";
+import { type UpdateEventsDto } from "./dtos/UpdateEvents.dto";
 import { ContactEntity } from "./entities/contact.entity";
 import { EventInvitationEntity } from "./entities/event-invition.entity";
 import { EventLikesEntity } from "./entities/event-likes.entity";
@@ -492,7 +490,7 @@ export class EventsService {
 		return await this.eventInvitationRepository.save(invitation);
 	}
 
-	async acceptInvitation(dto: AcceptInvitationDto, user: ICurrentUser) {
+	async acceptInvitation(dto: AcceptInvitionDto, user: ICurrentUser) {
 		const foundEvent = await this.eventRepository.findOne({
 			select: { id: true },
 			where: { id: dto.event_id },

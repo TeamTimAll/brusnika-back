@@ -10,9 +10,9 @@ import { ProjectEntity } from "../projects/project.entity";
 import { SectionsEntity } from "../sections/sections.entity";
 import { SectionsService } from "../sections/sections.service";
 
-import { CreatePremisesDto } from "./dtos/create-premises.dto";
-import { PremisesFilterDto } from "./dtos/premises.dto";
-import { UpdatePremisesDto } from "./dtos/update-premises.dto";
+import { CreatePremisesDto } from "./dtos/CreatePremises.dto";
+import { PremisesFilterDto } from "./dtos/PremisesFilter.dto";
+import { UpdatePremisesDto } from "./dtos/UpdatePremises.dto";
 import { PremisesEntity } from "./premises.entity";
 
 @Injectable()

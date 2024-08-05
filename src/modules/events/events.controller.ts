@@ -29,18 +29,16 @@ import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../../modules/auth/guards/jwt.guard";
 
+import { AcceptInvitionMetaDataDto } from "./dtos/AcceptInvition.dto";
 import { BannerFilterDto } from "./dtos/BannerFilter.dto";
-import { CreateEventsMetaDataDto } from "./dtos/create-events.dto";
-import { EventsDto, FilterEventsDto } from "./dtos/events.dto";
-import {
-	AcceptInvitionMetaDataDto,
-	DeleteUserInvitationMetaDataDto,
-	InviteUsersMetaDataDto,
-	JoinToEventMetaDataDto,
-	LeaveInvitionMetaDataDto,
-} from "./dtos/invite-users.dto";
-import { ToggleEventMetaDataDto } from "./dtos/toggle-event.dto";
-import { UpdateEventsMetaDataDto } from "./dtos/update-events.dto";
+import { CreateEventsMetaDataDto } from "./dtos/CreateEvents.dto";
+import { DeleteUserInvitationMetaDataDto } from "./dtos/DeleteUserInvitation.dto";
+import { EventsDto, FilterEventsDto } from "./dtos/FilterEvents.dto";
+import { InviteUsersMetaDataDto } from "./dtos/InviteUsers.dto";
+import { JoinToEventMetaDataDto } from "./dtos/JoinToEvent.dto";
+import { LeaveInvitionMetaDataDto } from "./dtos/LeaveInvition.dto";
+import { ToggleEventMetaDataDto } from "./dtos/ToggleEvent.dto";
+import { UpdateEventsMetaDataDto } from "./dtos/UpdateEvents.dto";
 import { EventInvitationNotFoundError } from "./errors/EventInvitionNotFound.error";
 import { EventsService } from "./events.service";
 

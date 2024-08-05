@@ -4,16 +4,16 @@ import { Repository } from "typeorm";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 
-import { CreateNewsDto } from "./dto/news.create.dto";
-import { LikeNewsDto } from "./dto/news.dto";
-import { UpdateNewsDto } from "./dto/news.update.dto";
+import { CreateNewsDto } from "./dto/CreateNews.dto";
+import { CreateNewsCategoriesDto } from "./dto/CreateNewsCategories.dto";
+import { UpdateNewsDto } from "./dto/UpdateNews.dto";
+import { NewsCategoryEntity } from "./entities/categories.entity";
+import { NewsLikeEntity } from "./entities/likes.entity";
+import { NewsViewEntity } from "./entities/views.entity";
 import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
-import { NewsCategoriesService } from "./modules/categories/categories.service";
-import { CreateNewsCategoriesDto } from "./modules/categories/dto/categories.dto";
-import { NewsLikesService } from "./modules/likes/likes.service";
-import { NewsViewsService } from "./modules/views/views.service";
 import { NewsEntity } from "./news.entity";
+import { LikeNewsDto } from "./dto/LikeNews.dto";
 
 interface NewsLikedResponse {
 	is_liked: boolean;
@@ -27,13 +27,13 @@ export class NewsService {
 	) {}
 
 	@Inject()
-	private newsLikesService!: NewsLikesService;
+	private newsLikeRepository!: Repository<NewsLikeEntity>;
 
 	@Inject()
-	private newsCategoriesService!: NewsCategoriesService;
+	private newsCategoriyRepository!: Repository<NewsCategoryEntity>;
 
 	@Inject()
-	private newsViewsService!: NewsViewsService;
+	private newsViewRepository!: Repository<NewsViewEntity>;
 
 	async toggleLike(
 		body: LikeNewsDto,
@@ -50,17 +50,17 @@ export class NewsService {
 		if (!news.is_like_enabled) {
 			throw new NewsLikeNotEnabledError();
 		}
-		const isLiked = await this.newsLikesService.repository.findOne({
+		const isLiked = await this.newsLikeRepository.findOne({
 			where: {
 				news_id: news.id,
 				user_id: user.user_id,
 			},
 		});
 		if (isLiked) {
-			await this.newsLikesService.repository.delete(isLiked.id);
+			await this.newsLikeRepository.delete(isLiked.id);
 			return { is_liked: false };
 		}
-		await this.newsLikesService.repository.save({
+		await this.newsLikeRepository.save({
 			news_id: news.id,
 			user_id: user.user_id,
 		});
@@ -68,19 +68,24 @@ export class NewsService {
 	}
 
 	async create(dto: CreateNewsDto, user: ICurrentUser) {
-		await this.newsCategoriesService.readOne(dto.primary_category_id);
-		await this.newsCategoriesService.readOne(dto.second_category_id);
+		await this.newsCategoriyRepository.findOne({
+			where: { id: dto.primary_category_id },
+		});
+		await this.newsCategoriyRepository.findOne({
+			where: { id: dto.second_category_id },
+		});
 		const news = this.newsRepository.create(dto);
 		news.user_id = user.user_id;
 		return await this.newsRepository.save(news);
 	}
 
 	async createNewsCategory(dto: CreateNewsCategoriesDto) {
-		return this.newsCategoriesService.create(dto);
+		const newsCategory = this.newsCategoriyRepository.create(dto);
+		return await this.newsCategoriyRepository.save(newsCategory);
 	}
 
 	async getCategories() {
-		return this.newsCategoriesService.readAll();
+		return await this.newsCategoriyRepository.find();
 	}
 
 	async readOne(id: number, user: ICurrentUser) {
@@ -103,7 +108,7 @@ export class NewsService {
 			throw new NewsNotFoundError(`'${id}' news not found`);
 		}
 
-		const isViewed = await this.newsViewsService.repository.findOne({
+		const isViewed = await this.newsViewRepository.findOne({
 			where: {
 				news_id: id,
 				user_id: user.user_id,
@@ -111,7 +116,7 @@ export class NewsService {
 		});
 
 		if (!isViewed) {
-			await this.newsViewsService.repository.save({
+			await this.newsViewRepository.save({
 				news_id: id,
 				user_id: user.user_id,
 			});

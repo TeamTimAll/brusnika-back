@@ -27,8 +27,8 @@ import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 
 import { BookingsService } from "./bookings.service";
 import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
-import { CreateBookingsMetaDataDto } from "./dtos/create-bookings.dto";
-import { UpdateBookingsMetaDataDto } from "./dtos/update-bookings.dto";
+import { CreateBookingsMetaDataDto } from "./dtos/CreateBookings.dto";
+import { UpdateBookingsMetaDataDto } from "./dtos/UpdateBookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
 
 @ApiTags("Bookings")

@@ -17,16 +17,14 @@ import { RoleType } from "../../constants";
 import { User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
-import { UserLoginResendCodeMetaDataDto } from "../../modules/auth/dtos/user-login.dto";
+import { UserLoginResendCodeMetaDataDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
+import { UserDto } from "./dtos/User.dto";
 import { UserChangeEmailMetaDataDto } from "./dtos/UserChangeEmail.dto";
-import {
-	UserChangePhoneVerifyCodeMetaDataDto,
-	UserCreateMetaDataDto,
-	UserDto,
-	UserUpdateMetaDataDto,
-} from "./dtos/user.dto";
+import { UserChangePhoneVerifyCodeMetaDataDto } from "./dtos/UserChangePhoneVerifyCode.dto";
+import { UserCreateMetaDataDto } from "./dtos/UserCreate.dto";
+import { UserUpdateMetaDataDto } from "./dtos/UserUpdate.dto";
 import { UserService } from "./user.service";
 
 @ApiTags("users")
@@ -66,6 +64,7 @@ export class UserController {
 	) {
 		return this.userService.changePhone(user.user_id, dto.data);
 	}
+
 	@Post("/phone/verify")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()

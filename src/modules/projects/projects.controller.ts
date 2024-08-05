@@ -20,9 +20,9 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { CityNotFoundError } from "../cities/errors/CityNotFound.error";
 
-import { CreateProjectMetaDataDto } from "./dto/project.create.dto";
-import { ProjectFilterDto } from "./dto/projects.dto";
-import { UpdateProjectMetaDataDto } from "./dto/projects.update.dto";
+import { CreateProjectMetaDataDto } from "./dto/CreateProject.dto";
+import { ProjectFilterDto } from "./dto/ProjectFilter.dto";
+import { UpdateProjectMetaDataDto } from "./dto/UpdateProject.dto";
 import { ProjectService } from "./projects.service";
 
 @ApiTags("Projects")

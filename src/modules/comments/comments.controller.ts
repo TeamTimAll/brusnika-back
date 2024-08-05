@@ -11,8 +11,8 @@ import {
 import { ApiTags } from "@nestjs/swagger";
 
 import { CommentsService } from "./comments.service";
-import { AddCommentDto } from "./dtos/comment.create.dto";
-import { CommentUpdateDto } from "./dtos/comment.update.dto";
+import { CreateCommentDto } from "./dtos/CreateComment.dto";
+import { CommentUpdateDto } from "./dtos/CommentUpdate.dto";
 
 @Controller("comments")
 @ApiTags("comments")
@@ -26,7 +26,7 @@ export class CommentsController {
 	}
 
 	@Post()
-	async createComment(@Body() commentBody: AddCommentDto) {
+	async createComment(@Body() commentBody: CreateCommentDto) {
 		return this.commentsService.addComment(commentBody);
 	}
 

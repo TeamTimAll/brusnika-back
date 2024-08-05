@@ -1,9 +1,8 @@
-import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsBoolean,
 	IsDate,
-	IsDateString,
 	IsEmail,
 	IsEnum,
 	IsInt,
@@ -11,13 +10,10 @@ import {
 	IsNumber,
 	IsOptional,
 	IsString,
-	MaxLength,
-	ValidateNested,
 } from "class-validator";
 
-import { BaseDto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
-import { UserEntity, UserRegisterStatus } from "../user.entity";
+import { UserRegisterStatus } from "../user.entity";
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
@@ -85,7 +81,7 @@ export class UserDto {
 	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsEnum(() => UserRegisterStatus)
-	register_status: UserRegisterStatus;
+	register_status?: UserRegisterStatus;
 
 	@IsBoolean()
 	@IsOptional()
@@ -105,175 +101,5 @@ export class UserDto {
 	@Type(() => Number)
 	agency_id?: number;
 
-	status: boolean;
-
-	constructor(user: UserEntity) {
-		this.firstName = user.firstName;
-		this.lastName = user.lastName;
-		this.role = user.role;
-		this.email = user.email;
-		this.username = user.username;
-		this.password = user.password;
-		this.phone = user.phone;
-		this.birthDate = user.birthDate;
-		this.workStartDate = user.workStartDate;
-		this.verification_code = user.verification_code;
-		this.verification_code_sent_date = user.verification_code_sent_date;
-		this.avatar = user.avatar;
-		this.register_status = user.register_status;
-		this.isPhoneVerified = user.isPhoneVerified;
-		this.temporaryNumber = user.temporaryNumber;
-		this.status = user.status;
-		this.city_id = user.city?.id;
-		this.agency_id = user.agency?.id;
-	}
-}
-
-export class UserCreateDto {
-	@ApiProperty({ required: true })
-	@IsMobilePhone()
-	phone!: string;
-
-	role?: RoleType;
-}
-
-export class UserCreateMetaDataDto extends BaseDto<UserCreateDto> {
-	@ApiProperty({
-		oneOf: [{ $ref: getSchemaPath(UserCreateDto) }],
-		type: () => UserCreateDto,
-	})
-	@ValidateNested()
-	@Type(() => UserCreateDto)
-	declare data: UserCreateDto;
-}
-
-export class UserChangePhoneVerifyCodeDto {
-	@IsNumber()
-	@ApiProperty({
-		required: true,
-	})
-	code!: number;
-}
-
-export class UserChangePhoneVerifyCodeMetaDataDto extends BaseDto<UserChangePhoneVerifyCodeDto> {
-	@ApiProperty({
-		oneOf: [{ $ref: getSchemaPath(UserChangePhoneVerifyCodeDto) }],
-		type: () => UserChangePhoneVerifyCodeDto,
-	})
-	@ValidateNested()
-	@Type(() => UserChangePhoneVerifyCodeDto)
-	declare data: UserChangePhoneVerifyCodeDto;
-}
-
-export class UserUpdateDto {
-	@IsString()
-	@IsOptional()
-	@ApiProperty({ required: false, description: "The first name of the user" })
-	@MaxLength(50, { message: "First name cannot exceed 50 characters" })
-	firstName?: string;
-
-	@IsString()
-	@IsOptional()
-	@ApiProperty({ required: false, description: "The last name of the user" })
-	@MaxLength(50, { message: "Last name cannot exceed 50 characters" })
-	lastName?: string;
-
-	@IsEmail()
-	@IsOptional()
-	@ApiProperty({
-		required: false,
-		description: "The email address of the user",
-	})
-	@MaxLength(100, { message: "Email address cannot exceed 100 characters" })
-	email?: string;
-
-	@IsString()
-	@IsOptional()
-	@ApiProperty({ required: false, description: "The avatar URL of the user" })
-	@MaxLength(200, { message: "Avatar URL cannot exceed 200 characters" })
-	avatar?: string;
-
-	@IsDateString()
-	@IsOptional()
-	@ApiProperty({
-		required: false,
-		description: "The birth date of the user",
-		example: "1990-01-01",
-	})
-	// @MinDate(new Date('1900-01-01'), { message: 'Birth date must be after 1900-01-01' })
-	// @MaxDate(new Date('2015-01-01'), { message: 'Birth date must be before 2015-01-01' })
-	birthDate?: Date;
-
-	@IsInt()
-	@Type(() => Number)
-	@IsOptional()
-	@ApiProperty({
-		required: false,
-		description: "The ID of the city where the user resides",
-	})
-	city_id?: number;
-}
-
-export class UserUpdateMetaDataDto extends BaseDto<UserUpdateDto> {
-	@ApiProperty({
-		oneOf: [{ $ref: getSchemaPath(UserUpdateDto) }],
-		type: () => UserUpdateDto,
-	})
-	@ValidateNested()
-	@Type(() => UserUpdateDto)
-	declare data: UserUpdateDto;
-}
-
-export class UserFillDataDto {
-	@IsInt()
-	@Type(() => Number)
-	@ApiProperty({
-		required: true,
-	})
-	id!: number;
-
-	@IsString()
-	@ApiProperty({
-		required: true,
-	})
-	firstName!: string;
-
-	@IsString()
-	@ApiProperty({
-		required: true,
-	})
-	lastName!: string;
-
-	@ApiProperty({
-		required: true,
-	})
-	@IsInt()
-	@Type(() => Number)
-	city_id!: number;
-
-	@IsDateString()
-	@ApiProperty({ required: true })
-	birthDate!: Date;
-
-	@IsEmail()
-	@ApiProperty({ required: true })
-	email!: string;
-}
-
-export class UserFillDataMetaDataDto extends BaseDto<UserFillDataDto> {
-	@ApiProperty({
-		oneOf: [{ $ref: getSchemaPath(UserFillDataDto) }],
-		type: () => UserFillDataDto,
-	})
-	@ValidateNested()
-	@Type(() => UserFillDataDto)
-	declare data: UserFillDataDto;
-}
-
-export class UserLoginDto {
-	@IsEmail()
-	readonly email!: string;
-
-	@IsString()
-	readonly password!: string;
+	status?: boolean;
 }

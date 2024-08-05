@@ -15,8 +15,8 @@ import { ApiErrorResponse } from "../../decorators";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
 import { CityService } from "./cities.service";
-import { CreateCitiesMetaDataDto } from "./dtos/create-cities.dto";
-import { UpdateCitiesMetaDataDto } from "./dtos/update-cities.dto";
+import { CreateCitiesMetaDataDto } from "./dtos/CreateCities.dto";
+import { UpdateCitiesMetaDataDto } from "./dtos/UpdateCities.dto";
 import { CityNotFoundError } from "./errors/CityNotFound.error";
 
 @ApiTags("Cities")

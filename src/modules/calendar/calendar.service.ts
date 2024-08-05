@@ -10,7 +10,7 @@ import { VisitsEntity } from "../../modules/visits/visits.entity";
 import { EventsService } from "../events/events.service";
 import { VisitsService } from "../visits/visits.service";
 
-import { CalendarDto } from "./dto/calendar.dto";
+import { CalendarDto } from "./dto/Calendar.dto";
 
 @Injectable()
 export class CalendarService {
