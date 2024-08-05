@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -6,6 +6,7 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 
 import { CreateNewsDto } from "./dto/CreateNews.dto";
 import { CreateNewsCategoriesDto } from "./dto/CreateNewsCategories.dto";
+import { LikeNewsDto } from "./dto/LikeNews.dto";
 import { UpdateNewsDto } from "./dto/UpdateNews.dto";
 import { NewsCategoryEntity } from "./entities/categories.entity";
 import { NewsLikeEntity } from "./entities/likes.entity";
@@ -13,7 +14,6 @@ import { NewsViewEntity } from "./entities/views.entity";
 import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsEntity } from "./news.entity";
-import { LikeNewsDto } from "./dto/LikeNews.dto";
 
 interface NewsLikedResponse {
 	is_liked: boolean;
@@ -26,13 +26,13 @@ export class NewsService {
 		private newsRepository: Repository<NewsEntity>,
 	) {}
 
-	@Inject()
+	@InjectRepository(NewsLikeEntity)
 	private newsLikeRepository!: Repository<NewsLikeEntity>;
 
-	@Inject()
+	@InjectRepository(NewsCategoryEntity)
 	private newsCategoriyRepository!: Repository<NewsCategoryEntity>;
 
-	@Inject()
+	@InjectRepository(NewsViewEntity)
 	private newsViewRepository!: Repository<NewsViewEntity>;
 
 	async toggleLike(
