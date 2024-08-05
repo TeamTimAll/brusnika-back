@@ -14,6 +14,7 @@ import { EventsModule } from "./events/events.module";
 import { FileUploadModule } from "./file-upload/file-upload.module";
 import { LeadsModule } from "./leads/leads.module";
 import { NewsModule } from "./news/news.module";
+import { NotificationModule } from "./notification/notification.module";
 import { PremisesModule } from "./premises/premises.module";
 import { PremisesBasketModule } from "./premises_basket/premises_basket.module";
 import { PremisesBasketMetaModule } from "./premises_basket_meta/premises_basket_meta.module";
@@ -48,6 +49,7 @@ import { VisitsModule } from "./visits/visits.module";
 		PremisesBasketModule,
 		PremisesBasketMetaModule,
 		CalendarModule,
+		NotificationModule,
 	],
 	exports: [],
 })

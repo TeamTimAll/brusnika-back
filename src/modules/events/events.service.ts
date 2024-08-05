@@ -13,16 +13,23 @@ import { UserNotFoundError } from "../../modules/user/errors/UserNotFound.error"
 import { UserService } from "../../modules/user/user.service";
 import { ServiceResponse } from "../../types";
 import { AgencyEntity } from "../agencies/agencies.entity";
-import { UserEntity } from "../user/user.entity";
 import { CitiesEntity } from "../cities/cities.entity";
+import {
+	NotificationEntity,
+	NotificationType,
+} from "../notification/notification.entity";
+import { NotificationService } from "../notification/notification.service";
+import { UserEntity } from "../user/user.entity";
 
+import { BannerFilterDto } from "./dtos/BannerFilter.dto";
 import { CreateEventsDto } from "./dtos/create-events.dto";
 import { FilterEventsDto, QueryType } from "./dtos/events.dto";
 import {
 	AcceptInvitionDto as AcceptInvitationDto,
 	InviteUsersDto,
+	LeaveInvitionDto,
 } from "./dtos/invite-users.dto";
-import { LikeEventDto } from "./dtos/like-event.dto";
+import { ToggleEventDto } from "./dtos/toggle-event.dto";
 import { type UpdateEventsDto } from "./dtos/update-events.dto";
 import { ContactEntity } from "./entities/contact.entity";
 import { EventInvitationEntity } from "./entities/event-invition.entity";
@@ -36,6 +43,10 @@ import { EventsEntity } from "./events.entity";
 
 export interface LikedResponse {
 	is_liked: boolean;
+}
+
+export interface DraftResponse {
+	is_draft: boolean;
 }
 
 @Injectable()
@@ -57,6 +68,8 @@ export class EventsService {
 		private agenciesService: AgencyService,
 		@Inject()
 		private citiesService: CityService,
+		@Inject()
+		private notificationService: NotificationService,
 	) {}
 
 	get repository() {
@@ -64,83 +77,7 @@ export class EventsService {
 	}
 
 	async readOne(id: number, user: ICurrentUser) {
-		const foundEvent = await this.eventRepository
-			.createQueryBuilder("e")
-			.leftJoinAndMapMany(
-				"e.contacts",
-				ContactEntity,
-				"contacts",
-				"contacts.event_id = e.id",
-			)
-			.leftJoinAndMapMany(
-				"e.invited_users",
-				EventInvitationEntity,
-				"invitation",
-				"invitation.event_id = e.id",
-			)
-			.leftJoinAndMapOne(
-				"invitation.user",
-				UserEntity,
-				"user",
-				"user.id = invitation.user_id",
-			)
-			.leftJoinAndMapOne(
-				"user.agency",
-				AgencyEntity,
-				"agency",
-				"agency.id = user.agency_id",
-			)
-			.leftJoinAndMapOne(
-				"e.city",
-				CitiesEntity,
-				"city",
-				"city.id = e.city_id",
-			)
-			.loadRelationCountAndMap("e.likes_count", "e.likes")
-			.loadRelationCountAndMap("e.views_count", "e.views")
-			.loadRelationCountAndMap(
-				"e.accepted_invitation_count",
-				"e.invited_users",
-				"i",
-				(qb) => {
-					return qb.where("i.is_accepted IS TRUE");
-				},
-			)
-			.select([
-				"e.id",
-				"e.is_liked",
-				"e.is_joined",
-				"e.title",
-				"e.description",
-				"e.photo",
-				"e.location",
-				"e.date",
-				"e.start_time",
-				"e.end_time",
-				"e.leader",
-				"e.max_visitors",
-				"e.phone",
-				"e.format",
-				"e.type",
-				"e.is_banner",
-				"e.is_draft",
-				"e.tags",
-				"city.id",
-				"city.name",
-				"contacts.id",
-				"contacts.fullname",
-				"contacts.phone",
-				"invitation.id",
-				"invitation.is_accepted",
-				"user.id",
-				"user.avatar",
-				"user.fullName",
-				"agency.id",
-				"agency.title",
-			])
-			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
-			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
-			.setParameter("user_id", user.user_id)
+		const foundEvent = await this.selectEventQuery(user)
 			.where("e.id = :id", { id })
 			.getOne();
 		if (!foundEvent) {
@@ -164,75 +101,7 @@ export class EventsService {
 
 	async readAll(dto: FilterEventsDto, user: ICurrentUser) {
 		const pageSize = (dto.page - 1) * dto.limit;
-		let eventsQuery = this.eventRepository
-			.createQueryBuilder("e")
-			.leftJoinAndMapMany(
-				"e.contacts",
-				ContactEntity,
-				"contacts",
-				"contacts.event_id = e.id",
-			)
-			.leftJoinAndMapMany(
-				"e.invited_users",
-				EventInvitationEntity,
-				"invitation",
-				"invitation.event_id = e.id",
-			)
-			.leftJoinAndMapOne(
-				"invitation.user",
-				UserEntity,
-				"user",
-				"user.id = invitation.user_id",
-			)
-			.leftJoinAndMapOne(
-				"user.agency",
-				AgencyEntity,
-				"agency",
-				"agency.id = user.agency_id",
-			)
-			.loadRelationCountAndMap("e.likes_count", "e.likes")
-			.loadRelationCountAndMap("e.views_count", "e.views")
-			.loadRelationCountAndMap(
-				"e.accepted_invitation_count",
-				"e.invited_users",
-				"i",
-				(qb) => {
-					return qb.where("i.is_accepted IS TRUE");
-				},
-			)
-			.select([
-				"e.id",
-				"e.is_liked",
-				"e.is_joined",
-				"e.title",
-				"e.description",
-				"e.photo",
-				"e.location",
-				"e.date",
-				"e.start_time",
-				"e.end_time",
-				"e.leader",
-				"e.max_visitors",
-				"e.phone",
-				"e.format",
-				"e.type",
-				"e.is_banner",
-				"e.is_draft",
-				"e.tags",
-				"contacts.id",
-				"contacts.fullname",
-				"contacts.phone",
-				"invitation.id",
-				"invitation.is_accepted",
-				"user.id",
-				"user.avatar",
-				"user.fullName",
-				"agency.id",
-				"agency.title",
-			])
-			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
-			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
-			.setParameter("user_id", user.user_id);
+		let eventsQuery = this.selectEventQuery(user);
 		if (dto.query_type !== QueryType.ALL) {
 			const today_date = new Date();
 			eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
@@ -284,7 +153,48 @@ export class EventsService {
 			select: { id: true, event_id: true },
 			where: { user_id: user.user_id },
 		});
-		let eventQuery = this.eventRepository
+		let eventQuery = this.selectEventQuery(user).where(
+			"e.create_by_id = :create_by_id",
+			{
+				create_by_id: user.user_id,
+			},
+		);
+		if (foundInvitations.length) {
+			eventQuery = eventQuery.orWhere("e.id in (:...id)", {
+				id: foundInvitations.map((e) => e.event_id),
+			});
+		}
+		const foundEvent = await eventQuery.getMany();
+		if (!foundEvent.length) {
+			throw new EventsNotFoundError(`id: ${user.user_id}`);
+		}
+		return foundEvent;
+	}
+
+	async banner(
+		dto: BannerFilterDto,
+		user: ICurrentUser,
+	): Promise<EventsEntity[]> {
+		let eventsQuery = this.selectEventQuery(user)
+			.andWhere("e.is_banner IS TRUE")
+			.andWhere("e.is_draft IS FALSE")
+			.orWhere("e.create_by_id = :create_by_id", {
+				create_by_id: user.user_id,
+			});
+		const today_date = new Date();
+		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
+			today_date: today_date,
+		});
+		if (dto.city_id) {
+			eventsQuery = eventsQuery.andWhere("e.city_id = :city_id", {
+				city_id: dto.city_id,
+			});
+		}
+		return eventsQuery.getMany();
+	}
+
+	selectEventQuery(user: ICurrentUser) {
+		return this.eventRepository
 			.createQueryBuilder("e")
 			.leftJoinAndMapMany(
 				"e.contacts",
@@ -360,20 +270,7 @@ export class EventsService {
 			])
 			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
 			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
-			.setParameter("user_id", user.user_id)
-			.where("e.create_by_id = :create_by_id", {
-				create_by_id: user.user_id,
-			});
-		if (foundInvitations.length) {
-			eventQuery = eventQuery.orWhere("e.id in (:...id)", {
-				id: foundInvitations.map((e) => e.event_id),
-			});
-		}
-		const foundEvent = await eventQuery.getMany();
-		if (!foundEvent.length) {
-			throw new EventsNotFoundError(`id: ${user.user_id}`);
-		}
-		return foundEvent;
+			.setParameter("user_id", user.user_id);
 	}
 
 	async create(dto: CreateEventsDto, user: ICurrentUser) {
@@ -427,16 +324,16 @@ export class EventsService {
 	}
 
 	async toggleLike(
-		body: LikeEventDto,
+		dto: ToggleEventDto,
 		user: ICurrentUser,
 	): Promise<LikedResponse> {
 		const event = await this.eventRepository.findOne({
 			where: {
-				id: body.id,
+				id: dto.event_id,
 			},
 		});
 		if (!event) {
-			throw new EventsNotFoundError(`id: ${body.id}`);
+			throw new EventsNotFoundError(`id: ${dto.event_id}`);
 		}
 		const isLiked = await this.eventLikesRepository.findOne({
 			select: { id: true },
@@ -455,6 +352,24 @@ export class EventsService {
 		});
 		await this.eventLikesRepository.save(like);
 		return { is_liked: true };
+	}
+
+	async toggleDraft(dto: ToggleEventDto): Promise<DraftResponse> {
+		const event = await this.eventRepository.findOne({
+			select: { id: true, is_draft: true },
+			where: {
+				id: dto.event_id,
+			},
+		});
+		if (!event) {
+			throw new EventsNotFoundError(`id: ${dto.event_id}`);
+		}
+		await this.eventRepository.update(event.id, {
+			is_draft: !event.is_draft,
+		});
+		return {
+			is_draft: !event.is_draft,
+		};
 	}
 
 	async inviteUsers(dto: InviteUsersDto) {
@@ -510,6 +425,7 @@ export class EventsService {
 			);
 		}
 		const invitations: EventInvitationEntity[] = [];
+		const notifications: NotificationEntity[] = [];
 		users.forEach((u) => {
 			invitations.push(
 				this.eventInvitationRepository.create({
@@ -517,7 +433,17 @@ export class EventsService {
 					event_id: foundEvent.id,
 				}),
 			);
+
+			notifications.push(
+				this.notificationService.repository.create({
+					title: "Event invatation",
+					type: NotificationType.EVENT,
+					user_id: u.id,
+					object_id: foundEvent.id,
+				}),
+			);
 		});
+		await this.notificationService.repository.save(notifications);
 		return await this.eventInvitationRepository.save(invitations);
 	}
 
@@ -588,6 +514,23 @@ export class EventsService {
 		});
 		foundInvitation.is_accepted = dto.is_accepted;
 		return foundInvitation;
+	}
+
+	async leaveFromEvent(dto: LeaveInvitionDto, user: ICurrentUser) {
+		const foundEventInvitation =
+			await this.eventInvitationRepository.findOne({
+				select: { id: true, event_id: true },
+				where: { event_id: dto.event_id, user_id: user.user_id },
+			});
+		if (!foundEventInvitation) {
+			throw new EventInvitationNotFoundError(
+				`event_id: ${dto.event_id}, user_id: ${user.user_id}`,
+			);
+		}
+		await this.eventInvitationRepository.delete(foundEventInvitation.id);
+		return await this.eventRepository.findOne({
+			where: { id: foundEventInvitation.event_id },
+		});
 	}
 
 	async remove(id: number) {

@@ -4,19 +4,19 @@ import { IsInt, IsNotEmpty, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
-export class LikeEventDto {
+export class ToggleEventDto {
 	@ApiProperty()
 	@IsInt()
 	@IsNotEmpty()
-	id!: number;
+	event_id!: number;
 }
 
-export class LikeEventMetaDataDto extends BaseDto<LikeEventDto> {
+export class ToggleEventMetaDataDto extends BaseDto<ToggleEventDto> {
 	@ApiProperty({
-		oneOf: [{ $ref: getSchemaPath(LikeEventDto) }],
-		type: () => LikeEventDto,
+		oneOf: [{ $ref: getSchemaPath(ToggleEventDto) }],
+		type: () => ToggleEventDto,
 	})
 	@ValidateNested()
-	@Type(() => LikeEventDto)
-	declare data: LikeEventDto;
+	@Type(() => ToggleEventDto)
+	declare data: ToggleEventDto;
 }

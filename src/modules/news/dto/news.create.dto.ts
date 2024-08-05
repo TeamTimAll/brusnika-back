@@ -66,6 +66,14 @@ export class CreateNewsDto {
 	})
 	is_like_enabled!: boolean;
 
+	@ApiProperty({
+		required: false,
+		description: "Is banner",
+		default: false,
+	})
+	@IsBoolean()
+	is_banner!: boolean;
+
 	@IsBoolean()
 	@IsOptional()
 	@ApiProperty({

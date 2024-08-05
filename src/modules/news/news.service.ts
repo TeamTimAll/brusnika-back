@@ -130,6 +130,17 @@ export class NewsService {
 			.getMany();
 	}
 
+	async banner() {
+		return this.newsRepository
+			.createQueryBuilder("news")
+			.leftJoinAndSelect("news.primary_category", "primary_category")
+			.leftJoinAndSelect("news.secondary_category", "secondary_category")
+			.loadRelationCountAndMap("news.likes_count", "news.likes")
+			.loadRelationCountAndMap("news.views_count", "news.views")
+			.where("news.is_banner IS TRUE")
+			.getMany();
+	}
+
 	async update(id: number, dto: UpdateNewsDto) {
 		const foundNews = await this.newsRepository.findOne({
 			where: { id: id },

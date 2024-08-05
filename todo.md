@@ -232,7 +232,15 @@
 - [x] Event read'da is_joind field qo'shib berish.
 - [x] Event pagination xato ishlayapti.
 - [x] Booking'da 5 tadan ortiq create qila olmasin.
-- [ ] Event invatition'ni accept qilish uchun API.
+- [x] Event invatition'ni accept qilish uchun API.
+
+### 2024-08-05
+- [x] User Event'dan chiqib keta olishi uchun API.
+- [x] Event banner uchun alohida API.
+- [x] News banner uchun alohida API.
+- [x] Toggle Like'da id event_id'ga o'zgartirildi.
+- [x] Toggle draft qo'shib berish.
+
 - [ ] User o'z agency'sini o'zgartira olishi kerak.
 - [ ] User listi uchun filter
     - F.I.SH
@@ -242,6 +250,7 @@
     - Agency nomi bilan
     - 
 - [ ] User register qilganda CRM'ga so'rov yuboradi. User status'i register'ga o'tkazib qo'yish kerak. Javob kelganidan keyin User status'i CRM'dan berilgan status bilan update qilishi kerak. CRM'dan o'chirib tashlansa block status'iga o'tkazib qo'yish kerak.
+- [ ] Create qila olish limitini ko'rsatuvchi meta data kerak.
 
 ## Admin role va role model
 

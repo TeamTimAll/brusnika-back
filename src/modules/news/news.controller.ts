@@ -70,6 +70,12 @@ export class NewsController {
 		return await this.service.getCategories();
 	}
 
+	@Get("banner")
+	@ApiOperation({ summary: "Get all news banner" })
+	async banner() {
+		return await this.service.banner();
+	}
+
 	@Post("categories")
 	@ApiOperation({ summary: "Create news categories" })
 	async createCategories(@Body() body: CreateNewsCategoriesMetaDataDto) {

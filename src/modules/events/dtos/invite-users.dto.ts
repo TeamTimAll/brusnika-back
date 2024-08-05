@@ -95,3 +95,20 @@ export class AcceptInvitionMetaDataDto extends BaseDto<AcceptInvitionDto> {
 	@Type(() => AcceptInvitionDto)
 	declare data: AcceptInvitionDto;
 }
+
+export class LeaveInvitionDto {
+	@ApiProperty({})
+	@IsInt()
+	@IsNotEmpty()
+	event_id!: number;
+}
+
+export class LeaveInvitionMetaDataDto extends BaseDto<LeaveInvitionDto> {
+	@ApiProperty({
+		oneOf: [{ $ref: getSchemaPath(LeaveInvitionDto) }],
+		type: () => LeaveInvitionDto,
+	})
+	@ValidateNested()
+	@Type(() => LeaveInvitionDto)
+	declare data: LeaveInvitionDto;
+}
