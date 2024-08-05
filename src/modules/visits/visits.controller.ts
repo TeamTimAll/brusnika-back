@@ -23,8 +23,8 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { CreateVisitsMetaDataDto } from "./dtos/create-visits.dto";
-import { UpdateVisitsMetaDataDto } from "./dtos/update-visits.dto";
+import { CreateVisitsMetaDataDto } from "./dtos/CreateVisits.dto";
+import { UpdateVisitsMetaDataDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
 import { VisitsService } from "./visits.service";
 

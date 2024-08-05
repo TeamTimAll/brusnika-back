@@ -13,8 +13,8 @@ import { ProjectService } from "../projects/projects.service";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserService } from "../user/user.service";
 
-import { CreateLeadDto } from "./dtos/leads.create.dto";
-import { LeadReadByFilter } from "./dtos/leads.dto";
+import { CreateLeadDto } from "./dtos/CreateLead.dto";
+import { LeadReadByFilterDto } from "./dtos/LeadReadByFilter.dto";
 import { LeadNotFoundError } from "./errors/LeadNotFound.error";
 import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 import { LeadState, LeadsEntity } from "./leads.entity";
@@ -82,7 +82,7 @@ export class LeadsService {
 	}
 
 	async readAll(
-		dto: LeadReadByFilter,
+		dto: LeadReadByFilterDto,
 	): Promise<ServiceResponse<LeadsEntity[]>> {
 		const leads = await this.leadRepository.find({
 			select: {

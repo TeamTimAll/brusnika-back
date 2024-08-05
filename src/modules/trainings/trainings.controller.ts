@@ -17,9 +17,9 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { CreateTrainingsMetaDataDto } from "./dto/trainings.create.dto";
-import { LikeTrainingsMetaDataDto } from "./dto/trainings.dto";
-import { UpdateTrainingsMetaDataDto } from "./dto/trainings.update.dto";
+import { CreateTrainingsMetaDataDto } from "./dto/CreateTrainings.dto";
+import { LikeTrainingsMetaDataDto } from "./dto/LikeTrainings.dto";
+import { UpdateTrainingsMetaDataDto } from "./dto/UpdateTrainings.dto";
 import { CreateTrainingsCategoriesMetaDataDto } from "./modules/categories/dto/categories.dto";
 import { TrainingsService } from "./trainings.service";
 

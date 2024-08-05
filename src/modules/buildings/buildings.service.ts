@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { CreateBuilding } from "../buildings/dtos/building.create.dto";
-import { UpdateBuilding } from "../buildings/dtos/building.update.dto";
+import { CreateBuildingDto } from "./dtos/CreateBuilding.dto";
+import { UpdateBuildingDto } from "./dtos/UpdateBuilding.dto";
 import { ProjectService } from "../projects/projects.service";
 
 import { BuildingsEntity } from "./buildings.entity";
@@ -39,12 +39,12 @@ export class BuildingsService {
 		return foundBuiling;
 	}
 
-	async create(dto: CreateBuilding) {
+	async create(dto: CreateBuildingDto) {
 		await this.projectService.readOne(dto.project_id);
 		return await this.buildingRepository.save(dto);
 	}
 
-	async update(id: number, dto: UpdateBuilding) {
+	async update(id: number, dto: UpdateBuildingDto) {
 		const foundBuilding = await this.readOne(id);
 		const mergedBuilding = this.buildingRepository.merge(
 			foundBuilding,

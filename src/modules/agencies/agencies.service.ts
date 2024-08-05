@@ -7,8 +7,8 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { CityService } from "../../modules/cities/cities.service";
 
 import { AgencyEntity } from "./agencies.entity";
-import { CreateAgenciesDto } from "./dtos/create-agencies.dto";
-import { UpdateAgenciesDto } from "./dtos/update-agencies.dto";
+import { CreateAgenciesDto } from "./dtos/CreateAgencies.dto";
+import { UpdateAgenciesDto } from "./dtos/UpdateAgencies.dto";
 import { AgencyNotFoundError } from "./errors/AgencyNotFound.error";
 
 @Injectable()

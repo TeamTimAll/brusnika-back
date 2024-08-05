@@ -17,10 +17,10 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { CreateNewsMetaDataDto } from "./dto/news.create.dto";
-import { LikeNewsMetaDataDto } from "./dto/news.dto";
-import { UpdateNewsMetaDataDto } from "./dto/news.update.dto";
-import { CreateNewsCategoriesMetaDataDto } from "./modules/categories/dto/categories.dto";
+import { CreateNewsMetaDataDto } from "./dto/CreateNews.dto";
+import { CreateNewsCategoriesMetaDataDto } from "./dto/CreateNewsCategories.dto";
+import { LikeNewsMetaDataDto } from "./dto/LikeNews.dto";
+import { UpdateNewsMetaDataDto } from "./dto/UpdateNews.dto";
 import { NewsService } from "./news.service";
 
 @ApiTags("News")

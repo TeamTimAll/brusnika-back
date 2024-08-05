@@ -30,20 +30,20 @@ import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { AgencyEntity } from "./agencies.entity";
 import { AgencyService } from "./agencies.service";
-import { AgenciesDto } from "./dtos/agencies.dto";
-import { CreateAgenciesMetaDataDto } from "./dtos/create-agencies.dto";
-import { UpdateAgenciesMetaDataDto } from "./dtos/update-agencies.dto";
+import { AgenciesDto } from "./dtos/Agencies.dto";
+import { CreateAgenciesMetaDataDto } from "./dtos/CreateAgencies.dto";
+import { UpdateAgenciesMetaDataDto } from "./dtos/UpdateAgencies.dto";
 
 @ApiTags("Agencies")
 @Controller("/agencies")
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class AgencyController {
 	constructor(private service: AgencyService) {}
 
 	@HttpCode(HttpStatus.CREATED)
 	@ApiCreatedResponse({ type: AgenciesDto })
+	@ApiBearerAuth()
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Post()
 	async create(
 		@Body() dto: CreateAgenciesMetaDataDto,
@@ -73,6 +73,8 @@ export class AgencyController {
 	@Put(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
+	@ApiBearerAuth()
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	update(
 		@Param("id") id: number,
 		@Body() dto: UpdateAgenciesMetaDataDto,
@@ -83,6 +85,8 @@ export class AgencyController {
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
+	@ApiBearerAuth()
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	async delete(@Param("id") id: number): Promise<AgencyEntity> {
 		return await this.service.delete(id);
 	}

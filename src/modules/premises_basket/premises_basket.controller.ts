@@ -11,7 +11,7 @@ import { ApiTags } from "@nestjs/swagger";
 
 import { BaseDto } from "../../common/base/base_dto";
 
-import { CreatePremisesBasketMetaDataDto } from "./dtos/premises_basket_create.dto";
+import { CreatePremisesBasketMetaDataDto } from "./dtos/CreatePremisesBasket.dto";
 import { PremisesBasketService } from "./premises_basket.service";
 
 @ApiTags("premises_basket")

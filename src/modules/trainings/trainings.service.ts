@@ -5,9 +5,9 @@ import { Repository } from "typeorm";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LikedResponse } from "../events/events.service";
 
-import { CreateTrainingsDto } from "./dto/trainings.create.dto";
-import { LikeTrainingsDto } from "./dto/trainings.dto";
-import { UpdateTrainingsDto } from "./dto/trainings.update.dto";
+import { CreateTrainingsDto } from "./dto/CreateTrainings.dto";
+import { LikeTrainingsDto } from "./dto/LikeTrainings.dto";
+import { UpdateTrainingsDto } from "./dto/UpdateTrainings.dto";
 import { TrainingsNotFoundError } from "./errors/TrainingsNotFound.error";
 import { TrainingsCategoriesService } from "./modules/categories/categories.service";
 import { CreateTrainingsCategoriesDto } from "./modules/categories/dto/categories.dto";

@@ -2,9 +2,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 
-import { NewsCategories } from "./modules/categories/categories.entity";
-import { NewsLikes } from "./modules/likes/likes.entity";
-import { NewsViews } from "./modules/views/views.entity";
+import { NewsCategoryEntity } from "./entities/categories.entity";
+import { NewsLikeEntity } from "./entities/likes.entity";
+import { NewsViewEntity } from "./entities/views.entity";
 
 @Entity({ name: "news" })
 export class NewsEntity extends BaseEntity {
@@ -45,23 +45,23 @@ export class NewsEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	second_category_id?: number;
 
-	@ManyToOne(() => NewsCategories)
+	@ManyToOne(() => NewsCategoryEntity)
 	@JoinColumn({ name: "primary_category_id" })
-	primary_category?: NewsCategories;
+	primary_category?: NewsCategoryEntity;
 
-	@ManyToOne(() => NewsCategories)
+	@ManyToOne(() => NewsCategoryEntity)
 	@JoinColumn({ name: "second_category_id" })
-	secondary_category!: NewsCategories;
+	secondary_category!: NewsCategoryEntity;
 
-	@OneToMany(() => NewsViews, (NewsViews) => NewsViews.news, {
+	@OneToMany(() => NewsViewEntity, (NewsViews) => NewsViews.news, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
 	})
-	views?: NewsViews[];
+	views?: NewsViewEntity[];
 
-	@OneToMany(() => NewsLikes, (NewsLikes) => NewsLikes.news, {
+	@OneToMany(() => NewsLikeEntity, (NewsLikes) => NewsLikes.news, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
 	})
-	likes?: NewsLikes[];
+	likes?: NewsLikeEntity[];
 }

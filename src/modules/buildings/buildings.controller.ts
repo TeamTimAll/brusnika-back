@@ -16,8 +16,8 @@ import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
 import { BuildingsService } from "./buildings.service";
-import { CreateBuildingMetaDto } from "./dtos/building.create.dto";
-import { UpdateBuildingMetaDataDto } from "./dtos/building.update.dto";
+import { CreateBuildingMetaDto } from "./dtos/CreateBuilding.dto";
+import { UpdateBuildingMetaDataDto } from "./dtos/UpdateBuilding.dto";
 
 @ApiTags("Buildings")
 @Controller("buildings")

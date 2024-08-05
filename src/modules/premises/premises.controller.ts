@@ -19,13 +19,11 @@ import {
 
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
-import { CreatePremisesMetaDataDto } from "./dtos/create-premises.dto";
-import {
-	PremisesDto,
-	PremisesFilterDto,
-	PremisesIdsDto,
-} from "./dtos/premises.dto";
-import { UpdatePremisesMetaDataDto } from "./dtos/update-premises.dto";
+import { CreatePremisesMetaDataDto } from "./dtos/CreatePremises.dto";
+import { PremisesDto } from "./dtos/Premises.dto";
+import { PremisesFilterDto } from "./dtos/PremisesFilter.dto";
+import { PremisesIdsDto } from "./dtos/PremisesIds.dto";
+import { UpdatePremisesMetaDataDto } from "./dtos/UpdatePremises.dto";
 import { PremisesService } from "./premises.service";
 
 @Controller("/premises")

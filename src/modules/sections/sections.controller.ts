@@ -20,9 +20,9 @@ import {
 
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
-import { CreateSectionsMetaDataDto } from "./dtos/create-sections.dto";
-import { SectionsDto } from "./dtos/sections.dto";
-import { UpdateSectionsMetaDataDto } from "./dtos/update-sections.dto";
+import { CreateSectionsMetaDataDto } from "./dtos/CreateSections.dto";
+import { SectionsDto } from "./dtos/Sections.dto";
+import { UpdateSectionsMetaDataDto } from "./dtos/UpdateSections.dto";
 import { SectionsService } from "./sections.service";
 
 @Controller("/sections")

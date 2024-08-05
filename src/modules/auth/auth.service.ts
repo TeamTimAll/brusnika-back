@@ -5,19 +5,15 @@ import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgencyService } from "../agencies/agencies.service";
 import { CityService } from "../cities/cities.service";
-import { UserCreateDto, UserFillDataDto } from "../user/dtos/user.dto";
+import { UserCreateDto } from "../user/dtos/UserCreate.dto";
+import { UserFillDataDto } from "../user/dtos/UserFillData.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserRegisterStatus } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
-import {
-	AgentChooseAgencyDto,
-	AgentRegisterAgencyDto,
-	AgentRequestAgencyDto,
-	UserLoginDto,
-	UserLoginResendCodeDto,
-	UserLoginVerifyCodeDto,
-} from "./dtos/user-login.dto";
+import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
+import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
+import { UserLoginDto } from "./dtos/UserLogin.dto";
 import { NoVerificationCodeSentError } from "./errors/NoVerificationCodeSent.error";
 import { UnauthorizedError } from "./errors/Unauthorized.error";
 import { UserEmailAlreadyExistsError } from "./errors/UserAlreadyExists.error";
@@ -25,6 +21,9 @@ import { UserPasswordIsNotCorrectError } from "./errors/UserPasswordIsNotCorrect
 import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "./errors/VerificationExists.error";
+import { AgentRequestAgencyDto } from "./dtos/AgentRequestAgency.dto";
+import { UserLoginVerifyCodeDto } from "./dtos/UserLoginVerifyCode.dto";
+import { UserLoginResendCodeDto } from "./dtos/UserLoginResendCode.dto";
 
 export type AuthRespone =
 	| { user_id: number; message: string; register_status: string }

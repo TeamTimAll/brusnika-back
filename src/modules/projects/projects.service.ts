@@ -5,8 +5,8 @@ import { Repository } from "typeorm";
 import { CityService } from "../cities/cities.service";
 import { PremisesEntity, PremisesType } from "../premises/premises.entity";
 
-import { CreateProjectDto } from "./dto/project.create.dto";
-import { UpdateProjectDto } from "./dto/projects.update.dto";
+import { CreateProjectDto } from "./dto/CreateProject.dto";
+import { UpdateProjectDto } from "./dto/UpdateProject.dto";
 import { ProjectNotFoundError } from "./errors/ProjectNotFound.error";
 import { ProjectEntity } from "./project.entity";
 

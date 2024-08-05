@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { CreatePremisesBasketMetaDto } from "./dtos/premises_basket_meta_create.dto";
+import { CreatePremisesBasketMetaDto } from "./dtos/CreatePremisesBasketMeta.dto";
 import { PremisesBasketMetaNotFoundError } from "./errors/PremisesBasketMetaNotFound.error";
 import { PremisesBasketMetaEntity } from "./premises_basket_meta.entity";
 

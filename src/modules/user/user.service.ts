@@ -3,15 +3,16 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { UserLoginResendCodeDto } from "../../modules/auth/dtos/user-login.dto";
 import { AuthRespone } from "../auth/auth.service";
+import { UserLoginResendCodeDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
 import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
 
 import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
-import { UserChangePhoneVerifyCodeDto, UserCreateDto } from "./dtos/user.dto";
+import { UserChangePhoneVerifyCodeDto } from "./dtos/UserChangePhoneVerifyCode.dto";
+import { UserCreateDto } from "./dtos/UserCreate.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
@@ -208,7 +209,9 @@ export class UserService {
 		if (!foundUser.email_verification_code_sent_date) {
 			throw new NoVerificationCodeSentError();
 		}
-		if (this.hasOneMinutePassed(foundUser.email_verification_code_sent_date)) {
+		if (
+			this.hasOneMinutePassed(foundUser.email_verification_code_sent_date)
+		) {
 			throw new VerificationCodeExpiredError();
 		}
 		if (foundUser.email_verification_code !== dto.code) {

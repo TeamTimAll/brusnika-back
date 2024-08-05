@@ -21,7 +21,7 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CalendarService } from "./calendar.service";
-import { CalendarDto } from "./dto/calendar.dto";
+import { CalendarDto } from "./dto/Calendar.dto";
 
 @ApiTags("Calendar")
 @Controller("/calendar")
