@@ -1,15 +1,15 @@
 import { QueryBuilder } from "typeorm";
 
-import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
+import { BuildingEntity } from "../../modules/buildings/buildings.entity";
 import {
 	CommercialStatus,
-	PremisesEntity,
+	PremiseEntity,
 	PremisesType,
 	PuchaseOptions,
 } from "../../modules/premises/premises.entity";
 import { SectionsEntity } from "../../modules/sections/sections.entity";
 
-function findBuildingId(buildings: BuildingsEntity[], name: string) {
+function findBuildingId(buildings: BuildingEntity[], name: string) {
 	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
@@ -26,8 +26,8 @@ function findSectionId(
 export async function up(query: QueryBuilder<object>) {
 	const buildings = await query
 		.select(["c.id AS id", "c.name AS name"])
-		.from(BuildingsEntity, "c")
-		.getRawMany<BuildingsEntity>();
+		.from(BuildingEntity, "c")
+		.getRawMany<BuildingEntity>();
 
 	const sections = await query
 		.createQueryBuilder()
@@ -40,7 +40,7 @@ export async function up(query: QueryBuilder<object>) {
 		.getRawMany<SectionsEntity>();
 
 	const premises: Omit<
-		PremisesEntity,
+		PremiseEntity,
 		"id" | "section" | "building" | "createdAt" | "updatedAt"
 	>[] = [
 		{
@@ -649,9 +649,9 @@ export async function up(query: QueryBuilder<object>) {
 		},
 	];
 
-	await query.insert().into(PremisesEntity).values(premises).execute();
+	await query.insert().into(PremiseEntity).values(premises).execute();
 }
 
 export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(PremisesEntity).execute();
+	await query.delete().from(PremiseEntity).execute();
 }

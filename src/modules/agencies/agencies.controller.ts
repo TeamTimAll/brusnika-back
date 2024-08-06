@@ -23,7 +23,7 @@ import {
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
-import { ApiPageOkResponse, User } from "../../decorators";
+import { ApiDtoResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
@@ -58,7 +58,7 @@ export class AgencyController {
 		description: " Agencies Name (optional if not provided  or empty)",
 		required: false,
 	})
-	@ApiPageOkResponse({ type: AgenciesDto })
+	@ApiDtoResponse(AgenciesDto, HttpStatus.OK)
 	async readAll(@Query("name") name?: string): Promise<AgencyEntity[]> {
 		return this.service.readAll(name);
 	}

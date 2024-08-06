@@ -1,92 +1,76 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsEnum, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
 
+import { SectionsEntity } from "../../sections/sections.entity";
 import {
 	CommercialStatus,
+	PremiseEntity,
 	PremisesType,
 	PuchaseOptions,
 } from "../premises.entity";
 
-export class PremisesDto {
-	@ApiProperty({
-		enum: PremisesType,
-		required: true,
-	})
-	@IsOptional()
-	type!: PremisesType | undefined;
+export class PremiseDto
+	implements Omit<PremiseEntity, "building" | "bookings">
+{
+	@ApiProperty()
+	id!: number;
 
-	@ApiProperty({ example: 1 })
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
+	@ApiProperty()
+	createdAt!: Date;
+
+	@ApiProperty()
+	updatedAt!: Date;
+
+	@ApiProperty()
+	name!: string;
+
+	@ApiProperty({ enum: PremisesType })
+	type!: PremisesType;
+
+	@ApiProperty()
 	building_id?: number;
 
-	@ApiProperty({ example: "1000" })
-	@IsOptional()
-	@IsString()
-	price?: string;
+	@ApiProperty()
+	price!: number;
 
-	@ApiProperty({ example: "50" })
-	@IsOptional()
-	@IsNumber()
-	size?: number;
+	@ApiProperty()
+	size!: number;
 
-	@IsEnum(() => CommercialStatus)
-	@IsOptional()
-	status?: CommercialStatus;
+	@ApiProperty({ enum: CommercialStatus })
+	status!: CommercialStatus;
 
-	@ApiProperty({ example: 2 })
-	@IsOptional()
-	@IsNumber()
-	floor?: number;
+	@ApiProperty({ enum: PuchaseOptions })
+	purchaseOption!: PuchaseOptions;
 
-	@ApiProperty({ example: "photo.jpg" })
-	@IsOptional()
-	@IsString()
-	photo?: string;
+	@ApiProperty()
+	number!: number;
 
-	@ApiProperty({ example: 3 })
-	@IsOptional()
-	@IsNumber()
-	rooms?: number;
+	@ApiProperty()
+	floor!: number;
 
-	@ApiProperty({ example: ["photo1.jpg", "photo2.jpg"] })
-	@IsOptional()
-	@IsString({ each: true })
-	photos?: string[];
+	@ApiProperty()
+	photo!: string;
 
-	@ApiProperty({ example: 5 })
-	@IsOptional()
-	@IsNumber()
-	similiarApartmentCount?: number;
+	@ApiProperty()
+	rooms!: number;
 
-	@ApiProperty({ example: "2022-01-01" })
-	@IsOptional()
-	@IsString()
-	end_date?: string;
+	@ApiProperty()
+	photos!: string[];
 
-	@ApiProperty({ example: 1 })
-	@IsOptional()
-	@IsNumber()
-	number?: number;
+	@ApiProperty()
+	similiarApartmentCount!: number;
 
-	@ApiProperty({ example: "1000" })
-	@IsOptional()
-	@IsString()
-	mortagePayment?: string;
+	@ApiProperty()
+	end_date!: Date;
 
-	@ApiProperty({
-		example: 1,
-		required: false,
-	})
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
+	@ApiProperty()
+	mortagePayment!: number;
+
+	@ApiProperty()
+	section!: SectionsEntity;
+
+	@ApiProperty()
 	section_id?: number;
 
-	@ApiProperty({ description: "Purchase option", required: false })
-	@IsOptional()
-	@IsEnum(PuchaseOptions)
-	purchaseOption?: PuchaseOptions;
+	@ApiProperty()
+	is_sold!: boolean;
 }

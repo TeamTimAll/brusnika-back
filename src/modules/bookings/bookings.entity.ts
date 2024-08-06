@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { ClientEntity } from "../client/client.entity";
-import { PremisesEntity } from "../premises/premises.entity";
+import { PremiseEntity } from "../premises/premises.entity";
 import { UserEntity } from "../user/user.entity";
 
 export enum BookingStatus {
@@ -21,15 +21,15 @@ export enum PuchaseOptions {
 @Entity({ name: "bookings" })
 export class BookingsEntity extends BaseEntity {
 	@ManyToOne(
-		() => PremisesEntity,
-		(PremisesEntity: PremisesEntity) => PremisesEntity.bookings,
+		() => PremiseEntity,
+		(PremisesEntity: PremiseEntity) => PremisesEntity.bookings,
 		{
 			onDelete: "SET NULL",
 			onUpdate: "NO ACTION",
 		},
 	)
 	@JoinColumn({ name: "premise_id" })
-	premise!: PremisesEntity;
+	premise!: PremiseEntity;
 
 	@Column({ nullable: true, type: "integer" })
 	premise_id?: number;

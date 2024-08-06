@@ -7,7 +7,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { BaseDto } from "../../common/base/base_dto";
 import { ClientService } from "../client/client.service";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
-import { PremisesEntity } from "../premises/premises.entity";
+import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesService } from "../premises/premises.service";
 
 import { BookingsEntity as BookingEntity } from "./bookings.entity";
@@ -19,7 +19,7 @@ import { MaxCreatableBookingCountReachedError } from "./errors/MaxCreatableBooki
 
 const MAX_CREATABLE_BOOKING_COUNT = 5;
 
-export interface UserCreation {
+export interface IUserCreation {
 	user_created_count: number;
 	max_user_creation_limit: number;
 	remaining_user_creation_limit: number;
@@ -67,7 +67,7 @@ export class BookingsService {
 			max_user_creation_limit: MAX_CREATABLE_BOOKING_COUNT,
 			remaining_user_creation_limit:
 				MAX_CREATABLE_BOOKING_COUNT - userCreatedCount,
-		} as UserCreation;
+		} as IUserCreation;
 		return metaData;
 	}
 
@@ -89,7 +89,7 @@ export class BookingsService {
 
 	readAllNotBookedPremises(
 		filter: NotBookedPremisesFilter,
-	): Promise<PremisesEntity[]> {
+	): Promise<PremiseEntity[]> {
 		let query = this.premiseService.repository
 			.createQueryBuilder("p")
 			.select("*")

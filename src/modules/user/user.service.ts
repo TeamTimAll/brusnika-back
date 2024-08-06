@@ -2,11 +2,13 @@ import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, MoreThanOrEqual, Repository } from "typeorm";
 
+import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgencyService } from "../agencies/agencies.service";
 import { AuthRespone } from "../auth/auth.service";
 import { UserLoginResendCodeDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
+import { PermissionDeniedError } from "../auth/errors/PermissionDenied.error";
 import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
@@ -163,18 +165,15 @@ export class UserService {
 		// const user2Entity = await queryBuilder.getOne();
 	}
 
-	async update(
-		id: number,
-		updateEventsDto: Partial<UserEntity>,
-	): Promise<unknown> {
+	async update(id: number, dto: Partial<UserEntity>): Promise<unknown> {
 		const user = await this.readOne(id);
-
 		if (!user) {
 			throw new UserNotFoundError();
 		}
-
-		await this.userRepository.update(id, updateEventsDto);
-
+		if (user.role === RoleType.AGENT) {
+			throw new PermissionDeniedError(`role: ${user.role}`);
+		}
+		await this.userRepository.update(id, dto);
 		return this.readOne(id);
 	}
 

@@ -1,17 +1,17 @@
 import { QueryBuilder } from "typeorm";
 
 import { SectionsEntity } from "../../modules/sections/sections.entity";
-import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
+import { BuildingEntity } from "../../modules/buildings/buildings.entity";
 
-function findBuildingId(buildings: BuildingsEntity[], name: string) {
+function findBuildingId(buildings: BuildingEntity[], name: string) {
 	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
 export async function up(query: QueryBuilder<object>) {
 	const buildings = await query
 		.select(["c.id AS id", "c.name AS name"])
-		.from(BuildingsEntity, "c")
-		.getRawMany<BuildingsEntity>();
+		.from(BuildingEntity, "c")
+		.getRawMany<BuildingEntity>();
 
 	const sections: Omit<
 		SectionsEntity,

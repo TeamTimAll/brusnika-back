@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
-import { BuildingsEntity } from "../buildings/buildings.entity";
+import { BuildingEntity } from "../buildings/buildings.entity";
 import { SectionsEntity } from "../sections/sections.entity";
 
 export enum PremisesType {
@@ -25,7 +25,7 @@ export enum PuchaseOptions {
 }
 
 @Entity({ name: "premises" })
-export class PremisesEntity extends BaseEntity {
+export class PremiseEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	name!: string;
 
@@ -33,7 +33,7 @@ export class PremisesEntity extends BaseEntity {
 	type!: PremisesType;
 
 	@ManyToOne(
-		() => BuildingsEntity,
+		() => BuildingEntity,
 		(BuildingsEntity) => BuildingsEntity.premises,
 		{
 			onDelete: "SET NULL",
@@ -41,7 +41,7 @@ export class PremisesEntity extends BaseEntity {
 		},
 	)
 	@JoinColumn({ name: "building_id" })
-	building!: BuildingsEntity;
+	building!: BuildingEntity;
 
 	@Column({ type: "integer", nullable: true })
 	building_id?: number;

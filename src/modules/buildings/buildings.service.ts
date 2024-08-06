@@ -6,14 +6,14 @@ import { CreateBuildingDto } from "./dtos/CreateBuilding.dto";
 import { UpdateBuildingDto } from "./dtos/UpdateBuilding.dto";
 import { ProjectService } from "../projects/projects.service";
 
-import { BuildingsEntity } from "./buildings.entity";
+import { BuildingEntity } from "./buildings.entity";
 import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
 
 @Injectable()
 export class BuildingsService {
 	constructor(
-		@InjectRepository(BuildingsEntity)
-		private buildingRepository: Repository<BuildingsEntity>,
+		@InjectRepository(BuildingEntity)
+		private buildingRepository: Repository<BuildingEntity>,
 		private projectService: ProjectService,
 	) {}
 

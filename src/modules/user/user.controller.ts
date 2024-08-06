@@ -13,8 +13,7 @@ import {
 import {
 	ApiAcceptedResponse,
 	ApiBearerAuth,
-	ApiOperation,
-	ApiTags,
+	ApiTags
 } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
@@ -27,7 +26,6 @@ import { UserLoginResendCodeMetaDataDto } from "../auth/dtos/UserLoginResendCode
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { UserDto } from "./dtos/User.dto";
-import { UserChangeAgencyMetaDataDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailMetaDataDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeMetaDataDto } from "./dtos/UserChangePhoneVerifyCode.dto";
 import { UserCreateMetaDataDto } from "./dtos/UserCreate.dto";
@@ -61,17 +59,6 @@ export class UserController {
 	@ApiAcceptedResponse()
 	updateUser(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
 		return this.userService.update(user.user_id, dto.data);
-	}
-
-	@Post("/agency")
-	@ApiOperation({ summary: "change agency" })
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
-	changeAgency(
-		@Body() dto: UserChangeAgencyMetaDataDto,
-		@User() user: ICurrentUser,
-	) {
-		return this.userService.changeAgency(dto.data, user);
 	}
 
 	@Post("/phone")

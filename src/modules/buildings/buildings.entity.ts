@@ -2,11 +2,11 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
-import { PremisesEntity } from "../premises/premises.entity";
+import { PremiseEntity } from "../premises/premises.entity";
 import { SectionsEntity } from "../sections/sections.entity";
 
 @Entity({ name: "buildings" })
-export class BuildingsEntity extends BaseEntity {
+export class BuildingEntity extends BaseEntity {
 	@Column()
 	name!: string;
 
@@ -57,8 +57,8 @@ export class BuildingsEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	project_id!: number;
 
-	@OneToMany(() => PremisesEntity, (Premises) => Premises.building)
-	premises?: PremisesEntity[];
+	@OneToMany(() => PremiseEntity, (Premises) => Premises.building)
+	premises?: PremiseEntity[];
 
 	@OneToMany(
 		() => SectionsEntity,
