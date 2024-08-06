@@ -4,6 +4,7 @@ import { Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { AgenciesModule } from "../agencies/agencies.module";
 import { CitiesEntity } from "../cities/cities.entity";
 import { CityModule } from "../cities/cities.module";
 import { CityService } from "../cities/cities.service";
@@ -21,6 +22,7 @@ import { ProjectService } from "./projects.service";
 		}),
 		TypeOrmModule.forFeature([ProjectEntity, UserEntity, CitiesEntity]),
 		CityModule,
+		AgenciesModule,
 	],
 	controllers: [ProjectsController],
 	providers: [ProjectService, CityService, UserService],

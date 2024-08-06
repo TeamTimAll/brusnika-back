@@ -1,4 +1,3 @@
-import { ExecutionContext, createParamDecorator } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
@@ -10,10 +9,9 @@ import {
 
 import { PromptLabel } from "lib/prompt/prompt";
 
-import { createLink } from "../../lib/pagination";
-import { Links } from "../../types";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
 
+import { BaseEntity } from "./base.entity";
 import { BaseError } from "./baseError";
 
 export class MetaPrompt {
@@ -22,7 +20,7 @@ export class MetaPrompt {
 	meta!: object;
 }
 
-export class MetaLinks implements Links {
+export class MetaLinks {
 	totalPage!: number;
 	currPage!: number;
 	limit!: number;
@@ -44,6 +42,7 @@ export class MetaDto<T = object> {
 	@IsObject()
 	params!: T;
 
+	data?: object;
 	prompt!: MetaPrompt;
 }
 
@@ -67,14 +66,24 @@ export class BaseDto<T = unknown> {
 		return this;
 	}
 
-	setLinks(links: Links) {
-		this.meta.links = createLink(links);
+	setLinks(links: MetaLinks) {
+		this.meta.links = links;
 		return this;
 	}
 
 	setResponseType(status: ResponseStatusType) {
 		this.meta.type = status;
 		return this;
+	}
+
+	calcPagination(count: number, page: number, limit: number): MetaLinks {
+		const maxPage = Math.ceil(count / limit);
+		return {
+			currPage: page,
+			totalPage: maxPage,
+			limit: limit,
+			total: count,
+		};
 	}
 
 	static createFromDto<T extends BaseDto, D>(dto: T, data?: D): T {
@@ -96,11 +105,8 @@ export class BaseDto<T = unknown> {
 
 		return dto;
 	}
-}
 
-export const MetaData = createParamDecorator(
-	<T extends BaseDto>(data: T, _ctx: ExecutionContext) => {
-		const metaData = BaseDto.createFromDto(data ?? new BaseDto());
-		return metaData;
-	},
-);
+	static create<T extends BaseEntity | BaseEntity[], D = unknown>(data?: D) {
+		return this.createFromDto(new BaseDto<T>(), data);
+	}
+}

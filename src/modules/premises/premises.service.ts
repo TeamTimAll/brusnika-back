@@ -2,8 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { calcPagination } from "../../lib/pagination";
-import { ServiceResponse } from "../../types";
+import { BaseDto } from "../../common/base/base_dto";
 import { BuildingsEntity } from "../buildings/buildings.entity";
 import { BuildingsService } from "../buildings/buildings.service";
 import { ProjectEntity } from "../projects/project.entity";
@@ -77,7 +76,7 @@ export class PremisesService {
 
 	async getPremisesFiltered(
 		filter: PremisesFilterDto,
-	): Promise<ServiceResponse<PremisesEntity[]>> {
+	): Promise<BaseDto<PremisesEntity[]>> {
 		let query = this.premiseRepository
 			.createQueryBuilder("premise")
 			.leftJoin(
@@ -298,13 +297,13 @@ export class PremisesService {
 
 		const premises = await query.getRawMany<PremisesEntity>();
 
-		const premiseResponse = new ServiceResponse<PremisesEntity[]>();
-		premiseResponse.links = calcPagination(
+		const metaData = BaseDto.create<PremisesEntity[]>();
+		metaData.calcPagination(
 			premiseCount.length ? premiseCount[0].premise_count : 0,
 			filter.page,
 			filter.limit,
 		);
-		premiseResponse.data = premises;
-		return premiseResponse;
+		metaData.data = premises;
+		return metaData;
 	}
 }

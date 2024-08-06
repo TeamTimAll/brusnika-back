@@ -11,7 +11,6 @@ import { map } from "rxjs/operators";
 import { BaseDto } from "../common/base/base_dto";
 import { ResponseStatusType } from "../common/enums/response_status_type_enum";
 import { requestToMetaData } from "../filters/meta-data-request";
-import { ServiceResponse } from "../types";
 
 export interface Response<T> {
 	data: T;
@@ -26,15 +25,14 @@ export class TransformInterceptor<T>
 		next: CallHandler,
 	): Observable<BaseDto<T>> {
 		const request = ctx.switchToHttp().getRequest<Request>();
-		const metaData = requestToMetaData<T>(
+		let metaData = requestToMetaData<T>(
 			request,
 			ResponseStatusType.SUCCESS,
 		);
 		return next.handle().pipe(
 			map((data: T) => {
-				if (data instanceof ServiceResponse) {
-					metaData.setLinks(data.links);
-					metaData.data = data.data as T;
+				if (data instanceof BaseDto) {
+					metaData = data;
 				} else {
 					metaData.data = data;
 				}

@@ -4,16 +4,16 @@ import { In, Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
-import { calcPagination } from "../../lib/pagination";
 import { AgencyService } from "../../modules/agencies/agencies.service";
 import { AgencyNotFoundError } from "../../modules/agencies/errors/AgencyNotFound.error";
 import { CityService } from "../../modules/cities/cities.service";
 import { UserNotFoundError } from "../../modules/user/errors/UserNotFound.error";
 import { UserService } from "../../modules/user/user.service";
-import { ServiceResponse } from "../../types";
 import { AgencyEntity } from "../agencies/agencies.entity";
 import { CitiesEntity } from "../cities/cities.entity";
+import { NotificationNotFoundError } from "../notification/errors/NotificationNotFound.error";
 import {
 	NotificationEntity,
 	NotificationType,
@@ -140,10 +140,10 @@ export class EventsService {
 
 		eventsQuery = eventsQuery.limit(dto.limit).offset(pageSize);
 
-		const eventsResponse = new ServiceResponse<EventsEntity[]>();
-		eventsResponse.links = calcPagination(eventCount, dto.page, dto.limit);
-		eventsResponse.data = await eventsQuery.getMany();
-		return eventsResponse;
+		const metaData = BaseDto.create<EventsEntity[]>();
+		metaData.calcPagination(eventCount, dto.page, dto.limit);
+		metaData.data = await eventsQuery.getMany();
+		return metaData;
 	}
 
 	async userEvents(user: ICurrentUser) {
@@ -507,6 +507,22 @@ export class EventsService {
 				`event_id: ${foundEvent.id}, user_id: ${user.user_id}`,
 			);
 		}
+		const foundNotification =
+			await this.notificationService.repository.findOne({
+				select: { id: true },
+				where: {
+					user_id: user.user_id,
+					object_id: foundEvent.id,
+				},
+			});
+		if (!foundNotification) {
+			throw new NotificationNotFoundError(
+				`event_id: ${foundEvent.id}, user_id: ${user.user_id}`,
+			);
+		}
+		await this.notificationService.repository.update(foundNotification.id, {
+			is_read: true,
+		});
 		await this.eventInvitationRepository.update(foundInvitation.id, {
 			is_accepted: dto.is_accepted,
 		});
