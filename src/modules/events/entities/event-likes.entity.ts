@@ -17,7 +17,10 @@ export class EventLikesEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	event_id!: number;
 
-	@ManyToOne(() => EventsEntity)
+	@ManyToOne(() => EventsEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	@JoinColumn({ name: "event_id" })
 	events!: EventsEntity;
 }

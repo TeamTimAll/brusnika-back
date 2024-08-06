@@ -11,7 +11,10 @@ export class ContactEntity extends BaseEntity {
 	@Column({ type: "varchar" })
 	phone!: string;
 
-	@ManyToOne(() => EventsEntity, (e) => e.contacts)
+	@ManyToOne(() => EventsEntity, (e) => e.contacts, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	@JoinColumn({ name: "event_id" })
 	event?: EventsEntity;
 

@@ -2,7 +2,6 @@ import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
 
 import { BaseEntity } from "../../../common/base/base.entity";
 import { UserEntity } from "../../user/user.entity";
-
 import { EventsEntity } from "../events.entity";
 
 @Entity("event_views")
@@ -18,7 +17,10 @@ export class EventViewsEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	event_id!: number;
 
-	@ManyToOne(() => EventsEntity)
+	@ManyToOne(() => EventsEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	@JoinColumn({ name: "event_id" })
 	events!: EventsEntity;
 }
