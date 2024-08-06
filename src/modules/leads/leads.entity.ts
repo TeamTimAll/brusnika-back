@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { ClientEntity } from "../client/client.entity";
-import { PremisesEntity } from "../premises/premises.entity";
+import { PremiseEntity } from "../premises/premises.entity";
 import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
 
@@ -45,9 +45,9 @@ export class LeadsEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	project_id?: number;
 
-	@ManyToOne(() => PremisesEntity)
+	@ManyToOne(() => PremiseEntity)
 	@JoinColumn({ name: "premise_id" })
-	premise!: PremisesEntity;
+	premise!: PremiseEntity;
 
 	@Column({ type: "integer", nullable: true })
 	premise_id?: number;

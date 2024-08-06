@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
-import { BuildingsEntity } from "../buildings/buildings.entity";
-import { PremisesEntity } from "../premises/premises.entity";
+import { BuildingEntity } from "../buildings/buildings.entity";
+import { PremiseEntity } from "../premises/premises.entity";
 
 @Entity({ name: "sections" })
 export class SectionsEntity extends BaseEntity {
@@ -10,7 +10,7 @@ export class SectionsEntity extends BaseEntity {
 	name!: string;
 
 	@ManyToOne(
-		() => BuildingsEntity,
+		() => BuildingEntity,
 		(BuildingsEntity) => BuildingsEntity.sections,
 		{
 			onDelete: "SET NULL",
@@ -18,11 +18,11 @@ export class SectionsEntity extends BaseEntity {
 		},
 	)
 	@JoinColumn({ name: "building_id" })
-	building!: BuildingsEntity;
+	building!: BuildingEntity;
 
 	@Column({ type: "integer", nullable: true })
 	building_id?: number;
 
-	@OneToMany(() => PremisesEntity, (PremisesEntity) => PremisesEntity.section)
-	premises?: PremisesEntity[];
+	@OneToMany(() => PremiseEntity, (PremisesEntity) => PremisesEntity.section)
+	premises?: PremiseEntity[];
 }

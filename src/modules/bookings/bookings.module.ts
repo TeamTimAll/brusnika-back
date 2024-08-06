@@ -3,7 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
 import { ClientModule } from "../client/client.module";
-import { PremisesEntity } from "../premises/premises.entity";
+import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesModule } from "../premises/premises.module";
 
 import { BookingsController } from "./bookings.controller";
@@ -12,7 +12,7 @@ import { BookingsService } from "./bookings.service";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([BookingsEntity, PremisesEntity]),
+		TypeOrmModule.forFeature([BookingsEntity, PremiseEntity]),
 		UserModule,
 		ClientModule,
 		PremisesModule,

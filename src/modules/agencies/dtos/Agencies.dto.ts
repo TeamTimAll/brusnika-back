@@ -8,7 +8,9 @@ import {
 	IsString,
 } from "class-validator";
 
-export class AgenciesDto {
+import { Dto } from "../../../common/base/base_dto";
+
+export class AgenciesDto implements Dto {
 	@ApiProperty({ description: "The UUID of the user" })
 	@IsInt()
 	@Type(() => Number)
@@ -82,4 +84,6 @@ export class AgenciesDto {
 	@IsOptional()
 	@IsString()
 	authority_signatory_doc?: string;
+
+	desc = "string";
 }

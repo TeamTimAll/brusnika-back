@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 import { ClientEntity } from "../../client/client.entity";
-import { PremisesEntity } from "../../premises/premises.entity";
+import { PremiseEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
 import { UserEntity } from "../../user/user.entity";
 import { LeadOpStatus, LeadOpsEntity } from "../lead_ops.entity";
@@ -36,7 +36,7 @@ export class LeadsDto implements LeadsEntity {
 	project_id?: number;
 
 	@ApiProperty()
-	premise!: PremisesEntity;
+	premise!: PremiseEntity;
 
 	@ApiProperty()
 	premise_id?: number;

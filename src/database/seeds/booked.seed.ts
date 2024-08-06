@@ -6,7 +6,7 @@ import {
 	PuchaseOptions,
 } from "../../modules/bookings/bookings.entity";
 import { ClientEntity } from "../../modules/client/client.entity";
-import { PremisesEntity } from "../../modules/premises/premises.entity";
+import { PremiseEntity } from "../../modules/premises/premises.entity";
 import { UserEntity } from "../../modules/user/user.entity";
 
 export async function up(query: QueryBuilder<object>) {
@@ -27,7 +27,7 @@ export async function up(query: QueryBuilder<object>) {
 	const [premise] = await query
 		.createQueryBuilder()
 		.select()
-		.from(PremisesEntity, "p")
+		.from(PremiseEntity, "p")
 		.where("name = :name", {
 			name: "1-комнатная 30 м2",
 		})

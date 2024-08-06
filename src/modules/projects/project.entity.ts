@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
-import { BuildingsEntity } from "../../modules/buildings/buildings.entity";
+import { BuildingEntity } from "../../modules/buildings/buildings.entity";
 import { CitiesEntity } from "../cities/cities.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 
@@ -19,8 +19,8 @@ export class ProjectEntity extends BaseEntity {
 	@Column({ nullable: true })
 	photo!: string;
 
-	@OneToMany(() => BuildingsEntity, (buildings) => buildings.project)
-	buildings?: BuildingsEntity[];
+	@OneToMany(() => BuildingEntity, (buildings) => buildings.project)
+	buildings?: BuildingEntity[];
 
 	@Column({ nullable: true })
 	price!: number;

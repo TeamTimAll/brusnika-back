@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { CityService } from "../cities/cities.service";
-import { PremisesEntity, PremisesType } from "../premises/premises.entity";
+import { PremiseEntity, PremisesType } from "../premises/premises.entity";
 
 import { CreateProjectDto } from "./dto/CreateProject.dto";
 import { UpdateProjectDto } from "./dto/UpdateProject.dto";
@@ -28,7 +28,7 @@ export interface GetAllProjectRaw extends ProjectRaw {
 	lat: ProjectEntity["lat"];
 	link: ProjectEntity["link"];
 	end_date: ProjectEntity["end_date"];
-	premise_type: PremisesEntity["type"];
+	premise_type: PremiseEntity["type"];
 	premise_count: string;
 	city: {
 		id: number;

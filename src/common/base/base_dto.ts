@@ -14,6 +14,10 @@ import { ResponseStatusType } from "../enums/response_status_type_enum";
 import { BaseEntity } from "./base.entity";
 import { BaseError } from "./baseError";
 
+export class Dto {
+	desc!: string;
+}
+
 export class MetaPrompt {
 	id!: number;
 	labels!: PromptLabel;
@@ -42,6 +46,19 @@ export class MetaDto<T = object> {
 	@IsObject()
 	params!: T;
 
+	data?: object;
+	prompt!: MetaPrompt;
+}
+
+export class MetaResponseDto<T = object> implements MetaDto<T> {
+	@ApiProperty({ enum: ResponseStatusType })
+	type: ResponseStatusType = ResponseStatusType.SUCCESS;
+
+	@ApiProperty()
+	params!: T;
+
+	links!: MetaLinks;
+	taskId!: string;
 	data?: object;
 	prompt!: MetaPrompt;
 }

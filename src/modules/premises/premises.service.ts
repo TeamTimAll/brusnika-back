@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { BuildingsEntity } from "../buildings/buildings.entity";
+import { BuildingEntity } from "../buildings/buildings.entity";
 import { BuildingsService } from "../buildings/buildings.service";
 import { ProjectEntity } from "../projects/project.entity";
 import { SectionsEntity } from "../sections/sections.entity";
@@ -12,20 +12,20 @@ import { SectionsService } from "../sections/sections.service";
 import { CreatePremisesDto } from "./dtos/CreatePremises.dto";
 import { PremisesFilterDto } from "./dtos/PremisesFilter.dto";
 import { UpdatePremisesDto } from "./dtos/UpdatePremises.dto";
-import { PremisesEntity } from "./premises.entity";
+import { PremiseEntity } from "./premises.entity";
 
 @Injectable()
 export class PremisesService {
 	constructor(
-		@InjectRepository(PremisesEntity)
-		private premiseRepository: Repository<PremisesEntity>,
+		@InjectRepository(PremiseEntity)
+		private premiseRepository: Repository<PremiseEntity>,
 		@Inject()
 		private buildingService: BuildingsService,
 		@Inject()
 		private sectionService: SectionsService,
 	) {}
 
-	get repository(): Repository<PremisesEntity> {
+	get repository(): Repository<PremiseEntity> {
 		return this.premiseRepository;
 	}
 
@@ -40,14 +40,14 @@ export class PremisesService {
 		return await this.premiseRepository.save(premise);
 	}
 
-	async readOne(id: number): Promise<PremisesEntity> {
+	async readOne(id: number): Promise<PremiseEntity> {
 		const premises = await this.getPremisesFiltered({
 			id: id,
 			limit: 1,
 			page: 1,
 		});
 		if (!premises.data.length) {
-			return {} as PremisesEntity;
+			return {} as PremiseEntity;
 		}
 		return premises.data[0];
 	}
@@ -76,11 +76,11 @@ export class PremisesService {
 
 	async getPremisesFiltered(
 		filter: PremisesFilterDto,
-	): Promise<BaseDto<PremisesEntity[]>> {
+	): Promise<BaseDto<PremiseEntity[]>> {
 		let query = this.premiseRepository
 			.createQueryBuilder("premise")
 			.leftJoin(
-				BuildingsEntity,
+				BuildingEntity,
 				"building",
 				"building.id = premise.building_id",
 			)
@@ -295,9 +295,9 @@ export class PremisesService {
 				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
 			);
 
-		const premises = await query.getRawMany<PremisesEntity>();
+		const premises = await query.getRawMany<PremiseEntity>();
 
-		const metaData = BaseDto.create<PremisesEntity[]>();
+		const metaData = BaseDto.create<PremiseEntity[]>();
 		metaData.calcPagination(
 			premiseCount.length ? premiseCount[0].premise_count : 0,
 			filter.page,
