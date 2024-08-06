@@ -94,7 +94,10 @@ export class EventsEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	city_id?: number;
 
-	@OneToMany(() => ContactEntity, (c) => c.event)
+	@OneToMany(() => ContactEntity, (c) => c.event, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	contacts?: ContactEntity[];
 
 	@Column({ type: "boolean", default: false })
