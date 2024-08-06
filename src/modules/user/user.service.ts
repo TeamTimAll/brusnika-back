@@ -46,6 +46,20 @@ export class UserService {
 
 	readAll(dto: UserFilterDto) {
 		return this.userRepository.find({
+			select: {
+				agency: {
+					id: true,
+					legalName: true,
+				},
+				city: {
+					id: true,
+					name: true,
+				},
+			},
+			relations: {
+				agency: true,
+				city: true,
+			},
 			where: {
 				fullName: dto.fullname ? ILike(`%${dto.fullname}%`) : undefined,
 				city_id: dto.city_id,

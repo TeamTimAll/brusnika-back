@@ -9,7 +9,7 @@ import {
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { UserEntity } from "../../modules/user/user.entity";
-import { CitiesEntity } from "../cities/cities.entity";
+import { CityEntity } from "../cities/cities.entity";
 
 import { ContactEntity } from "./entities/contact.entity";
 import { EventInvitationEntity } from "./entities/event-invition.entity";
@@ -84,12 +84,12 @@ export class EventsEntity extends BaseEntity {
 	@Column({ nullable: true, type: "integer" })
 	create_by_id?: number;
 
-	@ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
+	@ManyToOne(() => CityEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",
 		onUpdate: "NO ACTION",
 	})
 	@JoinColumn({ name: "city_id" })
-	city!: CitiesEntity;
+	city!: CityEntity;
 
 	@Column({ type: "integer", nullable: true })
 	city_id?: number;

@@ -1,105 +1,100 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import {
-	IsBoolean,
-	IsDate,
-	IsEmail,
-	IsEnum,
-	IsInt,
-	IsMobilePhone,
-	IsNumber,
-	IsOptional,
-	IsString,
-} from "class-validator";
 
+import { BaseDto, Dto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
-import { UserRegisterStatus } from "../user.entity";
+import { UserEntity, UserRegisterStatus } from "../user.entity";
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
-export class UserDto {
-	@IsString()
-	@IsOptional()
-	firstName?: string | null;
+export type IUserDto = Omit<
+	UserEntity,
+	"comments" | "city" | "agency" | "bookings" | "visits"
+>;
 
-	@IsString()
-	@IsOptional()
-	lastName?: string | null;
+export class UserDto implements IUserDto {
+	@ApiProperty()
+	id!: number;
 
-	@IsString()
-	@IsOptional()
+	@ApiProperty()
+	createdAt!: Date;
+
+	@ApiProperty()
+	updatedAt!: Date;
+
+	@ApiProperty()
+	firstName!: string;
+
+	@ApiProperty()
+	lastName!: string;
+
+	@ApiProperty()
+	role!: RoleType;
+
+	@ApiProperty()
+	email!: string;
+
+	@ApiProperty()
 	username!: string;
 
-	@IsString()
-	@IsOptional()
+	@ApiProperty()
 	password!: string;
 
-	@IsEnum(RoleType)
-	role?: RoleType;
+	@ApiProperty()
+	phone!: string;
 
-	@IsEmail()
-	@IsOptional()
-	@ApiProperty({ required: false })
-	email?: string | null;
+	@ApiProperty()
+	birthDate!: Date;
 
-	@IsString()
-	@IsOptional()
-	avatar?: string | null;
+	@ApiProperty()
+	workStartDate!: Date;
 
-	@IsMobilePhone()
-	@IsOptional()
-	phone?: string | null;
+	@ApiProperty()
+	verification_code!: number;
 
-	@IsMobilePhone()
-	@IsOptional()
-	temporaryNumber?: string | null;
+	@ApiProperty()
+	verification_code_sent_date!: Date;
 
-	@IsBoolean()
-	@IsOptional()
-	isActive?: boolean;
+	@ApiProperty()
+	email_verification_code!: number;
 
-	@IsDate()
-	@IsOptional()
-	@ApiProperty({ required: false })
-	birthDate?: Date | null;
+	@ApiProperty()
+	email_verification_code_sent_date!: Date;
 
-	@IsDate()
-	@IsOptional()
-	@ApiProperty({ required: false })
-	workStartDate?: Date | null;
+	@ApiProperty()
+	avatar!: string;
 
-	@IsNumber()
-	@IsOptional()
-	@ApiProperty({ required: false })
-	verification_code?: number | null;
+	@ApiProperty({ enum: UserRegisterStatus })
+	register_status!: UserRegisterStatus;
 
-	@IsDate()
-	@IsOptional()
-	@ApiProperty({ required: false })
-	verification_code_sent_date?: Date | null;
+	@ApiProperty()
+	fullName!: string;
 
-	@ApiProperty({ required: false })
-	@IsOptional()
-	@IsEnum(() => UserRegisterStatus)
-	register_status?: UserRegisterStatus;
-
-	@IsBoolean()
-	@IsOptional()
-	@ApiProperty({ required: false })
+	@ApiProperty()
 	isPhoneVerified?: boolean;
 
-	@IsInt()
-	@Type(() => Number)
-	@ApiProperty({
-		required: false,
-	})
+	@ApiProperty()
+	isEmailVerified?: boolean;
+
+	@ApiProperty()
+	temporaryNumber!: string;
+
+	@ApiProperty()
+	temporaryEmail!: string;
+
+	@ApiProperty()
+	status!: boolean;
+
+	@ApiProperty()
 	city_id?: number;
 
-	@ApiProperty({ description: "The agency ID of the user" })
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
+	@ApiProperty()
 	agency_id?: number;
+}
 
-	status?: boolean;
+export class UserMetaDataDto extends BaseDto<UserDto> implements Dto {
+	@ApiProperty({ type: UserDto })
+	declare data: UserDto;
+
+	desc = `### User ma'lumotlari
+	\n **data**'da user entity ma'lumotlari`;
 }

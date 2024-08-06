@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, Repository } from "typeorm";
 
-import { CitiesEntity } from "./cities.entity";
+import { CityEntity } from "./cities.entity";
 import { CreateCitiesDto } from "./dtos/CreateCities.dto";
 import { UpdateCitiesDto } from "./dtos/UpdateCities.dto";
 import { CityNotFoundError } from "./errors/CityNotFound.error";
@@ -10,8 +10,8 @@ import { CityNotFoundError } from "./errors/CityNotFound.error";
 @Injectable()
 export class CityService {
 	constructor(
-		@InjectRepository(CitiesEntity)
-		private cityRepository: Repository<CitiesEntity>,
+		@InjectRepository(CityEntity)
+		private cityRepository: Repository<CityEntity>,
 	) {}
 
 	async create(dto: CreateCitiesDto) {
@@ -19,7 +19,7 @@ export class CityService {
 		return await this.cityRepository.save(city);
 	}
 
-	async readAll(name?: string): Promise<CitiesEntity[]> {
+	async readAll(name?: string): Promise<CityEntity[]> {
 		const cities = await this.cityRepository.find({
 			where: {
 				name: name ? ILike(`%${name}%`) : undefined,
@@ -31,7 +31,7 @@ export class CityService {
 		return cities;
 	}
 
-	async readOne(id: number): Promise<CitiesEntity> {
+	async readOne(id: number): Promise<CityEntity> {
 		const findOne = await this.cityRepository.findOne({
 			where: { id },
 		});
@@ -43,13 +43,13 @@ export class CityService {
 		return findOne;
 	}
 
-	async update(id: number, dto: UpdateCitiesDto): Promise<CitiesEntity> {
+	async update(id: number, dto: UpdateCitiesDto): Promise<CityEntity> {
 		const foundCity = await this.readOne(id);
 		const mergedCity = this.cityRepository.merge(foundCity, dto);
 		return await this.cityRepository.save(mergedCity);
 	}
 
-	async delete(id: number): Promise<CitiesEntity> {
+	async delete(id: number): Promise<CityEntity> {
 		const foundCity = await this.readOne(id);
 		await this.cityRepository.delete(id);
 		return foundCity;

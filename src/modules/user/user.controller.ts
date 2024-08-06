@@ -13,24 +13,26 @@ import {
 import {
 	ApiAcceptedResponse,
 	ApiBearerAuth,
-	ApiTags
+	ApiOperation,
+	ApiTags,
 } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { RoleType } from "../../constants";
-import { User } from "../../decorators";
+import { ApiDtoResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { UserLoginResendCodeMetaDataDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
-import { UserDto } from "./dtos/User.dto";
 import { UserChangeEmailMetaDataDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeMetaDataDto } from "./dtos/UserChangePhoneVerifyCode.dto";
 import { UserCreateMetaDataDto } from "./dtos/UserCreate.dto";
 import { UserFilterDto } from "./dtos/UserFilter.dto";
+import { UserReadAllMetaDataDto } from "./dtos/UserReadAll.dto";
 import { UserUpdateMetaDataDto } from "./dtos/UserUpdate.dto";
+import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
 
 @ApiTags("users")
@@ -42,7 +44,11 @@ export class UserController {
 	constructor(private userService: UserService) {}
 
 	@Get()
-	@HttpCode(HttpStatus.OK)
+	@ApiOperation({
+		description: `### User list'ini olish.
+		\n Ruxsat etilgan foydalanuvchilar rollari - *${RoleType.ADMIN}*, *${RoleType.AFFILIATE_MANAGER}*`,
+	})
+	@ApiDtoResponse(UserReadAllMetaDataDto, HttpStatus.OK)
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	async readAll(@Query() dto: UserFilterDto, @User() _user: ICurrentUser) {
 		return await this.userService.readAll(dto);
@@ -50,7 +56,7 @@ export class UserController {
 
 	@Get("/me")
 	@HttpCode(HttpStatus.OK)
-	async getUser(@User() user: ICurrentUser): Promise<UserDto> {
+	async getUser(@User() user: ICurrentUser): Promise<UserEntity> {
 		return this.userService.getUser(user.user_id, false);
 	}
 

@@ -1,89 +1,72 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import {
-	IsEmail,
-	IsInt,
-	IsMobilePhone,
-	IsOptional,
-	IsString,
-} from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 
-import { Dto } from "../../../common/base/base_dto";
+import { BaseDto, Dto } from "../../../common/base/base_dto";
+import { AgencyEntity } from "../agencies.entity";
 
-export class AgenciesDto implements Dto {
-	@ApiProperty({ description: "The UUID of the user" })
-	@IsInt()
-	@Type(() => Number)
-	userId!: string;
+export type IAgencyDto = Omit<AgencyEntity, "city" | "user" | "create_by">;
 
-	@ApiPropertyOptional({ description: "The title of the agency" })
-	@IsOptional()
-	@IsString()
-	title?: string;
+export class AgencyDto implements IAgencyDto {
+	@ApiProperty()
+	id!: number;
 
-	@ApiPropertyOptional({ description: "The UUID of the city" })
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
+	@ApiProperty()
+	createdAt!: Date;
+
+	@ApiProperty()
+	updatedAt!: Date;
+
+	@ApiProperty()
+	title!: string;
+
+	@ApiProperty()
 	city_id?: number;
 
-	@ApiPropertyOptional({ description: "The legal name of the agency" })
-	@IsOptional()
-	@IsString()
-	legalName?: string;
+	@ApiProperty()
+	legalName!: string;
 
-	@ApiPropertyOptional({
-		description: "The tax identification number of the agency",
-	})
-	@IsOptional()
-	@IsString()
-	inn?: string;
+	@ApiProperty()
+	inn!: string;
 
-	@ApiPropertyOptional({ description: "The phone number of the agency" })
-	@IsOptional()
-	@IsMobilePhone()
-	phone?: string | null;
+	@ApiProperty()
+	phone!: string;
 
-	@ApiPropertyOptional({ description: "The email address of the agency" })
-	@IsOptional()
-	@IsEmail()
-	email?: string | null;
+	@ApiProperty()
+	email!: string;
 
-	@ApiPropertyOptional({ description: "The full name of the owner" })
-	@IsOptional()
-	@IsString()
-	ownerFullName?: string;
+	@ApiProperty()
+	ownerFullName!: string;
 
-	@ApiPropertyOptional({ description: "The phone number of the owner" })
-	@IsOptional()
-	@IsMobilePhone()
-	ownerPhone?: string;
+	@ApiProperty()
+	ownerPhone!: string;
 
-	@ApiProperty({ description: "Document for entry", required: false })
-	@IsOptional()
-	@IsString()
-	entry_doc?: string;
+	@ApiProperty()
+	entry_doc!: string;
 
-	@ApiProperty({ description: "Document for company card", required: false })
-	@IsOptional()
-	@IsString()
-	company_card_doc?: string;
+	@ApiProperty()
+	company_card_doc!: string;
 
-	@ApiProperty({
-		description: "Document for tax registration",
-		required: false,
-	})
-	@IsOptional()
-	@IsString()
-	tax_registration_doc?: string;
+	@ApiProperty()
+	tax_registration_doc!: string;
 
-	@ApiProperty({
-		description: "Document for authority signatory",
-		required: false,
-	})
-	@IsOptional()
-	@IsString()
-	authority_signatory_doc?: string;
+	@ApiProperty()
+	authority_signatory_doc!: string;
 
-	desc = "string";
+	@ApiProperty()
+	create_by_id?: number;
+}
+
+export class AgencyMetaDataDto<T = AgencyDto>
+	extends BaseDto<T>
+	implements Dto
+{
+	@ApiProperty({ type: AgencyDto })
+	declare data: T;
+
+	desc = `### Agency ma'lumotlari
+	\n **data**'da agency entity ma'lumotlari`;
+}
+
+export class AgencyArrayMetaDataDto extends AgencyMetaDataDto<AgencyDto[]> {
+	@ApiProperty({ type: [AgencyDto] })
+	declare data: AgencyDto[];
 }

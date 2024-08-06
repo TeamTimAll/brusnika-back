@@ -1,17 +1,17 @@
 import { QueryBuilder } from "typeorm";
 
-import { CitiesEntity } from "../../modules/cities/cities.entity";
+import { CityEntity } from "../../modules/cities/cities.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
 
-function findCityId(cities: CitiesEntity[], name: string) {
+function findCityId(cities: CityEntity[], name: string) {
 	return cities.find((e) => e.name === name)?.id;
 }
 
 export async function up(query: QueryBuilder<object>) {
 	const cities = await query
 		.select(["c.id AS id", "c.name AS name"])
-		.from(CitiesEntity, "c")
-		.getRawMany<CitiesEntity>();
+		.from(CityEntity, "c")
+		.getRawMany<CityEntity>();
 
 	const projects: Omit<
 		ProjectEntity,

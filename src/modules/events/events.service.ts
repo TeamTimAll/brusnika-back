@@ -12,7 +12,7 @@ import { CityService } from "../../modules/cities/cities.service";
 import { UserNotFoundError } from "../../modules/user/errors/UserNotFound.error";
 import { UserService } from "../../modules/user/user.service";
 import { AgencyEntity } from "../agencies/agencies.entity";
-import { CitiesEntity } from "../cities/cities.entity";
+import { CityEntity } from "../cities/cities.entity";
 import { NotificationNotFoundError } from "../notification/errors/NotificationNotFound.error";
 import {
 	NotificationEntity,
@@ -220,7 +220,7 @@ export class EventsService {
 			)
 			.leftJoinAndMapOne(
 				"e.city",
-				CitiesEntity,
+				CityEntity,
 				"city",
 				"city.id = e.city_id",
 			)
