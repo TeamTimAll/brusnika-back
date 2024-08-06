@@ -241,16 +241,17 @@
 - [x] Toggle Like'da id event_id'ga o'zgartirildi.
 - [x] Toggle draft qo'shib berish.
 
-- [ ] User o'z agency'sini o'zgartira olishi kerak.
-- [ ] User listi uchun filter
+### 2024-08-06
+- [x] User o'z agency'sini o'zgartira olishi kerak.
+- [x] User listi uchun filter
     - F.I.SH
     - Shahar
     - Role
     - Register qilgan kuni
     - Agency nomi bilan
-    - 
+- [x] User event'ni accept/cencel qilganida is_read'ni true'ga o'zgartirish.
+- [x] Booking create qila olish limitini ko'rsatuvchi meta data.
 - [ ] User register qilganda CRM'ga so'rov yuboradi. User status'i register'ga o'tkazib qo'yish kerak. Javob kelganidan keyin User status'i CRM'dan berilgan status bilan update qilishi kerak. CRM'dan o'chirib tashlansa block status'iga o'tkazib qo'yish kerak.
-- [ ] Create qila olish limitini ko'rsatuvchi meta data kerak.
 
 ## Admin role va role model
 

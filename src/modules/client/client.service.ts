@@ -2,9 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, Repository } from "typeorm";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { calcPagination } from "../../lib/pagination";
-import { ServiceResponse } from "../../types";
 import { LeadOpsEntity } from "../leads/lead_ops.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 
@@ -81,7 +80,7 @@ export class ClientService {
 	async readAll(
 		dto: FilterClientDto,
 		user: ICurrentUser,
-	): Promise<ServiceResponse<ClientEntity[]>> {
+	): Promise<BaseDto<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
 			.select([
@@ -202,10 +201,10 @@ export class ClientService {
 			],
 		});
 
-		const clientResponse = new ServiceResponse<ClientEntity[]>();
-		clientResponse.links = calcPagination(clientCount, dto.page, dto.limit);
-		clientResponse.data = await queryBuilder.getRawMany();
-		return clientResponse;
+		const metaData = BaseDto.create<ClientEntity[]>();
+		metaData.calcPagination(clientCount, dto.page, dto.limit);
+		metaData.data = await queryBuilder.getRawMany();
+		return metaData;
 	}
 
 	async delete(

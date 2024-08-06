@@ -28,7 +28,7 @@ export class HttpValidationErrorFilter
 
 		const dto = requestToMetaData(request);
 
-		dto.meta!.prompt = new InputValidationError({
+		dto.meta.prompt = new InputValidationError({
 			message: "validation error",
 			meta: exception,
 		});

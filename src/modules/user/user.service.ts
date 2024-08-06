@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { ILike, MoreThanOrEqual, Repository } from "typeorm";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { AgencyService } from "../agencies/agencies.service";
 import { AuthRespone } from "../auth/auth.service";
 import { UserLoginResendCodeDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
@@ -10,9 +11,11 @@ import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExp
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
 
+import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeDto } from "./dtos/UserChangePhoneVerifyCode.dto";
 import { UserCreateDto } from "./dtos/UserCreate.dto";
+import { UserFilterDto } from "./dtos/UserFilter.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
@@ -24,6 +27,8 @@ export class UserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private userRepository: Repository<UserEntity>,
+		@Inject(forwardRef(() => AgencyService))
+		private agencyService: AgencyService,
 	) {}
 
 	get repository(): Repository<UserEntity> {
@@ -37,8 +42,18 @@ export class UserService {
 		return elapsedTime >= oneMinute;
 	}
 
-	readAll() {
-		return this.userRepository.find();
+	readAll(dto: UserFilterDto) {
+		return this.userRepository.find({
+			where: {
+				fullName: dto.fullname ? ILike(`%${dto.fullname}%`) : undefined,
+				city_id: dto.city_id,
+				role: dto.role,
+				agency_id: dto.agency_id,
+				createdAt: dto.registered_at
+					? (MoreThanOrEqual(dto.registered_at) as unknown as Date)
+					: undefined,
+			},
+		});
 	}
 
 	async readOne(id: number) {
@@ -50,6 +65,23 @@ export class UserService {
 		if (!foundUser) {
 			throw new UserNotFoundError(`id: ${id}`);
 		}
+		return foundUser;
+	}
+
+	async changeAgency(dto: UserChangeAgencyDto, user: ICurrentUser) {
+		const foundUser = await this.userRepository.findOne({
+			where: {
+				id: user.user_id,
+			},
+		});
+		if (!foundUser) {
+			throw new UserNotFoundError(`id: ${user.user_id}`);
+		}
+		await this.agencyService.readOne(dto.agency_id);
+		await this.userRepository.update(foundUser.id, {
+			agency_id: dto.agency_id,
+		});
+		foundUser.agency_id = dto.agency_id;
 		return foundUser;
 	}
 

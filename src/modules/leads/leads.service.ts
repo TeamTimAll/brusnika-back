@@ -2,9 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { IsNull, Repository } from "typeorm";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
-import { calcPagination } from "../../lib/pagination";
-import { ServiceResponse } from "../../types";
 import { BuildingsService } from "../buildings/buildings.service";
 import { ClientService } from "../client/client.service";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
@@ -81,9 +80,7 @@ export class LeadsService {
 		return updatedLead;
 	}
 
-	async readAll(
-		dto: LeadReadByFilterDto,
-	): Promise<ServiceResponse<LeadsEntity[]>> {
+	async readAll(dto: LeadReadByFilterDto): Promise<BaseDto<LeadsEntity[]>> {
 		const leads = await this.leadRepository.find({
 			select: {
 				project: {
@@ -143,10 +140,10 @@ export class LeadsService {
 
 		const leadsCount = await this.leadRepository.count();
 
-		const leadResponse = new ServiceResponse<LeadsEntity[]>();
-		leadResponse.data = leads;
-		leadResponse.links = calcPagination(leadsCount, dto.page, dto.limit);
-		return leadResponse;
+		const metaData = BaseDto.create<LeadsEntity[]>();
+		metaData.data = leads;
+		metaData.calcPagination(leadsCount, dto.page, dto.limit);
+		return metaData;
 	}
 
 	async changeStatus(leadId: number, toStatus: LeadOpStatus) {

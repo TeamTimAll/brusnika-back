@@ -6,10 +6,16 @@ import {
 	HttpStatus,
 	Post,
 	Put,
+	Query,
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
-import { ApiAcceptedResponse, ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import {
+	ApiAcceptedResponse,
+	ApiBearerAuth,
+	ApiOperation,
+	ApiTags,
+} from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
@@ -21,9 +27,11 @@ import { UserLoginResendCodeMetaDataDto } from "../auth/dtos/UserLoginResendCode
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { UserDto } from "./dtos/User.dto";
+import { UserChangeAgencyMetaDataDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailMetaDataDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeMetaDataDto } from "./dtos/UserChangePhoneVerifyCode.dto";
 import { UserCreateMetaDataDto } from "./dtos/UserCreate.dto";
+import { UserFilterDto } from "./dtos/UserFilter.dto";
 import { UserUpdateMetaDataDto } from "./dtos/UserUpdate.dto";
 import { UserService } from "./user.service";
 
@@ -38,8 +46,8 @@ export class UserController {
 	@Get()
 	@HttpCode(HttpStatus.OK)
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
-	async readAll(@User() _user: ICurrentUser) {
-		return await this.userService.readAll();
+	async readAll(@Query() dto: UserFilterDto, @User() _user: ICurrentUser) {
+		return await this.userService.readAll(dto);
 	}
 
 	@Get("/me")
@@ -53,6 +61,17 @@ export class UserController {
 	@ApiAcceptedResponse()
 	updateUser(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
 		return this.userService.update(user.user_id, dto.data);
+	}
+
+	@Post("/agency")
+	@ApiOperation({ summary: "change agency" })
+	@HttpCode(HttpStatus.ACCEPTED)
+	@ApiAcceptedResponse()
+	changeAgency(
+		@Body() dto: UserChangeAgencyMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		return this.userService.changeAgency(dto.data, user);
 	}
 
 	@Post("/phone")
