@@ -4,7 +4,7 @@ import { BaseEntity } from "../../common/base/base.entity";
 import { UserEntity } from "../../modules/user/user.entity";
 
 @Entity({ name: "cities" })
-export class CitiesEntity extends BaseEntity {
+export class CityEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	name!: string;
 

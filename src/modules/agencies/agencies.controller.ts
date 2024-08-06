@@ -13,24 +13,23 @@ import {
 	UseInterceptors,
 } from "@nestjs/common";
 import {
-	ApiAcceptedResponse,
 	ApiBearerAuth,
-	ApiCreatedResponse,
-	ApiOkResponse,
+	ApiOperation,
 	ApiQuery,
 	ApiTags,
 } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
-import { ApiDtoResponse, User } from "../../decorators";
+import { ApiDtoResponse, ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { CityNotFoundError } from "../cities/errors/CityNotFound.error";
 
 import { AgencyEntity } from "./agencies.entity";
 import { AgencyService } from "./agencies.service";
-import { AgenciesDto } from "./dtos/Agencies.dto";
+import { AgencyArrayMetaDataDto, AgencyMetaDataDto } from "./dtos/Agencies.dto";
 import { CreateAgenciesMetaDataDto } from "./dtos/CreateAgencies.dto";
 import { UpdateAgenciesMetaDataDto } from "./dtos/UpdateAgencies.dto";
 
@@ -40,11 +39,28 @@ import { UpdateAgenciesMetaDataDto } from "./dtos/UpdateAgencies.dto";
 export class AgencyController {
 	constructor(private service: AgencyService) {}
 
-	@HttpCode(HttpStatus.CREATED)
-	@ApiCreatedResponse({ type: AgenciesDto })
+	@Post()
+	@ApiOperation({
+		description: `### Agency yasash.
+		\n Ruxsat etilgan foydalanuvchilar rollari - *Hammasi*
+		\n Json body haqida qisqacha:
+		\n - **title** - sarlavhasi
+		\n - **city_id** - shahar id'si
+		\n - **legalName** - qonuniy nomi
+		\n - **inn** - INN
+		\n - **phone** - telefon raqami
+		\n - **email** - email
+		\n - **ownerFullName** - egasini to'liq F.I.SH'i
+		\n - **ownerPhone** - egasini telefon raqami
+		\n - **entry_doc** - dokumenti
+		\n - **company_card_doc** - korxona karta raqami dokumenti
+		\n - **tax_registration_doc** - soliq ro'yxatidan o'tkazish dokumenti
+		\n - **authority_signatory_doc** - vakolatli organ imzolagan hujjat dokumenti`
+	})
+	@ApiDtoResponse(AgencyMetaDataDto, HttpStatus.CREATED)
+	@ApiErrorResponse(CityNotFoundError, "'id' city not found")
 	@ApiBearerAuth()
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Post()
 	async create(
 		@Body() dto: CreateAgenciesMetaDataDto,
 		@User() user: ICurrentUser,
@@ -58,21 +74,21 @@ export class AgencyController {
 		description: " Agencies Name (optional if not provided  or empty)",
 		required: false,
 	})
-	@ApiDtoResponse(AgenciesDto, HttpStatus.OK)
+	@ApiDtoResponse(AgencyArrayMetaDataDto, HttpStatus.OK)
 	async readAll(@Query("name") name?: string): Promise<AgencyEntity[]> {
 		return this.service.readAll(name);
 	}
 
 	@Get(":id")
 	@HttpCode(HttpStatus.OK)
-	@ApiOkResponse({ type: AgenciesDto })
+	@ApiDtoResponse(AgencyMetaDataDto, HttpStatus.OK)
 	async readOne(@Param("id") id: number): Promise<AgencyEntity> {
 		return await this.service.readOne(id);
 	}
 
 	@Put(":id")
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
+	@ApiDtoResponse(AgencyMetaDataDto, HttpStatus.OK)
+	@ApiErrorResponse(CityNotFoundError, "'id' city not found")
 	@ApiBearerAuth()
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	update(
@@ -83,8 +99,8 @@ export class AgencyController {
 	}
 
 	@Delete(":id")
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
+	@ApiDtoResponse(AgencyMetaDataDto, HttpStatus.OK)
+	@ApiErrorResponse(CityNotFoundError, "'id' city not found")
 	@ApiBearerAuth()
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	async delete(@Param("id") id: number): Promise<AgencyEntity> {

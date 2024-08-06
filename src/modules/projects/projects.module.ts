@@ -5,7 +5,7 @@ import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AgenciesModule } from "../agencies/agencies.module";
-import { CitiesEntity } from "../cities/cities.entity";
+import { CityEntity } from "../cities/cities.entity";
 import { CityModule } from "../cities/cities.module";
 import { CityService } from "../cities/cities.service";
 import { UserEntity } from "../user/user.entity";
@@ -20,7 +20,7 @@ import { ProjectService } from "./projects.service";
 		MulterModule.register({
 			dest: path.join(__dirname, "..", "media"),
 		}),
-		TypeOrmModule.forFeature([ProjectEntity, UserEntity, CitiesEntity]),
+		TypeOrmModule.forFeature([ProjectEntity, UserEntity, CityEntity]),
 		CityModule,
 		AgenciesModule,
 	],

@@ -1,9 +1,9 @@
 import { QueryBuilder } from "typeorm";
 
-import { CitiesEntity } from "../../modules/cities/cities.entity";
+import { CityEntity } from "../../modules/cities/cities.entity";
 
 export async function up(query: QueryBuilder<object>) {
-	const cities: Omit<CitiesEntity, "id" | "createdAt" | "updatedAt">[] = [
+	const cities: Omit<CityEntity, "id" | "createdAt" | "updatedAt">[] = [
 		{ name: "Москва", long: "37.6173", lat: "55.7558" },
 		{ name: "Тюмень", long: "65.5619", lat: "57.1553" },
 		{ name: "Новосибирск", long: "82.8964", lat: "54.9833" },
@@ -13,9 +13,9 @@ export async function up(query: QueryBuilder<object>) {
 		{ name: "Омск", long: "73.3645", lat: "54.9914" },
 	];
 
-	await query.insert().into(CitiesEntity).values(cities).execute();
+	await query.insert().into(CityEntity).values(cities).execute();
 }
 
 export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(CitiesEntity).execute();
+	await query.delete().from(CityEntity).execute();
 }

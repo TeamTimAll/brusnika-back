@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
-import { CitiesEntity } from "../cities/cities.entity";
+import { CityEntity } from "../cities/cities.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 
 @Entity({ name: "projects" })
@@ -40,9 +40,9 @@ export class ProjectEntity extends BaseEntity {
 	@Column({ nullable: true, type: "date" })
 	end_date!: Date;
 
-	@ManyToOne(() => CitiesEntity, { onDelete: "CASCADE" })
+	@ManyToOne(() => CityEntity, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "city_id" })
-	city!: CitiesEntity;
+	city!: CityEntity;
 
 	@Column({ nullable: true, type: "integer" })
 	city_id?: number;

@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
-import { CitiesEntity } from "../cities/cities.entity";
+import { CityEntity } from "../cities/cities.entity";
 import { UserEntity } from "../user/user.entity";
 
 @Entity({ name: "agencies" })
@@ -16,12 +16,12 @@ export class AgencyEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	title!: string;
 
-	@ManyToOne(() => CitiesEntity, (citiesEntity) => citiesEntity.users, {
+	@ManyToOne(() => CityEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",
 		onUpdate: "NO ACTION",
 	})
 	@JoinColumn({ name: "city_id" })
-	city!: CitiesEntity;
+	city!: CityEntity;
 
 	@Column({ type: "integer", nullable: true })
 	city_id?: number;

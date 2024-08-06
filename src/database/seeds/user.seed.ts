@@ -1,18 +1,18 @@
 import { QueryBuilder } from "typeorm";
 
 import { RoleType } from "../../constants";
-import { CitiesEntity } from "../../modules/cities/cities.entity";
+import { CityEntity } from "../../modules/cities/cities.entity";
 import { UserEntity, UserRegisterStatus } from "../../modules/user/user.entity";
 
 export async function up(query: QueryBuilder<object>) {
 	const [city] = await query
 		.select("id")
-		.from(CitiesEntity, "c")
+		.from(CityEntity, "c")
 		.where("name = :name", {
 			name: "Москва",
 		})
 		.limit(1)
-		.getRawMany<CitiesEntity>();
+		.getRawMany<CityEntity>();
 	const users: Omit<
 		UserEntity,
 		"id" | "city" | "agency" | "createdAt" | "updatedAt"
