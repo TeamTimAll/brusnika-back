@@ -520,9 +520,18 @@ export class EventsService {
 				`event_id: ${foundEvent.id}, user_id: ${user.user_id}`,
 			);
 		}
-		await this.notificationService.repository.update(foundNotification.id, {
-			is_read: true,
-		});
+		if (dto.is_accepted) {
+			await this.notificationService.repository.update(
+				foundNotification.id,
+				{
+					is_read: true,
+				},
+			);
+		} else {
+			await this.notificationService.repository.delete(
+				foundNotification.id,
+			);
+		}
 		await this.eventInvitationRepository.update(foundInvitation.id, {
 			is_accepted: dto.is_accepted,
 		});
