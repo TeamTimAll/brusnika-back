@@ -59,7 +59,7 @@ export class AuthService {
 
 		const randomNumber = 111111;
 
-		await this.userService.update(user.id, {
+		await this.userService.repository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
@@ -84,7 +84,7 @@ export class AuthService {
 
 		await this.cityService.readOne(dto.city_id);
 
-		await this.userService.update(user.id, {
+		await this.userService.repository.update(user.id, {
 			register_status: UserRegisterStatus.ATTACHMENT,
 			...dto,
 		});
@@ -99,7 +99,7 @@ export class AuthService {
 	async agentChooseAgency(body: AgentChooseAgencyDto): Promise<AuthRespone> {
 		const user = await this.userService.getUser(body.user_id);
 		await this.agenciesService.readOne(body.agency_id);
-		await this.userService.update(user.id, {
+		await this.userService.repository.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
 			agency_id: body.agency_id,
 			workStartDate: body.startWorkDate,
@@ -129,7 +129,7 @@ export class AuthService {
 			},
 			{ user_id: user.id, role: user.role },
 		);
-		await this.userService.update(user.id, {
+		await this.userService.repository.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
 			agency_id: newAgency.id,
 		});
@@ -156,7 +156,7 @@ export class AuthService {
 			},
 			{ user_id: user.id, role: user.role },
 		);
-		await this.userService.update(user.id, {
+		await this.userService.repository.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
 			agency_id: newAgency.id,
 		});
@@ -224,7 +224,7 @@ export class AuthService {
 		// If a new agent is created, he needs to be sent to the data filling section.
 		// Otherwise, send him to his current step.
 		if (user.register_status === UserRegisterStatus.CREATED) {
-			await this.userService.update(user.id, {
+			await this.userService.repository.update(user.id, {
 				isPhoneVerified: true,
 				register_status: UserRegisterStatus.FILL_DATA,
 			});
@@ -255,7 +255,7 @@ export class AuthService {
 
 		const randomNumber = 111111;
 
-		await this.userService.update(user.id, {
+		await this.userService.repository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
