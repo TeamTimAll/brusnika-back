@@ -59,6 +59,15 @@ export class UserUpdateDto {
 	@Type(() => Number)
 	@IsOptional()
 	city_id?: number;
+
+	@ApiProperty({
+		required: false,
+		description: "The ID of the agency",
+	})
+	@IsInt()
+	@Type(() => Number)
+	@IsOptional()
+	agency_id?: number;
 }
 
 export class UserUpdateMetaDataDto extends BaseDto<UserUpdateDto> {

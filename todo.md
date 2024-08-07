@@ -253,12 +253,13 @@
 - [x] Booking create qila olish limitini ko'rsatuvchi meta data.
 - [x] User list'i uchun agency qo'shib berish kerak.
 
+- [ ] O'ziga tegishli bo'lgan notification'larni olish kerak.
 - [ ] User register qilganda CRM'ga so'rov yuboradi. User status'i register'ga o'tkazib qo'yish kerak. Javob kelganidan keyin User status'i CRM'dan berilgan status bilan update qilishi kerak. CRM'dan o'chirib tashlansa block status'iga o'tkazib qo'yish kerak.
 
 ## Admin role va role model
 
 ### HEAD_OF_AGENCY (Руководитель агентства)
-- [ ] User'larni listni ko'ra oladi. User id bilan ham oladi.
+- [x] User'larni listni ko'ra oladi. User id bilan ham oladi.
 - [ ] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT'ga o'tkaza oladi.
 
 ### AFFILIATE_MANAGER (Партнерский менеджер)

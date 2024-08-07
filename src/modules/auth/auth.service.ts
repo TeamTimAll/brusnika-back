@@ -24,10 +24,10 @@ import { VerificationExistsError } from "./errors/VerificationExists.error";
 import { AgentRequestAgencyDto } from "./dtos/AgentRequestAgency.dto";
 import { UserLoginVerifyCodeDto } from "./dtos/UserLoginVerifyCode.dto";
 import { UserLoginResendCodeDto } from "./dtos/UserLoginResendCode.dto";
-
-export type AuthRespone =
-	| { user_id: number; message: string; register_status: string }
-	| { accessToken: string };
+import {
+	AuthResponeWithData,
+	AuthResponeWithToken,
+} from "./dtos/AuthResponeWithToken.dto";
 
 @Injectable()
 export class AuthService {
@@ -38,7 +38,7 @@ export class AuthService {
 		private cityService: CityService,
 	) {}
 
-	async agentRegister(body: UserCreateDto): Promise<AuthRespone> {
+	async agentRegister(body: UserCreateDto): Promise<AuthResponeWithData> {
 		let user = await this.userService.repository.findOneBy({
 			phone: body.phone,
 		});
@@ -71,8 +71,8 @@ export class AuthService {
 		};
 	}
 
-	async agentFillData(dto: UserFillDataDto): Promise<AuthRespone> {
-		const user = await this.userService.getUser(dto.id);
+	async agentFillData(dto: UserFillDataDto): Promise<AuthResponeWithData> {
+		const user = await this.userService.readOne(dto.id);
 
 		const foundUser = await this.userService.repository.findOneBy({
 			email: dto.email,
@@ -96,8 +96,10 @@ export class AuthService {
 		};
 	}
 
-	async agentChooseAgency(body: AgentChooseAgencyDto): Promise<AuthRespone> {
-		const user = await this.userService.getUser(body.user_id);
+	async agentChooseAgency(
+		body: AgentChooseAgencyDto,
+	): Promise<AuthResponeWithToken> {
+		const user = await this.userService.readOne(body.user_id);
 		await this.agenciesService.readOne(body.agency_id);
 		await this.userService.repository.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
@@ -115,8 +117,8 @@ export class AuthService {
 
 	async agentRegisterAgency(
 		body: AgentRegisterAgencyDto,
-	): Promise<AuthRespone> {
-		const user = await this.userService.getUser(body.user_id);
+	): Promise<AuthResponeWithToken> {
+		const user = await this.userService.readOne(body.user_id);
 
 		const newAgency = await this.agenciesService.create(
 			{
@@ -144,8 +146,8 @@ export class AuthService {
 
 	async agentRequestAgency(
 		body: AgentRequestAgencyDto,
-	): Promise<AuthRespone> {
-		const user = await this.userService.getUser(body.user_id);
+	): Promise<AuthResponeWithToken> {
+		const user = await this.userService.readOne(body.user_id);
 
 		const newAgency = await this.agenciesService.create(
 			{
@@ -169,7 +171,7 @@ export class AuthService {
 		};
 	}
 
-	async loginAccount(loginDto: UserLoginDto): Promise<AuthRespone> {
+	async loginAccount(loginDto: UserLoginDto): Promise<AuthResponeWithToken> {
 		const user = await this.userService.repository.findOneBy({
 			email: loginDto.email,
 			role: RoleType.EMPLOYEE,
@@ -195,8 +197,10 @@ export class AuthService {
 		};
 	}
 
-	async verifySmsCode(dto: UserLoginVerifyCodeDto): Promise<AuthRespone> {
-		const user = await this.userService.getUser(dto.user_id);
+	async verifySmsCode(
+		dto: UserLoginVerifyCodeDto,
+	): Promise<AuthResponeWithData | AuthResponeWithToken> {
+		const user = await this.userService.readOne(dto.user_id);
 
 		if (!user.verification_code_sent_date) {
 			throw new NoVerificationCodeSentError();
@@ -238,7 +242,7 @@ export class AuthService {
 
 	async agentLoginResendSmsCode(
 		dto: UserLoginResendCodeDto,
-	): Promise<AuthRespone> {
+	): Promise<AuthResponeWithData> {
 		const user = await this.userService.repository.findOneBy({
 			phone: dto.phone,
 		});

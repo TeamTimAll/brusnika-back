@@ -2,20 +2,15 @@ import {
 	Body,
 	Controller,
 	Get,
-	HttpCode,
 	HttpStatus,
+	Param,
 	Post,
 	Put,
 	Query,
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
-import {
-	ApiAcceptedResponse,
-	ApiBearerAuth,
-	ApiOperation,
-	ApiTags,
-} from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
@@ -26,11 +21,13 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { UserLoginResendCodeMetaDataDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
+import { UserMetaDataDto } from "./dtos/User.dto";
 import { UserChangeEmailMetaDataDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeMetaDataDto } from "./dtos/UserChangePhoneVerifyCode.dto";
 import { UserCreateMetaDataDto } from "./dtos/UserCreate.dto";
 import { UserFilterDto } from "./dtos/UserFilter.dto";
 import { UserReadAllMetaDataDto } from "./dtos/UserReadAll.dto";
+import { UserResponseMetaDataDto } from "./dtos/UserResponse.dto";
 import { UserUpdateMetaDataDto } from "./dtos/UserUpdate.dto";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
@@ -46,30 +43,40 @@ export class UserController {
 	@Get()
 	@ApiOperation({
 		description: `### User list'ini olish.
-		\n Ruxsat etilgan foydalanuvchilar rollari - *${RoleType.ADMIN}*, *${RoleType.AFFILIATE_MANAGER}*`,
+		\n Ruxsat etilgan foydalanuvchilar rollari:
+		\n - *${RoleType.ADMIN}*
+		\n - *${RoleType.AFFILIATE_MANAGER}*
+		\n - *${RoleType.HEAD_OF_AGENCY}*`,
 	})
 	@ApiDtoResponse(UserReadAllMetaDataDto, HttpStatus.OK)
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([
+		RoleType.ADMIN,
+		RoleType.AFFILIATE_MANAGER,
+		RoleType.HEAD_OF_AGENCY,
+	])
 	async readAll(@Query() dto: UserFilterDto, @User() _user: ICurrentUser) {
 		return await this.userService.readAll(dto);
 	}
 
 	@Get("/me")
-	@HttpCode(HttpStatus.OK)
+	@ApiOperation({ description: "### User o'z ma'lumotlarini olish." })
+	@ApiDtoResponse(UserReadAllMetaDataDto, HttpStatus.OK)
 	async getUser(@User() user: ICurrentUser): Promise<UserEntity> {
-		return this.userService.getUser(user.user_id, false);
+		return this.userService.readOne(user.user_id);
 	}
 
 	@Put("/")
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
+	@ApiOperation({ description: "### User o'z ma'lumotlarini o'zgartirish." })
+	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
 	updateUser(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
 		return this.userService.update(user.user_id, dto.data);
 	}
 
 	@Post("/phone")
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
+	@ApiOperation({
+		description: "### User o'z telefon raqamini o'zgartirish.",
+	})
+	@ApiDtoResponse(UserResponseMetaDataDto, HttpStatus.OK)
 	changePhoneUser(
 		@Body() dto: UserCreateMetaDataDto,
 		@User() user: ICurrentUser,
@@ -78,8 +85,8 @@ export class UserController {
 	}
 
 	@Post("/phone/verify")
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
+	@ApiOperation({ description: "### User o'z telefon raqamini tasdiqlash." })
+	@ApiDtoResponse(UserResponseMetaDataDto, HttpStatus.OK)
 	verifyPhone(
 		@Body() dto: UserChangePhoneVerifyCodeMetaDataDto,
 		@User() user: ICurrentUser,
@@ -88,8 +95,8 @@ export class UserController {
 	}
 
 	@Post("/email")
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
+	@ApiOperation({ description: "### User o'z emailini o'zgartirish." })
+	@ApiDtoResponse(UserResponseMetaDataDto, HttpStatus.OK)
 	changeEmail(
 		@Body() dto: UserChangeEmailMetaDataDto,
 		@User() user: ICurrentUser,
@@ -98,8 +105,8 @@ export class UserController {
 	}
 
 	@Post("/email/verify")
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
+	@ApiOperation({ description: "### User o'z emailini tasdiqlash." })
+	@ApiDtoResponse(UserResponseMetaDataDto, HttpStatus.OK)
 	verifyEmail(
 		@Body() dto: UserChangePhoneVerifyCodeMetaDataDto,
 		@User() user: ICurrentUser,
@@ -108,12 +115,34 @@ export class UserController {
 	}
 
 	@Post("/phone/resend-code")
-	@HttpCode(HttpStatus.ACCEPTED)
-	@ApiAcceptedResponse()
+	@ApiOperation({
+		description:
+			"### User telefon raqami uchun sms code'ni qayta yuborishi.",
+	})
+	@ApiDtoResponse(UserResponseMetaDataDto, HttpStatus.OK)
 	resendCodePhone(
 		@Body() dto: UserLoginResendCodeMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
 		return this.userService.userResendSmsCode(user, dto.data);
+	}
+
+	@Get(":id")
+	@ApiOperation({
+		description: `### User'ni id bilan olish.
+		\n id - user id'si
+		\n Ruxsat etilgan foydalanuvchilar rollari:
+		\n - *${RoleType.ADMIN}*
+		\n - *${RoleType.AFFILIATE_MANAGER}*
+		\n - *${RoleType.HEAD_OF_AGENCY}*`,
+	})
+	@ApiDtoResponse(UserReadAllMetaDataDto, HttpStatus.OK)
+	@Roles([
+		RoleType.ADMIN,
+		RoleType.AFFILIATE_MANAGER,
+		RoleType.HEAD_OF_AGENCY,
+	])
+	async readOne(@Param("id") id: number, @User() _user: ICurrentUser) {
+		return await this.userService.readOne(id);
 	}
 }
