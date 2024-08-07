@@ -3,6 +3,7 @@ import { Type } from "class-transformer";
 import {
 	IsDateString,
 	IsEmail,
+	IsEnum,
 	IsInt,
 	IsOptional,
 	IsString,
@@ -11,6 +12,7 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
+import { RoleType } from "../../../constants";
 
 export class UserUpdateDto {
 	@ApiProperty({ required: false, description: "The first name of the user" })
@@ -68,6 +70,11 @@ export class UserUpdateDto {
 	@Type(() => Number)
 	@IsOptional()
 	agency_id?: number;
+
+	@ApiProperty({ enum: RoleType })
+	@IsEnum(RoleType)
+	@IsOptional()
+	role?: RoleType;
 }
 
 export class UserUpdateMetaDataDto extends BaseDto<UserUpdateDto> {
