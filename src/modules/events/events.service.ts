@@ -253,6 +253,7 @@ export class EventsService {
 				"e.is_banner",
 				"e.is_draft",
 				"e.tags",
+				"e.city_id",
 				"city.id",
 				"city.name",
 				"contacts.id",
