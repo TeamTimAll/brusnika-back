@@ -179,6 +179,7 @@ export class UserService {
 		// const user2Entity = await queryBuilder.getOne();
 	}
 
+	/** Do not use this function directly. It containes permision handler for agent role user. */
 	async update(id: number, dto: Partial<UserEntity>): Promise<unknown> {
 		const user = await this.readOne(id);
 		if (!user) {
