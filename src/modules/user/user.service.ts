@@ -5,7 +5,6 @@ import { ILike, MoreThanOrEqual, Repository } from "typeorm";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgencyService } from "../agencies/agencies.service";
-import { AuthRespone } from "../auth/auth.service";
 import { UserLoginResendCodeDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
 import { PermissionDeniedError } from "../auth/errors/PermissionDenied.error";
@@ -18,11 +17,11 @@ import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeDto } from "./dtos/UserChangePhoneVerifyCode.dto";
 import { UserCreateDto } from "./dtos/UserCreate.dto";
 import { UserFilterDto } from "./dtos/UserFilter.dto";
+import { UserResponseDto } from "./dtos/UserResponse.dto";
+import { UserUpdateDto } from "./dtos/UserUpdate.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
-
-type UserResponse = Omit<AuthRespone, "register_status">;
 
 @Injectable()
 export class UserService {
@@ -74,6 +73,20 @@ export class UserService {
 
 	async readOne(id: number) {
 		const foundUser = await this.userRepository.findOne({
+			select: {
+				agency: {
+					id: true,
+					legalName: true,
+				},
+				city: {
+					id: true,
+					name: true,
+				},
+			},
+			relations: {
+				agency: true,
+				city: true,
+			},
 			where: {
 				id: id,
 			},
@@ -128,71 +141,23 @@ export class UserService {
 		return savedUser;
 	}
 
-	async getUser(userId: number, full = true): Promise<UserEntity> {
-		// const queryBuilder = await this.userRepository.createQueryBuilder('user');
-
-		// await queryBuilder.where('user.id = :userId', { userId });
-		if (full) {
-			const user = await this.userRepository.findOne({
-				where: {
-					id: userId,
-				},
-				relations: ["city", "agency"],
-			});
-
-			if (!user) {
-				throw new UserNotFoundError(
-					`User not found. user_id: ${userId}`,
-				);
-			}
-
-			return user;
-		} else {
-			const user = await this.userRepository.findOne({
-				where: {
-					id: userId,
-				},
-				relations: ["city", "agency"],
-				select: [
-					"id",
-					"fullName",
-					"firstName",
-					"lastName",
-					"birthDate",
-					"email",
-					"phone",
-					"city",
-					"agency",
-					"avatar",
-					"role",
-				],
-			});
-
-			if (!user) {
-				throw new UserNotFoundError(
-					`User not found. user_id: ${userId}`,
-				);
-			}
-
-			return user;
-		}
-		// const user2Entity = await queryBuilder.getOne();
-	}
-
 	/** Do not use this function directly. It containes permision handler for agent role user. */
-	async update(id: number, dto: Partial<UserEntity>): Promise<unknown> {
+	async update(id: number, dto: UserUpdateDto): Promise<UserEntity> {
 		const user = await this.readOne(id);
 		if (!user) {
 			throw new UserNotFoundError();
 		}
-		if (user.role === RoleType.AGENT) {
+		if (user.role === RoleType.AGENT && dto.agency_id) {
 			throw new PermissionDeniedError(`role: ${user.role}`);
 		}
 		await this.userRepository.update(id, dto);
 		return this.readOne(id);
 	}
 
-	async changePhone(id: number, dto: UserCreateDto): Promise<UserResponse> {
+	async changePhone(
+		id: number,
+		dto: UserCreateDto,
+	): Promise<UserResponseDto> {
 		const user = await this.readOne(id);
 		if (
 			user.verification_code_sent_date &&
@@ -204,7 +169,7 @@ export class UserService {
 		// const randomNumber = Math.floor(100000 + Math.random() * 900000);
 		const randomNumber = 111111;
 
-		await this.update(user.id, {
+		await this.userRepository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 			temporaryNumber: dto.phone,
@@ -221,7 +186,7 @@ export class UserService {
 	async changeEmail(
 		id: number,
 		dto: UserChangeEmailDto,
-	): Promise<UserResponse> {
+	): Promise<UserResponseDto> {
 		const user = await this.readOne(id);
 		if (
 			user.email_verification_code_sent_date &&
@@ -232,7 +197,7 @@ export class UserService {
 
 		const randomNumber = 111111;
 
-		await this.update(user.id, {
+		await this.userRepository.update(user.id, {
 			email_verification_code: randomNumber,
 			email_verification_code_sent_date: new Date(),
 			temporaryEmail: dto.email,
@@ -246,8 +211,11 @@ export class UserService {
 		};
 	}
 
-	async verifyEmail(user: ICurrentUser, dto: UserChangePhoneVerifyCodeDto) {
-		const foundUser = await this.getUser(user.user_id);
+	async verifyEmail(
+		user: ICurrentUser,
+		dto: UserChangePhoneVerifyCodeDto,
+	): Promise<UserResponseDto> {
+		const foundUser = await this.readOne(user.user_id);
 
 		if (!foundUser.isEmailVerified) {
 			throw new UserPhoneNotVerifiedError();
@@ -264,7 +232,7 @@ export class UserService {
 			throw new VerificationCodeIsNotCorrectError();
 		}
 
-		await this.update(foundUser.id, {
+		await this.userRepository.update(foundUser.id, {
 			email: foundUser.temporaryEmail,
 			temporaryEmail: null,
 			email_verification_code: null,
@@ -280,8 +248,8 @@ export class UserService {
 	async verifySmsCode(
 		user: ICurrentUser,
 		dto: UserChangePhoneVerifyCodeDto,
-	): Promise<UserResponse> {
-		const foundUser = await this.getUser(user.user_id);
+	): Promise<UserResponseDto> {
+		const foundUser = await this.readOne(user.user_id);
 
 		if (!foundUser.isPhoneVerified) {
 			throw new UserPhoneNotVerifiedError();
@@ -296,7 +264,7 @@ export class UserService {
 			throw new VerificationCodeIsNotCorrectError();
 		}
 
-		await this.update(foundUser.id, {
+		await this.userRepository.update(foundUser.id, {
 			phone: foundUser.temporaryNumber,
 			temporaryNumber: null,
 			verification_code: null,
@@ -312,7 +280,7 @@ export class UserService {
 	async userResendSmsCode(
 		user: ICurrentUser,
 		dto: UserLoginResendCodeDto,
-	): Promise<UserResponse> {
+	): Promise<UserResponseDto> {
 		const foundUser = await this.userRepository.findOne({
 			where: {
 				id: user.user_id,
@@ -333,7 +301,7 @@ export class UserService {
 		const randomNumber = 111111;
 
 		// todo send sms
-		await this.update(foundUser.id, {
+		await this.userRepository.update(foundUser.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
