@@ -3,7 +3,6 @@ import {
 	Controller,
 	Delete,
 	Get,
-	HttpCode,
 	HttpStatus,
 	Param,
 	Post,
@@ -12,15 +11,21 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
+import { ApiDtoResponse, ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateNotificationMetaDataDto } from "./dto/CreateNotification.dto";
+import { NotificationMetaDataDto } from "./dto/Notification.dto";
 import { NotificationFilterDto } from "./dto/NotificationFilter.dto";
+import { ReadAllNotificationMetaDataDto } from "./dto/ReadAllNotification.dto";
 import { UpdateNotificationMetaDataDto } from "./dto/UpdateNotification.dto";
+import { NotificationNotFoundError } from "./errors/NotificationNotFound.error";
 import { NotificationService } from "./notification.service";
 
 @ApiTags("Notification")
@@ -32,25 +37,36 @@ export class NotificationController {
 	constructor(private notificationService: NotificationService) {}
 
 	@Get()
-	@HttpCode(HttpStatus.OK)
-	readAll(@Query() dto: NotificationFilterDto) {
-		return this.notificationService.readAll(dto);
+	@ApiOperation({
+		description: "### Notification list'i foydalanuchiga nisbattan olish.",
+	})
+	@ApiDtoResponse(ReadAllNotificationMetaDataDto, HttpStatus.OK)
+	readAll(@Query() dto: NotificationFilterDto, @User() user: ICurrentUser) {
+		return this.notificationService.readAll(dto, user);
 	}
 
 	@Get(":id")
-	@HttpCode(HttpStatus.OK)
+	@ApiOperation({ description: "### Notification id bo'yicha olish." })
+	@ApiDtoResponse(NotificationMetaDataDto, HttpStatus.OK)
+	@ApiErrorResponse(NotificationNotFoundError, "id: 'id'")
 	readOne(@Param("id") id: number) {
 		return this.notificationService.readOne(id);
 	}
 
 	@Post()
-	@HttpCode(HttpStatus.CREATED)
-	async create(@Body() dto: CreateNotificationMetaDataDto) {
-		return this.notificationService.create(dto.data);
+	@ApiOperation({ description: "### Notification yasash." })
+	@ApiDtoResponse(NotificationMetaDataDto, HttpStatus.CREATED)
+	async create(
+		@Body() dto: CreateNotificationMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		return this.notificationService.create(dto.data, user);
 	}
 
 	@Put(":id")
-	@HttpCode(HttpStatus.OK)
+	@ApiOperation({ description: "### Notification id bo'yicha yangilash." })
+	@ApiDtoResponse(NotificationMetaDataDto, HttpStatus.OK)
+	@ApiErrorResponse(NotificationNotFoundError, "id: 'id'")
 	async updateProject(
 		@Param("id") id: number,
 		@Body() dto: UpdateNotificationMetaDataDto,
@@ -59,7 +75,9 @@ export class NotificationController {
 	}
 
 	@Delete(":id")
-	@HttpCode(HttpStatus.OK)
+	@ApiOperation({ description: "### Notification id bo'yicha o'chirish." })
+	@ApiDtoResponse(NotificationMetaDataDto, HttpStatus.OK)
+	@ApiErrorResponse(NotificationNotFoundError, "id: 'id'")
 	async deleteProject(@Param("id") id: number) {
 		return this.notificationService.delete(id);
 	}

@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
 import { CreateNotificationDto } from "./dto/CreateNotification.dto";
 import { NotificationFilterDto } from "./dto/NotificationFilter.dto";
 import { UpdateNotificationDto } from "./dto/UpdateNotification.dto";
@@ -19,13 +21,19 @@ export class NotificationService {
 		return this.notificationRepository;
 	}
 
-	readAll(dto: NotificationFilterDto): Promise<NotificationEntity[]> {
+	readAll(
+		dto: NotificationFilterDto,
+		user: ICurrentUser,
+	): Promise<NotificationEntity[]> {
 		const pageSize = (dto.page - 1) * dto.limit;
 		return this.notificationRepository
 			.createQueryBuilder("n")
 			.offset(pageSize)
 			.limit(dto.limit)
 			.orderBy("n.id", "DESC")
+			.where("n.user_id = :user_id", {
+				user_id: user.user_id,
+			})
 			.getMany();
 	}
 
@@ -43,8 +51,9 @@ export class NotificationService {
 		return foundNotification;
 	}
 
-	create(dto: CreateNotificationDto) {
+	create(dto: CreateNotificationDto, user: ICurrentUser) {
 		const notification = this.notificationRepository.create(dto);
+		notification.user_id = user.user_id;
 		return this.notificationRepository.save(notification);
 	}
 
