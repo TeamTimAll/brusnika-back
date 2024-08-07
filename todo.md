@@ -253,7 +253,7 @@
 - [x] Booking create qila olish limitini ko'rsatuvchi meta data.
 - [x] User list'i uchun agency qo'shib berish kerak.
 
-- [ ] O'ziga tegishli bo'lgan notification'larni olish kerak.
+- [x] O'ziga tegishli bo'lgan notification'larni olish kerak.
 - [ ] User register qilganda CRM'ga so'rov yuboradi. User status'i register'ga o'tkazib qo'yish kerak. Javob kelganidan keyin User status'i CRM'dan berilgan status bilan update qilishi kerak. CRM'dan o'chirib tashlansa block status'iga o'tkazib qo'yish kerak.
 
 ## Admin role va role model
