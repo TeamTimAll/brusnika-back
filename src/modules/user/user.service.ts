@@ -45,16 +45,19 @@ export class UserService {
 
 	readAll(dto: UserFilterDto) {
 		return this.userRepository.find({
-			select: {
-				agency: {
-					id: true,
-					legalName: true,
-				},
-				city: {
-					id: true,
-					name: true,
-				},
-			},
+			select: [
+				"id",
+				"fullName",
+				"firstName",
+				"lastName",
+				"birthDate",
+				"email",
+				"phone",
+				"city",
+				"agency",
+				"avatar",
+				"role",
+			],
 			relations: {
 				agency: true,
 				city: true,
@@ -73,16 +76,19 @@ export class UserService {
 
 	async readOne(id: number) {
 		const foundUser = await this.userRepository.findOne({
-			select: {
-				agency: {
-					id: true,
-					legalName: true,
-				},
-				city: {
-					id: true,
-					name: true,
-				},
-			},
+			select: [
+				"id",
+				"fullName",
+				"firstName",
+				"lastName",
+				"birthDate",
+				"email",
+				"phone",
+				"city",
+				"agency",
+				"avatar",
+				"role",
+			],
 			relations: {
 				agency: true,
 				city: true,
@@ -147,7 +153,7 @@ export class UserService {
 		if (!user) {
 			throw new UserNotFoundError();
 		}
-		if (user.role === RoleType.AGENT && dto.agency_id) {
+		if (user.role === RoleType.AGENT && dto.role) {
 			throw new PermissionDeniedError(`role: ${user.role}`);
 		}
 		await this.userRepository.update(id, dto);
