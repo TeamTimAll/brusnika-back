@@ -42,23 +42,23 @@ export class ClientService {
 		return foundClient;
 	}
 
-	quickSearch(text: string = "", user: ICurrentUser) {
+	quickSearch(user: ICurrentUser, text?: string) {
 		return this.clientRepository
 			.createQueryBuilder("c")
 			.select(["id", "fullname", "phone_number"])
 			.limit(25)
 			.where(
-				"(c.agent_id = :client_agent_id or c.status = :client_status)",
+				"(c.agent_id = :client_agent_id OR c.status = :client_status)",
 				{
 					client_agent_id: user.user_id,
 					client_status: ClientTag.WEAK_FIXING,
 				},
 			)
 			.andWhere(
-				"(c.fullname ILIKE :fullname or c.phone_number ILIKE :phone_number)",
+				"(c.fullname ILIKE :fullname OR c.phone_number ILIKE :phone_number)",
 				{
-					fullname: `%${text}%`,
-					phone_number: `%${text}%`,
+					fullname: text && text.length ? `%${text}%` : "",
+					phone_number: text && text.length ? `%${text}%` : "",
 				},
 			)
 			.getMany();
