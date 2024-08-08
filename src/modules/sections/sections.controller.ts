@@ -13,15 +13,19 @@ import {
 import {
 	ApiAcceptedResponse,
 	ApiOperation,
-	ApiQuery,
 	ApiResponse,
 	ApiTags,
 } from "@nestjs/swagger";
 
+import { ApiDtoResponse } from "../../decorators";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
 import { CreateSectionsMetaDataDto } from "./dtos/CreateSections.dto";
-import { SectionsDto } from "./dtos/Sections.dto";
+import {
+	ReadAllSectionFilterDto,
+	ReadAllSectionMetaDataDto,
+} from "./dtos/ReadAllSectionFilter.dto";
+import { SectionDto } from "./dtos/Sections.dto";
 import { UpdateSectionsMetaDataDto } from "./dtos/UpdateSections.dto";
 import { SectionsService } from "./sections.service";
 
@@ -32,21 +36,21 @@ export class SectionsController {
 	constructor(private service: SectionsService) {}
 
 	@ApiOperation({ summary: "Create a section" })
-	@ApiResponse({ status: HttpStatus.CREATED, type: SectionsDto })
+	@ApiResponse({ status: HttpStatus.CREATED, type: SectionDto })
 	@Post()
 	async createsection(@Body() dto: CreateSectionsMetaDataDto) {
 		return await this.service.create(dto.data);
 	}
 
 	@ApiOperation({ summary: "Get all Sections" })
-	@ApiQuery({ name: "building_id", required: false })
+	@ApiDtoResponse(ReadAllSectionMetaDataDto, HttpStatus.OK)
 	@Get()
-	async getSections(@Query("building_id") building_id: number) {
-		return await this.service.readAll(building_id);
+	async getSections(@Query() dto: ReadAllSectionFilterDto) {
+		return await this.service.readAll(dto.building_id);
 	}
 
 	@ApiOperation({ summary: "Get a single section by ID" })
-	@ApiResponse({ status: HttpStatus.OK, type: SectionsDto })
+	@ApiResponse({ status: HttpStatus.OK, type: SectionDto })
 	@Get(":id")
 	async getSinglesection(@Param("id") id: number) {
 		return await this.service.readOne(id);

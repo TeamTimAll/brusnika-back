@@ -7,18 +7,18 @@ import { BuildingsService } from "../buildings/buildings.service";
 import { CreateSectionsDto } from "./dtos/CreateSections.dto";
 import { UpdateSectionsDto } from "./dtos/UpdateSections.dto";
 import { SectionNotFoundError } from "./errors/SectionNotFound.error";
-import { SectionsEntity } from "./sections.entity";
+import { SectionEntity } from "./sections.entity";
 
 @Injectable()
 export class SectionsService {
 	constructor(
-		@InjectRepository(SectionsEntity)
-		private sectionsRepository: Repository<SectionsEntity>,
+		@InjectRepository(SectionEntity)
+		private sectionsRepository: Repository<SectionEntity>,
 		@Inject()
 		private buildingService: BuildingsService,
 	) {}
 
-	get repostory(): Repository<SectionsEntity> {
+	get repostory(): Repository<SectionEntity> {
 		return this.sectionsRepository;
 	}
 
@@ -42,13 +42,11 @@ export class SectionsService {
 		return foundSection;
 	}
 
-	async readAll(building_id?: number) {
-		if (typeof building_id !== "undefined") {
-			await this.buildingService.readOne(building_id);
-		}
+	async readAll(building_id: number) {
+		await this.buildingService.readOne(building_id);
 		const sections = this.sectionsRepository.find({
 			where: {
-				building_id: building_id ? building_id : undefined,
+				building_id: building_id,
 			},
 		});
 		return sections;
