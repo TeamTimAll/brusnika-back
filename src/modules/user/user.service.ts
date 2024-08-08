@@ -22,6 +22,7 @@ import { UserUpdateDto } from "./dtos/UserUpdate.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
+import { UserChangeRoleRule } from "./user.rule";
 
 @Injectable()
 export class UserService {
@@ -186,6 +187,13 @@ export class UserService {
 		const user = await this.readOne(id);
 		if (!user) {
 			throw new UserNotFoundError();
+		}
+		const foundRule = UserChangeRoleRule[user.role];
+		if (foundRule && dto.role) {
+			const canAccess = foundRule[dto.role];
+			if (!canAccess) {
+				new PermissionDeniedError(`role: ${user.role}`);
+			}
 		}
 		if (user.role === RoleType.AGENT && dto.role) {
 			throw new PermissionDeniedError(`role: ${user.role}`);
