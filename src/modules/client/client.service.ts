@@ -42,10 +42,14 @@ export class ClientService {
 		return foundClient;
 	}
 
-	quickSearch(user: ICurrentUser, text?: string) {
+	async quickSearch(text: string = "", user: ICurrentUser) {
 		return this.clientRepository
 			.createQueryBuilder("c")
-			.select(["id", "fullname", "phone_number"])
+			.select([
+				"c.id",
+				"c.fullname",
+				"c.phone_number",
+			] as `c.${keyof ClientEntity}`[])
 			.limit(25)
 			.where(
 				"(c.agent_id = :client_agent_id OR c.status = :client_status)",
@@ -57,8 +61,8 @@ export class ClientService {
 			.andWhere(
 				"(c.fullname ILIKE :fullname OR c.phone_number ILIKE :phone_number)",
 				{
-					fullname: text && text.length ? `%${text}%` : "",
-					phone_number: text && text.length ? `%${text}%` : "",
+					fullname: `%${text}%`,
+					phone_number: `%${text}%`,
 				},
 			)
 			.getMany();
