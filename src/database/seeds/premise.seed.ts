@@ -7,14 +7,14 @@ import {
 	PremisesType,
 	PuchaseOptions,
 } from "../../modules/premises/premises.entity";
-import { SectionsEntity } from "../../modules/sections/sections.entity";
+import { SectionEntity } from "../../modules/sections/sections.entity";
 
 function findBuildingId(buildings: BuildingEntity[], name: string) {
 	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
 function findSectionId(
-	buildings: SectionsEntity[],
+	buildings: SectionEntity[],
 	building_id: number,
 	name: string,
 ) {
@@ -36,8 +36,8 @@ export async function up(query: QueryBuilder<object>) {
 			"s.name AS name",
 			"s.building_id AS building_id",
 		])
-		.from(SectionsEntity, "s")
-		.getRawMany<SectionsEntity>();
+		.from(SectionEntity, "s")
+		.getRawMany<SectionEntity>();
 
 	const premises: Omit<
 		PremiseEntity,

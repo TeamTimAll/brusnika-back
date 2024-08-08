@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { BaseEntity } from "../../common/base/base.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
 import { PremiseEntity } from "../premises/premises.entity";
-import { SectionsEntity } from "../sections/sections.entity";
+import { SectionEntity } from "../sections/sections.entity";
 
 @Entity({ name: "buildings" })
 export class BuildingEntity extends BaseEntity {
@@ -61,8 +61,8 @@ export class BuildingEntity extends BaseEntity {
 	premises?: PremiseEntity[];
 
 	@OneToMany(
-		() => SectionsEntity,
+		() => SectionEntity,
 		(SectionsEntity) => SectionsEntity.building,
 	)
-	sections?: SectionsEntity[];
+	sections?: SectionEntity[];
 }
