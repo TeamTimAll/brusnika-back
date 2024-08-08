@@ -3,7 +3,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { BaseEntity } from "../../common/base/base.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { BuildingEntity } from "../buildings/buildings.entity";
-import { SectionsEntity } from "../sections/sections.entity";
+import { SectionEntity } from "../sections/sections.entity";
 
 export enum PremisesType {
 	APARTMENT = "apartment",
@@ -83,7 +83,7 @@ export class PremiseEntity extends BaseEntity {
 	mortagePayment!: number;
 
 	@ManyToOne(
-		() => SectionsEntity,
+		() => SectionEntity,
 		(SectionsEntity) => SectionsEntity.premises,
 		{
 			onDelete: "SET NULL",
@@ -91,7 +91,7 @@ export class PremiseEntity extends BaseEntity {
 		},
 	)
 	@JoinColumn({ name: "section_id" })
-	section!: SectionsEntity;
+	section!: SectionEntity;
 
 	@Column({ type: "integer", nullable: true })
 	section_id?: number;

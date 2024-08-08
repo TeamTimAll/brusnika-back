@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { SectionsEntity } from "../../sections/sections.entity";
+import { SectionEntity } from "../../sections/sections.entity";
 import {
 	CommercialStatus,
 	PremiseEntity,
@@ -66,7 +66,7 @@ export class PremiseDto
 	mortagePayment!: number;
 
 	@ApiProperty()
-	section!: SectionsEntity;
+	section!: SectionEntity;
 
 	@ApiProperty()
 	section_id?: number;

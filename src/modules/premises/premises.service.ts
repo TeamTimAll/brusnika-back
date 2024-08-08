@@ -6,7 +6,7 @@ import { BaseDto } from "../../common/base/base_dto";
 import { BuildingEntity } from "../buildings/buildings.entity";
 import { BuildingsService } from "../buildings/buildings.service";
 import { ProjectEntity } from "../projects/project.entity";
-import { SectionsEntity } from "../sections/sections.entity";
+import { SectionEntity } from "../sections/sections.entity";
 import { SectionsService } from "../sections/sections.service";
 
 import { CreatePremisesDto } from "./dtos/CreatePremises.dto";
@@ -85,7 +85,7 @@ export class PremisesService {
 				"building.id = premise.building_id",
 			)
 			.leftJoin(
-				SectionsEntity,
+				SectionEntity,
 				"section",
 				"section.id = premise.section_id",
 			)
