@@ -57,8 +57,8 @@ export class LeadsDto implements LeadsEntity {
 	lead_ops?: LeadOpsEntity[];
 
 	@ApiProperty()
-	createdAt!: Date;
+	created_at!: Date;
 
 	@ApiProperty()
-	updatedAt!: Date;
+	updated_at!: Date;
 }

@@ -305,3 +305,16 @@ Brusnika API'lari
 - Contact API: [https://clients-base.staging.brusnika.tech/v1/contact]
 - Lead API: [https://crm.brusnika.ru/crm/hs/bpm/deals]
 - Lead Task API: [https://crm.brusnika.ru/crm/hs/bpm/deal-tasks]
+
+### Premise bitish mudati, yilning fasllari
+
+Premise'lar bitish vaqi yilning fasllariga bo'linadi. Fasllar ma'lumot shakilda saqlaniladi. Brusnika server'ga premise ma'lumotlarini berganida bitish mudati sana ko'rinishda keladi va fasl yasalmagan bo'lsa yasalib yoki boriga bog'lanib saqlaniladi. Frontend uchun filter alohida api qilib berish. Filterni olishda feature yoki old beriladi. Feature da faqat kelajakdagi fasllar, old esa o'tib ketgan fasllar beriladi.
+Fasllar entity shakli:
+```json
+{
+    "id": 1,
+    "season_name": "1",
+    "year": "2024",
+    "date": "2024-08-09"
+}
+```

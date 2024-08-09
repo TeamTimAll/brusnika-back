@@ -9,16 +9,16 @@ import {
 } from "../premises.entity";
 
 export class PremiseDto
-	implements Omit<PremiseEntity, "building" | "bookings">
+	implements Omit<PremiseEntity, "building" | "bookings" | "season">
 {
 	@ApiProperty()
 	id!: number;
 
 	@ApiProperty()
-	createdAt!: Date;
+	created_at!: Date;
 
 	@ApiProperty()
-	updatedAt!: Date;
+	updated_at!: Date;
 
 	@ApiProperty()
 	name!: string;

@@ -48,8 +48,8 @@ export class UserService {
 		return this.userRepository.find({
 			select: [
 				"id",
-				"createdAt",
-				"updatedAt",
+				"created_at",
+				"updated_at",
 				"firstName",
 				"lastName",
 				"role",
@@ -85,7 +85,7 @@ export class UserService {
 				city_id: dto.city_id,
 				role: dto.role,
 				agency_id: dto.agency_id,
-				createdAt: dto.registered_at
+				created_at: dto.registered_at
 					? (MoreThanOrEqual(dto.registered_at) as unknown as Date)
 					: undefined,
 			},
@@ -96,8 +96,8 @@ export class UserService {
 		const foundUser = await this.userRepository.findOne({
 			select: [
 				"id",
-				"createdAt",
-				"updatedAt",
+				"created_at",
+				"updated_at",
 				"firstName",
 				"lastName",
 				"role",
