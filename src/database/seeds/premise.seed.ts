@@ -7,14 +7,14 @@ import {
 	PremisesType,
 	PuchaseOptions,
 } from "../../modules/premises/premises.entity";
-import { SectionsEntity } from "../../modules/sections/sections.entity";
+import { SectionEntity } from "../../modules/sections/sections.entity";
 
 function findBuildingId(buildings: BuildingEntity[], name: string) {
 	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
 function findSectionId(
-	buildings: SectionsEntity[],
+	buildings: SectionEntity[],
 	building_id: number,
 	name: string,
 ) {
@@ -36,12 +36,12 @@ export async function up(query: QueryBuilder<object>) {
 			"s.name AS name",
 			"s.building_id AS building_id",
 		])
-		.from(SectionsEntity, "s")
-		.getRawMany<SectionsEntity>();
+		.from(SectionEntity, "s")
+		.getRawMany<SectionEntity>();
 
 	const premises: Omit<
 		PremiseEntity,
-		"id" | "section" | "building" | "createdAt" | "updatedAt"
+		"id" | "section" | "building" | "created_at" | "updated_at" | "season"
 	>[] = [
 		{
 			name: "1-комнатная 30 м2",
@@ -60,7 +60,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -86,7 +85,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -112,7 +110,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -139,7 +136,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -165,7 +161,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -191,7 +186,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -218,7 +212,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -244,7 +237,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -270,7 +262,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -297,7 +288,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -323,7 +313,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -349,7 +338,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -376,7 +364,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -402,7 +389,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -428,7 +414,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -455,7 +440,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -481,7 +465,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -507,7 +490,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -534,7 +516,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -560,7 +541,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -586,7 +566,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_apartment_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -612,7 +591,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_parking_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(
@@ -638,7 +616,6 @@ export async function up(query: QueryBuilder<object>) {
 				"premise_storeroom_default_image.jpg",
 			],
 			similiarApartmentCount: 0,
-			end_date: new Date(),
 			mortagePayment: 100,
 			is_sold: false,
 			section_id: findSectionId(

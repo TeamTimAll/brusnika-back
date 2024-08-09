@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { SectionsEntity } from "../../sections/sections.entity";
+import { SectionEntity } from "../../sections/sections.entity";
 import {
 	CommercialStatus,
 	PremiseEntity,
@@ -9,16 +9,16 @@ import {
 } from "../premises.entity";
 
 export class PremiseDto
-	implements Omit<PremiseEntity, "building" | "bookings">
+	implements Omit<PremiseEntity, "building" | "bookings" | "season">
 {
 	@ApiProperty()
 	id!: number;
 
 	@ApiProperty()
-	createdAt!: Date;
+	created_at!: Date;
 
 	@ApiProperty()
-	updatedAt!: Date;
+	updated_at!: Date;
 
 	@ApiProperty()
 	name!: string;
@@ -66,7 +66,7 @@ export class PremiseDto
 	mortagePayment!: number;
 
 	@ApiProperty()
-	section!: SectionsEntity;
+	section!: SectionEntity;
 
 	@ApiProperty()
 	section_id?: number;

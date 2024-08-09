@@ -6,7 +6,7 @@ import { LeadsEntity } from "../leads/leads.entity";
 import { UserEntity } from "../user/user.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 
-export enum ClientTag {
+export enum FixingType {
 	LEAD_VERIFICATION = "проверка лида",
 	CENCEL_FIXING = "отказ в закреплении",
 	WEAK_FIXING = "слабое закрепление",
@@ -27,8 +27,8 @@ export class ClientEntity extends BaseEntity {
 	@Column({ type: "text", nullable: true })
 	comment?: string;
 
-	@Column({ type: "enum", enum: ClientTag, nullable: true })
-	status?: ClientTag;
+	@Column({ type: "enum", enum: FixingType, nullable: true })
+	fixing_type?: FixingType;
 
 	@Column({ type: "timestamp" })
 	expiration_date!: Date;

@@ -3,7 +3,7 @@ import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { PremiseDto } from "../../premises/dtos/Premises.dto";
 import { PremiseEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
-import { SectionsEntity } from "../../sections/sections.entity";
+import { SectionEntity } from "../../sections/sections.entity";
 import { BuildingEntity } from "../buildings.entity";
 
 export class BuildingDto implements BuildingEntity {
@@ -11,10 +11,10 @@ export class BuildingDto implements BuildingEntity {
 	id!: number;
 
 	@ApiProperty()
-	createdAt!: Date;
+	created_at!: Date;
 
 	@ApiProperty()
-	updatedAt!: Date;
+	updated_at!: Date;
 
 	@ApiProperty()
 	name!: string;
@@ -65,5 +65,5 @@ export class BuildingDto implements BuildingEntity {
 	premises?: PremiseEntity[];
 
 	@ApiProperty()
-	sections?: SectionsEntity[];
+	sections?: SectionEntity[];
 }

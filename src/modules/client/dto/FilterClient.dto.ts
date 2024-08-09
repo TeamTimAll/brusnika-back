@@ -11,6 +11,7 @@ import {
 import { Limit, Page } from "../../../decorators/pagination";
 import { LeadOpStatus } from "../../leads/lead_ops.entity";
 import { LeadState } from "../../leads/leads.entity";
+import { FixingType } from "../client.entity";
 
 export class FilterClientDto {
 	@ApiProperty({ required: false })
@@ -57,4 +58,9 @@ export class FilterClientDto {
 	@IsEnum(LeadState)
 	@IsOptional()
 	state?: string;
+
+	@ApiProperty({ required: false, enum: FixingType })
+	@IsEnum(FixingType)
+	@IsOptional()
+	fixing_type?: FixingType;
 }

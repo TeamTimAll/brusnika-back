@@ -3,7 +3,9 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { BaseEntity } from "../../common/base/base.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { BuildingEntity } from "../buildings/buildings.entity";
-import { SectionsEntity } from "../sections/sections.entity";
+import { SectionEntity } from "../sections/sections.entity";
+
+import { SeasonEntity } from "./season.entity";
 
 export enum PremisesType {
 	APARTMENT = "apartment",
@@ -76,14 +78,21 @@ export class PremiseEntity extends BaseEntity {
 	@Column({ nullable: true })
 	similiarApartmentCount!: number;
 
-	@Column({ nullable: true, type: "date" })
-	end_date!: Date;
+	@ManyToOne(() => SeasonEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	@JoinColumn({ name: "season_id" })
+	season!: SeasonEntity;
+
+	@Column({ type: "integer", nullable: true })
+	season_id?: number;
 
 	@Column({ nullable: true })
 	mortagePayment!: number;
 
 	@ManyToOne(
-		() => SectionsEntity,
+		() => SectionEntity,
 		(SectionsEntity) => SectionsEntity.premises,
 		{
 			onDelete: "SET NULL",
@@ -91,7 +100,7 @@ export class PremiseEntity extends BaseEntity {
 		},
 	)
 	@JoinColumn({ name: "section_id" })
-	section!: SectionsEntity;
+	section!: SectionEntity;
 
 	@Column({ type: "integer", nullable: true })
 	section_id?: number;

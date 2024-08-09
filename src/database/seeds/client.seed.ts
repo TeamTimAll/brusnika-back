@@ -1,6 +1,6 @@
 import { QueryBuilder } from "typeorm";
 
-import { ClientEntity, ClientTag } from "../../modules/client/client.entity";
+import { ClientEntity, FixingType } from "../../modules/client/client.entity";
 import { UserEntity } from "../../modules/user/user.entity";
 
 export async function up(query: QueryBuilder<object>) {
@@ -19,15 +19,15 @@ export async function up(query: QueryBuilder<object>) {
 		| "agent"
 		| "bookings"
 		| "visits"
-		| "createdAt"
-		| "updatedAt"
+		| "created_at"
+		| "updated_at"
 	>[] = [
 		{
 			fullname: "Ivan Petrovich Ivanov",
 			phone_number: "71234567890",
 			actived_date: new Date(),
 			comment: "очень классно",
-			status: ClientTag.LEAD_VERIFICATION,
+			fixing_type: FixingType.LEAD_VERIFICATION,
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
@@ -37,7 +37,7 @@ export async function up(query: QueryBuilder<object>) {
 			phone_number: "71234567891",
 			actived_date: new Date(),
 			comment: "очень классно",
-			status: ClientTag.LEAD_VERIFICATION,
+			fixing_type: FixingType.LEAD_VERIFICATION,
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
@@ -47,7 +47,7 @@ export async function up(query: QueryBuilder<object>) {
 			phone_number: "71234567892",
 			actived_date: new Date(),
 			comment: "очень классно",
-			status: ClientTag.LEAD_VERIFICATION,
+			fixing_type: FixingType.LEAD_VERIFICATION,
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
@@ -57,7 +57,7 @@ export async function up(query: QueryBuilder<object>) {
 			phone_number: "71234567893",
 			actived_date: new Date(),
 			comment: "очень классно",
-			status: ClientTag.LEAD_VERIFICATION,
+			fixing_type: FixingType.LEAD_VERIFICATION,
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
@@ -67,7 +67,7 @@ export async function up(query: QueryBuilder<object>) {
 			phone_number: "71234567894",
 			actived_date: new Date(),
 			comment: "очень классно",
-			status: ClientTag.LEAD_VERIFICATION,
+			fixing_type: FixingType.LEAD_VERIFICATION,
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,

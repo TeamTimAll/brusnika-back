@@ -46,6 +46,13 @@ export class PremisesController {
 		return await this.service.getPremisesFiltered(filterDto);
 	}
 
+	@ApiOperation({ summary: "Get all Season" })
+	@ApiResponse({ status: HttpStatus.OK, type: PremiseDto, isArray: true })
+	@Get("seasons")
+	async readAllSeason(@Query() filterDto: PremisesFilterDto) {
+		return await this.service.readAllSeason(filterDto);
+	}
+
 	@ApiOperation({ summary: "Get a single city by ID" })
 	@Get(":id")
 	async getSinglePremises(@Param("id") id: number) {

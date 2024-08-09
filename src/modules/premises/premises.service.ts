@@ -1,24 +1,27 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { BuildingEntity } from "../buildings/buildings.entity";
 import { BuildingsService } from "../buildings/buildings.service";
 import { ProjectEntity } from "../projects/project.entity";
-import { SectionsEntity } from "../sections/sections.entity";
+import { SectionEntity } from "../sections/sections.entity";
 import { SectionsService } from "../sections/sections.service";
 
 import { CreatePremisesDto } from "./dtos/CreatePremises.dto";
 import { PremisesFilterDto } from "./dtos/PremisesFilter.dto";
 import { UpdatePremisesDto } from "./dtos/UpdatePremises.dto";
 import { PremiseEntity } from "./premises.entity";
+import { SeasonEntity } from "./season.entity";
 
 @Injectable()
 export class PremisesService {
 	constructor(
 		@InjectRepository(PremiseEntity)
 		private premiseRepository: Repository<PremiseEntity>,
+		@InjectRepository(SeasonEntity)
+		private seasonRepository: Repository<SeasonEntity>,
 		@Inject()
 		private buildingService: BuildingsService,
 		@Inject()
@@ -70,13 +73,36 @@ export class PremisesService {
 		return foundPremise;
 	}
 
+	async readAllSeason(filter: PremisesFilterDto) {
+		const query = this.getPremiseQuery(filter).select(["premise.id as id"]);
+		const premises = await query.getRawMany<PremiseEntity>();
+		const premiseIds: number[] = premises.map((e) => e.id);
+		return this.seasonRepository.find({
+			select: {
+				id: true,
+				created_at: true,
+				updated_at: true,
+				season_name: true,
+				year: true,
+				date: true,
+				premise: {
+					id: false,
+				},
+			},
+			relations: { premise: true },
+			where: {
+				premise: {
+					id: In(premiseIds),
+				},
+			},
+		});
+	}
+
 	getMultiplePremisesByIds(ids: number[], limit: number, page: number) {
 		return this.getPremisesFiltered({ ids: ids, limit, page });
 	}
 
-	async getPremisesFiltered(
-		filter: PremisesFilterDto,
-	): Promise<BaseDto<PremiseEntity[]>> {
+	getPremiseQuery(filter: PremisesFilterDto) {
 		let query = this.premiseRepository
 			.createQueryBuilder("premise")
 			.leftJoin(
@@ -85,7 +111,7 @@ export class PremisesService {
 				"building.id = premise.building_id",
 			)
 			.leftJoin(
-				SectionsEntity,
+				SectionEntity,
 				"section",
 				"section.id = premise.section_id",
 			)
@@ -220,12 +246,8 @@ export class PremisesService {
 			}
 		}
 
-		const premiseCount = await query
-			.select("COUNT(premise.id)::int AS premise_count")
-			.getRawMany<Record<"premise_count", number>>();
-
 		const pageSize = (filter.page - 1) * filter.limit;
-		query = query
+		return query
 			.limit(filter.limit)
 			.offset(pageSize)
 			.groupBy("premise.id")
@@ -233,6 +255,20 @@ export class PremisesService {
 			.addGroupBy("section.id")
 			.addGroupBy("project.id")
 			.orderBy("project.id", "ASC");
+	}
+
+	async getPremisesFiltered(
+		filter: PremisesFilterDto,
+	): Promise<BaseDto<PremiseEntity[]>> {
+		let query = this.getPremiseQuery(filter).leftJoin(
+			SeasonEntity,
+			"season",
+			"season.id = premise.season_id",
+		);
+
+		const premiseCount = await query
+			.select("COUNT(premise.id)::int AS premise_count")
+			.getRawMany<Record<"premise_count", number>>();
 
 		query = query
 			.select([
@@ -251,7 +287,6 @@ export class PremisesService {
 				"premise.rooms as rooms",
 				"premise.photos as photos",
 				"premise.similiar_apartment_count as similiarApartmentCount",
-				"premise.end_date as end_date",
 				"premise.mortage_payment as mortagePayment",
 				"premise.section_id as section_id",
 				"premise.is_sold as is_sold",
@@ -277,6 +312,14 @@ export class PremisesService {
 				'building_id',	section.building_id
 			)) as section`,
 				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
+				'id',			season.id,
+				'created_at',	season.created_at,
+				'updated_at',	season.created_at,
+				'season_name',	season.season_name,
+				'year',			season.year,
+				'date',			season.date
+			)) as season`,
+				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
 				'id',					project.id,
 				'name',					project.name,
 				'detailed_description',	project.detailed_description,
@@ -293,7 +336,8 @@ export class PremisesService {
 			])
 			.addSelect(
 				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
-			);
+			)
+			.addGroupBy("season.id");
 
 		const premises = await query.getRawMany<PremiseEntity>();
 

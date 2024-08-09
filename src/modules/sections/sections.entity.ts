@@ -5,7 +5,7 @@ import { BuildingEntity } from "../buildings/buildings.entity";
 import { PremiseEntity } from "../premises/premises.entity";
 
 @Entity({ name: "sections" })
-export class SectionsEntity extends BaseEntity {
+export class SectionEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	name!: string;
 

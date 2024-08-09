@@ -7,7 +7,7 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadOpsEntity } from "../leads/lead_ops.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 
-import { ClientEntity, ClientTag } from "./client.entity";
+import { ClientEntity, FixingType } from "./client.entity";
 import { ClientDto } from "./dto/Client.dto";
 import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
 import { DeleteClientDto } from "./dto/DeleteClient.dto";
@@ -52,10 +52,10 @@ export class ClientService {
 			] as `c.${keyof ClientEntity}`[])
 			.limit(25)
 			.where(
-				"(c.agent_id = :client_agent_id OR c.status = :client_status)",
+				"(c.agent_id = :client_agent_id OR c.fixing_type = :client_status)",
 				{
 					client_agent_id: user.user_id,
-					client_status: ClientTag.WEAK_FIXING,
+					client_status: FixingType.WEAK_FIXING,
 				},
 			)
 			.andWhere(
@@ -93,7 +93,7 @@ export class ClientService {
 				"c.phone_number as phone_number",
 				"c.actived_date as actived_date",
 				"c.comment as comment",
-				"c.status as status",
+				"c.fixing_type as fixing_type",
 				"c.expiration_date as expiration_date",
 				"c.node as node",
 				"COALESCE(JSON_AGG(l) FILTER (WHERE l.id IS NOT NULL), '[]') as leads",
@@ -137,10 +137,10 @@ export class ClientService {
 				"c.id = l.client_id",
 			)
 			.where(
-				"(c.agent_id = :client_agent_id or c.status = :client_status)",
+				"(c.agent_id = :client_agent_id or c.fixing_type = :client_status)",
 				{
 					client_agent_id: user.user_id,
-					client_status: ClientTag.WEAK_FIXING,
+					client_status: FixingType.WEAK_FIXING,
 				},
 			)
 			.groupBy("c.id");
@@ -173,6 +173,14 @@ export class ClientService {
 				status: dto.status,
 			});
 		}
+		if (dto.fixing_type) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.fixing_type = :fixing_type",
+				{
+					fixing_type: dto.fixing_type,
+				},
+			);
+		}
 		if (dto.actived_from_date) {
 			queryBuilder = queryBuilder.andWhere(
 				"c.actived_date >= :actived_from_date",
@@ -200,7 +208,7 @@ export class ClientService {
 					agent_id: user.user_id,
 				},
 				{
-					status: ClientTag.WEAK_FIXING,
+					fixing_type: FixingType.WEAK_FIXING,
 				},
 			],
 		});

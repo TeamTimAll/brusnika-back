@@ -10,10 +10,10 @@ export class NotificationDto implements INotificationDto {
 	id!: number;
 
 	@ApiProperty()
-	createdAt!: Date;
+	created_at!: Date;
 
 	@ApiProperty()
-	updatedAt!: Date;
+	updated_at!: Date;
 
 	@ApiProperty()
 	title!: string;

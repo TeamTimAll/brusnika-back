@@ -1,6 +1,6 @@
 import { QueryBuilder } from "typeorm";
 
-import { SectionsEntity } from "../../modules/sections/sections.entity";
+import { SectionEntity } from "../../modules/sections/sections.entity";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
 
 function findBuildingId(buildings: BuildingEntity[], name: string) {
@@ -14,8 +14,8 @@ export async function up(query: QueryBuilder<object>) {
 		.getRawMany<BuildingEntity>();
 
 	const sections: Omit<
-		SectionsEntity,
-		"id" | "building" | "createdAt" | "updatedAt"
+		SectionEntity,
+		"id" | "building" | "created_at" | "updated_at"
 	>[] = [
 		{
 			name: "Секция 1",
@@ -57,9 +57,9 @@ export async function up(query: QueryBuilder<object>) {
 		},
 	];
 
-	await query.insert().into(SectionsEntity).values(sections).execute();
+	await query.insert().into(SectionEntity).values(sections).execute();
 }
 
 export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(SectionsEntity).execute();
+	await query.delete().from(SectionEntity).execute();
 }
