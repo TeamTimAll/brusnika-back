@@ -8,7 +8,7 @@ import {
 	IsString,
 } from "class-validator";
 
-import { ClientTag } from "../client.entity";
+import { FixingType } from "../client.entity";
 
 export class ClientDto {
 	@ApiProperty({ default: "client fullname" })
@@ -33,10 +33,10 @@ export class ClientDto {
 	@IsOptional()
 	comment?: string;
 
-	@ApiProperty({ default: ClientTag.LEAD_VERIFICATION })
-	@IsEnum(ClientTag)
+	@ApiProperty({ default: FixingType.LEAD_VERIFICATION })
+	@IsEnum(FixingType)
 	@IsOptional()
-	status?: ClientTag;
+	status?: FixingType;
 
 	@ApiProperty({ default: new Date() })
 	@IsDateString()
