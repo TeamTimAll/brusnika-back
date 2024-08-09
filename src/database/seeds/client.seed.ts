@@ -19,8 +19,8 @@ export async function up(query: QueryBuilder<object>) {
 		| "agent"
 		| "bookings"
 		| "visits"
-		| "createdAt"
-		| "updatedAt"
+		| "created_at"
+		| "updated_at"
 	>[] = [
 		{
 			fullname: "Ivan Petrovich Ivanov",

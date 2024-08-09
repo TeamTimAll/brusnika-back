@@ -19,8 +19,8 @@ export async function up(query: QueryBuilder<object>) {
 		| "project"
 		| "total_apartment"
 		| "total_vacant_apartment"
-		| "createdAt"
-		| "updatedAt"
+		| "created_at"
+		| "updated_at"
 	>[] = [
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
