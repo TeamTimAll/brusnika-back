@@ -7,7 +7,7 @@ export class ContactDto
 	implements
 		Omit<
 			ContactEntity,
-			"id" | "event" | "event_id" | "createdAt" | "updatedAt"
+			"id" | "event" | "event_id" | "created_at" | "updated_at"
 		>
 {
 	@ApiProperty()

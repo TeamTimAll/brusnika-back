@@ -11,8 +11,8 @@ export async function up(query: QueryBuilder<object>) {
 		| "agent"
 		| "project"
 		| "premise"
-		| "createdAt"
-		| "updatedAt"
+		| "created_at"
+		| "updated_at"
 	>[] = [
 		{
 			client_id: 1,
