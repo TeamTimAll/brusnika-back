@@ -15,7 +15,7 @@ export async function up(query: QueryBuilder<object>) {
 		.getRawMany<CityEntity>();
 	const users: Omit<
 		UserEntity,
-		"id" | "city" | "agency" | "createdAt" | "updatedAt"
+		"id" | "city" | "agency" | "created_at" | "updated_at"
 	>[] = [
 		{
 			firstName: "Jon",
