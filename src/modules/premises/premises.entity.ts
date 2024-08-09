@@ -5,6 +5,8 @@ import { BookingsEntity } from "../bookings/bookings.entity";
 import { BuildingEntity } from "../buildings/buildings.entity";
 import { SectionEntity } from "../sections/sections.entity";
 
+import { SeasonEntity } from "./season.entity";
+
 export enum PremisesType {
 	APARTMENT = "apartment",
 	STOREROOM = "storeroom",
@@ -76,8 +78,15 @@ export class PremiseEntity extends BaseEntity {
 	@Column({ nullable: true })
 	similiarApartmentCount!: number;
 
-	@Column({ nullable: true, type: "date" })
-	end_date!: Date;
+	@ManyToOne(() => SeasonEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	@JoinColumn({ name: "season_id" })
+	season!: SeasonEntity;
+
+	@Column({ type: "integer", nullable: true })
+	season_id?: number;
 
 	@Column({ nullable: true })
 	mortagePayment!: number;

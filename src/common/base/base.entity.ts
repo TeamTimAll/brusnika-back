@@ -9,10 +9,10 @@ export abstract class BaseEntity {
 	id!: number;
 
 	@CreateDateColumn({ type: "timestamptz" })
-	createdAt!: Date;
+	created_at!: Date;
 
 	@UpdateDateColumn({ type: "timestamptz" })
-	updatedAt!: Date;
+	updated_at!: Date;
 
 	// @ManyToOne(() => UserEntity)
 	// create_by!: UserEntity;

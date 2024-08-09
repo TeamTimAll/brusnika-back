@@ -9,10 +9,10 @@ export class CityDto implements ICityDto {
 	id!: number;
 
 	@ApiProperty()
-	createdAt!: Date;
+	created_at!: Date;
 
 	@ApiProperty()
-	updatedAt!: Date;
+	updated_at!: Date;
 
 	@ApiProperty()
 	name!: string;

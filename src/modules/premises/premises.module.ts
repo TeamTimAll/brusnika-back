@@ -7,10 +7,11 @@ import { SectionsModule } from "../sections/sections.module";
 import { PremisesController } from "./premises.controller";
 import { PremiseEntity } from "./premises.entity";
 import { PremisesService } from "./premises.service";
+import { SeasonEntity } from "./season.entity";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([PremiseEntity]),
+		TypeOrmModule.forFeature([PremiseEntity, SeasonEntity]),
 		BuildingsModule,
 		SectionsModule,
 	],

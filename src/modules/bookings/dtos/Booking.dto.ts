@@ -34,10 +34,10 @@ export class BookingDto implements IBookingDto {
 	id!: number;
 
 	@ApiProperty()
-	createdAt!: Date;
+	created_at!: Date;
 
 	@ApiProperty()
-	updatedAt!: Date;
+	updated_at!: Date;
 
 	@ApiProperty()
 	premise_id?: number;
