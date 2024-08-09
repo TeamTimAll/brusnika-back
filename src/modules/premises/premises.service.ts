@@ -170,9 +170,9 @@ export class PremisesService {
 				});
 			}
 
-			if (filter.building_id) {
-				query = query.andWhere("premise.building_id = :building_id", {
-					building_id: filter.building_id,
+			if (filter.season_id) {
+				query = query.andWhere("premise.season_id = :season_id", {
+					season_id: filter.season_id,
 				});
 			}
 
