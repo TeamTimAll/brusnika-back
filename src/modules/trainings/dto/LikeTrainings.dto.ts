@@ -12,7 +12,7 @@ export class LikeTrainingsDto {
 		description: "Trainings id",
 	})
 	@IsNotEmpty()
-	id!: number;
+	training_id!: number;
 }
 
 export class LikeTrainingsMetaDataDto extends BaseDto<LikeTrainingsDto> {
