@@ -1,0 +1,23 @@
+import { Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
+
+import { BaseEntity } from "../../../common/base/base.entity";
+import { UserEntity } from "../../user/user.entity";
+import { TrainingEntity } from "../trainings.entity";
+
+@Entity("trainings_views")
+@Unique(["user_id", "trainings_id"])
+export class TrainingViewEntity extends BaseEntity {
+	@Column({ type: "integer", nullable: false })
+	user_id!: number;
+
+	@ManyToOne(() => UserEntity)
+	@JoinColumn({ name: "user_id" })
+	user!: UserEntity;
+
+	@Column({ type: "integer", nullable: false })
+	trainings_id!: number;
+
+	@ManyToOne(() => TrainingEntity)
+	@JoinColumn({ name: "trainings_id" })
+	trainings!: TrainingEntity;
+}
