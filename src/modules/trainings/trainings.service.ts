@@ -1,59 +1,59 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { LikedResponseDto } from "common/dtos/likeResponse.dto";
+
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { LikedResponse } from "../events/events.service";
 
 import { CreateTrainingsDto } from "./dto/CreateTrainings.dto";
 import { LikeTrainingsDto } from "./dto/LikeTrainings.dto";
 import { UpdateTrainingsDto } from "./dto/UpdateTrainings.dto";
+import { CreateTrainingCategoryDto as CreateTrainingCategoryDto } from "./dto/categories.dto";
+import { TrainingCategoryEntity } from "./entities/categories.entity";
+import { TrainingLikeEntity } from "./entities/likes.entity";
+import { TrainingViewEntity } from "./entities/views.entity";
+import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
 import { TrainingsNotFoundError } from "./errors/TrainingsNotFound.error";
-import { TrainingsCategoriesService } from "./modules/categories/categories.service";
-import { CreateTrainingsCategoriesDto } from "./modules/categories/dto/categories.dto";
-import { TrainingsLikesService } from "./modules/likes/likes.service";
-import { TrainingsViewsService } from "./modules/views/views.service";
-import { TrainingsEntity } from "./trainings.entity";
+import { TrainingEntity } from "./trainings.entity";
 
 @Injectable()
 export class TrainingsService {
 	constructor(
-		@InjectRepository(TrainingsEntity)
-		private trainingsRepository: Repository<TrainingsEntity>,
+		@InjectRepository(TrainingEntity)
+		private trainingsRepository: Repository<TrainingEntity>,
 	) {}
 
-	@Inject()
-	private trainingsLikesService!: TrainingsLikesService;
-	@Inject()
-	private trainingsCategoriesService!: TrainingsCategoriesService;
-	@Inject()
-	private trainingsViewsService!: TrainingsViewsService;
+	@InjectRepository(TrainingLikeEntity)
+	private trainingLikeRepository!: Repository<TrainingLikeEntity>;
+	@InjectRepository(TrainingCategoryEntity)
+	private trainingCategoryRepository!: Repository<TrainingCategoryEntity>;
+	@InjectRepository(TrainingViewEntity)
+	private trainingViewRepository!: Repository<TrainingViewEntity>;
 
-	async likeTrainings(
+	async toggleLike(
 		body: LikeTrainingsDto,
 		user: ICurrentUser,
-	): Promise<LikedResponse> {
+	): Promise<LikedResponseDto> {
 		const trainings = await this.trainingsRepository.findOne({
 			where: {
-				id: body.id,
+				id: body.training_id,
 			},
 		});
 		if (trainings && trainings.is_like_enabled) {
-			const isLiked = await this.trainingsLikesService.repository.findOne(
-				{
-					where: {
-						trainings_id: trainings.id,
-						user_id: user.user_id,
-					},
+			const isLiked = await this.trainingLikeRepository.findOne({
+				where: {
+					trainings_id: trainings.id,
+					user_id: user.user_id,
 				},
-			);
+			});
 
 			if (isLiked) {
-				await this.trainingsLikesService.repository.delete(isLiked.id);
+				await this.trainingLikeRepository.delete(isLiked.id);
 				return { is_liked: false };
 			}
 
-			await this.trainingsLikesService.repository.save({
+			await this.trainingLikeRepository.save({
 				trainings_id: trainings.id,
 				user_id: user.user_id,
 			});
@@ -64,19 +64,34 @@ export class TrainingsService {
 	}
 
 	async create(dto: CreateTrainingsDto, user: ICurrentUser) {
-		await this.trainingsCategoriesService.readOne(dto.primary_category_id);
-		await this.trainingsCategoriesService.readOne(dto.second_category_id);
+		const primaryCategory = await this.trainingCategoryRepository.findOne({
+			where: { id: dto.primary_category_id },
+		});
+		if (!primaryCategory) {
+			throw new TrainingCategoryNotFoundError(
+				`primary_category_id: ${dto.primary_category_id}`,
+			);
+		}
+		const secondCategory = await this.trainingCategoryRepository.findOne({
+			where: { id: dto.second_category_id },
+		});
+		if (!secondCategory) {
+			throw new TrainingCategoryNotFoundError(
+				`second_category_id: ${dto.second_category_id}`,
+			);
+		}
 		const training = this.trainingsRepository.create(dto);
 		training.user_id = user.user_id;
 		return await this.trainingsRepository.save(training);
 	}
 
-	async createTrainingsCategory(dto: CreateTrainingsCategoriesDto) {
-		return this.trainingsCategoriesService.create(dto);
+	createCategory(dto: CreateTrainingCategoryDto) {
+		const category = this.trainingCategoryRepository.create(dto);
+		return this.trainingCategoryRepository.save(category);
 	}
 
-	async getCategories() {
-		return this.trainingsCategoriesService.readAll();
+	getCategories() {
+		return this.trainingCategoryRepository.find();
 	}
 
 	async readOne(id: number, user: ICurrentUser): Promise<unknown> {
@@ -102,7 +117,7 @@ export class TrainingsService {
 			throw new TrainingsNotFoundError(`'${id}' trainings not found`);
 		}
 
-		const isViewed = await this.trainingsViewsService.repository.findOne({
+		const isViewed = await this.trainingViewRepository.findOne({
 			where: {
 				trainings_id: id,
 				user_id: user.user_id,
@@ -110,7 +125,7 @@ export class TrainingsService {
 		});
 
 		if (!isViewed) {
-			await this.trainingsViewsService.repository.save({
+			await this.trainingViewRepository.save({
 				trainings_id: id,
 				user_id: user.user_id,
 			});

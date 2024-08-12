@@ -36,7 +36,7 @@ export class ClientDto {
 	@ApiProperty({ default: FixingType.LEAD_VERIFICATION })
 	@IsEnum(FixingType)
 	@IsOptional()
-	status?: FixingType;
+	fixing_type?: FixingType;
 
 	@ApiProperty({ default: new Date() })
 	@IsDateString()
