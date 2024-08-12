@@ -13,8 +13,9 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { LikedResponseMetaDataDto } from "../../common/dtos/likeResponse.dto";
+import { RoleType } from "../../constants";
 import { ApiDtoResponse, ApiErrorResponse, User } from "../../decorators";
-import { RolesGuard } from "../../guards/roles.guard";
+import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
@@ -45,6 +46,7 @@ export class TrainingController {
 		return this.service.readAll();
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post()
 	@ApiOperation({
 		summary: "create trainings",
@@ -85,6 +87,7 @@ export class TrainingController {
 		return this.service.toggleLike(dto.data, user);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Put(":id")
 	@ApiOperation({
 		summary: "update trainings",
@@ -107,6 +110,7 @@ export class TrainingController {
 		return await this.service.getCategories();
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post("categories")
 	@ApiOperation({ summary: "Create trainings categories" })
 	async createCategory(@Body() dto: CreateTrainingCategoryMetaDataDto) {
