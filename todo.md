@@ -261,17 +261,17 @@
 
 ### HEAD_OF_AGENCY (Руководитель агентства)
 - [x] User'larni listni ko'ra oladi. User id bilan ham oladi.
-- [ ] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT'ga o'tkaza oladi.
+- [x] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT'ga o'tkaza oladi.
 
 ### AFFILIATE_MANAGER (Партнерский менеджер)
-- [ ] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT va HEAD_OF_AGENCY'ga o'tkaza oladi. HEAD_OF_AGENCY'dan AGENT role'iga ham o'tkaza oladi.
-- [ ] User'larni listni ko'ra oladi. User id bilan ham oladi.
-- [ ] User role'larni o'zgartira oladi.
-- [ ] Premise reklamasini generatsiya qila oladi.
+- [x] NEW_MEMBER role'idagi user'larni agent role'iga o'tkaza oladi. Agent'larni block ham qila oladi. NEW_MEMBER'dan AGENT va HEAD_OF_AGENCY'ga o'tkaza oladi. HEAD_OF_AGENCY'dan AGENT role'iga ham o'tkaza oladi.
+- [x] User'larni listni ko'ra oladi. User id bilan ham oladi.
+- [x] User role'larni o'zgartira oladi.
+- [x] Premise reklamasini generatsiya qila oladi.
 - [x] Training create qila oladi.
 - [x] Training update qila oladi.
-- [ ] News create qila oladi.
-- [ ] Event create qila oladi.
+- [x] News create qila oladi.
+- [x] Event create qila oladi.
 - [ ] Contact'larni boshqaruvini qila oladi.
 - [ ] Project'larni boshqaruvini qila oladi.
 
@@ -283,7 +283,6 @@
 - [ ] Kalendar oyi davomida mumkin bo'lgan bron qilish sonini belgilash.
 - [ ] Lead'larni cancel qilinganligi sabablarini ko'ra olishi kerak.
 - [ ] User'ni role'ini o'zgartira oladi. ADMIN, AFFILIATE_MANAGER. Hamma user'ni block yoki unblock qila oladi.
-
 
 ### Kounter server
 Brusnika API'dan olish kerak bo'lgan ma'lumotlar:
