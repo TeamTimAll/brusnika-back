@@ -7,16 +7,17 @@ import { LikedResponseDto } from "common/dtos/likeResponse.dto";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 
 import { CreateTrainingsDto } from "./dto/CreateTrainings.dto";
+import { FilterTrainingDto } from "./dto/FilterTraining.dto";
 import { LikeTrainingsDto } from "./dto/LikeTrainings.dto";
+import { UpdateTrainingCategoryDto } from "./dto/UpdateTrainingCategory.dto";
 import { UpdateTrainingsDto } from "./dto/UpdateTrainings.dto";
-import { CreateTrainingCategoryDto as CreateTrainingCategoryDto } from "./dto/categories.dto";
+import { CreateTrainingCategoryDto } from "./dto/categories.dto";
 import { TrainingCategoryEntity } from "./entities/categories.entity";
 import { TrainingLikeEntity } from "./entities/likes.entity";
 import { TrainingViewEntity } from "./entities/views.entity";
 import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
 import { TrainingNotFoundError } from "./errors/TrainingsNotFound.error";
 import { TrainingEntity } from "./trainings.entity";
-import { UpdateTrainingCategoryDto } from "./dto/UpdateTrainingCategory.dto";
 
 @Injectable()
 export class TrainingsService {
@@ -135,8 +136,8 @@ export class TrainingsService {
 		return findOne;
 	}
 
-	async readAll() {
-		return this.trainingRepository
+	async readAll(dto: FilterTrainingDto) {
+		let trainingQuery = this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
 			.leftJoinAndSelect(
@@ -144,8 +145,19 @@ export class TrainingsService {
 				"secondary_category",
 			)
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
-			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
-			.getMany();
+			.loadRelationCountAndMap(
+				"trainings.views_count",
+				"trainings.views",
+			);
+		if (dto.category_id) {
+			trainingQuery = trainingQuery.where(
+				"trainings.primary_category_id = :category_id OR training.secondary_category_id = :category_id",
+				{
+					category_id: dto.category_id,
+				},
+			);
+		}
+		return trainingQuery.getMany();
 	}
 
 	async update(id: number, dto: UpdateTrainingsDto) {
