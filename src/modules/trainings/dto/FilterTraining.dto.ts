@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsNotEmpty } from "class-validator";
+import { IsInt, IsOptional } from "class-validator";
 
 export class FilterTrainingDto {
 	@ApiProperty({ required: false })
 	@Type(() => Number)
 	@IsInt()
-	@IsNotEmpty()
+	@IsOptional()
 	category_id?: number;
 }
