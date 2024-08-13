@@ -7,6 +7,7 @@ import {
 	Param,
 	Post,
 	Put,
+	Query,
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
@@ -31,6 +32,7 @@ import {
 } from "./dto/trainings.dto";
 import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
 import { TrainingsService as TrainingService } from "./trainings.service";
+import { FilterTrainingDto } from "./dto/FilterTraining.dto";
 
 @ApiTags("Trainings")
 @Controller("trainings")
@@ -43,8 +45,8 @@ export class TrainingController {
 	@Get()
 	@ApiOperation({ summary: "Get all trainings" })
 	@ApiDtoResponse(TrainingArrayMetaDataDto, HttpStatus.OK)
-	async readAll() {
-		return this.service.readAll();
+	async readAll(@Query() dto: FilterTrainingDto) {
+		return this.service.readAll(dto);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
@@ -53,15 +55,15 @@ export class TrainingController {
 		summary: "create trainings",
 		description: `### Training yasash
 		\n **data** ma'lumotlari:
-		\n - **title** - [required] sarlavhasi
-		\n - **content** - [required] mazmuni
-		\n - **cover_image** - [required] qoplama rasmi
-		\n - **primary_category_id** - [optional] birinchi kategoriyasi
-		\n - **second_category_id** - [optional] ikkinchi kategoriyasi
-		\n - **is_like_enabled** - [required] like qo'yib bo'ladimi yoki yo'qmi. True bo'lsa qilish mumkin va False aksi.
-		\n - **is_copy_enabled** - [required] nusxa ko'chira oladimi yoki yo'qmi.
-		\n - **is_extra_like_enabled** - [optional] ---
-		\n - **extra_like_icon** - [optional] ---`,
+		\n - **title** - [required]
+		\n - **content** - [required]
+		\n - **cover_image** - [required]
+		\n - **primary_category_id** - [optional]
+		\n - **second_category_id** - [optional]
+		\n - **is_like_enabled** - [required]
+		\n - **is_copy_enabled** - [required]
+		\n - **is_extra_like_enabled** - [optional]
+		\n - **extra_like_icon** - [optional]`,
 	})
 	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
 	@ApiErrorResponse(
@@ -95,15 +97,15 @@ export class TrainingController {
 		summary: "update trainings",
 		description: `### Training yangilash
 		\n **data** ma'lumotlari:
-		\n - **title** - [required] sarlavhasi
-		\n - **content** - [required] mazmuni
-		\n - **cover_image** - [required] qoplama rasmi
-		\n - **primary_category_id** - [optional] birinchi kategoriyasi
-		\n - **second_category_id** - [optional] ikkinchi kategoriyasi
-		\n - **is_like_enabled** - [required] like qo'yib bo'ladimi yoki yo'qmi. True bo'lsa qilish mumkin va False aksi.
-		\n - **is_copy_enabled** - [required] nusxa ko'chira oladimi yoki yo'qmi.
-		\n - **is_extra_like_enabled** - [optional] ---
-		\n - **extra_like_icon** - [optional] ---`,
+		\n - **title** - [required]
+		\n - **content** - [required]
+		\n - **cover_image** - [required]
+		\n - **primary_category_id** - [optional]
+		\n - **second_category_id** - [optional]
+		\n - **is_like_enabled** - [required]
+		\n - **is_copy_enabled** - [required]
+		\n - **is_extra_like_enabled** - [optional]
+		\n - **extra_like_icon** - [optional]`,
 	})
 	async update(
 		@Param("id") id: number,
