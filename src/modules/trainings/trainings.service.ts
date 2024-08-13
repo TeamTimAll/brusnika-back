@@ -14,14 +14,15 @@ import { TrainingCategoryEntity } from "./entities/categories.entity";
 import { TrainingLikeEntity } from "./entities/likes.entity";
 import { TrainingViewEntity } from "./entities/views.entity";
 import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
-import { TrainingsNotFoundError } from "./errors/TrainingsNotFound.error";
+import { TrainingNotFoundError } from "./errors/TrainingsNotFound.error";
 import { TrainingEntity } from "./trainings.entity";
+import { UpdateTrainingCategoryDto } from "./dto/UpdateTrainingCategory.dto";
 
 @Injectable()
 export class TrainingsService {
 	constructor(
 		@InjectRepository(TrainingEntity)
-		private trainingsRepository: Repository<TrainingEntity>,
+		private trainingRepository: Repository<TrainingEntity>,
 	) {}
 
 	@InjectRepository(TrainingLikeEntity)
@@ -35,7 +36,7 @@ export class TrainingsService {
 		body: LikeTrainingsDto,
 		user: ICurrentUser,
 	): Promise<LikedResponseDto> {
-		const trainings = await this.trainingsRepository.findOne({
+		const trainings = await this.trainingRepository.findOne({
 			where: {
 				id: body.training_id,
 			},
@@ -80,9 +81,9 @@ export class TrainingsService {
 				`second_category_id: ${dto.second_category_id}`,
 			);
 		}
-		const training = this.trainingsRepository.create(dto);
+		const training = this.trainingRepository.create(dto);
 		training.user_id = user.user_id;
-		return await this.trainingsRepository.save(training);
+		return await this.trainingRepository.save(training);
 	}
 
 	createCategory(dto: CreateTrainingCategoryDto) {
@@ -95,7 +96,7 @@ export class TrainingsService {
 	}
 
 	async readOne(id: number, user: ICurrentUser): Promise<unknown> {
-		const findOne = await this.trainingsRepository
+		const findOne = await this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
 			.leftJoinAndSelect(
@@ -114,7 +115,7 @@ export class TrainingsService {
 			.getOne();
 
 		if (!findOne) {
-			throw new TrainingsNotFoundError(`'${id}' trainings not found`);
+			throw new TrainingNotFoundError(`'${id}' trainings not found`);
 		}
 
 		const isViewed = await this.trainingViewRepository.findOne({
@@ -135,7 +136,7 @@ export class TrainingsService {
 	}
 
 	async readAll() {
-		return this.trainingsRepository
+		return this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
 			.leftJoinAndSelect(
@@ -148,18 +149,54 @@ export class TrainingsService {
 	}
 
 	async update(id: number, dto: UpdateTrainingsDto) {
-		const foundTraining = await this.trainingsRepository.findOne({
+		const foundTraining = await this.trainingRepository.findOne({
 			where: {
 				id: id,
 			},
 		});
 		if (!foundTraining) {
-			throw new TrainingsNotFoundError(`id: ${id}`);
+			throw new TrainingNotFoundError(`id: ${id}`);
 		}
-		const mergedTraining = this.trainingsRepository.merge(
+		const mergedTraining = this.trainingRepository.merge(
 			foundTraining,
 			dto,
 		);
-		return await this.trainingsRepository.save(mergedTraining);
+		return await this.trainingRepository.save(mergedTraining);
+	}
+
+	async delete(id: number): Promise<TrainingEntity> {
+		const foundTraining = await this.trainingRepository.findOne({
+			where: { id: id },
+		});
+		if (!foundTraining) {
+			throw new TrainingNotFoundError(`id: ${id}`);
+		}
+		await this.trainingRepository.delete(id);
+		return foundTraining;
+	}
+
+	async updateCategory(id: number, dto: UpdateTrainingCategoryDto) {
+		const foundCategory = await this.trainingCategoryRepository.findOne({
+			where: { id: id },
+		});
+		if (!foundCategory) {
+			throw new TrainingCategoryNotFoundError(`id: ${id}`);
+		}
+		const mergedCategory = this.trainingCategoryRepository.merge(
+			foundCategory,
+			dto,
+		);
+		return await this.trainingCategoryRepository.save(mergedCategory);
+	}
+
+	async deleteCategory(id: number) {
+		const foundCategory = await this.trainingCategoryRepository.findOne({
+			where: { id: id },
+		});
+		if (!foundCategory) {
+			throw new TrainingCategoryNotFoundError(`id: ${id}`);
+		}
+		await this.trainingCategoryRepository.delete(foundCategory.id);
+		return foundCategory;
 	}
 }

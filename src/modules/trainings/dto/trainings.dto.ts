@@ -34,6 +34,9 @@ export class TrainingDto implements ITrainingDto {
 	is_extra_like_enabled!: boolean;
 
 	@ApiProperty()
+	is_copy_enabled!: boolean;
+
+	@ApiProperty()
 	extra_like_icon!: string;
 
 	@ApiProperty()
@@ -59,6 +62,7 @@ export class TrainingMetaDataDto extends BaseDto<TrainingDto> implements Dto {
 	\n - **content** - mazmuni
 	\n - **cover_image** - qoplama rasmi
 	\n - **is_like_enabled** - like qo'yib bo'ladimi yoki yo'qmi. True bo'lsa qilish mumkin va False aksi.
+	\n - **is_copy_enabled** - nusxa ko'chira oladimi yoki yo'qmi.
 	\n - **is_extra_like_enabled** - ---
 	\n - **extra_like_icon** - ---
 	\n - **published_at** - chop etilgan vaqti

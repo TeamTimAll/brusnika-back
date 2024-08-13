@@ -66,6 +66,13 @@ export class CreateTrainingsDto {
 	})
 	is_like_enabled!: boolean;
 
+	@ApiProperty({
+		description: "Is copy enabled",
+		required: true,
+	})
+	@IsBoolean()
+	is_copy_enabled!: boolean;
+
 	@IsBoolean()
 	@IsOptional()
 	@ApiProperty({
@@ -83,6 +90,7 @@ export class CreateTrainingsDto {
 	})
 	extra_like_icon!: string;
 
+	@ApiProperty()
 	@IsInt()
 	@Type(() => Number)
 	@IsOptional()
