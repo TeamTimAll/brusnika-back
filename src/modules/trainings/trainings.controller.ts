@@ -1,12 +1,12 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	HttpStatus,
 	Param,
 	Post,
 	Put,
-	Query,
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
@@ -22,6 +22,7 @@ import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateTrainingsMetaDataDto } from "./dto/CreateTrainings.dto";
 import { LikeTrainingsMetaDataDto } from "./dto/LikeTrainings.dto";
+import { UpdateTrainingCategoryMetaDataDto } from "./dto/UpdateTrainingCategory.dto";
 import { UpdateTrainingsMetaDataDto } from "./dto/UpdateTrainings.dto";
 import { CreateTrainingCategoryMetaDataDto } from "./dto/categories.dto";
 import {
@@ -58,6 +59,7 @@ export class TrainingController {
 		\n - **primary_category_id** - [optional] birinchi kategoriyasi
 		\n - **second_category_id** - [optional] ikkinchi kategoriyasi
 		\n - **is_like_enabled** - [required] like qo'yib bo'ladimi yoki yo'qmi. True bo'lsa qilish mumkin va False aksi.
+		\n - **is_copy_enabled** - [required] nusxa ko'chira oladimi yoki yo'qmi.
 		\n - **is_extra_like_enabled** - [optional] ---
 		\n - **extra_like_icon** - [optional] ---`,
 	})
@@ -93,9 +95,15 @@ export class TrainingController {
 		summary: "update trainings",
 		description: `### Training yangilash
 		\n **data** ma'lumotlari:
-		\n - **title** - [optional] sarlavhasi
-		\n - **content** - [optional] mazmuni
-		\n - **cover_image** - [optional] qoplama rasmi`,
+		\n - **title** - [required] sarlavhasi
+		\n - **content** - [required] mazmuni
+		\n - **cover_image** - [required] qoplama rasmi
+		\n - **primary_category_id** - [optional] birinchi kategoriyasi
+		\n - **second_category_id** - [optional] ikkinchi kategoriyasi
+		\n - **is_like_enabled** - [required] like qo'yib bo'ladimi yoki yo'qmi. True bo'lsa qilish mumkin va False aksi.
+		\n - **is_copy_enabled** - [required] nusxa ko'chira oladimi yoki yo'qmi.
+		\n - **is_extra_like_enabled** - [optional] ---
+		\n - **extra_like_icon** - [optional] ---`,
 	})
 	async update(
 		@Param("id") id: number,
@@ -104,10 +112,53 @@ export class TrainingController {
 		return this.service.update(id, dto.data);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Delete(":id")
+	@ApiOperation({
+		summary: "Delete trainings",
+		description: `### Training yangilash
+		\n **param** ma'lumotlari:
+		\n - **id** - [required] training category id'si`,
+	})
+	async delete(@Param("id") id: number) {
+		return this.service.delete(id);
+	}
+
 	@Get("categories")
 	@ApiOperation({ summary: "Get all trainings categories" })
 	async getCategories() {
 		return await this.service.getCategories();
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Put("categories/:id")
+	@ApiOperation({
+		summary: "Update trainings categories",
+		description: `### Training categoriyasini yangilash
+		\n **param** ma'lumotlari:
+		\n - **id** - [required] training category id'si
+		\n **data** ma'lumotlari:
+		\n - **name** - [required] categoriya nomi`,
+	})
+	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
+	updateCategory(
+		@Param("id") id: number,
+		@Body() dto: UpdateTrainingCategoryMetaDataDto,
+	) {
+		return this.service.updateCategory(id, dto.data);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Delete("categories/:id")
+	@ApiOperation({
+		summary: "Delete trainings categories",
+		description: `### Training categoriyasini o'chirish
+		\n **param** ma'lumotlari:
+		\n - **id** - [required] training category id'si`,
+	})
+	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
+	deleteCategory(@Param("id") id: number) {
+		return this.service.deleteCategory(id);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
@@ -120,7 +171,7 @@ export class TrainingController {
 	@Get(":id")
 	@ApiOperation({ summary: "Get trainings by id" })
 	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
-	async readOne(@Query("id") id: number, @User() user: ICurrentUser) {
+	async readOne(@Param("id") id: number, @User() user: ICurrentUser) {
 		return this.service.readOne(id, user);
 	}
 }

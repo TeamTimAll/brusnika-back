@@ -268,7 +268,8 @@
 - [ ] User'larni listni ko'ra oladi. User id bilan ham oladi.
 - [ ] User role'larni o'zgartira oladi.
 - [ ] Premise reklamasini generatsiya qila oladi.
-- [ ] Training create qila oladi.
+- [x] Training create qila oladi.
+- [x] Training update qila oladi.
 - [ ] News create qila oladi.
 - [ ] Event create qila oladi.
 - [ ] Contact'larni boshqaruvini qila oladi.

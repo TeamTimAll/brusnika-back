@@ -37,16 +37,25 @@ export class TrainingEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	primary_category_id!: number;
 
-	@ManyToOne(() => TrainingCategoryEntity)
+	@ManyToOne(() => TrainingCategoryEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: TrainingCategoryEntity;
 
 	@Column({ type: "integer", nullable: true })
 	second_category_id?: number;
 
-	@ManyToOne(() => TrainingCategoryEntity)
+	@ManyToOne(() => TrainingCategoryEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	@JoinColumn({ name: "second_category_id" })
 	secondary_category!: TrainingCategoryEntity;
+
+	@Column({ type: "boolean", default: false })
+	is_copy_enabled!: boolean;
 
 	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "user_id" })
