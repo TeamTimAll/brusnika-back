@@ -151,7 +151,7 @@ export class TrainingsService {
 			);
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.where(
-				"trainings.primary_category_id = :category_id OR training.secondary_category_id = :category_id",
+				"trainings.primary_category_id = :category_id OR trainings.second_category_id = :category_id",
 				{
 					category_id: dto.category_id,
 				},

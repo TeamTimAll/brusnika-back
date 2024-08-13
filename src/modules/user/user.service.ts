@@ -19,6 +19,7 @@ import { UserCreateDto } from "./dtos/UserCreate.dto";
 import { UserFilterDto } from "./dtos/UserFilter.dto";
 import { UserResponseDto } from "./dtos/UserResponse.dto";
 import { UserUpdateDto } from "./dtos/UserUpdate.dto";
+import { UserUpdateRoleDto } from "./dtos/UserUpdateRole.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
@@ -44,7 +45,14 @@ export class UserService {
 		return elapsedTime >= oneMinute;
 	}
 
-	readAll(dto: UserFilterDto) {
+	async readAll(dto: UserFilterDto, user: ICurrentUser) {
+		if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const foundUser = await this.userRepository.findOne({
+				select: { agency_id: true },
+				where: { id: user.user_id },
+			});
+			dto.agency_id = foundUser?.agency_id;
+		}
 		return this.userRepository.find({
 			select: [
 				"id",
@@ -180,6 +188,29 @@ export class UserService {
 		const savedUser: UserEntity = await this.userRepository.save(user);
 
 		return savedUser;
+	}
+
+	async updateUser(dto: UserUpdateRoleDto, user: ICurrentUser) {
+		const foundUser = await this.readOne(dto.id);
+		if (user.role !== RoleType.AFFILIATE_MANAGER) {
+			// This permision checking is only for not AFFILIATE_MANAGER users
+			if (dto.role !== RoleType.AGENT) {
+				throw new PermissionDeniedError(
+					`role: ${user.role}, givin role is not AGENT`,
+				);
+			}
+			if (foundUser.role !== RoleType.NEW_MEMBER) {
+				throw new PermissionDeniedError(
+					`role: ${user.role}, found user role is not NEW_MEMBER`,
+				);
+			}
+		}
+		await this.userRepository.update(dto.id, {
+			role: dto.role,
+			status: !dto.is_blocked,
+		});
+		user.role = dto.role;
+		return foundUser;
 	}
 
 	/** Do not use this function directly. It containes permision handler for agent role user. */

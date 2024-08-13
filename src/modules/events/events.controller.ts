@@ -50,10 +50,10 @@ import { EventsService } from "./events.service";
 export class EventsController {
 	constructor(private eventsService: EventsService) {}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	@ApiCreatedResponse({ type: EventsDto })
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	async createEvents(
 		@Body() dto: CreateEventsMetaDataDto,
 		@User() user: ICurrentUser,
@@ -98,16 +98,16 @@ export class EventsController {
 		return await this.eventsService.toggleLike(dto.data, user);
 	}
 
-	@Post("toggle-draft")
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Post("toggle-draft")
 	@ApiOperation({ summary: "toggle draft events" })
 	async toggleDraft(@Body() dto: ToggleEventMetaDataDto) {
 		return await this.eventsService.toggleDraft(dto.data);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post("invite-users")
 	@ApiOperation({ summary: "invite users" })
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	async inviteUsers(@Body() dto: InviteUsersMetaDataDto) {
 		return await this.eventsService.inviteUsers(dto.data);
 	}
@@ -121,9 +121,9 @@ export class EventsController {
 		return await this.eventsService.joinToEvent(dto.data.id, user);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post("delete-user-invitation")
 	@ApiOperation({ summary: "delete user invitation" })
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	async deleteUserInvitation(@Body() dto: DeleteUserInvitationMetaDataDto) {
 		return await this.eventsService.deleteUserInvitation(dto.data.id);
 	}
@@ -157,10 +157,10 @@ export class EventsController {
 		return await this.eventsService.update(id, dto.data);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	async deleteEvents(@Param("id") id: number) {
 		return await this.eventsService.remove(id);
 	}

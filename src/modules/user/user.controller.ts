@@ -31,6 +31,7 @@ import { UserResponseMetaDataDto } from "./dtos/UserResponse.dto";
 import { UserUpdateMetaDataDto } from "./dtos/UserUpdate.dto";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
+import { UserUpdateRoleMetaDataDto } from "./dtos/UserUpdateRole.dto";
 
 @ApiTags("users")
 @Controller("users")
@@ -54,8 +55,8 @@ export class UserController {
 		RoleType.AFFILIATE_MANAGER,
 		RoleType.HEAD_OF_AGENCY,
 	])
-	async readAll(@Query() dto: UserFilterDto, @User() _user: ICurrentUser) {
-		return await this.userService.readAll(dto);
+	async readAll(@Query() dto: UserFilterDto, @User() user: ICurrentUser) {
+		return await this.userService.readAll(dto, user);
 	}
 
 	@Get("/me")
@@ -68,8 +69,19 @@ export class UserController {
 	@Put("/")
 	@ApiOperation({ description: "### User o'z ma'lumotlarini o'zgartirish." })
 	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
-	updateUser(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
+	update(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
 		return this.userService.update(user.user_id, dto.data);
+	}
+
+	@Roles([RoleType.HEAD_OF_AGENCY, RoleType.AFFILIATE_MANAGER])
+	@Post("/update")
+	@ApiOperation({ description: "### User ma'lumotlarini o'zgartirish." })
+	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
+	updateUser(
+		@Body() dto: UserUpdateRoleMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		return this.userService.updateUser(dto.data, user);
 	}
 
 	@Post("/phone")
