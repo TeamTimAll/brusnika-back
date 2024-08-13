@@ -6,7 +6,7 @@ import { ApplicationPromptID } from "../../../lib/prompt/applicationPrompt";
 export class TrainingCategoryNotFoundError extends BaseError {
 	constructor(message?: string) {
 		super(
-			ApplicationPromptID.TRAININGS_CATEGORY_NOT_FOUND_ERROR,
+			ApplicationPromptID.TRAINING_CATEGORY_NOT_FOUND_ERROR,
 			{
 				message: message ?? "",
 			},

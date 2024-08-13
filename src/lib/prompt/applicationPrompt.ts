@@ -31,9 +31,10 @@ export enum ApplicationPromptID {
 	EVENT_INVITATION_NOT_FOUND_ERROR = 417,
 	EVENT_REACHED_MAXIMUM_VISITORS_ERROR = 418,
 	USER_ALREADY_REGISTERED_TO_EVENT_ERROR = 419,
-	TRAININGS_CATEGORY_NOT_FOUND_ERROR = 420,
-	NEWS_CATEGORY_NOT_FOUND_ERROR = 421,
-	SECTION_NOT_FOUND_ERROR = 422,
+	TRAINING_NOT_FOUND_ERROR = 420,
+	TRAINING_CATEGORY_NOT_FOUND_ERROR = 421,
+	NEWS_CATEGORY_NOT_FOUND_ERROR = 422,
+	SECTION_NOT_FOUND_ERROR = 423,
 	MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR = 433,
 	NOTIFICATION_NOT_FOUND_ERROR = 434,
 
@@ -389,8 +390,19 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			uz: "Lead not found error",
 		},
 	},
-	[ApplicationPromptID.TRAININGS_CATEGORY_NOT_FOUND_ERROR]: {
-		promptId: ApplicationPromptID.TRAININGS_CATEGORY_NOT_FOUND_ERROR,
+	[ApplicationPromptID.TRAINING_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.TRAINING_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "training_not_found_error",
+		promptLabels: {
+			en: "Training not found error",
+			ru: "Ошибка «Обучение не найдено»",
+			uz: "Training not found error",
+		},
+	},
+	[ApplicationPromptID.TRAINING_CATEGORY_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.TRAINING_CATEGORY_NOT_FOUND_ERROR,
 		promptType: "application",
 		promptCode: "",
 		promptCondition: "trainings_category_not_found_error",

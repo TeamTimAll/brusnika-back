@@ -10,14 +10,20 @@ export class TrainingViewEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: false })
 	user_id!: number;
 
-	@ManyToOne(() => UserEntity)
+	@ManyToOne(() => UserEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	@JoinColumn({ name: "user_id" })
 	user!: UserEntity;
 
 	@Column({ type: "integer", nullable: false })
 	trainings_id!: number;
 
-	@ManyToOne(() => TrainingEntity)
+	@ManyToOne(() => TrainingEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	@JoinColumn({ name: "trainings_id" })
 	trainings!: TrainingEntity;
 }
