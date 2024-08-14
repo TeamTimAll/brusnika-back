@@ -5,7 +5,7 @@ import { TrainingEntity } from "../trainings.entity";
 
 type ITrainingDto = Omit<
 	TrainingEntity,
-	"user" | "secondary_category" | "primary_category" | "views" | "likes"
+	"user" | "primary_category" | "views" | "likes"
 >;
 
 export class TrainingDto implements ITrainingDto {

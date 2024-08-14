@@ -100,10 +100,6 @@ export class TrainingsService {
 		const findOne = await this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
-			.leftJoinAndSelect(
-				"trainings.secondary_category",
-				"secondary_category",
-			)
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
 			.leftJoinAndSelect(
@@ -140,10 +136,6 @@ export class TrainingsService {
 		let trainingQuery = this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
-			.leftJoinAndSelect(
-				"trainings.secondary_category",
-				"secondary_category",
-			)
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap(
 				"trainings.views_count",
@@ -151,7 +143,7 @@ export class TrainingsService {
 			);
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.where(
-				"trainings.primary_category_id = :category_id OR trainings.second_category_id = :category_id",
+				"trainings.primary_category_id = :category_id",
 				{
 					category_id: dto.category_id,
 				},
