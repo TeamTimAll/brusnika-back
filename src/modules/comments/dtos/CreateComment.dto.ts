@@ -1,15 +1,16 @@
-import { IsString, IsNotEmpty } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from "class-validator";
+
+import { BaseDto } from "../../../common/base/base_dto";
 
 export class CreateCommentDto {
+	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
-	userId!: string;
+	text!: string;
+}
 
-	@IsString()
-	@IsNotEmpty()
-	eventId!: string;
-
-	@IsString()
-	@IsNotEmpty()
-	comment!: string;
+export class CreateCommentMetaDataDto extends BaseDto<CreateCommentDto> {
+	@ApiProperty({ type: CreateCommentDto })
+	declare data: CreateCommentDto;
 }

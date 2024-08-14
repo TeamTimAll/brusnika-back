@@ -14,8 +14,9 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
+import { RoleType } from "../../constants";
 import { ApiErrorResponse } from "../../decorators";
-import { RolesGuard } from "../../guards/roles.guard";
+import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { CityNotFoundError } from "../cities/errors/CityNotFound.error";
@@ -27,8 +28,6 @@ import { ProjectService } from "./projects.service";
 
 @ApiTags("Projects")
 @Controller("projects")
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class ProjectsController {
 	constructor(private projectsService: ProjectService) {}
@@ -45,6 +44,9 @@ export class ProjectsController {
 		return await this.projectsService.getUniqueEndDates();
 	}
 
+	@Roles([RoleType.AFFILIATE_MANAGER])
+	@ApiBearerAuth()
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	@ApiErrorResponse(CityNotFoundError, "id: 1")
@@ -52,6 +54,9 @@ export class ProjectsController {
 		return await this.projectsService.create(dto.data);
 	}
 
+	@Roles([RoleType.AFFILIATE_MANAGER])
+	@ApiBearerAuth()
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(":id")
 	@HttpCode(HttpStatus.OK)
 	async updateProject(
@@ -61,6 +66,9 @@ export class ProjectsController {
 		return await this.projectsService.update(id, dto.data);
 	}
 
+	@Roles([RoleType.AFFILIATE_MANAGER])
+	@ApiBearerAuth()
+	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Delete(":id")
 	@HttpCode(HttpStatus.OK)
 	async delete(@Param("id") id: number) {

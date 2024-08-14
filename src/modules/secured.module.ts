@@ -20,6 +20,7 @@ import { PremisesBasketModule } from "./premises_basket/premises_basket.module";
 import { PremisesBasketMetaModule } from "./premises_basket_meta/premises_basket_meta.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { SectionsModule } from "./sections/sections.module";
+import { SettingsModule } from "./settings/settings.module";
 import { TrainingModule } from "./trainings/trainings.module";
 import { UserModule } from "./user/user.module";
 import { VisitsModule } from "./visits/visits.module";
@@ -50,6 +51,7 @@ import { VisitsModule } from "./visits/visits.module";
 		PremisesBasketMetaModule,
 		CalendarModule,
 		NotificationModule,
+		SettingsModule,
 	],
 	exports: [],
 })

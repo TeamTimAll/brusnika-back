@@ -35,6 +35,8 @@ export enum ApplicationPromptID {
 	TRAINING_CATEGORY_NOT_FOUND_ERROR = 421,
 	NEWS_CATEGORY_NOT_FOUND_ERROR = 422,
 	SECTION_NOT_FOUND_ERROR = 423,
+	SETTINGS_NOT_FOUND_ERROR = 424,
+	COMMENT_NOT_FOUND_ERROR = 425,
 	MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR = 433,
 	NOTIFICATION_NOT_FOUND_ERROR = 434,
 
@@ -432,6 +434,28 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Section not found error",
 			ru: "Ошибка «Раздел не найден»",
 			uz: "Section not found error",
+		},
+	},
+	[ApplicationPromptID.SETTINGS_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.SETTINGS_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "settings_not_found_error",
+		promptLabels: {
+			en: "Settings not found error",
+			ru: "Ошибка «Настройки не найдены»",
+			uz: "Settings not found error",
+		},
+	},
+	[ApplicationPromptID.COMMENT_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.COMMENT_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "comment_not_found_error",
+		promptLabels: {
+			en: "Comment not found error",
+			ru: "Ошибка «Комментарий не найден»",
+			uz: "Comment not found error",
 		},
 	},
 	[ApplicationPromptID.MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR]: {
