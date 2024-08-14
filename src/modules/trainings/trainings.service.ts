@@ -100,10 +100,6 @@ export class TrainingsService {
 		const findOne = await this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
-			.leftJoinAndSelect(
-				"trainings.secondary_category",
-				"secondary_category",
-			)
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
 			.leftJoinAndSelect(
@@ -140,10 +136,6 @@ export class TrainingsService {
 		let trainingQuery = this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.primary_category", "primary_category")
-			.leftJoinAndSelect(
-				"trainings.secondary_category",
-				"secondary_category",
-			)
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap(
 				"trainings.views_count",
