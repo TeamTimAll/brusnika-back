@@ -58,18 +58,14 @@ export class TrainingController {
 		\n - **title** - [required]
 		\n - **content** - [required]
 		\n - **cover_image** - [required]
-		\n - **primary_category_id** - [optional]
-		\n - **second_category_id** - [optional]
+		\n - **category_id** - [optional]
 		\n - **is_like_enabled** - [required]
 		\n - **is_copy_enabled** - [required]
 		\n - **is_extra_like_enabled** - [optional]
 		\n - **extra_like_icon** - [optional]`,
 	})
 	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
-	@ApiErrorResponse(
-		TrainingCategoryNotFoundError,
-		"[primary_category_id | second_category_id]: 'id'",
-	)
+	@ApiErrorResponse(TrainingCategoryNotFoundError, "category_id: 'id'")
 	async create(
 		@Body() dto: CreateTrainingsMetaDataDto,
 		@User() user: ICurrentUser,
@@ -100,8 +96,7 @@ export class TrainingController {
 		\n - **title** - [required]
 		\n - **content** - [required]
 		\n - **cover_image** - [required]
-		\n - **primary_category_id** - [optional]
-		\n - **second_category_id** - [optional]
+		\n - **category_id** - [optional]
 		\n - **is_like_enabled** - [required]
 		\n - **is_copy_enabled** - [required]
 		\n - **is_extra_like_enabled** - [optional]

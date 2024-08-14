@@ -35,14 +35,14 @@ export class TrainingEntity extends BaseEntity {
 	published_at!: Date;
 
 	@Column({ type: "integer", nullable: true })
-	primary_category_id!: number;
+	category_id!: number;
 
 	@ManyToOne(() => TrainingCategoryEntity, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
 	})
-	@JoinColumn({ name: "primary_category_id" })
-	primary_category?: TrainingCategoryEntity;
+	@JoinColumn({ name: "category_id" })
+	category?: TrainingCategoryEntity;
 
 	@Column({ type: "boolean", default: false })
 	is_copy_enabled!: boolean;
