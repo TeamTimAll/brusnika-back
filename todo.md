@@ -276,7 +276,7 @@
 - [ ] Project'larni boshqaruvini qila oladi.
 
 ### ADMIN (Администратор)
-- [ ] Premise link create qila oladi.
+- [x] Premise link create qila oladi.
 - [ ] Xohlagan user nomidan login qila olish imkoniyati.
 - [ ] OnBoarding module'ini o'chirishi yoki yoqishi mumkin.
 - [ ] Yangi xodimlar uchun bortga kirish ma'lumotlarini ko'rsatish muddatini belgilash (platformaga birinchi kirgan paytdan boshlab kunlar sonini ko'rsatuvchi joydagi).

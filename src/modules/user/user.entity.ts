@@ -12,7 +12,6 @@ import { RoleType } from "../../constants";
 import { AgencyEntity } from "../agencies/agencies.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { CityEntity } from "../cities/cities.entity";
-import { CommentEntity } from "../comments/comment.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 
 export enum UserRegisterStatus {
@@ -93,24 +92,6 @@ export class UserEntity extends BaseEntity {
 
 	@Column({ default: true })
 	status!: boolean;
-
-	// @OneToMany(() => EventsEntity, (eventsEntity) => eventsEntity.user, {
-	// 	onDelete: "CASCADE",
-	// 	onUpdate: "CASCADE",
-	// })
-	// events?: EventsEntity[];
-
-	@OneToMany(() => CommentEntity, (comment) => comment.user, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
-	})
-	comments?: CommentEntity[];
-
-	// @OneToMany(() => ProjectEntity, (project) => project.user, {
-	//   onDelete: 'CASCADE',
-	//   onUpdate: 'CASCADE',
-	// })
-	// projects?: ProjectEntity[];
 
 	@ManyToOne(() => CityEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",
