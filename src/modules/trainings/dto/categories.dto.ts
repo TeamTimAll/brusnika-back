@@ -1,6 +1,6 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, ValidateNested } from "class-validator";
+import { IsInt, IsNotEmpty, IsString, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
@@ -9,8 +9,15 @@ export class CreateTrainingCategoryDto {
 		description: "Name of the category",
 		example: "Politics",
 	})
+	@IsString()
 	@IsNotEmpty()
 	name!: string;
+
+	@ApiProperty()
+	@Type(() => Number)
+	@IsInt()
+	@IsNotEmpty()
+	sequnce_id!: number;
 }
 
 export class CreateTrainingCategoryMetaDataDto extends BaseDto<CreateTrainingCategoryDto> {
