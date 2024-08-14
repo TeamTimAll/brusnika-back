@@ -66,20 +66,12 @@ export class TrainingsService {
 	}
 
 	async create(dto: CreateTrainingsDto, user: ICurrentUser) {
-		const primaryCategory = await this.trainingCategoryRepository.findOne({
-			where: { id: dto.primary_category_id },
+		const foundCategory = await this.trainingCategoryRepository.findOne({
+			where: { id: dto.category_id },
 		});
-		if (!primaryCategory) {
+		if (!foundCategory) {
 			throw new TrainingCategoryNotFoundError(
-				`primary_category_id: ${dto.primary_category_id}`,
-			);
-		}
-		const secondCategory = await this.trainingCategoryRepository.findOne({
-			where: { id: dto.second_category_id },
-		});
-		if (!secondCategory) {
-			throw new TrainingCategoryNotFoundError(
-				`second_category_id: ${dto.second_category_id}`,
+				`category_id: ${dto.category_id}`,
 			);
 		}
 		const training = this.trainingRepository.create(dto);
@@ -99,7 +91,7 @@ export class TrainingsService {
 	async readOne(id: number, user: ICurrentUser): Promise<unknown> {
 		const findOne = await this.trainingRepository
 			.createQueryBuilder("trainings")
-			.leftJoinAndSelect("trainings.primary_category", "primary_category")
+			.leftJoinAndSelect("trainings.category", "category")
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
 			.leftJoinAndSelect(
@@ -135,7 +127,7 @@ export class TrainingsService {
 	async readAll(dto: FilterTrainingDto) {
 		let trainingQuery = this.trainingRepository
 			.createQueryBuilder("trainings")
-			.leftJoinAndSelect("trainings.primary_category", "primary_category")
+			.leftJoinAndSelect("trainings.category", "category")
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
 			.loadRelationCountAndMap(
 				"trainings.views_count",
@@ -143,7 +135,7 @@ export class TrainingsService {
 			);
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.where(
-				"trainings.primary_category_id = :category_id",
+				"trainings.category_id = :category_id",
 				{
 					category_id: dto.category_id,
 				},

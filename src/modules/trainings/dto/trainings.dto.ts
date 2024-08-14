@@ -5,7 +5,7 @@ import { TrainingEntity } from "../trainings.entity";
 
 type ITrainingDto = Omit<
 	TrainingEntity,
-	"user" | "primary_category" | "views" | "likes"
+	"user" | "category" | "views" | "likes"
 >;
 
 export class TrainingDto implements ITrainingDto {
@@ -43,10 +43,7 @@ export class TrainingDto implements ITrainingDto {
 	published_at!: Date;
 
 	@ApiProperty()
-	primary_category_id!: number;
-
-	@ApiProperty()
-	second_category_id?: number;
+	category_id!: number;
 
 	@ApiProperty()
 	user_id?: number;
