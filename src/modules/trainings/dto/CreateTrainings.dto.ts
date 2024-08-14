@@ -47,17 +47,7 @@ export class CreateTrainingsDto {
 	@IsOptional()
 	@IsInt()
 	@Type(() => Number)
-	primary_category_id!: number;
-
-	@ApiProperty({
-		description: "The second category of the trainings",
-		example: "The second category of the trainings",
-		required: false,
-	})
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
-	second_category_id!: number;
+	category_id?: number;
 
 	@IsBoolean()
 	@ApiProperty({
