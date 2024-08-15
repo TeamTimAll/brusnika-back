@@ -11,7 +11,7 @@ import {
 
 import { BaseDto } from "../../../common/base/base_dto";
 
-export class CreateTrainingsDto {
+export class CreateTrainingDto {
 	@IsString()
 	@IsNotEmpty()
 	@ApiProperty({
@@ -41,13 +41,12 @@ export class CreateTrainingsDto {
 
 	@ApiProperty({
 		description: "The first category of the trainings",
-		example: "The first category of the trainings",
 		required: false,
 	})
-	@IsOptional()
+	@IsNotEmpty()
 	@IsInt()
 	@Type(() => Number)
-	category_id?: number;
+	category_id!: number;
 
 	@IsBoolean()
 	@ApiProperty({
@@ -80,19 +79,19 @@ export class CreateTrainingsDto {
 	})
 	extra_like_icon!: string;
 
-	@ApiProperty()
+	// @ApiProperty()
 	@IsInt()
 	@Type(() => Number)
 	@IsOptional()
 	user_id?: number;
 }
 
-export class CreateTrainingsMetaDataDto extends BaseDto<CreateTrainingsDto> {
+export class CreateTrainingsMetaDataDto extends BaseDto<CreateTrainingDto> {
 	@ApiProperty({
-		oneOf: [{ $ref: getSchemaPath(CreateTrainingsDto) }],
-		type: () => CreateTrainingsDto,
+		oneOf: [{ $ref: getSchemaPath(CreateTrainingDto) }],
+		type: () => CreateTrainingDto,
 	})
 	@ValidateNested()
-	@Type(() => CreateTrainingsDto)
-	declare data: CreateTrainingsDto;
+	@Type(() => CreateTrainingDto)
+	declare data: CreateTrainingDto;
 }

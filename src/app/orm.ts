@@ -7,10 +7,12 @@ import {
 import { ConfigManager } from "../config";
 
 export class OrmManager {
+	public static dataSource: DataSource;
+
 	static init() {
-		const dataSource = new DataSource(ConfigManager.databaseConfig);
+		this.dataSource = new DataSource(ConfigManager.databaseConfig);
 
 		initializeTransactionalContext();
-		addTransactionalDataSource(dataSource);
+		addTransactionalDataSource(this.dataSource);
 	}
 }

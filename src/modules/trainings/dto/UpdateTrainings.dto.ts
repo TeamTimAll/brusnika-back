@@ -1,8 +1,8 @@
 import {
-	CreateTrainingsDto,
+	CreateTrainingDto,
 	CreateTrainingsMetaDataDto,
 } from "./CreateTrainings.dto";
 
-export class UpdateTrainingsDto extends CreateTrainingsDto {}
+export class UpdateTrainingDto extends CreateTrainingDto {}
 
-export class UpdateTrainingsMetaDataDto extends CreateTrainingsMetaDataDto {}
+export class UpdateTrainingMetaDataDto extends CreateTrainingsMetaDataDto {}
