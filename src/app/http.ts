@@ -1,5 +1,5 @@
 import { ValidationPipe } from "@nestjs/common";
-import { NestFactory, Reflector } from "@nestjs/core";
+import { NestFactory } from "@nestjs/core";
 import {
 	ExpressAdapter,
 	NestExpressApplication,
@@ -49,10 +49,8 @@ export class Http {
 		);
 		this.app.enableVersioning();
 
-		const reflector = this.app.get(Reflector);
-
 		this.app.useGlobalFilters(
-			new HttpValidationErrorFilter(reflector),
+			new HttpValidationErrorFilter(),
 			new HttpErrorFilter(),
 			new QueryFailedErrorFilter(),
 			new TypeORMErrorFilter(),

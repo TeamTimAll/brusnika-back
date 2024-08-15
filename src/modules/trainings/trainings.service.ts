@@ -1,16 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DataSource, EntityManager, In, Repository } from "typeorm";
 
 import { LikedResponseDto } from "common/dtos/likeResponse.dto";
 
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 
-import { CreateTrainingsDto } from "./dto/CreateTrainings.dto";
+import {
+	BulkDto,
+	BulkUpdateCategoryDto,
+	BulkUpdateTrainingDto,
+} from "./dto/Bulk.dto";
+import { CreateTrainingDto } from "./dto/CreateTrainings.dto";
 import { FilterTrainingDto } from "./dto/FilterTraining.dto";
 import { LikeTrainingsDto } from "./dto/LikeTrainings.dto";
 import { UpdateTrainingCategoryDto } from "./dto/UpdateTrainingCategory.dto";
-import { UpdateTrainingsDto } from "./dto/UpdateTrainings.dto";
+import { UpdateTrainingDto } from "./dto/UpdateTrainings.dto";
 import { CreateTrainingCategoryDto } from "./dto/categories.dto";
 import { TrainingCategoryEntity } from "./entities/categories.entity";
 import { TrainingLikeEntity } from "./entities/likes.entity";
@@ -24,6 +29,7 @@ export class TrainingsService {
 	constructor(
 		@InjectRepository(TrainingEntity)
 		private trainingRepository: Repository<TrainingEntity>,
+		private dataSource: DataSource,
 	) {}
 
 	@InjectRepository(TrainingLikeEntity)
@@ -65,7 +71,7 @@ export class TrainingsService {
 		return { is_liked: false };
 	}
 
-	async create(dto: CreateTrainingsDto, user: ICurrentUser) {
+	async create(dto: CreateTrainingDto, user: ICurrentUser) {
 		const foundCategory = await this.trainingCategoryRepository.findOne({
 			where: { id: dto.category_id },
 		});
@@ -144,7 +150,7 @@ export class TrainingsService {
 		return trainingQuery.getMany();
 	}
 
-	async update(id: number, dto: UpdateTrainingsDto) {
+	async update(id: number, dto: UpdateTrainingDto) {
 		const foundTraining = await this.trainingRepository.findOne({
 			where: {
 				id: id,
@@ -152,6 +158,14 @@ export class TrainingsService {
 		});
 		if (!foundTraining) {
 			throw new TrainingNotFoundError(`id: ${id}`);
+		}
+		const foundCategory = await this.trainingCategoryRepository.findOne({
+			where: { id: dto.category_id },
+		});
+		if (!foundCategory) {
+			throw new TrainingCategoryNotFoundError(
+				`category_id: ${dto.category_id}`,
+			);
 		}
 		const mergedTraining = this.trainingRepository.merge(
 			foundTraining,
@@ -194,5 +208,206 @@ export class TrainingsService {
 		}
 		await this.trainingCategoryRepository.delete(foundCategory.id);
 		return foundCategory;
+	}
+
+	async bulk(dto: BulkDto, user: ICurrentUser): Promise<BulkDto> {
+		const queryRunner = this.dataSource.createQueryRunner();
+		await queryRunner.connect();
+		await queryRunner.startTransaction();
+		try {
+			const createdTrainings = await this.bulkCreateTrainings(
+				queryRunner.manager,
+				dto.create.trainings,
+				user,
+			);
+			const createdCategories = await this.bulkCreateCategories(
+				queryRunner.manager,
+				dto.create.categories,
+			);
+			const updatedTrainings = await this.bulkUpdateTrainings(
+				queryRunner.manager,
+				dto.update.trainings,
+			);
+			const updatedCategories = await this.bulkUpdateCategories(
+				queryRunner.manager,
+				dto.update.categories,
+			);
+			const deletedTrainings = await this.bulkDeleteTrainings(
+				queryRunner.manager,
+				dto.delete.trainings,
+			);
+			const deletedCategories = await this.bulkDeleteCategories(
+				queryRunner.manager,
+				dto.delete.categories,
+			);
+			await queryRunner.commitTransaction();
+			return {
+				create: {
+					trainings: createdTrainings,
+					categories: createdCategories,
+				},
+				update: {
+					trainings: updatedTrainings,
+					categories: updatedCategories,
+				},
+				delete: {
+					trainings: deletedTrainings,
+					categories: deletedCategories,
+				},
+			};
+		} catch (e) {
+			await queryRunner.rollbackTransaction();
+			throw e;
+		} finally {
+			await queryRunner.release();
+		}
+	}
+
+	private async bulkCreateCategories(
+		manager: EntityManager,
+		categories: CreateTrainingCategoryDto[],
+	): Promise<TrainingCategoryEntity[]> {
+		if (!categories.length) {
+			return [];
+		}
+		const createdCategories: TrainingCategoryEntity[] =
+			this.trainingCategoryRepository.create(categories);
+		return manager.save(TrainingCategoryEntity, createdCategories);
+	}
+
+	private async bulkCreateTrainings(
+		manager: EntityManager,
+		trainings: CreateTrainingDto[],
+		user: ICurrentUser,
+	): Promise<TrainingEntity[]> {
+		if (!trainings.length) {
+			return [];
+		}
+		const categoryIds: number[] = trainings.map((e) => e.category_id);
+		const foundCategories = await manager.find(TrainingCategoryEntity, {
+			select: { id: true },
+			where: { id: In(categoryIds) },
+		});
+		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
+		if (foundCategories.length !== categoryIds.length) {
+			throw new TrainingCategoryNotFoundError(
+				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
+			);
+		}
+		const createdTrainings: TrainingEntity[] =
+			this.trainingRepository.create(trainings);
+		createdTrainings.map((e) => {
+			e.user_id = user.user_id;
+			return e;
+		});
+		return manager.save(TrainingEntity, createdTrainings);
+	}
+
+	private async bulkUpdateCategories(
+		manager: EntityManager,
+		categories: BulkUpdateCategoryDto[],
+	) {
+		if (!categories.length) {
+			return [];
+		}
+		const categoryIds: number[] = categories.map((e) => e.id);
+		const foundCategories = await manager.find(TrainingCategoryEntity, {
+			where: { id: In(categoryIds) },
+		});
+		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
+		if (foundCategoryIds.length !== categoryIds.length) {
+			throw new TrainingCategoryNotFoundError(
+				`ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
+			);
+		}
+		const mergedCategories: TrainingCategoryEntity[] = [];
+		foundCategories.forEach((e, i) => {
+			mergedCategories.push(
+				this.trainingCategoryRepository.merge(e, categories[i]),
+			);
+		});
+		return manager.save(TrainingCategoryEntity, mergedCategories);
+	}
+
+	private async bulkUpdateTrainings(
+		manager: EntityManager,
+		trainings: BulkUpdateTrainingDto[],
+	) {
+		if (!trainings.length) {
+			return [];
+		}
+		const trainingIds: number[] = trainings.map((e) => e.id);
+		const foundTraining = await manager.find(TrainingEntity, {
+			where: {
+				id: In(trainingIds),
+			},
+		});
+		const foundTrainingIds = foundTraining.map((e) => e.id);
+		if (foundTrainingIds.length !== trainingIds.length) {
+			throw new TrainingNotFoundError(
+				`ids: ${[...new Set([...trainingIds, ...foundTrainingIds])].join(", ")}`,
+			);
+		}
+		const categoryIds: number[] = trainings.map((e) => e.category_id);
+		const foundCategories = await manager.find(TrainingCategoryEntity, {
+			select: { id: true },
+			where: { id: In(categoryIds) },
+		});
+		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
+		if (foundCategories.length !== categoryIds.length) {
+			throw new TrainingCategoryNotFoundError(
+				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
+			);
+		}
+		const mergedTrainings: TrainingEntity[] = [];
+		foundTraining.forEach((e, i) => {
+			mergedTrainings.push(
+				this.trainingRepository.merge(e, trainings[i]),
+			);
+		});
+		return manager.save(TrainingEntity, mergedTrainings);
+	}
+
+	async bulkDeleteTrainings(
+		manager: EntityManager,
+		trainingIds: number[],
+	): Promise<number[]> {
+		if (!trainingIds.length) {
+			return [];
+		}
+		const foundTraining = await manager.find(TrainingEntity, {
+			where: {
+				id: In(trainingIds),
+			},
+		});
+		const foundTrainingIds = foundTraining.map((e) => e.id);
+		if (foundTrainingIds.length !== trainingIds.length) {
+			throw new TrainingNotFoundError(
+				`ids: ${[...new Set([...trainingIds, ...foundTrainingIds])].join(", ")}`,
+			);
+		}
+		await manager.delete(TrainingEntity, trainingIds);
+		return foundTrainingIds;
+	}
+
+	async bulkDeleteCategories(
+		manager: EntityManager,
+		categoryIds: number[],
+	): Promise<number[]> {
+		if (!categoryIds.length) {
+			return [];
+		}
+		const foundCategories = await manager.find(TrainingCategoryEntity, {
+			select: { id: true },
+			where: { id: In(categoryIds) },
+		});
+		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
+		if (foundCategories.length !== categoryIds.length) {
+			throw new TrainingCategoryNotFoundError(
+				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
+			);
+		}
+		await manager.delete(TrainingCategoryEntity, categoryIds);
+		return foundCategoryIds;
 	}
 }
