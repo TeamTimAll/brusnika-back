@@ -2,6 +2,7 @@ import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, MoreThanOrEqual, Repository } from "typeorm";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgencyService } from "../agencies/agencies.service";
@@ -53,7 +54,8 @@ export class UserService {
 			});
 			dto.agency_id = foundUser?.agency_id;
 		}
-		return this.userRepository.find({
+		const pageSize = (dto.page - 1) * dto.limit;
+		const [users, usersCount] = await this.userRepository.findAndCount({
 			select: [
 				"id",
 				"created_at",
@@ -97,7 +99,14 @@ export class UserService {
 					? (MoreThanOrEqual(dto.registered_at) as unknown as Date)
 					: undefined,
 			},
+			take: dto.limit,
+			skip: pageSize,
 		});
+
+		const metaData = BaseDto.create<UserEntity[]>();
+		metaData.setPagination(usersCount, dto.page, dto.limit);
+		metaData.data = users;
+		return metaData;
 	}
 
 	async readOne(id: number) {

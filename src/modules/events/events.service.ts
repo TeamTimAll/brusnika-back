@@ -135,7 +135,7 @@ export class EventsService {
 		eventsQuery = eventsQuery.limit(dto.limit).offset(pageSize);
 
 		const metaData = BaseDto.create<EventsEntity[]>();
-		metaData.calcPagination(eventCount, dto.page, dto.limit);
+		metaData.setPagination(eventCount, dto.page, dto.limit);
 		metaData.data = await eventsQuery.getMany();
 		return metaData;
 	}

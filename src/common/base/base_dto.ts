@@ -93,14 +93,14 @@ export class BaseDto<T = unknown> {
 		return this;
 	}
 
-	calcPagination(count: number, page: number, limit: number): MetaLinks {
+	setPagination(count: number, page: number, limit: number): void {
 		const maxPage = Math.ceil(count / limit);
-		return {
+		this.setLinks({
 			currPage: page,
 			totalPage: maxPage,
 			limit: limit,
 			total: count,
-		};
+		});
 	}
 
 	static createFromDto<T extends BaseDto, D>(dto: T, data?: D): T {

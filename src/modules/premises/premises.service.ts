@@ -342,7 +342,7 @@ export class PremisesService {
 		const premises = await query.getRawMany<PremiseEntity>();
 
 		const metaData = BaseDto.create<PremiseEntity[]>();
-		metaData.calcPagination(
+		metaData.setPagination(
 			premiseCount.length ? premiseCount[0].premise_count : 0,
 			filter.page,
 			filter.limit,
