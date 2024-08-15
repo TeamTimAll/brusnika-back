@@ -21,10 +21,12 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
+import { BulkMetaDataDto } from "./dto/Bulk.dto";
 import { CreateTrainingsMetaDataDto } from "./dto/CreateTrainings.dto";
+import { FilterTrainingDto } from "./dto/FilterTraining.dto";
 import { LikeTrainingsMetaDataDto } from "./dto/LikeTrainings.dto";
 import { UpdateTrainingCategoryMetaDataDto } from "./dto/UpdateTrainingCategory.dto";
-import { UpdateTrainingsMetaDataDto } from "./dto/UpdateTrainings.dto";
+import { UpdateTrainingMetaDataDto } from "./dto/UpdateTrainings.dto";
 import { CreateTrainingCategoryMetaDataDto } from "./dto/categories.dto";
 import {
 	TrainingArrayMetaDataDto,
@@ -32,7 +34,6 @@ import {
 } from "./dto/trainings.dto";
 import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
 import { TrainingsService as TrainingService } from "./trainings.service";
-import { FilterTrainingDto } from "./dto/FilterTraining.dto";
 
 @ApiTags("Trainings")
 @Controller("trainings")
@@ -104,7 +105,7 @@ export class TrainingController {
 	})
 	async update(
 		@Param("id") id: number,
-		@Body() dto: UpdateTrainingsMetaDataDto,
+		@Body() dto: UpdateTrainingMetaDataDto,
 	) {
 		return this.service.update(id, dto.data);
 	}
@@ -163,6 +164,16 @@ export class TrainingController {
 	@ApiOperation({ summary: "Create trainings categories" })
 	async createCategory(@Body() dto: CreateTrainingCategoryMetaDataDto) {
 		return await this.service.createCategory(dto.data);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Post("bulk")
+	@ApiOperation({
+		summary: "Bulk create, update, delete trainings and categories",
+	})
+	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
+	bulk(@Body() dto: BulkMetaDataDto, @User() user: ICurrentUser) {
+		return this.service.bulk(dto.data, user);
 	}
 
 	@Get(":id")
