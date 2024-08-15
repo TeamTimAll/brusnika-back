@@ -142,7 +142,7 @@ export class LeadsService {
 
 		const metaData = BaseDto.create<LeadsEntity[]>();
 		metaData.data = leads;
-		metaData.calcPagination(leadsCount, dto.page, dto.limit);
+		metaData.setPagination(leadsCount, dto.page, dto.limit);
 		return metaData;
 	}
 

@@ -214,7 +214,7 @@ export class ClientService {
 		});
 
 		const metaData = BaseDto.create<ClientEntity[]>();
-		metaData.calcPagination(clientCount, dto.page, dto.limit);
+		metaData.setPagination(clientCount, dto.page, dto.limit);
 		metaData.data = await queryBuilder.getRawMany();
 		return metaData;
 	}
