@@ -24,6 +24,12 @@ export class TrainingEntity extends BaseEntity {
 	@Column({ type: "boolean", default: false })
 	is_extra_like_enabled!: boolean;
 
+	@Column({ type: "boolean", default: false })
+	is_show!: boolean;
+
+	@Column({ type: "boolean", default: false })
+	is_copy_enabled!: boolean;
+
 	@Column({ type: "text", nullable: true })
 	extra_like_icon!: string;
 
@@ -43,9 +49,6 @@ export class TrainingEntity extends BaseEntity {
 	})
 	@JoinColumn({ name: "category_id" })
 	category?: TrainingCategoryEntity;
-
-	@Column({ type: "boolean", default: false })
-	is_copy_enabled!: boolean;
 
 	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "user_id" })

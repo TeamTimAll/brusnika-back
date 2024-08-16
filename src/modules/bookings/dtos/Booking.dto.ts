@@ -62,6 +62,9 @@ export class BookingDto implements IBookingDto {
 
 	@ApiProperty()
 	create_by_id?: number;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class BookingMetaDataDto extends BaseDto<BookingDto> {

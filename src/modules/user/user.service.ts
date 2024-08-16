@@ -1,6 +1,9 @@
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, MoreThanOrEqual, Repository } from "typeorm";
+
+import { AuthResponeWithTokenDto } from "modules/auth/dtos/AuthResponeWithToken.dto";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -13,6 +16,7 @@ import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExp
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
 
+import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
 import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeDto } from "./dtos/UserChangePhoneVerifyCode.dto";
@@ -33,6 +37,7 @@ export class UserService {
 		private userRepository: Repository<UserEntity>,
 		@Inject(forwardRef(() => AgencyService))
 		private agencyService: AgencyService,
+		private jwtService: JwtService,
 	) {}
 
 	get repository(): Repository<UserEntity> {
@@ -395,5 +400,31 @@ export class UserService {
 		});
 
 		return { user_id: foundUser.id, message: "sms sent" };
+	}
+
+	async checkExists(id: number): Promise<void> {
+		const user = await this.userRepository.existsBy({ id });
+		if (!user) {
+			throw new UserNotFoundError(`id: ${id}`);
+		}
+	}
+
+	async loginAsUser(
+		dto: AdminLoginAsUserDto,
+	): Promise<AuthResponeWithTokenDto> {
+		const foundUser = await this.readOne(dto.user_id);
+		const jwtBuffer: ICurrentUser = {
+			user_id: foundUser.id,
+			role: foundUser.role,
+		};
+		return {
+			accessToken: this.jwtService.sign(jwtBuffer),
+		};
+	}
+
+	async delete(id: number) {
+		const foundUser = await this.readOne(id);
+		await this.userRepository.delete(foundUser.id);
+		return foundUser;
 	}
 }

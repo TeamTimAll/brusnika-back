@@ -22,4 +22,7 @@ export class CityDto implements ICityDto {
 
 	@ApiProperty()
 	lat!: string;
+
+	@ApiProperty()
+	is_active!: boolean;
 }

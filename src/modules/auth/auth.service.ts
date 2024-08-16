@@ -26,7 +26,7 @@ import { UserLoginVerifyCodeDto } from "./dtos/UserLoginVerifyCode.dto";
 import { UserLoginResendCodeDto } from "./dtos/UserLoginResendCode.dto";
 import {
 	AuthResponeWithData,
-	AuthResponeWithToken,
+	AuthResponeWithTokenDto,
 } from "./dtos/AuthResponeWithToken.dto";
 
 @Injectable()
@@ -98,7 +98,7 @@ export class AuthService {
 
 	async agentChooseAgency(
 		body: AgentChooseAgencyDto,
-	): Promise<AuthResponeWithToken> {
+	): Promise<AuthResponeWithTokenDto> {
 		const user = await this.userService.readOne(body.user_id);
 		await this.agenciesService.readOne(body.agency_id);
 		await this.userService.repository.update(user.id, {
@@ -117,7 +117,7 @@ export class AuthService {
 
 	async agentRegisterAgency(
 		body: AgentRegisterAgencyDto,
-	): Promise<AuthResponeWithToken> {
+	): Promise<AuthResponeWithTokenDto> {
 		const user = await this.userService.readOne(body.user_id);
 
 		const newAgency = await this.agenciesService.create(
@@ -146,7 +146,7 @@ export class AuthService {
 
 	async agentRequestAgency(
 		body: AgentRequestAgencyDto,
-	): Promise<AuthResponeWithToken> {
+	): Promise<AuthResponeWithTokenDto> {
 		const user = await this.userService.readOne(body.user_id);
 
 		const newAgency = await this.agenciesService.create(
@@ -171,7 +171,7 @@ export class AuthService {
 		};
 	}
 
-	async loginAccount(loginDto: UserLoginDto): Promise<AuthResponeWithToken> {
+	async loginAccount(loginDto: UserLoginDto): Promise<AuthResponeWithTokenDto> {
 		const user = await this.userService.repository.findOneBy({
 			email: loginDto.email,
 			role: RoleType.EMPLOYEE,
@@ -199,7 +199,7 @@ export class AuthService {
 
 	async verifySmsCode(
 		dto: UserLoginVerifyCodeDto,
-	): Promise<AuthResponeWithData | AuthResponeWithToken> {
+	): Promise<AuthResponeWithData | AuthResponeWithTokenDto> {
 		const user = await this.userService.readOne(dto.user_id);
 
 		if (!user.verification_code_sent_date) {

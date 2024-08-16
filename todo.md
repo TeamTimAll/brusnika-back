@@ -277,12 +277,12 @@
 
 ### ADMIN (Администратор)
 - [x] Premise link create qila oladi.
-- [ ] Xohlagan user nomidan login qila olish imkoniyati.
-- [ ] OnBoarding module'ini o'chirishi yoki yoqishi mumkin.
-- [ ] Yangi xodimlar uchun bortga kirish ma'lumotlarini ko'rsatish muddatini belgilash (platformaga birinchi kirgan paytdan boshlab kunlar sonini ko'rsatuvchi joydagi).
-- [ ] Kalendar oyi davomida mumkin bo'lgan bron qilish sonini belgilash.
-- [ ] Lead'larni cancel qilinganligi sabablarini ko'ra olishi kerak.
-- [ ] User'ni role'ini o'zgartira oladi. ADMIN, AFFILIATE_MANAGER. Hamma user'ni block yoki unblock qila oladi.
+- [x] Xohlagan user nomidan login qila olish imkoniyati.
+- [x] OnBoarding module'ini o'chirishi yoki yoqishi mumkin.
+- [x] Yangi xodimlar uchun bortga kirish ma'lumotlarini ko'rsatish muddatini belgilash (platformaga birinchi kirgan paytdan boshlab kunlar sonini ko'rsatuvchi joydagi).
+- [x] Kalendar oyi davomida mumkin bo'lgan bron qilish sonini belgilash.
+- [x] Lead'larni cancel qilinganligi sabablarini ko'ra olishi kerak.
+- [x] User'ni role'ini o'zgartira oladi. ADMIN, AFFILIATE_MANAGER. Hamma user'ni block yoki unblock qila oladi.
 
 ### Kounter server
 Brusnika API'dan olish kerak bo'lgan ma'lumotlar:

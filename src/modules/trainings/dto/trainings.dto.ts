@@ -47,13 +47,19 @@ export class TrainingDto implements ITrainingDto {
 
 	@ApiProperty()
 	user_id?: number;
+
+	@ApiProperty()
+	is_show!: boolean;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class TrainingMetaDataDto extends BaseDto<TrainingDto> implements Dto {
 	@ApiProperty({ type: TrainingDto })
 	declare data: TrainingDto;
 
-	desc = "### Training ma'lumotlari"	;
+	desc = "### Training ma'lumotlari";
 }
 
 export class TrainingArrayMetaDataDto extends BaseDto<TrainingDto[]> {

@@ -1,4 +1,5 @@
 import {
+	Column,
 	CreateDateColumn,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
@@ -7,6 +8,9 @@ import {
 export abstract class BaseEntity {
 	@PrimaryGeneratedColumn()
 	id!: number;
+
+	@Column({ type: "boolean", default: true })
+	is_active!: boolean;
 
 	@CreateDateColumn({ type: "timestamptz" })
 	created_at!: Date;

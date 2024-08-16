@@ -32,6 +32,9 @@ export class NotificationDto implements INotificationDto {
 
 	@ApiProperty()
 	user_id?: number;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class NotificationMetaDataDto

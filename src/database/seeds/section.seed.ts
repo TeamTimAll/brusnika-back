@@ -15,7 +15,7 @@ export async function up(query: QueryBuilder<object>) {
 
 	const sections: Omit<
 		SectionEntity,
-		"id" | "building" | "created_at" | "updated_at"
+		"id" | "building" | "created_at" | "updated_at" | "is_active"
 	>[] = [
 		{
 			name: "Секция 1",

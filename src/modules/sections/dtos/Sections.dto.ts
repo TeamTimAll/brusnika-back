@@ -20,6 +20,9 @@ export class SectionDto implements ISectionDto {
 
 	@ApiProperty()
 	building_id?: number;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class SectionMetaDataDto extends BaseDto<SectionDto> implements Dto {

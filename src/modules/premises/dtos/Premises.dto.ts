@@ -73,4 +73,7 @@ export class PremiseDto
 
 	@ApiProperty()
 	is_sold!: boolean;
+
+	@ApiProperty()
+	is_active!: boolean;
 }

@@ -89,6 +89,9 @@ export class UserDto implements IUserDto {
 
 	@ApiProperty()
 	agency_id?: number;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class UserMetaDataDto extends BaseDto<UserDto> implements Dto {
