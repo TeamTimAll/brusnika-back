@@ -19,4 +19,7 @@ export class ContactDto
 	@IsString()
 	@IsNotEmpty()
 	phone!: string;
+
+	@ApiProperty()
+	is_active!: boolean;
 }

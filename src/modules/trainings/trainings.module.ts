@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { SettingsModule } from "../settings/settings.module";
 import { UserModule } from "../user/user.module";
 
 import { TrainingCategoryEntity } from "./entities/categories.entity";
@@ -19,6 +20,7 @@ import { TrainingsService } from "./trainings.service";
 			TrainingLikeEntity,
 		]),
 		UserModule,
+		SettingsModule,
 	],
 	controllers: [TrainingController],
 	providers: [TrainingsService],

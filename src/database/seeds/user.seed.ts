@@ -15,7 +15,7 @@ export async function up(query: QueryBuilder<object>) {
 		.getRawMany<CityEntity>();
 	const users: Omit<
 		UserEntity,
-		"id" | "city" | "agency" | "created_at" | "updated_at"
+		"id" | "city" | "agency" | "created_at" | "updated_at" | "is_active"
 	>[] = [
 		{
 			firstName: "Jon",
@@ -33,12 +33,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 
 		{
@@ -57,12 +57,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 
 		{
@@ -81,12 +81,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 
 		{
@@ -105,12 +105,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: false,
+			is_blocked: false,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 
 		{
@@ -129,12 +129,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 
 		{
@@ -153,12 +153,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 
 		{
@@ -177,12 +177,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 		{
 			phone: "2222222222",
@@ -200,12 +200,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 		{
 			phone: "2222222223",
@@ -223,12 +223,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 		{
 			phone: "2222222224",
@@ -246,12 +246,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 		{
 			phone: "2222222225",
@@ -269,12 +269,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 		{
 			phone: "2222222226",
@@ -292,12 +292,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 		{
 			phone: "2222222227",
@@ -315,12 +315,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 		{
 			phone: "2222222228",
@@ -338,12 +338,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 		{
 			phone: "2222222229",
@@ -361,12 +361,12 @@ export async function up(query: QueryBuilder<object>) {
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
 			temporaryNumber: null,
-			status: true,
+			is_blocked: true,
 			isPhoneVerified: true,
 			city_id: city.id,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			temporaryEmail: null
+			temporaryEmail: null,
 		},
 	];
 

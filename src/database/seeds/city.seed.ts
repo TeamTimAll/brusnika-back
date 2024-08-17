@@ -3,7 +3,10 @@ import { QueryBuilder } from "typeorm";
 import { CityEntity } from "../../modules/cities/cities.entity";
 
 export async function up(query: QueryBuilder<object>) {
-	const cities: Omit<CityEntity, "id" | "created_at" | "updated_at">[] = [
+	const cities: Omit<
+		CityEntity,
+		"id" | "created_at" | "updated_at" | "is_active"
+	>[] = [
 		{ name: "Москва", long: "37.6173", lat: "55.7558" },
 		{ name: "Тюмень", long: "65.5619", lat: "57.1553" },
 		{ name: "Новосибирск", long: "82.8964", lat: "54.9833" },

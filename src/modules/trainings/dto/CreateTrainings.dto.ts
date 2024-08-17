@@ -48,36 +48,38 @@ export class CreateTrainingDto {
 	@Type(() => Number)
 	category_id!: number;
 
-	@IsBoolean()
 	@ApiProperty({
 		description: "Is like enabled",
-		required: true,
+		required: false,
 	})
-	is_like_enabled!: boolean;
+	@IsBoolean()
+	@IsOptional()
+	is_like_enabled?: boolean;
 
 	@ApiProperty({
 		description: "Is copy enabled",
-		required: true,
+		required: false,
 	})
 	@IsBoolean()
-	is_copy_enabled!: boolean;
-
-	@IsBoolean()
 	@IsOptional()
+	is_copy_enabled?: boolean;
+
 	@ApiProperty({
 		description: "Is extra like enabled",
 		required: false,
 	})
-	is_extra_like_enabled!: boolean;
-
-	@IsString()
+	@IsBoolean()
 	@IsOptional()
+	is_extra_like_enabled?: boolean;
+
 	@ApiProperty({
 		description: "The extra like icon",
 		required: false,
 		example: "121212.png",
 	})
-	extra_like_icon!: string;
+	@IsString()
+	@IsOptional()
+	extra_like_icon?: string;
 
 	// @ApiProperty()
 	@IsInt()

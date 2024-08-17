@@ -42,6 +42,13 @@ export class ClientService {
 		return foundClient;
 	}
 
+	async checkExists(id: number): Promise<void> {
+		const foundClient = await this.clientRepository.existsBy({ id: id });
+		if (!foundClient) {
+			throw new ClientNotFoundError(`id: ${id}`);
+		}
+	}
+
 	async quickSearch(text: string = "", user: ICurrentUser) {
 		return this.clientRepository
 			.createQueryBuilder("c")

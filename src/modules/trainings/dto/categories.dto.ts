@@ -20,6 +20,9 @@ export class TrainingCategoryDto implements TrainingCategoryEntity {
 
 	@ApiProperty()
 	sequnce_id!: number;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class CreateTrainingCategoryDto {

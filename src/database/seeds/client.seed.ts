@@ -21,6 +21,7 @@ export async function up(query: QueryBuilder<object>) {
 		| "visits"
 		| "created_at"
 		| "updated_at"
+		| "is_active"
 	>[] = [
 		{
 			fullname: "Ivan Petrovich Ivanov",

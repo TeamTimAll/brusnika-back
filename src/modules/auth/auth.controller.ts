@@ -14,7 +14,7 @@ import { AgentRegisterAgencyMetaDataDto } from "./dtos/AgentRegisterAgency.dto";
 import { AgentRequestAgencyMetaDataDto } from "./dtos/AgentRequestAgency.dto";
 import {
 	AuthResponeWithData,
-	AuthResponeWithToken,
+	AuthResponeWithTokenMetaDataDto,
 } from "./dtos/AuthResponeWithToken.dto";
 import { UserLoginMetaDataDto } from "./dtos/UserLogin.dto";
 import { UserLoginResendCodeMetaDataDto } from "./dtos/UserLoginResendCode.dto";
@@ -33,7 +33,7 @@ export class AuthController {
 	constructor(private authService: AuthService) {}
 
 	@ApiOperation({ summary: "employee login" })
-	@ApiOkResponse({ type: AuthResponeWithToken })
+	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
 	@ApiErrorResponse(
 		UnauthorizedError,
 		"User not found. email: some@gmail.com",
@@ -45,7 +45,7 @@ export class AuthController {
 
 	@ApiOperation({ summary: "verify sms code" })
 	// OK responses
-	@ApiOkResponse({ type: AuthResponeWithToken })
+	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
 	@ApiOkResponse({ type: AuthResponeWithData })
 	// Error responses
 	@ApiErrorResponse(NoVerificationCodeSentError)
@@ -84,20 +84,20 @@ export class AuthController {
 		return this.authService.agentFillData(dto.data);
 	}
 
-	@ApiOkResponse({ type: AuthResponeWithToken })
+	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
 	@ApiErrorResponse(AgencyNotFoundError)
 	@Post("/agent/register/choose_agency")
 	agentChooseAgency(@Body() dto: AgentChooseAgencyMetaDataDto) {
 		return this.authService.agentChooseAgency(dto.data);
 	}
 
-	@ApiOkResponse({ type: AuthResponeWithToken })
+	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
 	@Post("/agent/register/register_agency")
 	agentRegisterAgency(@Body() dto: AgentRegisterAgencyMetaDataDto) {
 		return this.authService.agentRegisterAgency(dto.data);
 	}
 
-	@ApiOkResponse({ type: AuthResponeWithToken })
+	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
 	@Post("/agent/register/request_agency")
 	agentRequestAgency(@Body() dto: AgentRequestAgencyMetaDataDto) {
 		return this.authService.agentRequestAgency(dto.data);

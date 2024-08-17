@@ -82,13 +82,16 @@ export class UserDto implements IUserDto {
 	temporaryEmail!: string;
 
 	@ApiProperty()
-	status!: boolean;
+	is_blocked!: boolean;
 
 	@ApiProperty()
 	city_id?: number;
 
 	@ApiProperty()
 	agency_id?: number;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class UserMetaDataDto extends BaseDto<UserDto> implements Dto {

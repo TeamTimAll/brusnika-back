@@ -5,6 +5,7 @@ import { UserModule } from "../../modules/user/user.module";
 import { ClientModule } from "../client/client.module";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesModule } from "../premises/premises.module";
+import { SettingsModule } from "../settings/settings.module";
 
 import { BookingsController } from "./bookings.controller";
 import { BookingsEntity } from "./bookings.entity";
@@ -16,6 +17,7 @@ import { BookingsService } from "./bookings.service";
 		UserModule,
 		ClientModule,
 		PremisesModule,
+		SettingsModule,
 	],
 	providers: [BookingsService],
 	controllers: [BookingsController],

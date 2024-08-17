@@ -41,7 +41,13 @@ export async function up(query: QueryBuilder<object>) {
 
 	const premises: Omit<
 		PremiseEntity,
-		"id" | "section" | "building" | "created_at" | "updated_at" | "season"
+		| "id"
+		| "section"
+		| "building"
+		| "created_at"
+		| "updated_at"
+		| "season"
+		| "is_active"
 	>[] = [
 		{
 			name: "1-комнатная 30 м2",

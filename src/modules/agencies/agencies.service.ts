@@ -49,6 +49,13 @@ export class AgencyService {
 		return foundAgency;
 	}
 
+	async checkExsits(id: number): Promise<void> {
+		const agency = await this.agencyRepository.existsBy({ id });
+		if (!agency) {
+			throw new AgencyNotFoundError(`'${id}' agency not found`);
+		}
+	}
+
 	async create(dto: CreateAgenciesDto, user: ICurrentUser) {
 		// Check city exist or not
 		await this.cityService.readOne(dto.city_id);
