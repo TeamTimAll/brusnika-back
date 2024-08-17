@@ -1,10 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, EntityManager, In, Repository } from "typeorm";
 
 import { LikedResponseDto } from "common/dtos/likeResponse.dto";
 
+import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { getDaysDiff } from "../../lib/date";
+import { SettingsService } from "../settings/settings.service";
+import { UserService } from "../user/user.service";
 
 import {
 	BulkDto,
@@ -30,6 +34,10 @@ export class TrainingsService {
 		@InjectRepository(TrainingEntity)
 		private trainingRepository: Repository<TrainingEntity>,
 		private dataSource: DataSource,
+		@Inject()
+		private settingsService: SettingsService,
+		@Inject()
+		private userService: UserService,
 	) {}
 
 	@InjectRepository(TrainingLikeEntity)
@@ -130,7 +138,10 @@ export class TrainingsService {
 		return findOne;
 	}
 
-	async readAll(dto: FilterTrainingDto) {
+	async readAll(
+		dto: FilterTrainingDto,
+		user: ICurrentUser,
+	): Promise<TrainingEntity[]> {
 		let trainingQuery = this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.category", "category")
@@ -139,12 +150,29 @@ export class TrainingsService {
 				"trainings.views_count",
 				"trainings.views",
 			);
+		const settings = await this.settingsService.read();
+		const foundUser = await this.userService.repository.findOneBy({
+			id: user.user_id,
+		});
+		const dayDiff = foundUser?.workStartDate
+			? getDaysDiff(new Date(), new Date(foundUser.workStartDate))
+			: 0;
+		if (settings.training_show_date_limit < dayDiff) {
+			trainingQuery = trainingQuery.andWhere(
+				"trainings.is_show IS FALSE",
+			);
+		}
 		if (dto.category_id) {
-			trainingQuery = trainingQuery.where(
+			trainingQuery = trainingQuery.andWhere(
 				"trainings.category_id = :category_id",
 				{
 					category_id: dto.category_id,
 				},
+			);
+		}
+		if (user.role !== RoleType.ADMIN || !dto.include_non_actives) {
+			trainingQuery = trainingQuery.andWhere(
+				"trainings.is_active IS TRUE",
 			);
 		}
 		return trainingQuery.getMany();

@@ -66,4 +66,7 @@ export class BuildingDto implements BuildingEntity {
 
 	@ApiProperty()
 	sections?: SectionEntity[];
+
+	@ApiProperty()
+	is_active!: boolean;
 }

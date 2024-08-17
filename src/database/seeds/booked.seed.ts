@@ -35,7 +35,14 @@ export async function up(query: QueryBuilder<object>) {
 
 	const bookings: Omit<
 		BookingsEntity,
-		"id" | "premise" | "client" | "agent" | "created_at" | "updated_at" | "create_by"
+		| "id"
+		| "premise"
+		| "client"
+		| "agent"
+		| "created_at"
+		| "updated_at"
+		| "create_by"
+		| "is_active"
 	>[] = [
 		{
 			agent_id: agent.id,

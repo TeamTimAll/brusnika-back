@@ -18,6 +18,9 @@ export class SettingsDto implements SettingsEntity {
 
 	@ApiProperty()
 	training_show_date_limit!: number;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class SettingsMetaDataDto extends BaseDto<SettingsDto> implements Dto {

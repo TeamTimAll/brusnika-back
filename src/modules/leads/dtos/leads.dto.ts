@@ -61,4 +61,7 @@ export class LeadsDto implements LeadsEntity {
 
 	@ApiProperty()
 	updated_at!: Date;
+
+	@ApiProperty()
+	is_active!: boolean;
 }

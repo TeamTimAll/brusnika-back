@@ -91,7 +91,7 @@ export class UserEntity extends BaseEntity {
 	temporaryEmail!: string | null;
 
 	@Column({ default: true })
-	status!: boolean;
+	is_blocked!: boolean;
 
 	@ManyToOne(() => CityEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",

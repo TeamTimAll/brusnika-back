@@ -15,6 +15,9 @@ export class CommentDto implements CommentEntity {
 
 	@ApiProperty()
 	text!: string;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class CommentMetaDataDto extends BaseDto<CommentDto> implements Dto {

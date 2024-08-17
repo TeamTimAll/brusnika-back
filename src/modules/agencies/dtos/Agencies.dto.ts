@@ -53,6 +53,9 @@ export class AgencyDto implements IAgencyDto {
 
 	@ApiProperty()
 	create_by_id?: number;
+
+	@ApiProperty()
+	is_active!: boolean;
 }
 
 export class AgencyMetaDataDto<T = AgencyDto>
