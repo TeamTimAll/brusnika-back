@@ -42,6 +42,13 @@ export class ClientService {
 		return foundClient;
 	}
 
+	async checkExists(id: number): Promise<void> {
+		const foundClient = await this.clientRepository.existsBy({ id: id });
+		if (!foundClient) {
+			throw new ClientNotFoundError(`id: ${id}`);
+		}
+	}
+
 	async quickSearch(text: string = "", user: ICurrentUser) {
 		return this.clientRepository
 			.createQueryBuilder("c")
@@ -214,7 +221,7 @@ export class ClientService {
 		});
 
 		const metaData = BaseDto.create<ClientEntity[]>();
-		metaData.calcPagination(clientCount, dto.page, dto.limit);
+		metaData.setPagination(clientCount, dto.page, dto.limit);
 		metaData.data = await queryBuilder.getRawMany();
 		return metaData;
 	}

@@ -9,6 +9,7 @@ import { ClientService } from "../client/client.service";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesService } from "../premises/premises.service";
+import { SettingsService } from "../settings/settings.service";
 
 import { BookingsEntity as BookingEntity } from "./bookings.entity";
 import { CreateBookingsDto } from "./dtos/CreateBookings.dto";
@@ -16,8 +17,6 @@ import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
 import { UpdateBookingsDto } from "./dtos/UpdateBookings.dto";
 import { BookingNotFoundError } from "./errors/BookingsNotFound.error";
 import { MaxCreatableBookingCountReachedError } from "./errors/MaxCreatableBookingCountReached.error";
-
-const MAX_CREATABLE_BOOKING_COUNT = 5;
 
 export interface IUserCreation {
 	user_created_count: number;
@@ -32,28 +31,25 @@ export class BookingsService {
 		private bookingRepository: Repository<BookingEntity>,
 		@Inject() private premiseService: PremisesService,
 		@Inject() private clientService: ClientService,
+		@Inject() private settingsService: SettingsService,
 	) {}
 
 	async create(dto: CreateBookingsDto, user: ICurrentUser) {
 		if (typeof dto.premise_id !== "undefined") {
-			const foundPremise = await this.premiseService.readOne(
-				dto.premise_id,
-			);
-			if (!foundPremise.id) {
-				throw new PremiseNotFoundError(`id: ${dto.premise_id}`);
-			}
+			await this.premiseService.checkExists(dto.premise_id);
 		}
 		if (typeof dto.client_id !== "undefined") {
-			await this.clientService.readOne(dto.client_id);
+			await this.clientService.checkExists(dto.client_id);
 		}
 		let userCreatedCount = await this.bookingRepository.count({
 			where: {
 				create_by_id: user.user_id,
 			},
 		});
-		if (userCreatedCount >= MAX_CREATABLE_BOOKING_COUNT) {
+		const settings = await this.settingsService.read();
+		if (userCreatedCount >= settings.booking_limit) {
 			throw new MaxCreatableBookingCountReachedError(
-				`count: ${userCreatedCount}`,
+				`count: ${userCreatedCount}; limit: ${settings.booking_limit}`,
 			);
 		}
 		userCreatedCount += 1; // One increased. Because created users count is 0
@@ -64,9 +60,9 @@ export class BookingsService {
 		metaData.data = await this.bookingRepository.save(booking);
 		metaData.meta.data = {
 			user_created_count: userCreatedCount,
-			max_user_creation_limit: MAX_CREATABLE_BOOKING_COUNT,
+			max_user_creation_limit: settings.booking_limit,
 			remaining_user_creation_limit:
-				MAX_CREATABLE_BOOKING_COUNT - userCreatedCount,
+				settings.booking_limit - userCreatedCount,
 		} as IUserCreation;
 		return metaData;
 	}

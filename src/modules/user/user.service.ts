@@ -1,7 +1,11 @@
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, MoreThanOrEqual, Repository } from "typeorm";
 
+import { AuthResponeWithTokenDto } from "modules/auth/dtos/AuthResponeWithToken.dto";
+
+import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgencyService } from "../agencies/agencies.service";
@@ -11,7 +15,9 @@ import { PermissionDeniedError } from "../auth/errors/PermissionDenied.error";
 import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
+import { CityService } from "../cities/cities.service";
 
+import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
 import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeDto } from "./dtos/UserChangePhoneVerifyCode.dto";
@@ -19,6 +25,7 @@ import { UserCreateDto } from "./dtos/UserCreate.dto";
 import { UserFilterDto } from "./dtos/UserFilter.dto";
 import { UserResponseDto } from "./dtos/UserResponse.dto";
 import { UserUpdateDto } from "./dtos/UserUpdate.dto";
+import { UserUpdateRoleDto } from "./dtos/UserUpdateRole.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
@@ -31,6 +38,9 @@ export class UserService {
 		private userRepository: Repository<UserEntity>,
 		@Inject(forwardRef(() => AgencyService))
 		private agencyService: AgencyService,
+		private jwtService: JwtService,
+		@Inject(forwardRef(() => CityService))
+		private cityService: CityService,
 	) {}
 
 	get repository(): Repository<UserEntity> {
@@ -44,8 +54,16 @@ export class UserService {
 		return elapsedTime >= oneMinute;
 	}
 
-	readAll(dto: UserFilterDto) {
-		return this.userRepository.find({
+	async readAll(dto: UserFilterDto, user: ICurrentUser) {
+		if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const foundUser = await this.userRepository.findOne({
+				select: { agency_id: true },
+				where: { id: user.user_id },
+			});
+			dto.agency_id = foundUser?.agency_id;
+		}
+		const pageSize = (dto.page - 1) * dto.limit;
+		const [users, usersCount] = await this.userRepository.findAndCount({
 			select: [
 				"id",
 				"created_at",
@@ -70,7 +88,7 @@ export class UserService {
 				"isEmailVerified",
 				"temporaryNumber",
 				"temporaryEmail",
-				"status",
+				"is_blocked",
 				"city",
 				"city_id",
 				"agency",
@@ -89,7 +107,14 @@ export class UserService {
 					? (MoreThanOrEqual(dto.registered_at) as unknown as Date)
 					: undefined,
 			},
+			take: dto.limit,
+			skip: pageSize,
 		});
+
+		const metaData = BaseDto.create<UserEntity[]>();
+		metaData.setPagination(usersCount, dto.page, dto.limit);
+		metaData.data = users;
+		return metaData;
 	}
 
 	async readOne(id: number) {
@@ -118,7 +143,7 @@ export class UserService {
 				"isEmailVerified",
 				"temporaryNumber",
 				"temporaryEmail",
-				"status",
+				"is_blocked",
 				"city",
 				"city_id",
 				"agency",
@@ -182,11 +207,23 @@ export class UserService {
 		return savedUser;
 	}
 
+	async updateUser(dto: UserUpdateRoleDto): Promise<UserEntity> {
+		const foundUser = await this.readOne(dto.id);
+		if (dto.city_id) {
+			await this.cityService.checkExsits(dto.city_id);
+		}
+		if (dto.agency_id) {
+			await this.agencyService.checkExsits(dto.agency_id);
+		}
+		const mergedUser = this.userRepository.merge(foundUser, dto);
+		return await this.userRepository.save(mergedUser);
+	}
+
 	/** Do not use this function directly. It containes permision handler for agent role user. */
 	async update(id: number, dto: UserUpdateDto): Promise<UserEntity> {
 		const user = await this.readOne(id);
 		if (!user) {
-			throw new UserNotFoundError();
+			throw new UserNotFoundError(`id: ${id}`);
 		}
 		const foundRule = UserChangeRoleRule[user.role];
 		if (foundRule && dto.role) {
@@ -355,5 +392,31 @@ export class UserService {
 		});
 
 		return { user_id: foundUser.id, message: "sms sent" };
+	}
+
+	async checkExists(id: number): Promise<void> {
+		const user = await this.userRepository.existsBy({ id });
+		if (!user) {
+			throw new UserNotFoundError(`id: ${id}`);
+		}
+	}
+
+	async loginAsUser(
+		dto: AdminLoginAsUserDto,
+	): Promise<AuthResponeWithTokenDto> {
+		const foundUser = await this.readOne(dto.user_id);
+		const jwtBuffer: ICurrentUser = {
+			user_id: foundUser.id,
+			role: foundUser.role,
+		};
+		return {
+			accessToken: this.jwtService.sign(jwtBuffer),
+		};
+	}
+
+	async delete(id: number) {
+		const foundUser = await this.readOne(id);
+		await this.userRepository.delete(foundUser.id);
+		return foundUser;
 	}
 }

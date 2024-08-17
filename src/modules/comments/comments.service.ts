@@ -1,10 +1,11 @@
-import { HttpException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { CommentEntity } from "./comment.entity";
 import { CreateCommentDto } from "./dtos/CreateComment.dto";
-import { CommentUpdateDto } from "./dtos/CommentUpdate.dto";
+import { UpdateCommentDto } from "./dtos/UpdateComment.dto";
+import { CommentNotFoundError } from "./errors/CommentNotFound.error";
 
 @Injectable()
 export class CommentsService {
@@ -13,41 +14,34 @@ export class CommentsService {
 		private readonly commentRepository: Repository<CommentEntity>,
 	) {}
 
-	async getAllComments(): Promise<CommentEntity[]> {
+	async readAll(): Promise<CommentEntity[]> {
 		return await this.commentRepository.find();
 	}
 
-	async addComment(commentDto: CreateCommentDto): Promise<CommentEntity> {
-		const newComment = this.commentRepository.create(commentDto);
-		return await this.commentRepository.save(newComment);
+	async create(dto: CreateCommentDto): Promise<CommentEntity> {
+		const comment = this.commentRepository.create(dto);
+		return await this.commentRepository.save(comment);
 	}
 
-	async deleteComment(commentId: string): Promise<CommentEntity> {
-		const comment = await this.findOneComment(commentId);
-		await this.commentRepository.remove(comment);
-		return comment;
+	async delete(id: number): Promise<CommentEntity> {
+		const foundComment = await this.readOne(id);
+		await this.commentRepository.delete(foundComment.id);
+		return foundComment;
 	}
 
-	async updateComment(
-		updateCommentDto: CommentUpdateDto,
-	): Promise<CommentEntity> {
-		const { id, comment } = updateCommentDto;
-		const existingComment = await this.findOneComment(id);
-		existingComment.comment = comment;
-		return await this.commentRepository.save(existingComment);
+	async update(id: number, dto: UpdateCommentDto): Promise<CommentEntity> {
+		const foundComment = await this.readOne(id);
+		const mergedComment = this.commentRepository.merge(foundComment, dto);
+		return await this.commentRepository.save(mergedComment);
 	}
 
-	private async findOneComment(commentId: unknown): Promise<CommentEntity> {
-		const queryBuilder = this.commentRepository
-			.createQueryBuilder("Comments")
-			.where("Comments.id = :id", { commentId });
-
-		const comment: CommentEntity | null = await queryBuilder.getOne();
-
-		if (!comment) {
-			throw new HttpException("Comment not found", 404);
+	private async readOne(id: number): Promise<CommentEntity> {
+		const foundComment = await this.commentRepository.findOne({
+			where: { id: id },
+		});
+		if (!foundComment) {
+			throw new CommentNotFoundError(`id: ${id}`);
 		}
-
-		return comment;
+		return foundComment;
 	}
 }

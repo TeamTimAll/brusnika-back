@@ -9,8 +9,17 @@ import {
 } from "class-validator";
 
 import { RoleType } from "../../../constants";
+import { Limit, Page } from "../../../decorators";
 
 export class UserFilterDto {
+	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 50;
+
 	@ApiProperty({ required: false })
 	@IsString()
 	@IsOptional()

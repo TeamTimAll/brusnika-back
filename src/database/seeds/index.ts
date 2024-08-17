@@ -10,12 +10,14 @@ import * as premiseSeed from "./premise.seed";
 import * as projectSeed from "./project.seed";
 import * as sectionSeed from "./section.seed";
 import * as userSeed from "./user.seed";
+import * as settingsSeed from "./settings.seed";
 
 ConfigManager.init();
 export const dataSource = new DataSource(ConfigManager.databaseConfig);
 
 // -----------------Planting seeds-----------------
 async function up(dataSource: DataSource) {
+	await settingsSeed.up(dataSource.createQueryBuilder());
 	await citySeed.up(dataSource.createQueryBuilder());
 	await projectSeed.up(dataSource.createQueryBuilder());
 	await buildingSeed.up(dataSource.createQueryBuilder());
@@ -27,6 +29,7 @@ async function up(dataSource: DataSource) {
 }
 
 async function down(dataSource: DataSource) {
+	await settingsSeed.down(dataSource.createQueryBuilder());
 	await citySeed.down(dataSource.createQueryBuilder());
 	await projectSeed.down(dataSource.createQueryBuilder());
 	await buildingSeed.down(dataSource.createQueryBuilder());

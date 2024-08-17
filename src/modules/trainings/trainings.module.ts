@@ -1,24 +1,28 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { UserModule } from "../../modules/user/user.module";
+import { SettingsModule } from "../settings/settings.module";
+import { UserModule } from "../user/user.module";
 
-import { TrainingsCategoriesModule } from "./modules/categories/categories.module";
-import { TrainingsLikesModule } from "./modules/likes/likes.module";
-import { TrainingsViewsModule } from "./modules/views/views.module";
-import { TrainingsController } from "./trainings.controller";
-import { TrainingsEntity } from "./trainings.entity";
+import { TrainingCategoryEntity } from "./entities/categories.entity";
+import { TrainingLikeEntity } from "./entities/likes.entity";
+import { TrainingViewEntity } from "./entities/views.entity";
+import { TrainingController } from "./trainings.controller";
+import { TrainingEntity } from "./trainings.entity";
 import { TrainingsService } from "./trainings.service";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([TrainingsEntity]),
+		TypeOrmModule.forFeature([
+			TrainingEntity,
+			TrainingCategoryEntity,
+			TrainingViewEntity,
+			TrainingLikeEntity,
+		]),
 		UserModule,
-		TrainingsLikesModule,
-		TrainingsCategoriesModule,
-		TrainingsViewsModule,
+		SettingsModule,
 	],
-	controllers: [TrainingsController],
+	controllers: [TrainingController],
 	providers: [TrainingsService],
 })
-export class TrainingsModule {}
+export class TrainingModule {}

@@ -14,6 +14,7 @@ import { PremisesFilterDto } from "./dtos/PremisesFilter.dto";
 import { UpdatePremisesDto } from "./dtos/UpdatePremises.dto";
 import { PremiseEntity } from "./premises.entity";
 import { SeasonEntity } from "./season.entity";
+import { PremiseNotFoundError } from "./errors/PremiseNotFound.error";
 
 @Injectable()
 export class PremisesService {
@@ -53,6 +54,13 @@ export class PremisesService {
 			return {} as PremiseEntity;
 		}
 		return premises.data[0];
+	}
+
+	async checkExists(id: number): Promise<void> {
+		const premise = await this.premiseRepository.existsBy({ id: id });
+		if (!premise) {
+			throw new PremiseNotFoundError(`id: ${id}`);
+		}
 	}
 
 	async update(id: number, dto: UpdatePremisesDto) {
@@ -342,7 +350,7 @@ export class PremisesService {
 		const premises = await query.getRawMany<PremiseEntity>();
 
 		const metaData = BaseDto.create<PremiseEntity[]>();
-		metaData.calcPagination(
+		metaData.setPagination(
 			premiseCount.length ? premiseCount[0].premise_count : 0,
 			filter.page,
 			filter.limit,

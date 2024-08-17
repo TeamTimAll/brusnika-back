@@ -2,7 +2,9 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 
+import { LikedResponseDto } from "common/dtos/likeResponse.dto";
 import { ICurrentUser } from "interfaces/current-user.interface";
+import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -38,14 +40,6 @@ import { EventReachedMaximumVisitorsError } from "./errors/EventReachedMaximumVi
 import { UserAlreadyRegisteredToEventError } from "./errors/UserAlreadyRegisteredToEvent.error";
 import { EventsNotFoundError } from "./errors/events-not-found.error";
 import { EventsEntity } from "./events.entity";
-
-export interface LikedResponse {
-	is_liked: boolean;
-}
-
-export interface DraftResponse {
-	is_draft: boolean;
-}
 
 @Injectable()
 export class EventsService {
@@ -141,7 +135,7 @@ export class EventsService {
 		eventsQuery = eventsQuery.limit(dto.limit).offset(pageSize);
 
 		const metaData = BaseDto.create<EventsEntity[]>();
-		metaData.calcPagination(eventCount, dto.page, dto.limit);
+		metaData.setPagination(eventCount, dto.page, dto.limit);
 		metaData.data = await eventsQuery.getMany();
 		return metaData;
 	}
@@ -325,7 +319,7 @@ export class EventsService {
 	async toggleLike(
 		dto: ToggleEventDto,
 		user: ICurrentUser,
-	): Promise<LikedResponse> {
+	): Promise<LikedResponseDto> {
 		const event = await this.eventRepository.findOne({
 			where: {
 				id: dto.event_id,
@@ -353,7 +347,7 @@ export class EventsService {
 		return { is_liked: true };
 	}
 
-	async toggleDraft(dto: ToggleEventDto): Promise<DraftResponse> {
+	async toggleDraft(dto: ToggleEventDto): Promise<DraftResponseDto> {
 		const event = await this.eventRepository.findOne({
 			select: { id: true, is_draft: true },
 			where: {

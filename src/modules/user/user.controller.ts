@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	HttpStatus,
 	Param,
@@ -10,7 +11,12 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+	ApiBearerAuth,
+	ApiOkResponse,
+	ApiOperation,
+	ApiTags,
+} from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
@@ -18,9 +24,11 @@ import { RoleType } from "../../constants";
 import { ApiDtoResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+import { AuthResponeWithTokenMetaDataDto } from "../auth/dtos/AuthResponeWithToken.dto";
 import { UserLoginResendCodeMetaDataDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
+import { AdminLoginAsUserMetaDataDto } from "./dtos/AdminLoginAsUser.dto";
 import { UserMetaDataDto } from "./dtos/User.dto";
 import { UserChangeEmailMetaDataDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeMetaDataDto } from "./dtos/UserChangePhoneVerifyCode.dto";
@@ -29,6 +37,7 @@ import { UserFilterDto } from "./dtos/UserFilter.dto";
 import { UserReadAllMetaDataDto } from "./dtos/UserReadAll.dto";
 import { UserResponseMetaDataDto } from "./dtos/UserResponse.dto";
 import { UserUpdateMetaDataDto } from "./dtos/UserUpdate.dto";
+import { UserUpdateRoleMetaDataDto } from "./dtos/UserUpdateRole.dto";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
 
@@ -54,8 +63,8 @@ export class UserController {
 		RoleType.AFFILIATE_MANAGER,
 		RoleType.HEAD_OF_AGENCY,
 	])
-	async readAll(@Query() dto: UserFilterDto, @User() _user: ICurrentUser) {
-		return await this.userService.readAll(dto);
+	async readAll(@Query() dto: UserFilterDto, @User() user: ICurrentUser) {
+		return await this.userService.readAll(dto, user);
 	}
 
 	@Get("/me")
@@ -68,8 +77,30 @@ export class UserController {
 	@Put("/")
 	@ApiOperation({ description: "### User o'z ma'lumotlarini o'zgartirish." })
 	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
-	updateUser(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
+	update(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
 		return this.userService.update(user.user_id, dto.data);
+	}
+
+	@Roles([
+		RoleType.ADMIN,
+		RoleType.HEAD_OF_AGENCY,
+		RoleType.AFFILIATE_MANAGER,
+	])
+	@Post("/update")
+	@ApiOperation({ description: "### User ma'lumotlarini o'zgartirish." })
+	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
+	updateUser(@Body() dto: UserUpdateRoleMetaDataDto) {
+		return this.userService.updateUser(dto.data);
+	}
+
+	@Roles([RoleType.ADMIN])
+	@Post("/login")
+	@ApiOperation({
+		description: "### Admin bo'lib user nomidan login qilish.",
+	})
+	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
+	loginAsUser(@Body() dto: AdminLoginAsUserMetaDataDto) {
+		return this.userService.loginAsUser(dto.data);
 	}
 
 	@Post("/phone")
@@ -144,5 +175,12 @@ export class UserController {
 	])
 	async readOne(@Param("id") id: number, @User() _user: ICurrentUser) {
 		return await this.userService.readOne(id);
+	}
+
+	@Roles([RoleType.ADMIN])
+	@Delete(":id")
+	@ApiDtoResponse(UserReadAllMetaDataDto, HttpStatus.OK)
+	async delete(@Param("id") id: number) {
+		return this.userService.delete(id);
 	}
 }

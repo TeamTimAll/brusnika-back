@@ -11,7 +11,7 @@ import {
 
 import { BaseDto } from "../../../common/base/base_dto";
 
-export class CreateTrainingsDto {
+export class CreateTrainingDto {
 	@IsString()
 	@IsNotEmpty()
 	@ApiProperty({
@@ -41,60 +41,59 @@ export class CreateTrainingsDto {
 
 	@ApiProperty({
 		description: "The first category of the trainings",
-		example: "The first category of the trainings",
 		required: false,
 	})
-	@IsOptional()
+	@IsNotEmpty()
 	@IsInt()
 	@Type(() => Number)
-	primary_category_id!: number;
+	category_id!: number;
 
-	@ApiProperty({
-		description: "The second category of the trainings",
-		example: "The second category of the trainings",
-		required: false,
-	})
-	@IsOptional()
-	@IsInt()
-	@Type(() => Number)
-	second_category_id!: number;
-
-	@IsBoolean()
 	@ApiProperty({
 		description: "Is like enabled",
-		required: true,
+		required: false,
 	})
-	is_like_enabled!: boolean;
-
 	@IsBoolean()
 	@IsOptional()
+	is_like_enabled?: boolean;
+
+	@ApiProperty({
+		description: "Is copy enabled",
+		required: false,
+	})
+	@IsBoolean()
+	@IsOptional()
+	is_copy_enabled?: boolean;
+
 	@ApiProperty({
 		description: "Is extra like enabled",
 		required: false,
 	})
-	is_extra_like_enabled!: boolean;
-
-	@IsString()
+	@IsBoolean()
 	@IsOptional()
+	is_extra_like_enabled?: boolean;
+
 	@ApiProperty({
 		description: "The extra like icon",
 		required: false,
 		example: "121212.png",
 	})
-	extra_like_icon!: string;
+	@IsString()
+	@IsOptional()
+	extra_like_icon?: string;
 
+	// @ApiProperty()
 	@IsInt()
 	@Type(() => Number)
 	@IsOptional()
 	user_id?: number;
 }
 
-export class CreateTrainingsMetaDataDto extends BaseDto<CreateTrainingsDto> {
+export class CreateTrainingsMetaDataDto extends BaseDto<CreateTrainingDto> {
 	@ApiProperty({
-		oneOf: [{ $ref: getSchemaPath(CreateTrainingsDto) }],
-		type: () => CreateTrainingsDto,
+		oneOf: [{ $ref: getSchemaPath(CreateTrainingDto) }],
+		type: () => CreateTrainingDto,
 	})
 	@ValidateNested()
-	@Type(() => CreateTrainingsDto)
-	declare data: CreateTrainingsDto;
+	@Type(() => CreateTrainingDto)
+	declare data: CreateTrainingDto;
 }

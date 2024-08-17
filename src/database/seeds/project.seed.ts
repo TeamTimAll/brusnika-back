@@ -15,7 +15,7 @@ export async function up(query: QueryBuilder<object>) {
 
 	const projects: Omit<
 		ProjectEntity,
-		"id" | "city" | "created_at" | "updated_at"
+		"id" | "city" | "created_at" | "updated_at" | "is_active"
 	>[] = [
 		{
 			city_id: findCityId(cities, "Москва"),

@@ -5,7 +5,6 @@ import {
 	type ArgumentsHost,
 	type ExceptionFilter,
 } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
 import { type Request, type Response } from "express";
 
 import { BaseError } from "../common/base/baseError";
@@ -19,7 +18,7 @@ import { requestToMetaData } from "./meta-data-request";
 export class HttpValidationErrorFilter
 	implements ExceptionFilter<CustomValidationError>
 {
-	constructor(public reflector: Reflector) {}
+	constructor() {}
 
 	catch(exception: CustomValidationError, host: ArgumentsHost): void {
 		const ctx = host.switchToHttp();

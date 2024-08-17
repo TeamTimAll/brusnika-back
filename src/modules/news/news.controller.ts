@@ -11,8 +11,9 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
+import { RoleType } from "../../constants";
 import { User } from "../../decorators";
-import { RolesGuard } from "../../guards/roles.guard";
+import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
@@ -37,6 +38,7 @@ export class NewsController {
 		return this.service.readAll();
 	}
 
+	@Roles([RoleType.AFFILIATE_MANAGER])
 	@Post()
 	@ApiOperation({ summary: "create news" })
 	async createNews(
@@ -55,6 +57,7 @@ export class NewsController {
 		return this.service.toggleLike(dto.data, user);
 	}
 
+	@Roles([RoleType.AFFILIATE_MANAGER])
 	@Put(":id")
 	@ApiOperation({ summary: "update news" })
 	async updateNews(
@@ -76,6 +79,7 @@ export class NewsController {
 		return await this.service.banner();
 	}
 
+	@Roles([RoleType.AFFILIATE_MANAGER])
 	@Post("categories")
 	@ApiOperation({ summary: "Create news categories" })
 	async createCategories(@Body() body: CreateNewsCategoriesMetaDataDto) {

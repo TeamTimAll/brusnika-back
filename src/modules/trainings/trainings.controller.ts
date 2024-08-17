@@ -1,7 +1,9 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
+	HttpStatus,
 	Param,
 	Post,
 	Put,
@@ -11,57 +13,113 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { User } from "../../decorators";
-import { RolesGuard } from "../../guards/roles.guard";
+import { LikedResponseMetaDataDto } from "../../common/dtos/likeResponse.dto";
+import { RoleType } from "../../constants";
+import { ApiDtoResponse, ApiErrorResponse, User } from "../../decorators";
+import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
+import { BulkMetaDataDto } from "./dto/Bulk.dto";
 import { CreateTrainingsMetaDataDto } from "./dto/CreateTrainings.dto";
+import { FilterTrainingDto } from "./dto/FilterTraining.dto";
 import { LikeTrainingsMetaDataDto } from "./dto/LikeTrainings.dto";
-import { UpdateTrainingsMetaDataDto } from "./dto/UpdateTrainings.dto";
-import { CreateTrainingsCategoriesMetaDataDto } from "./modules/categories/dto/categories.dto";
-import { TrainingsService } from "./trainings.service";
+import { UpdateTrainingCategoryMetaDataDto } from "./dto/UpdateTrainingCategory.dto";
+import { UpdateTrainingMetaDataDto } from "./dto/UpdateTrainings.dto";
+import { CreateTrainingCategoryMetaDataDto } from "./dto/categories.dto";
+import {
+	TrainingArrayMetaDataDto,
+	TrainingMetaDataDto,
+} from "./dto/trainings.dto";
+import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
+import { TrainingsService as TrainingService } from "./trainings.service";
 
 @ApiTags("Trainings")
 @Controller("trainings")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
-export class TrainingsController {
-	constructor(private service: TrainingsService) {}
+export class TrainingController {
+	constructor(private service: TrainingService) {}
 
 	@Get()
 	@ApiOperation({ summary: "Get all trainings" })
-	async getAllTrainings() {
-		return this.service.readAll();
+	@ApiDtoResponse(TrainingArrayMetaDataDto, HttpStatus.OK)
+	async readAll(@Query() dto: FilterTrainingDto, @User() user: ICurrentUser) {
+		return this.service.readAll(dto, user);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post()
-	@ApiOperation({ summary: "create trainings" })
-	async createTrainings(
+	@ApiOperation({
+		summary: "create trainings",
+		description: `### Training yasash
+		\n **data** ma'lumotlari:
+		\n - **title** - [required]
+		\n - **content** - [required]
+		\n - **cover_image** - [required]
+		\n - **category_id** - [optional]
+		\n - **is_like_enabled** - [required]
+		\n - **is_copy_enabled** - [required]
+		\n - **is_extra_like_enabled** - [optional]
+		\n - **extra_like_icon** - [optional]`,
+	})
+	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
+	@ApiErrorResponse(TrainingCategoryNotFoundError, "category_id: 'id'")
+	async create(
 		@Body() dto: CreateTrainingsMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
 		return this.service.create(dto.data, user);
 	}
 
-	@Post("like")
-	@ApiOperation({ summary: "like trainings" })
-	async likeTrainings(
+	@Post("toggle-like")
+	@ApiOperation({
+		summary: "toggle like",
+		description: `### Toggle like - like bosishni o'chirib yoqish
+		\n - training_id - training id'si`,
+	})
+	@ApiDtoResponse(LikedResponseMetaDataDto, HttpStatus.CREATED)
+	async toggleLike(
 		@Body() dto: LikeTrainingsMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		return this.service.likeTrainings(dto.data, user);
+		return this.service.toggleLike(dto.data, user);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Put(":id")
-	@ApiOperation({ summary: "update trainings" })
+	@ApiOperation({
+		summary: "update trainings",
+		description: `### Training yangilash
+		\n **data** ma'lumotlari:
+		\n - **title** - [required]
+		\n - **content** - [required]
+		\n - **cover_image** - [required]
+		\n - **category_id** - [optional]
+		\n - **is_like_enabled** - [required]
+		\n - **is_copy_enabled** - [required]
+		\n - **is_extra_like_enabled** - [optional]
+		\n - **extra_like_icon** - [optional]`,
+	})
 	async update(
 		@Param("id") id: number,
-		@Body() dto: UpdateTrainingsMetaDataDto,
+		@Body() dto: UpdateTrainingMetaDataDto,
 	) {
 		return this.service.update(id, dto.data);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Delete(":id")
+	@ApiOperation({
+		summary: "Delete trainings",
+		description: `### Training yangilash
+		\n **param** ma'lumotlari:
+		\n - **id** - [required] training category id'si`,
+	})
+	async delete(@Param("id") id: number) {
+		return this.service.delete(id);
 	}
 
 	@Get("categories")
@@ -70,18 +128,58 @@ export class TrainingsController {
 		return await this.service.getCategories();
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Put("categories/:id")
+	@ApiOperation({
+		summary: "Update trainings categories",
+		description: `### Training categoriyasini yangilash
+		\n **param** ma'lumotlari:
+		\n - **id** - [required] training category id'si
+		\n **data** ma'lumotlari:
+		\n - **name** - [required] categoriya nomi`,
+	})
+	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
+	updateCategory(
+		@Param("id") id: number,
+		@Body() dto: UpdateTrainingCategoryMetaDataDto,
+	) {
+		return this.service.updateCategory(id, dto.data);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Delete("categories/:id")
+	@ApiOperation({
+		summary: "Delete trainings categories",
+		description: `### Training categoriyasini o'chirish
+		\n **param** ma'lumotlari:
+		\n - **id** - [required] training category id'si`,
+	})
+	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
+	deleteCategory(@Param("id") id: number) {
+		return this.service.deleteCategory(id);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post("categories")
 	@ApiOperation({ summary: "Create trainings categories" })
-	async createCategories(@Body() dto: CreateTrainingsCategoriesMetaDataDto) {
-		return await this.service.createTrainingsCategory(dto.data);
+	async createCategory(@Body() dto: CreateTrainingCategoryMetaDataDto) {
+		return await this.service.createCategory(dto.data);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Post("bulk")
+	@ApiOperation({
+		summary: "Bulk create, update, delete trainings and categories",
+	})
+	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
+	bulk(@Body() dto: BulkMetaDataDto, @User() user: ICurrentUser) {
+		return this.service.bulk(dto.data, user);
 	}
 
 	@Get(":id")
 	@ApiOperation({ summary: "Get trainings by id" })
-	async getTrainingsById(
-		@Query("id") id: number,
-		@User() user: ICurrentUser,
-	) {
+	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
+	async readOne(@Param("id") id: number, @User() user: ICurrentUser) {
 		return this.service.readOne(id, user);
 	}
 }

@@ -13,6 +13,7 @@ export async function up(query: QueryBuilder<object>) {
 		| "premise"
 		| "created_at"
 		| "updated_at"
+		| "is_active"
 	>[] = [
 		{
 			client_id: 1,

@@ -1,21 +1,14 @@
-import {
-	Column,
-	Entity,
-	JoinColumn,
-	ManyToOne,
-	OneToMany,
-	OneToOne,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { UserEntity } from "../user/user.entity";
 
-import { TrainingsCategories } from "./modules/categories/categories.entity";
-import { TrainingsLikes } from "./modules/likes/likes.entity";
-import { TrainingsViews } from "./modules/views/views.entity";
+import { TrainingCategoryEntity } from "./entities/categories.entity";
+import { TrainingLikeEntity } from "./entities/likes.entity";
+import { TrainingViewEntity } from "./entities/views.entity";
 
 @Entity({ name: "trainings" })
-export class TrainingsEntity extends BaseEntity {
+export class TrainingEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	title!: string;
 
@@ -31,6 +24,12 @@ export class TrainingsEntity extends BaseEntity {
 	@Column({ type: "boolean", default: false })
 	is_extra_like_enabled!: boolean;
 
+	@Column({ type: "boolean", default: false })
+	is_show!: boolean;
+
+	@Column({ type: "boolean", default: false })
+	is_copy_enabled!: boolean;
+
 	@Column({ type: "text", nullable: true })
 	extra_like_icon!: string;
 
@@ -42,18 +41,14 @@ export class TrainingsEntity extends BaseEntity {
 	published_at!: Date;
 
 	@Column({ type: "integer", nullable: true })
-	primary_category_id!: number;
+	category_id!: number;
 
-	@OneToOne(() => TrainingsCategories)
-	@JoinColumn({ name: "primary_category_id" })
-	primary_category?: TrainingsCategories;
-
-	@Column({ type: "integer", nullable: true })
-	second_category_id?: number;
-
-	@OneToOne(() => TrainingsCategories)
-	@JoinColumn({ name: "second_category_id" })
-	secondary_category!: TrainingsCategories;
+	@ManyToOne(() => TrainingCategoryEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	@JoinColumn({ name: "category_id" })
+	category?: TrainingCategoryEntity;
 
 	@ManyToOne(() => UserEntity)
 	@JoinColumn({ name: "user_id" })
@@ -63,22 +58,22 @@ export class TrainingsEntity extends BaseEntity {
 	user_id?: number;
 
 	@OneToMany(
-		() => TrainingsViews,
+		() => TrainingViewEntity,
 		(TrainingsViews) => TrainingsViews.trainings,
 		{
 			onDelete: "CASCADE",
 			onUpdate: "CASCADE",
 		},
 	)
-	views?: TrainingsViews[];
+	views?: TrainingViewEntity[];
 
 	@OneToMany(
-		() => TrainingsLikes,
+		() => TrainingLikeEntity,
 		(TrainingsLikes) => TrainingsLikes.trainings,
 		{
 			onDelete: "CASCADE",
 			onUpdate: "CASCADE",
 		},
 	)
-	likes?: TrainingsLikes[];
+	likes?: TrainingLikeEntity[];
 }
