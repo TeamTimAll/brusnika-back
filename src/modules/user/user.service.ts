@@ -15,6 +15,7 @@ import { PermissionDeniedError } from "../auth/errors/PermissionDenied.error";
 import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
+import { CityService } from "../cities/cities.service";
 
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
 import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
@@ -38,6 +39,8 @@ export class UserService {
 		@Inject(forwardRef(() => AgencyService))
 		private agencyService: AgencyService,
 		private jwtService: JwtService,
+		@Inject(forwardRef(() => CityService))
+		private cityService: CityService,
 	) {}
 
 	get repository(): Repository<UserEntity> {
@@ -85,7 +88,7 @@ export class UserService {
 				"isEmailVerified",
 				"temporaryNumber",
 				"temporaryEmail",
-				"status",
+				"is_blocked",
 				"city",
 				"city_id",
 				"agency",
@@ -140,7 +143,7 @@ export class UserService {
 				"isEmailVerified",
 				"temporaryNumber",
 				"temporaryEmail",
-				"status",
+				"is_blocked",
 				"city",
 				"city_id",
 				"agency",
@@ -204,34 +207,23 @@ export class UserService {
 		return savedUser;
 	}
 
-	async updateUser(dto: UserUpdateRoleDto, user: ICurrentUser) {
+	async updateUser(dto: UserUpdateRoleDto): Promise<UserEntity> {
 		const foundUser = await this.readOne(dto.id);
-		if (user.role !== RoleType.AFFILIATE_MANAGER) {
-			// This permision checking is only for not AFFILIATE_MANAGER users
-			if (dto.role !== RoleType.AGENT) {
-				throw new PermissionDeniedError(
-					`role: ${user.role}, givin role is not AGENT`,
-				);
-			}
-			if (foundUser.role !== RoleType.NEW_MEMBER) {
-				throw new PermissionDeniedError(
-					`role: ${user.role}, found user role is not NEW_MEMBER`,
-				);
-			}
+		if (dto.city_id) {
+			await this.cityService.checkExsits(dto.city_id);
 		}
-		await this.userRepository.update(dto.id, {
-			role: dto.role,
-			status: !dto.is_blocked,
-		});
-		user.role = dto.role;
-		return foundUser;
+		if (dto.agency_id) {
+			await this.agencyService.checkExsits(dto.agency_id);
+		}
+		const mergedUser = this.userRepository.merge(foundUser, dto);
+		return await this.userRepository.save(mergedUser);
 	}
 
 	/** Do not use this function directly. It containes permision handler for agent role user. */
 	async update(id: number, dto: UserUpdateDto): Promise<UserEntity> {
 		const user = await this.readOne(id);
 		if (!user) {
-			throw new UserNotFoundError();
+			throw new UserNotFoundError(`id: ${id}`);
 		}
 		const foundRule = UserChangeRoleRule[user.role];
 		if (foundRule && dto.role) {

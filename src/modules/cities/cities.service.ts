@@ -43,6 +43,13 @@ export class CityService {
 		return findOne;
 	}
 
+	async checkExsits(id: number): Promise<void> {
+		const city = await this.cityRepository.existsBy({ id });
+		if (!city) {
+			throw new CityNotFoundError(`'${id}' city not found`);
+		}
+	}
+
 	async update(id: number, dto: UpdateCitiesDto): Promise<CityEntity> {
 		const foundCity = await this.readOne(id);
 		const mergedCity = this.cityRepository.merge(foundCity, dto);

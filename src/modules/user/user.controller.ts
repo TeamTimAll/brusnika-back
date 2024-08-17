@@ -89,11 +89,8 @@ export class UserController {
 	@Post("/update")
 	@ApiOperation({ description: "### User ma'lumotlarini o'zgartirish." })
 	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
-	updateUser(
-		@Body() dto: UserUpdateRoleMetaDataDto,
-		@User() user: ICurrentUser,
-	) {
-		return this.userService.updateUser(dto.data, user);
+	updateUser(@Body() dto: UserUpdateRoleMetaDataDto) {
+		return this.userService.updateUser(dto.data);
 	}
 
 	@Roles([RoleType.ADMIN])

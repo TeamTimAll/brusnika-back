@@ -82,7 +82,7 @@ export class UserDto implements IUserDto {
 	temporaryEmail!: string;
 
 	@ApiProperty()
-	status!: boolean;
+	is_blocked!: boolean;
 
 	@ApiProperty()
 	city_id?: number;
