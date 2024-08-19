@@ -318,3 +318,8 @@ Fasllar entity shakli:
     "date": "2024-08-09"
 }
 ```
+
+- [x] User block qilingandan keyin platformaga kira olmasin.
+- [x] User sort fullname, agency_name, role, city_name, status, registered_at
+- [x] User status active, bloked, registered
+- [x] User status update'ga qo'shish.

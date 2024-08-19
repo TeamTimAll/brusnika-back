@@ -39,6 +39,7 @@ export enum ApplicationPromptID {
 	COMMENT_NOT_FOUND_ERROR = 425,
 	MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR = 433,
 	NOTIFICATION_NOT_FOUND_ERROR = 434,
+	USER_BLOCKED_ERROR = 435,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -467,6 +468,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Max creatable booking count reached error",
 			ru: "Ошибка: достигнуто максимальное количество создаваемых бронирований.",
 			uz: "Max creatable booking count reached error",
+		},
+	},
+	[ApplicationPromptID.USER_BLOCKED_ERROR]: {
+		promptId: ApplicationPromptID.USER_BLOCKED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "user_blocked_error",
+		promptLabels: {
+			en: "You are denied access (Contact the administration)",
+			ru: "Вам отказано в доступе (Обратитесь к администрации)",
+			uz: "You are denied access (Contact the administration)",
 		},
 	},
 };
