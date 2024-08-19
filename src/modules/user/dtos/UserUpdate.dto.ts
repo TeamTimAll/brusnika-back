@@ -13,6 +13,7 @@ import {
 
 import { BaseDto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
+import { UserStatus } from "../user.entity";
 
 export class UserUpdateDto {
 	@ApiProperty({ required: false, description: "The first name of the user" })
@@ -75,6 +76,11 @@ export class UserUpdateDto {
 	@IsEnum(RoleType)
 	@IsOptional()
 	role?: RoleType;
+
+	@ApiProperty({ enum: UserStatus })
+	@IsEnum(UserStatus)
+	@IsOptional()
+	status?: UserStatus;
 }
 
 export class UserUpdateMetaDataDto extends BaseDto<UserUpdateDto> {

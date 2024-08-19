@@ -22,7 +22,7 @@ import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
 import { UserChangePhoneVerifyCodeDto } from "./dtos/UserChangePhoneVerifyCode.dto";
 import { UserCreateDto } from "./dtos/UserCreate.dto";
-import { UserFilterDto } from "./dtos/UserFilter.dto";
+import { UserFilterDto, UserSortBy } from "./dtos/UserFilter.dto";
 import { UserResponseDto } from "./dtos/UserResponse.dto";
 import { UserUpdateDto } from "./dtos/UserUpdate.dto";
 import { UserUpdateRoleDto } from "./dtos/UserUpdateRole.dto";
@@ -88,7 +88,7 @@ export class UserService {
 				"isEmailVerified",
 				"temporaryNumber",
 				"temporaryEmail",
-				"is_blocked",
+				"status",
 				"city",
 				"city_id",
 				"agency",
@@ -106,6 +106,15 @@ export class UserService {
 				created_at: dto.registered_at
 					? (MoreThanOrEqual(dto.registered_at) as unknown as Date)
 					: undefined,
+			},
+			// prettier-ignore
+			order: {
+				fullName: dto.sort_by === UserSortBy.FULLNAME ? dto.order_by : undefined,
+				role: dto.sort_by === UserSortBy.ROLE ? dto.order_by : undefined,
+				status: dto.sort_by === UserSortBy.STATUS ? dto.order_by : undefined,
+				created_at: dto.sort_by === UserSortBy.REGISTERED_AT ? dto.order_by : undefined,
+				agency: { legalName: dto.sort_by === UserSortBy.AGENCY_NAME ? dto.order_by : undefined},
+				city: { name: dto.sort_by === UserSortBy.CITY_NAME ? dto.order_by : undefined},
 			},
 			take: dto.limit,
 			skip: pageSize,
@@ -143,7 +152,7 @@ export class UserService {
 				"isEmailVerified",
 				"temporaryNumber",
 				"temporaryEmail",
-				"is_blocked",
+				"status",
 				"city",
 				"city_id",
 				"agency",

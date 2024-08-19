@@ -8,8 +8,17 @@ import {
 	IsString,
 } from "class-validator";
 
-import { RoleType } from "../../../constants";
+import { Order, RoleType } from "../../../constants";
 import { Limit, Page } from "../../../decorators";
+
+export enum UserSortBy {
+	FULLNAME = "fullname",
+	AGENCY_NAME = "agency_name",
+	ROLE = "role",
+	CITY_NAME = "city_name",
+	STATUS = "status",
+	REGISTERED_AT = "registered_at",
+}
 
 export class UserFilterDto {
 	@ApiProperty({ required: false })
@@ -46,4 +55,14 @@ export class UserFilterDto {
 	@Type(() => Number)
 	@IsOptional()
 	agency_id?: number;
+
+	@ApiProperty({ enum: UserSortBy, required: false })
+	@IsEnum(UserSortBy)
+	@IsOptional()
+	sort_by?: UserSortBy;
+
+	@ApiProperty({ enum: Order, required: false })
+	@IsEnum(Order)
+	@IsOptional()
+	order_by?: Order = Order.ASC;
 }
