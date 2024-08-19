@@ -23,7 +23,7 @@ import {
 	CommentArrayMetaDataDto,
 	CommentMetaDataDto,
 } from "./dtos/Comment.dto";
-import { CreateCommentDto } from "./dtos/CreateComment.dto";
+import { CreateCommentMetaDataDto } from "./dtos/CreateComment.dto";
 import { UpdateCommentMetaDataDto } from "./dtos/UpdateComment.dto";
 import { CommentNotFoundError } from "./errors/CommentNotFound.error";
 
@@ -44,8 +44,8 @@ export class CommentsController {
 	@Roles([RoleType.ADMIN])
 	@Post()
 	@ApiDtoResponse(CommentMetaDataDto, HttpStatus.OK)
-	async create(@Body() dto: CreateCommentDto) {
-		return this.commentsService.create(dto);
+	async create(@Body() dto: CreateCommentMetaDataDto) {
+		return this.commentsService.create(dto.data);
 	}
 
 	@Roles([RoleType.ADMIN])
