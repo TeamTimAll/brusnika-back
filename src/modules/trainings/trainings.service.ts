@@ -113,7 +113,11 @@ export class TrainingsService {
 	}
 
 	getCategories() {
-		return this.trainingCategoryRepository.find();
+		return this.trainingCategoryRepository.find({
+			relations: {
+				training: true,
+			},
+		});
 	}
 
 	async readOne(id: number, user: ICurrentUser): Promise<unknown> {

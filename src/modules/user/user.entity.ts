@@ -24,7 +24,6 @@ export enum UserRegisterStatus {
 export enum UserStatus {
 	ACTIVE = "active",
 	BLOCKED = "blocked",
-	REGISTERED = "registered",
 }
 
 @Entity({ name: "users" })
@@ -96,7 +95,7 @@ export class UserEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	temporaryEmail!: string | null;
 
-	@Column({ type: "enum", enum: UserStatus, default: UserStatus.REGISTERED })
+	@Column({ type: "enum", enum: UserStatus, default: UserStatus.ACTIVE })
 	status!: UserStatus;
 
 	@ManyToOne(() => CityEntity, (citiesEntity) => citiesEntity.users, {
