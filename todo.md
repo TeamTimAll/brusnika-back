@@ -323,3 +323,11 @@ Fasllar entity shakli:
 - [x] User sort fullname, agency_name, role, city_name, status, registered_at
 - [x] User status active, bloked, registered
 - [x] User status update'ga qo'shish.
+
+- [ ] Yangi qo'shilgan NEW_MEMBER role'dagi user'larni sanog'ini chiqarish.
+    - [ ] HEAD_OF_AGENCY role'da o'z agency'sidagilarni sanog'ini chiqarish.
+    - [ ] ADMIN role'da hammasini sanog'ini chiqarish.
+- [x] Training category'larini olayotganda training'larini ham qo'shib berish.
+- [x] User status active va blocked dan iborat
+- [ ] Training role'lar ruhsati uchun field qo'shib berish kerak.
+- [x] Hamma shahar uchun premise'lar yasash. Studia ham kerak.
