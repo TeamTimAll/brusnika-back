@@ -1,26 +1,55 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, OmitType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	ArrayMinSize,
 	IsInt,
 	IsNotEmpty,
+	IsString,
 	ValidateNested,
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
+import { IsPrefixes } from "../../../decorators/is-prefix.decorator";
 
 import { CreateTrainingDto } from "./CreateTrainings.dto";
 import { CreateTrainingCategoryDto } from "./categories.dto";
 
-export class BulkUpdateTrainingDto extends CreateTrainingDto {
+export class BulkCreateTrainingDto extends OmitType(CreateTrainingDto, [
+	"category_id",
+]) {
+	@ApiProperty({ description: 'use "new-" or "old-" prefixes' })
+	@IsString()
+	@IsPrefixes(["new-", "old-"])
+	@IsNotEmpty()
+	category_ref_id!: string;
+}
+
+export class BulkCreateCategoryDto extends CreateTrainingCategoryDto {
+	@ApiProperty({ description: 'use "new-" or "old-" prefixes' })
+	@IsString()
+	@IsPrefixes(["new-", "old-"])
+	@IsNotEmpty()
+	ref_id!: string;
+}
+
+export class BulkUpdateTrainingDto extends BulkCreateTrainingDto {
 	@ApiProperty()
 	@IsInt()
 	@Type(() => Number)
 	@IsNotEmpty()
 	id!: number;
+
+	@ApiProperty({
+		description: "The first category of the trainings",
+		required: false,
+	})
+	@IsNotEmpty()
+	@IsInt()
+	@Type(() => Number)
+	category_id!: number;
 }
 
-export class BulkUpdateCategoryDto extends CreateTrainingCategoryDto {
+export class BulkUpdateCategoryDto extends BulkCreateCategoryDto {
 	@ApiProperty()
 	@IsInt()
 	@Type(() => Number)
@@ -29,17 +58,17 @@ export class BulkUpdateCategoryDto extends CreateTrainingCategoryDto {
 }
 
 class BulkCreateDto {
-	@ApiProperty({ type: CreateTrainingDto, isArray: true })
+	@ApiProperty({ type: BulkCreateTrainingDto, isArray: true })
 	@ValidateNested()
-	@Type(() => CreateTrainingDto)
+	@Type(() => BulkCreateTrainingDto)
 	@ArrayMinSize(0)
-	trainings!: CreateTrainingDto[];
+	trainings!: BulkCreateTrainingDto[];
 
-	@ApiProperty({ type: CreateTrainingCategoryDto, isArray: true })
+	@ApiProperty({ type: BulkCreateCategoryDto, isArray: true })
 	@ValidateNested()
-	@Type(() => CreateTrainingCategoryDto)
+	@Type(() => BulkCreateCategoryDto)
 	@ArrayMinSize(0)
-	categories!: CreateTrainingCategoryDto[];
+	categories!: BulkCreateCategoryDto[];
 }
 
 class BulkUpdateDto {

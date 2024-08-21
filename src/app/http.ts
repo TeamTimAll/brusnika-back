@@ -21,6 +21,7 @@ import {
 	QueryFailedErrorFilter,
 	TypeORMErrorFilter,
 } from "../filters/query-failed.filter";
+import { LogColor, logColorize } from "../lib/log";
 
 import { AppLogger } from "./appLogger";
 
@@ -41,10 +42,7 @@ export class Http {
 		this.app.use(compression());
 		this.app.use(
 			morgan(
-				':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
-				{
-					stream: AppLogger.initStream(logger),
-				},
+				`Date:\t\t${logColorize(LogColor.GRAY_TEXT, "[:date[iso]]")}\nRemote address:\t${logColorize(LogColor.GRAY_TEXT, ":remote-addr")}\nMethod:\t\t${logColorize(LogColor.YELLOW_TEXT, ":method")} ${logColorize(LogColor.BLUE_TEXT, ":url")} ${logColorize(LogColor.GREEN_TEXT, ":status")} ${logColorize(LogColor.GRAY_TEXT, "HTTP/:http-version")}\nAgent:\t\t${logColorize(LogColor.GRAY_TEXT, ":user-agent")}\nTime:\t\t${logColorize(LogColor.YELLOW_TEXT, ":response-time ms")}\n`,
 			),
 		);
 		this.app.enableVersioning();
