@@ -32,24 +32,15 @@ export class BulkCreateCategoryDto extends CreateTrainingCategoryDto {
 	ref_id!: string;
 }
 
-export class BulkUpdateTrainingDto extends BulkCreateTrainingDto {
+export class BulkUpdateTrainingDto extends CreateTrainingDto {
 	@ApiProperty()
 	@IsInt()
 	@Type(() => Number)
 	@IsNotEmpty()
 	id!: number;
-
-	@ApiProperty({
-		description: "The first category of the trainings",
-		required: false,
-	})
-	@IsNotEmpty()
-	@IsInt()
-	@Type(() => Number)
-	category_id!: number;
 }
 
-export class BulkUpdateCategoryDto extends BulkCreateCategoryDto {
+export class BulkUpdateCategoryDto extends CreateTrainingCategoryDto {
 	@ApiProperty()
 	@IsInt()
 	@Type(() => Number)
