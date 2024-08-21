@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
+import { RoleType } from "../../constants";
 import { UserEntity } from "../user/user.entity";
 
 import { TrainingCategoryEntity } from "./entities/categories.entity";
@@ -32,6 +33,18 @@ export class TrainingEntity extends BaseEntity {
 
 	@Column({ type: "text", nullable: true })
 	extra_like_icon!: string;
+
+	@Column({ type: "enum", enum: RoleType, nullable: true })
+	access_role?: RoleType;
+
+	@ManyToOne(() => UserEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	access_user?: UserEntity;
+
+	@Column({ type: "integer", nullable: true })
+	access_user_id?: number;
 
 	@Column({
 		type: "timestamp without time zone",
