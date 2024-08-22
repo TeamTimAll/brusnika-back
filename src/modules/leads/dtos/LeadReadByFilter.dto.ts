@@ -13,7 +13,7 @@ export class LeadReadByFilterDto {
 
 	@ApiProperty({ required: false })
 	@Limit()
-	limit: number = 50;
+	limit: number = 20;
 
 	@ApiProperty({ required: false })
 	@IsOptional()
