@@ -331,3 +331,4 @@ Fasllar entity shakli:
 - [x] User status active va blocked dan iborat
 - [x] Training role'lar ruhsati uchun field qo'shib berish kerak.
 - [x] Hamma shahar uchun premise'lar yasash. Studia ham kerak.
+- [ ] User verification uchun is_verified va kirmoqchi bo'lgan role'ni saqlash kerak. verification'dan o'tsa so'ralgan role'iga o'tkazib qo'yish kerak.
