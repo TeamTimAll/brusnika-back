@@ -329,5 +329,5 @@ Fasllar entity shakli:
     - [ ] ADMIN role'da hammasini sanog'ini chiqarish.
 - [x] Training category'larini olayotganda training'larini ham qo'shib berish.
 - [x] User status active va blocked dan iborat
-- [ ] Training role'lar ruhsati uchun field qo'shib berish kerak.
+- [x] Training role'lar ruhsati uchun field qo'shib berish kerak.
 - [x] Hamma shahar uchun premise'lar yasash. Studia ham kerak.

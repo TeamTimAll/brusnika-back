@@ -164,10 +164,14 @@ export class TrainingsService {
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.category", "category")
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
-			.loadRelationCountAndMap(
-				"trainings.views_count",
-				"trainings.views",
-			);
+			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
+			.where("(trainings.access_user_id IS NULL AND trainings.access_role IS NULL)")
+			.orWhere("trainings.access_user_id = :access_user_id", {
+				access_user_id: user.user_id,
+			})
+			.orWhere("trainings.access_role = :access_role", {
+				access_role: user.role,
+			});
 		const settings = await this.settingsService.read();
 		const foundUser = await this.userService.repository.findOneBy({
 			id: user.user_id,
