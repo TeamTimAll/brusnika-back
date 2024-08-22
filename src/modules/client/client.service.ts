@@ -116,7 +116,8 @@ export class ClientService {
 						.where("l.client_id = c.id")
 						.groupBy("l.id")
 						.addGroupBy("p.id")
-						// .limit(1)
+						.orderBy("l.id")
+						.limit(5)
 						.getQuery();
 
 					qb.getQuery = () => `LATERAL (${query})`;
