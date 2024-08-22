@@ -4,7 +4,6 @@ import { ILike, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { LeadOpsEntity } from "../leads/lead_ops.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 
 import { ClientEntity, FixingType } from "./client.entity";
@@ -109,32 +108,16 @@ export class ClientService {
 				(qb) => {
 					const query = qb
 						.select("l.*")
-						.addSelect("lop.status")
 						.addSelect(
 							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
 						)
 						.from(LeadsEntity, "l")
 						.leftJoin("projects", "p", "p.id = l.project_id")
-						.innerJoin(
-							(qb2) => {
-								const query = qb2
-									.select("*")
-									.from(LeadOpsEntity, "lop")
-									.where("l.id = lop.lead_id")
-									.orderBy("lop.created_at", "DESC")
-									.limit(1)
-									.getQuery();
-								qb2.getQuery = () => `LATERAL (${query})`;
-								return qb2;
-							},
-							"lop",
-							"l.id = lop.lead_id",
-						)
 						.where("l.client_id = c.id")
 						.groupBy("l.id")
-						.addGroupBy("lop.status")
 						.addGroupBy("p.id")
-						.limit(1)
+						.orderBy("l.id")
+						.limit(5)
 						.getQuery();
 
 					qb.getQuery = () => `LATERAL (${query})`;
