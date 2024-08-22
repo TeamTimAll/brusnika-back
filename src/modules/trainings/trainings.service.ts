@@ -164,8 +164,31 @@ export class TrainingsService {
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.category", "category")
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
-			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
-			.where("(trainings.access_user_id IS NULL AND trainings.access_role IS NULL)")
+			.loadRelationCountAndMap(
+				"trainings.views_count",
+				"trainings.views",
+			);
+		if (dto.category_id) {
+			trainingQuery = trainingQuery.andWhere(
+				"trainings.category_id = :category_id",
+				{
+					category_id: dto.category_id,
+				},
+			);
+		}
+		if (user.role === RoleType.ADMIN) {
+			if (!dto.include_non_actives) {
+				trainingQuery = trainingQuery.andWhere(
+					"trainings.is_active IS TRUE",
+				);
+			}
+			return trainingQuery.getMany();
+		}
+		trainingQuery = trainingQuery.andWhere("trainings.is_active IS TRUE");
+		trainingQuery = trainingQuery
+			.andWhere(
+				"(trainings.access_user_id IS NULL AND trainings.access_role IS NULL)",
+			)
 			.orWhere("trainings.access_user_id = :access_user_id", {
 				access_user_id: user.user_id,
 			})
@@ -182,19 +205,6 @@ export class TrainingsService {
 		if (settings.training_show_date_limit < dayDiff) {
 			trainingQuery = trainingQuery.andWhere(
 				"trainings.is_show IS FALSE",
-			);
-		}
-		if (dto.category_id) {
-			trainingQuery = trainingQuery.andWhere(
-				"trainings.category_id = :category_id",
-				{
-					category_id: dto.category_id,
-				},
-			);
-		}
-		if (user.role !== RoleType.ADMIN || !dto.include_non_actives) {
-			trainingQuery = trainingQuery.andWhere(
-				"trainings.is_active IS TRUE",
 			);
 		}
 		return trainingQuery.getMany();
