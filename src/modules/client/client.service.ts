@@ -79,12 +79,18 @@ export class ClientService {
 		_user: ICurrentUser,
 	) {
 		// Replace this with BMPSoft request
-		return this.clientRepository.findOne({
+		const foundClient = await this.clientRepository.findOne({
 			where: {
 				fullname: ILike(`%${dto.fullname}%`),
 				phone_number: dto.phone_number,
 			},
 		});
+		if (!foundClient) {
+			throw new ClientNotFoundError(
+				`fullname: ${dto.fullname}; phone_number: ${dto.phone_number}`,
+			);
+		}
+		return { statusKey: "success" };
 	}
 
 	async readAll(
