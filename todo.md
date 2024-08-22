@@ -5,7 +5,7 @@
 - [x] code format qo'shish?
 - [x] unit testing?
 - [x] Seed qo'shish (logika jihatdan kelib chiqib)?
-- [ ] Base service? Qayta takrorlanadigan CRUD'ni base service'ga olib o'tish. Yangi module qo'shish tezligini oshiradi, DRY'ni oldini oladi.
+- [-] Base service? Qayta takrorlanadigan CRUD'ni base service'ga olib o'tish. Yangi module qo'shish tezligini oshiradi, DRY'ni oldini oladi.
 - [x] auth service'da ok response'da `HttpException` ishlatilgan. Response abstraction kerak. Chunki `HttpException` Error'dan extend olgan. Bu degani `HttpException` tashalganda stack trace bilan chiqadi degani. Logger'da kelishmovchiliklar bo'ladi. Misol uchun info'ni ichida stack trace string keladi va bu debug qilishni qiyinlashtirib yuboradi.
 - [x] Error qolibi. Error code va message'larni bilan. Tillik yoki 1 ta tillik.
 - [-] Logger. Error qolibi qilinsa logger implement qilish oson kechadi. Logger daraxt ko'rinishida shakilantirish ixtiyoriy.
@@ -67,7 +67,7 @@
 - [ ] подъезд qo'shish kerak emasmi?
 - [x] bron qilinmagan premise'larni chiqarish.
 - [x] bron qilinganligi haqida ma'lumot kerak. `is_booked` ga o'xshagan
-- [ ] city bo'yicha filter.
+- [x] city bo'yicha filter.
 
 ### Agent
 - [ ] Agent gruhga qo'sha olish va olib tashlash
@@ -77,7 +77,7 @@
 
 ### Project
 - [x] agent login/settings'dan tanlagan shahari bo'yicha project'larni ko'ra olishi kerak.
-- [ ] ~~filter city bo'yicha?~~
+- [x] ~~filter city bo'yicha?~~
     City:
         Москва
         Тюмень
@@ -88,13 +88,13 @@
         Омск
 
 ### News
-- [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
+- [x] BT bilan ma'mulmotlarini to'g'irlash kerak.
 
 ### Events
-- [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
+- [x] BT bilan ma'mulmotlarini to'g'irlash kerak.
 
 ### Trainning
-- [ ] BT bilan ma'mulmotlarini to'g'irlash kerak.
+- [x] BT bilan ma'mulmotlarini to'g'irlash kerak.
 
 ### Calendar
 - [ ] ~~manager entity bilan bog'liqlik.~~
@@ -273,7 +273,7 @@
 - [x] News create qila oladi.
 - [x] Event create qila oladi.
 - [ ] Contact'larni boshqaruvini qila oladi.
-- [ ] Project'larni boshqaruvini qila oladi.
+- [x] Project'larni boshqaruvini qila oladi.
 
 ### ADMIN (Администратор)
 - [x] Premise link create qila oladi.
@@ -318,3 +318,16 @@ Fasllar entity shakli:
     "date": "2024-08-09"
 }
 ```
+
+- [x] User block qilingandan keyin platformaga kira olmasin.
+- [x] User sort fullname, agency_name, role, city_name, status, registered_at
+- [x] User status active, bloked, registered
+- [x] User status update'ga qo'shish.
+
+- [ ] Yangi qo'shilgan NEW_MEMBER role'dagi user'larni sanog'ini chiqarish.
+    - [ ] HEAD_OF_AGENCY role'da o'z agency'sidagilarni sanog'ini chiqarish.
+    - [ ] ADMIN role'da hammasini sanog'ini chiqarish.
+- [x] Training category'larini olayotganda training'larini ham qo'shib berish.
+- [x] User status active va blocked dan iborat
+- [x] Training role'lar ruhsati uchun field qo'shib berish kerak.
+- [x] Hamma shahar uchun premise'lar yasash. Studia ham kerak.

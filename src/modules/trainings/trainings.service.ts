@@ -6,11 +6,14 @@ import { LikedResponseDto } from "common/dtos/likeResponse.dto";
 
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { arraysEqual } from "../../lib/array";
 import { getDaysDiff } from "../../lib/date";
 import { SettingsService } from "../settings/settings.service";
 import { UserService } from "../user/user.service";
 
 import {
+	BulkCreateCategoryDto,
+	BulkCreateTrainingDto,
 	BulkDto,
 	BulkUpdateCategoryDto,
 	BulkUpdateTrainingDto,
@@ -27,6 +30,17 @@ import { TrainingViewEntity } from "./entities/views.entity";
 import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
 import { TrainingNotFoundError } from "./errors/TrainingsNotFound.error";
 import { TrainingEntity } from "./trainings.entity";
+
+interface BulkResponse<T = TrainingEntity, C = TrainingCategoryEntity> {
+	trainings: T[];
+	categories: C[];
+}
+
+interface BulkServiceResponse {
+	create: BulkResponse;
+	update: BulkResponse;
+	delete: BulkResponse<number, number>;
+}
 
 @Injectable()
 export class TrainingsService {
@@ -99,7 +113,11 @@ export class TrainingsService {
 	}
 
 	getCategories() {
-		return this.trainingCategoryRepository.find();
+		return this.trainingCategoryRepository.find({
+			relations: {
+				training: true,
+			},
+		});
 	}
 
 	async readOne(id: number, user: ICurrentUser): Promise<unknown> {
@@ -146,10 +164,14 @@ export class TrainingsService {
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.category", "category")
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
-			.loadRelationCountAndMap(
-				"trainings.views_count",
-				"trainings.views",
-			);
+			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
+			.where("(trainings.access_user_id IS NULL AND trainings.access_role IS NULL)")
+			.orWhere("trainings.access_user_id = :access_user_id", {
+				access_user_id: user.user_id,
+			})
+			.orWhere("trainings.access_role = :access_role", {
+				access_role: user.role,
+			});
 		const settings = await this.settingsService.read();
 		const foundUser = await this.userService.repository.findOneBy({
 			id: user.user_id,
@@ -238,19 +260,20 @@ export class TrainingsService {
 		return foundCategory;
 	}
 
-	async bulk(dto: BulkDto, user: ICurrentUser): Promise<BulkDto> {
+	async bulk(dto: BulkDto, user: ICurrentUser): Promise<BulkServiceResponse> {
 		const queryRunner = this.dataSource.createQueryRunner();
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
 		try {
-			const createdTrainings = await this.bulkCreateTrainings(
-				queryRunner.manager,
-				dto.create.trainings,
-				user,
-			);
 			const createdCategories = await this.bulkCreateCategories(
 				queryRunner.manager,
 				dto.create.categories,
+			);
+			const createdTrainings = await this.bulkCreateTrainings(
+				queryRunner.manager,
+				dto.create.trainings,
+				createdCategories,
+				user,
 			);
 			const updatedTrainings = await this.bulkUpdateTrainings(
 				queryRunner.manager,
@@ -293,40 +316,87 @@ export class TrainingsService {
 
 	private async bulkCreateCategories(
 		manager: EntityManager,
-		categories: CreateTrainingCategoryDto[],
-	): Promise<TrainingCategoryEntity[]> {
+		categories: BulkCreateCategoryDto[],
+	): Promise<Array<BulkCreateCategoryDto & TrainingCategoryEntity>> {
 		if (!categories.length) {
 			return [];
 		}
 		const createdCategories: TrainingCategoryEntity[] =
 			this.trainingCategoryRepository.create(categories);
-		return manager.save(TrainingCategoryEntity, createdCategories);
+		const trainingCategories = await manager.save(
+			TrainingCategoryEntity,
+			createdCategories,
+		);
+		return trainingCategories.map((t, i) => {
+			const training = t as BulkCreateCategoryDto &
+				TrainingCategoryEntity;
+			training.ref_id = categories[i].ref_id;
+			return training;
+		});
+	}
+
+	private getIdsFromPrefix(
+		trainings: BulkCreateTrainingDto[],
+		prefix: string,
+	): number[] {
+		return trainings
+			.filter(
+				(e) =>
+					typeof e.category_ref_id.split(prefix)[1] !== "undefined",
+			)
+			.map((e) => parseInt(e.category_ref_id.split(prefix)[1]));
 	}
 
 	private async bulkCreateTrainings(
 		manager: EntityManager,
-		trainings: CreateTrainingDto[],
+		trainings: BulkCreateTrainingDto[],
+		categories: Array<BulkCreateCategoryDto & TrainingCategoryEntity>,
 		user: ICurrentUser,
 	): Promise<TrainingEntity[]> {
 		if (!trainings.length) {
 			return [];
 		}
-		const categoryIds: number[] = trainings.map((e) => e.category_id);
-		const foundCategories = await manager.find(TrainingCategoryEntity, {
-			select: { id: true },
-			where: { id: In(categoryIds) },
-		});
-		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
-		if (foundCategories.length !== categoryIds.length) {
-			throw new TrainingCategoryNotFoundError(
-				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
-			);
+		const newCategoryIds = this.getIdsFromPrefix(trainings, "new-");
+		const oldCategoryIds = this.getIdsFromPrefix(trainings, "old-");
+		if (oldCategoryIds.length) {
+			const foundCategories = await manager.find(TrainingCategoryEntity, {
+				select: { id: true },
+				where: { id: In(oldCategoryIds) },
+			});
+			const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
+			if (foundCategories.length !== oldCategoryIds.length) {
+				throw new TrainingCategoryNotFoundError(
+					`category_ids(old): ${[...new Set([...foundCategoryIds, ...oldCategoryIds])].join(", ")}`,
+				);
+			}
 		}
-		const createdTrainings: TrainingEntity[] =
-			this.trainingRepository.create(trainings);
-		createdTrainings.map((e) => {
-			e.user_id = user.user_id;
-			return e;
+		if (newCategoryIds.length) {
+			const categoryIds: number[] = categories.map((e) =>
+				parseInt(e.ref_id.split("new-")[1]),
+			);
+			const isCategoryIdsEqual = arraysEqual(newCategoryIds, categoryIds);
+			if (!isCategoryIdsEqual) {
+				throw new TrainingCategoryNotFoundError(
+					`category_ids(new): ${[...new Set([...newCategoryIds, ...categoryIds])].join(", ")}`,
+				);
+			}
+		}
+		const createdTrainings: TrainingEntity[] = [];
+		trainings.forEach((t) => {
+			const training = this.trainingRepository.create(t);
+			if (t.category_ref_id.startsWith("new-")) {
+				const category = categories.find(
+					(c) => c.ref_id === t.category_ref_id,
+				);
+				training.category_id = category!.id;
+			}
+			if (t.category_ref_id.startsWith("old-")) {
+				training.category_id = parseInt(
+					t.category_ref_id.split("old-")[1],
+				);
+			}
+			training.user_id = user.user_id;
+			createdTrainings.push(training);
 		});
 		return manager.save(TrainingEntity, createdTrainings);
 	}

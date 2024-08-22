@@ -21,6 +21,11 @@ export enum UserRegisterStatus {
 	FINISHED = "finished",
 }
 
+export enum UserStatus {
+	ACTIVE = "active",
+	BLOCKED = "blocked",
+}
+
 @Entity({ name: "users" })
 export class UserEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
@@ -90,8 +95,8 @@ export class UserEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	temporaryEmail!: string | null;
 
-	@Column({ default: true })
-	is_blocked!: boolean;
+	@Column({ type: "enum", enum: UserStatus, default: UserStatus.ACTIVE })
+	status!: UserStatus;
 
 	@ManyToOne(() => CityEntity, (citiesEntity) => citiesEntity.users, {
 		onDelete: "SET NULL",

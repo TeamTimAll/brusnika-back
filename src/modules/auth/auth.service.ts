@@ -8,26 +8,27 @@ import { CityService } from "../cities/cities.service";
 import { UserCreateDto } from "../user/dtos/UserCreate.dto";
 import { UserFillDataDto } from "../user/dtos/UserFillData.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
-import { UserRegisterStatus } from "../user/user.entity";
+import { UserRegisterStatus, UserStatus } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
 import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
 import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
-import { UserLoginDto } from "./dtos/UserLogin.dto";
-import { NoVerificationCodeSentError } from "./errors/NoVerificationCodeSent.error";
-import { UnauthorizedError } from "./errors/Unauthorized.error";
-import { UserEmailAlreadyExistsError } from "./errors/UserAlreadyExists.error";
-import { UserPasswordIsNotCorrectError } from "./errors/UserPasswordIsNotCorrect.error";
-import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
-import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
-import { VerificationExistsError } from "./errors/VerificationExists.error";
 import { AgentRequestAgencyDto } from "./dtos/AgentRequestAgency.dto";
-import { UserLoginVerifyCodeDto } from "./dtos/UserLoginVerifyCode.dto";
-import { UserLoginResendCodeDto } from "./dtos/UserLoginResendCode.dto";
 import {
 	AuthResponeWithData,
 	AuthResponeWithTokenDto,
 } from "./dtos/AuthResponeWithToken.dto";
+import { UserLoginDto } from "./dtos/UserLogin.dto";
+import { UserLoginResendCodeDto } from "./dtos/UserLoginResendCode.dto";
+import { UserLoginVerifyCodeDto } from "./dtos/UserLoginVerifyCode.dto";
+import { NoVerificationCodeSentError } from "./errors/NoVerificationCodeSent.error";
+import { UnauthorizedError } from "./errors/Unauthorized.error";
+import { UserEmailAlreadyExistsError } from "./errors/UserAlreadyExists.error";
+import { UserBlockedError } from "./errors/UserBlocked.error";
+import { UserPasswordIsNotCorrectError } from "./errors/UserPasswordIsNotCorrect.error";
+import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
+import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
+import { VerificationExistsError } from "./errors/VerificationExists.error";
 
 @Injectable()
 export class AuthService {
@@ -42,14 +43,15 @@ export class AuthService {
 		let user = await this.userService.repository.findOneBy({
 			phone: body.phone,
 		});
-
 		if (!user) {
 			user = await this.userService.createUser({
 				...body,
 				role: RoleType.AGENT,
 			});
 		}
-
+		if (user.status === UserStatus.BLOCKED) {
+			throw new UserBlockedError(`id: ${user.id}`);
+		}
 		if (
 			user.verification_code_sent_date &&
 			!this.hasOneMinutePassed(user.verification_code_sent_date)
@@ -171,7 +173,9 @@ export class AuthService {
 		};
 	}
 
-	async loginAccount(loginDto: UserLoginDto): Promise<AuthResponeWithTokenDto> {
+	async loginAccount(
+		loginDto: UserLoginDto,
+	): Promise<AuthResponeWithTokenDto> {
 		const user = await this.userService.repository.findOneBy({
 			email: loginDto.email,
 			role: RoleType.EMPLOYEE,

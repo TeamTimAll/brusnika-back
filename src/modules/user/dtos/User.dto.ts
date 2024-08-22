@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import { BaseDto, Dto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
-import { UserEntity, UserRegisterStatus } from "../user.entity";
+import { UserEntity, UserRegisterStatus, UserStatus } from "../user.entity";
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
@@ -81,8 +81,8 @@ export class UserDto implements IUserDto {
 	@ApiProperty()
 	temporaryEmail!: string;
 
-	@ApiProperty()
-	is_blocked!: boolean;
+	@ApiProperty({ enum: UserStatus })
+	status!: UserStatus;
 
 	@ApiProperty()
 	city_id?: number;

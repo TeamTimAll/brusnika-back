@@ -132,7 +132,7 @@ export class LeadsService {
 			},
 			order: {
 				lead_ops: {
-					created_at: "DESC",
+					id: "ASC",
 				},
 				created_at: dto.createdAt ?? "ASC",
 			},
