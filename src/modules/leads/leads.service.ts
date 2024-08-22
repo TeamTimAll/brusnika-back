@@ -81,6 +81,7 @@ export class LeadsService {
 	}
 
 	async readAll(dto: LeadReadByFilterDto): Promise<BaseDto<LeadsEntity[]>> {
+		const pageSize = (dto.page - 1) * dto.limit;
 		const leads = await this.leadRepository.find({
 			select: {
 				project: {
@@ -136,6 +137,8 @@ export class LeadsService {
 				},
 				created_at: dto.createdAt ?? "ASC",
 			},
+			take: dto.limit,
+			skip: pageSize,
 		});
 
 		const leadsCount = await this.leadRepository.count();
