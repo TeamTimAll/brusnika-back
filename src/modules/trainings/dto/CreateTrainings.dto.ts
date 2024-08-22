@@ -2,6 +2,7 @@ import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsBoolean,
+	IsEnum,
 	IsInt,
 	IsNotEmpty,
 	IsOptional,
@@ -10,6 +11,7 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
+import { RoleType } from "../../../constants";
 
 export class CreateTrainingDto {
 	@IsString()
@@ -86,6 +88,17 @@ export class CreateTrainingDto {
 	@Type(() => Number)
 	@IsOptional()
 	user_id?: number;
+
+	@ApiProperty({ enum: RoleType })
+	@IsEnum(RoleType)
+	@IsOptional()
+	access_role?: RoleType;
+
+	@ApiProperty()
+	@IsInt()
+	@Type(() => Number)
+	@IsOptional()
+	access_user_id?: number;
 }
 
 export class CreateTrainingsMetaDataDto extends BaseDto<CreateTrainingDto> {
