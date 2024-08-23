@@ -70,16 +70,21 @@ export class UserDto implements IUserDto {
 	fullName!: string;
 
 	@ApiProperty()
-	isPhoneVerified?: boolean;
+	is_phone_verified?: boolean;
 
 	@ApiProperty()
-	isEmailVerified?: boolean;
+	is_email_verified?: boolean;
+
+	is_verified?: boolean | undefined;
+
+	@ApiProperty({ enum: RoleType })
+	temporary_role?: RoleType;
 
 	@ApiProperty()
-	temporaryNumber!: string;
+	temporary_number!: string;
 
 	@ApiProperty()
-	temporaryEmail!: string;
+	temporary_email!: string;
 
 	@ApiProperty({ enum: UserStatus })
 	status!: UserStatus;
