@@ -138,12 +138,18 @@ export class UserService {
 				agency_id: agency_id,
 			},
 		});
+		const totalUserCount = await this.userRepository.count({
+			where: {
+				agency_id: agency_id,
+			},
+		});
 
 		const metaData = BaseDto.create<UserEntity[]>();
 		metaData.setPagination(usersCount, dto.page, dto.limit);
 		metaData.data = users;
 		metaData.meta.data = {
 			new_user_count: newUserCount,
+			total_user_count: totalUserCount
 		};
 		return metaData;
 	}
