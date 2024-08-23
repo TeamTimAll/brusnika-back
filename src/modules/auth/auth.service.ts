@@ -46,7 +46,7 @@ export class AuthService {
 		if (!user) {
 			user = await this.userService.createUser({
 				...body,
-				role: RoleType.AGENT,
+				role: RoleType.NEW_MEMBER,
 			});
 		}
 		if (user.status === UserStatus.BLOCKED) {
@@ -118,23 +118,27 @@ export class AuthService {
 	}
 
 	async agentRegisterAgency(
-		body: AgentRegisterAgencyDto,
+		dto: AgentRegisterAgencyDto,
 	): Promise<AuthResponeWithTokenDto> {
-		const user = await this.userService.readOne(body.user_id);
-
+		const user = await this.userService.readOne(dto.user_id);
+		let temporary_role = RoleType.AGENT;
+		if (dto.isOwner) {
+			temporary_role = RoleType.HEAD_OF_AGENCY;
+		}
 		const newAgency = await this.agenciesService.create(
 			{
-				city_id: body.city_id,
-				email: body.email,
-				inn: body.email,
-				legalName: body.legalName,
-				phone: body.phone,
-				title: body.title,
+				city_id: dto.city_id,
+				email: dto.email,
+				inn: dto.email,
+				legalName: dto.legalName,
+				phone: dto.phone,
+				title: dto.title,
 			},
 			{ user_id: user.id, role: user.role },
 		);
 		await this.userService.repository.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
+			temporary_role: temporary_role,
 			agency_id: newAgency.id,
 		});
 
@@ -218,7 +222,7 @@ export class AuthService {
 
 		// If agent registration is finished, an access token needs to be sent.
 		if (
-			user.isPhoneVerified &&
+			user.is_phone_verified &&
 			user.register_status === UserRegisterStatus.FINISHED
 		) {
 			return {
@@ -233,7 +237,7 @@ export class AuthService {
 		// Otherwise, send him to his current step.
 		if (user.register_status === UserRegisterStatus.CREATED) {
 			await this.userService.repository.update(user.id, {
-				isPhoneVerified: true,
+				is_phone_verified: true,
 				register_status: UserRegisterStatus.FILL_DATA,
 			});
 		}
