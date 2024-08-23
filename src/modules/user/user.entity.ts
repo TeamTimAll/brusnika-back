@@ -84,16 +84,22 @@ export class UserEntity extends BaseEntity {
 	fullName!: string;
 
 	@Column({ default: false })
-	isPhoneVerified?: boolean;
+	is_phone_verified?: boolean;
 
 	@Column({ default: false })
-	isEmailVerified?: boolean;
+	is_email_verified?: boolean;
+
+	@Column({ default: false })
+	is_verified?: boolean;
+
+	@Column({ nullable: true, type: "enum", enum: RoleType })
+	temporary_role?: RoleType;
 
 	@Column({ nullable: true, type: "varchar" })
-	temporaryNumber!: string | null;
+	temporary_number?: string | null;
 
 	@Column({ nullable: true, type: "varchar" })
-	temporaryEmail!: string | null;
+	temporary_email?: string | null;
 
 	@Column({ type: "enum", enum: UserStatus, default: UserStatus.ACTIVE })
 	status!: UserStatus;

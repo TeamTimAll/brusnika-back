@@ -38,6 +38,7 @@ import { UserReadAllMetaDataDto } from "./dtos/UserReadAll.dto";
 import { UserResponseMetaDataDto } from "./dtos/UserResponse.dto";
 import { UserUpdateMetaDataDto } from "./dtos/UserUpdate.dto";
 import { UserUpdateRoleMetaDataDto } from "./dtos/UserUpdateRole.dto";
+import { UserVerifyMetaDataDto } from "./dtos/UserVerify.dto";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
 
@@ -101,6 +102,20 @@ export class UserController {
 	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
 	loginAsUser(@Body() dto: AdminLoginAsUserMetaDataDto) {
 		return this.userService.loginAsUser(dto.data);
+	}
+
+	@Roles([
+		RoleType.ADMIN,
+		RoleType.AFFILIATE_MANAGER,
+		RoleType.HEAD_OF_AGENCY,
+	])
+	@Post("/verify")
+	@ApiOperation({
+		description: "### User'ni tasdiqlash.",
+	})
+	@ApiDtoResponse(UserResponseMetaDataDto, HttpStatus.OK)
+	verifyUser(@Body() dto: UserVerifyMetaDataDto) {
+		return this.userService.verifyUser(dto.data);
 	}
 
 	@Post("/phone")
