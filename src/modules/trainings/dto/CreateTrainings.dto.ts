@@ -32,15 +32,6 @@ export class CreateTrainingDto {
 	})
 	content!: string;
 
-	@IsString()
-	@IsNotEmpty()
-	@ApiProperty({
-		description: "The cover image of the trainings",
-		example: "121212.png",
-		required: true,
-	})
-	cover_image!: string;
-
 	@ApiProperty({
 		description: "The first category of the trainings",
 		required: false,
@@ -51,37 +42,12 @@ export class CreateTrainingDto {
 	category_id!: number;
 
 	@ApiProperty({
-		description: "Is like enabled",
-		required: false,
-	})
-	@IsBoolean()
-	@IsOptional()
-	is_like_enabled?: boolean;
-
-	@ApiProperty({
 		description: "Is copy enabled",
 		required: false,
 	})
 	@IsBoolean()
 	@IsOptional()
 	is_copy_enabled?: boolean;
-
-	@ApiProperty({
-		description: "Is extra like enabled",
-		required: false,
-	})
-	@IsBoolean()
-	@IsOptional()
-	is_extra_like_enabled?: boolean;
-
-	@ApiProperty({
-		description: "The extra like icon",
-		required: false,
-		example: "121212.png",
-	})
-	@IsString()
-	@IsOptional()
-	extra_like_icon?: string;
 
 	// @ApiProperty()
 	@IsInt()

@@ -31,7 +31,7 @@ import { InviteUsersDto } from "./dtos/InviteUsers.dto";
 import { LeaveInvitionDto } from "./dtos/LeaveInvition.dto";
 import { ToggleEventDto } from "./dtos/ToggleEvent.dto";
 import { type UpdateEventsDto } from "./dtos/UpdateEvents.dto";
-import { ContactEntity } from "./entities/contact.entity";
+import { EventContactEntity } from "./entities/event-contact.entity";
 import { EventInvitationEntity } from "./entities/event-invition.entity";
 import { EventLikesEntity } from "./entities/event-likes.entity";
 import { EventViewsEntity } from "./entities/event-views.entity";
@@ -46,8 +46,8 @@ export class EventsService {
 	constructor(
 		@InjectRepository(EventsEntity)
 		private eventRepository: Repository<EventsEntity>,
-		@InjectRepository(ContactEntity)
-		private contactsRepository: Repository<ContactEntity>,
+		@InjectRepository(EventContactEntity)
+		private contactsRepository: Repository<EventContactEntity>,
 		@InjectRepository(EventLikesEntity)
 		private eventLikesRepository: Repository<EventLikesEntity>,
 		@InjectRepository(EventViewsEntity)
@@ -190,7 +190,7 @@ export class EventsService {
 			.createQueryBuilder("e")
 			.leftJoinAndMapMany(
 				"e.contacts",
-				ContactEntity,
+				EventContactEntity,
 				"contacts",
 				"contacts.event_id = e.id",
 			)

@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
-import { ContactEntity } from "../entities/contact.entity";
+import { EventContactEntity } from "../entities/event-contact.entity";
 
 export class ContactDto
 	implements
 		Omit<
-			ContactEntity,
+			EventContactEntity,
 			"id" | "event" | "event_id" | "created_at" | "updated_at"
 		>
 {
