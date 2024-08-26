@@ -11,7 +11,7 @@ import { BaseEntity } from "../../common/base/base.entity";
 import { UserEntity } from "../../modules/user/user.entity";
 import { CityEntity } from "../cities/cities.entity";
 
-import { ContactEntity } from "./entities/contact.entity";
+import { EventContactEntity } from "./entities/event-contact.entity";
 import { EventInvitationEntity } from "./entities/event-invition.entity";
 import { EventLikesEntity } from "./entities/event-likes.entity";
 import { EventViewsEntity } from "./entities/event-views.entity";
@@ -94,11 +94,11 @@ export class EventsEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	city_id?: number;
 
-	@OneToMany(() => ContactEntity, (c) => c.event, {
+	@OneToMany(() => EventContactEntity, (c) => c.event, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
 	})
-	contacts?: ContactEntity[];
+	contacts?: EventContactEntity[];
 
 	@Column({ type: "boolean", default: false })
 	is_banner!: boolean;

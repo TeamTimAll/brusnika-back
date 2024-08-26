@@ -182,7 +182,7 @@ export class AuthService {
 	): Promise<AuthResponeWithTokenDto> {
 		const user = await this.userService.repository.findOneBy({
 			email: loginDto.email,
-			role: RoleType.EMPLOYEE,
+			password: loginDto.password,
 		});
 
 		if (!user) {
