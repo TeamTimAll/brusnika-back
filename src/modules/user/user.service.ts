@@ -26,6 +26,7 @@ import { UserFilterDto, UserSortBy } from "./dtos/UserFilter.dto";
 import { UserResponseDto } from "./dtos/UserResponse.dto";
 import { UserUpdateDto } from "./dtos/UserUpdate.dto";
 import { UserUpdateRoleDto } from "./dtos/UserUpdateRole.dto";
+import { UserVerifyDto } from "./dtos/UserVerify.dto";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
@@ -84,10 +85,12 @@ export class UserService {
 				"avatar",
 				"register_status",
 				"fullName",
-				"isPhoneVerified",
-				"isEmailVerified",
-				"temporaryNumber",
-				"temporaryEmail",
+				"is_phone_verified",
+				"is_email_verified",
+				"temporary_number",
+				"temporary_email",
+				"temporary_role",
+				"is_verified",
 				"status",
 				"city",
 				"city_id",
@@ -120,9 +123,34 @@ export class UserService {
 			skip: pageSize,
 		});
 
+		let agency_id: number | undefined;
+		if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const currentUser = await this.userRepository.findOne({
+				select: { agency_id: true },
+				where: { id: user.user_id },
+			});
+			agency_id = currentUser?.agency_id;
+		}
+
+		const newUserCount = await this.userRepository.count({
+			where: {
+				role: RoleType.NEW_MEMBER,
+				agency_id: agency_id,
+			},
+		});
+		const totalUserCount = await this.userRepository.count({
+			where: {
+				agency_id: agency_id,
+			},
+		});
+
 		const metaData = BaseDto.create<UserEntity[]>();
 		metaData.setPagination(usersCount, dto.page, dto.limit);
 		metaData.data = users;
+		metaData.meta.data = {
+			new_user_count: newUserCount,
+			total_user_count: totalUserCount
+		};
 		return metaData;
 	}
 
@@ -148,10 +176,12 @@ export class UserService {
 				"avatar",
 				"register_status",
 				"fullName",
-				"isPhoneVerified",
-				"isEmailVerified",
-				"temporaryNumber",
-				"temporaryEmail",
+				"is_phone_verified",
+				"is_email_verified",
+				"temporary_number",
+				"temporary_email",
+				"temporary_role",
+				"is_verified",
 				"status",
 				"city",
 				"city_id",
@@ -266,7 +296,7 @@ export class UserService {
 		await this.userRepository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
-			temporaryNumber: dto.phone,
+			temporary_number: dto.phone,
 		});
 
 		// todo send sms
@@ -294,7 +324,7 @@ export class UserService {
 		await this.userRepository.update(user.id, {
 			email_verification_code: randomNumber,
 			email_verification_code_sent_date: new Date(),
-			temporaryEmail: dto.email,
+			temporary_email: dto.email,
 		});
 
 		// todo send sms
@@ -311,7 +341,7 @@ export class UserService {
 	): Promise<UserResponseDto> {
 		const foundUser = await this.readOne(user.user_id);
 
-		if (!foundUser.isEmailVerified) {
+		if (!foundUser.is_email_verified) {
 			throw new UserPhoneNotVerifiedError();
 		}
 		if (!foundUser.email_verification_code_sent_date) {
@@ -327,11 +357,11 @@ export class UserService {
 		}
 
 		await this.userRepository.update(foundUser.id, {
-			email: foundUser.temporaryEmail,
-			temporaryEmail: null,
+			email: foundUser.temporary_email,
+			temporary_email: null,
 			email_verification_code: null,
 			email_verification_code_sent_date: null,
-			isEmailVerified: true,
+			is_email_verified: true,
 		});
 		return {
 			user_id: foundUser.id,
@@ -345,7 +375,7 @@ export class UserService {
 	): Promise<UserResponseDto> {
 		const foundUser = await this.readOne(user.user_id);
 
-		if (!foundUser.isPhoneVerified) {
+		if (!foundUser.is_phone_verified) {
 			throw new UserPhoneNotVerifiedError();
 		}
 		if (!foundUser.verification_code_sent_date) {
@@ -359,11 +389,11 @@ export class UserService {
 		}
 
 		await this.userRepository.update(foundUser.id, {
-			phone: foundUser.temporaryNumber,
-			temporaryNumber: null,
+			phone: foundUser.temporary_number,
+			temporary_number: null,
 			verification_code: null,
 			verification_code_sent_date: null,
-			isPhoneVerified: true,
+			is_phone_verified: true,
 		});
 		return {
 			user_id: foundUser.id,
@@ -378,7 +408,7 @@ export class UserService {
 		const foundUser = await this.userRepository.findOne({
 			where: {
 				id: user.user_id,
-				temporaryNumber: dto.phone,
+				temporary_number: dto.phone,
 			},
 		});
 
@@ -426,6 +456,23 @@ export class UserService {
 	async delete(id: number) {
 		const foundUser = await this.readOne(id);
 		await this.userRepository.delete(foundUser.id);
+		return foundUser;
+	}
+
+	async verifyUser(dto: UserVerifyDto) {
+		const foundUser = await this.readOne(dto.user_id);
+		let userRole: RoleType = foundUser.role;
+		if (dto.is_verified) {
+			if (foundUser.temporary_role) {
+				userRole = foundUser.temporary_role;
+			}
+		}
+		await this.userRepository.update(foundUser.id, {
+			role: userRole,
+			is_verified: dto.is_verified,
+		});
+		foundUser.is_verified = dto.is_verified;
+		foundUser.role = userRole;
 		return foundUser;
 	}
 }

@@ -3,8 +3,8 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { BaseEntity } from "../../../common/base/base.entity";
 import { EventsEntity } from "../events.entity";
 
-@Entity({ name: "contacts" })
-export class ContactEntity extends BaseEntity {
+@Entity({ name: "event_contacts" })
+export class EventContactEntity extends BaseEntity {
 	@Column({ type: "varchar" })
 	fullname!: string;
 

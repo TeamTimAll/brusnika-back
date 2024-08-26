@@ -1,12 +1,17 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
-import { RoleType } from "../../constants";
 import { UserEntity } from "../user/user.entity";
 
 import { TrainingCategoryEntity } from "./entities/categories.entity";
 import { TrainingLikeEntity } from "./entities/likes.entity";
 import { TrainingViewEntity } from "./entities/views.entity";
+
+export enum TrainingAccess {
+	ALL = "all",
+	AGENT = "agent",
+	NEW_USER = "new_user",
+}
 
 @Entity({ name: "trainings" })
 export class TrainingEntity extends BaseEntity {
@@ -16,26 +21,14 @@ export class TrainingEntity extends BaseEntity {
 	@Column({ nullable: true, type: "text" })
 	content!: string;
 
-	@Column({ nullable: true, type: "varchar" })
-	cover_image!: string;
-
-	@Column({ type: "boolean", default: false })
-	is_like_enabled!: boolean;
-
-	@Column({ type: "boolean", default: false })
-	is_extra_like_enabled!: boolean;
-
 	@Column({ type: "boolean", default: false })
 	is_show!: boolean;
 
 	@Column({ type: "boolean", default: false })
 	is_copy_enabled!: boolean;
 
-	@Column({ type: "text", nullable: true })
-	extra_like_icon!: string;
-
-	@Column({ type: "enum", enum: RoleType, nullable: true })
-	access_role?: RoleType;
+	@Column({ type: "enum", enum: TrainingAccess, default: TrainingAccess.ALL })
+	access!: TrainingAccess;
 
 	@ManyToOne(() => UserEntity, {
 		onDelete: "CASCADE",

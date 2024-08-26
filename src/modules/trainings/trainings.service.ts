@@ -29,7 +29,7 @@ import { TrainingLikeEntity } from "./entities/likes.entity";
 import { TrainingViewEntity } from "./entities/views.entity";
 import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
 import { TrainingNotFoundError } from "./errors/TrainingsNotFound.error";
-import { TrainingEntity } from "./trainings.entity";
+import { TrainingAccess, TrainingEntity } from "./trainings.entity";
 
 interface BulkResponse<T = TrainingEntity, C = TrainingCategoryEntity> {
 	trainings: T[];
@@ -70,7 +70,7 @@ export class TrainingsService {
 				id: body.training_id,
 			},
 		});
-		if (trainings && trainings.is_like_enabled) {
+		if (trainings) {
 			const isLiked = await this.trainingLikeRepository.findOne({
 				where: {
 					trainings_id: trainings.id,
@@ -164,26 +164,10 @@ export class TrainingsService {
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.category", "category")
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
-			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
-			.where("(trainings.access_user_id IS NULL AND trainings.access_role IS NULL)")
-			.orWhere("trainings.access_user_id = :access_user_id", {
-				access_user_id: user.user_id,
-			})
-			.orWhere("trainings.access_role = :access_role", {
-				access_role: user.role,
-			});
-		const settings = await this.settingsService.read();
-		const foundUser = await this.userService.repository.findOneBy({
-			id: user.user_id,
-		});
-		const dayDiff = foundUser?.workStartDate
-			? getDaysDiff(new Date(), new Date(foundUser.workStartDate))
-			: 0;
-		if (settings.training_show_date_limit < dayDiff) {
-			trainingQuery = trainingQuery.andWhere(
-				"trainings.is_show IS FALSE",
+			.loadRelationCountAndMap(
+				"trainings.views_count",
+				"trainings.views",
 			);
-		}
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.andWhere(
 				"trainings.category_id = :category_id",
@@ -192,10 +176,46 @@ export class TrainingsService {
 				},
 			);
 		}
-		if (user.role !== RoleType.ADMIN || !dto.include_non_actives) {
-			trainingQuery = trainingQuery.andWhere(
-				"trainings.is_active IS TRUE",
+		if (user.role === RoleType.ADMIN) {
+			if (!dto.include_non_actives) {
+				trainingQuery = trainingQuery.andWhere(
+					"trainings.is_active IS TRUE",
+				);
+			}
+			return trainingQuery.getMany();
+		}
+		trainingQuery = trainingQuery.andWhere("trainings.is_active IS TRUE");
+		trainingQuery = trainingQuery
+			.andWhere(
+				"(trainings.access_user_id IS NULL AND trainings.access = :access)",
+				{
+					access: TrainingAccess.ALL,
+				},
+			)
+			.orWhere("trainings.access_user_id = :access_user_id", {
+				access_user_id: user.user_id,
+			});
+		if (user.role === RoleType.AGENT) {
+			trainingQuery = trainingQuery.orWhere(
+				"trainings.access = :role_access",
+				{
+					role_access: TrainingAccess.AGENT,
+				},
 			);
+		}
+		const settings = await this.settingsService.read();
+		const foundUser = await this.userService.repository.findOneBy({
+			id: user.user_id,
+		});
+		const dayDiff = foundUser?.workStartDate
+			? getDaysDiff(new Date(), new Date(foundUser.workStartDate))
+			: 0;
+		if (settings.training_show_date_limit < dayDiff) {
+			trainingQuery = trainingQuery
+				.orWhere("trainings.access = :role_access", {
+					role_access: TrainingAccess.NEW_USER,
+				})
+				.andWhere("trainings.is_show IS FALSE");
 		}
 		return trainingQuery.getMany();
 	}

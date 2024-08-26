@@ -7,7 +7,6 @@ export const UserChangeRoleRule: IRule = {
 	[RoleType.ADMIN]: undefined,
 	[RoleType.AGENT]: undefined,
 	[RoleType.MANAGER]: undefined,
-	[RoleType.EMPLOYEE]: undefined,
 	[RoleType.NEW_MEMBER]: undefined,
 	[RoleType.HEAD_OF_AGENCY]: {
 		[RoleType.NEW_MEMBER]: true,
