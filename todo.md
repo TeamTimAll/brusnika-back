@@ -332,3 +332,8 @@ Fasllar entity shakli:
 - [x] Training role'lar ruhsati uchun field qo'shib berish kerak.
 - [x] Hamma shahar uchun premise'lar yasash. Studia ham kerak.
 - [x] User verification uchun is_verified va kirmoqchi bo'lgan role'ni saqlash kerak. verification'dan o'tsa so'ralgan role'iga o'tkazib qo'yish kerak.
+
+- [x] Client Lead'ga premise object qo'shib berish.
+- [ ] Contact'lar CRUD
+- [ ] Training categories da is_active false larni olib beruvchi api
+

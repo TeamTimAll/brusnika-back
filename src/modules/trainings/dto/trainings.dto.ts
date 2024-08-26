@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 import { BaseDto, Dto } from "../../../common/base/base_dto";
-import { TrainingEntity } from "../trainings.entity";
+import { TrainingAccess, TrainingEntity } from "../trainings.entity";
 
 type ITrainingDto = Omit<
 	TrainingEntity,
-	"user" | "category" | "views" | "likes"
+	"user" | "category" | "views" | "likes" | "access_user"
 >;
 
 export class TrainingDto implements ITrainingDto {
@@ -25,19 +25,7 @@ export class TrainingDto implements ITrainingDto {
 	content!: string;
 
 	@ApiProperty()
-	cover_image!: string;
-
-	@ApiProperty()
-	is_like_enabled!: boolean;
-
-	@ApiProperty()
-	is_extra_like_enabled!: boolean;
-
-	@ApiProperty()
 	is_copy_enabled!: boolean;
-
-	@ApiProperty()
-	extra_like_icon!: string;
 
 	@ApiProperty()
 	published_at!: Date;
@@ -47,6 +35,12 @@ export class TrainingDto implements ITrainingDto {
 
 	@ApiProperty()
 	user_id?: number;
+
+	@ApiProperty({ enum: TrainingAccess })
+	access!: TrainingAccess;
+
+	@ApiProperty()
+	access_user_id?: number;
 
 	@ApiProperty()
 	is_show!: boolean;

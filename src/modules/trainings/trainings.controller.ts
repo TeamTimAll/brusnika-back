@@ -58,12 +58,8 @@ export class TrainingController {
 		\n **data** ma'lumotlari:
 		\n - **title** - [required]
 		\n - **content** - [required]
-		\n - **cover_image** - [required]
 		\n - **category_id** - [optional]
-		\n - **is_like_enabled** - [required]
-		\n - **is_copy_enabled** - [required]
-		\n - **is_extra_like_enabled** - [optional]
-		\n - **extra_like_icon** - [optional]`,
+		\n - **is_copy_enabled** - [required]`,
 	})
 	@ApiDtoResponse(TrainingMetaDataDto, HttpStatus.OK)
 	@ApiErrorResponse(TrainingCategoryNotFoundError, "category_id: 'id'")
@@ -96,12 +92,8 @@ export class TrainingController {
 		\n **data** ma'lumotlari:
 		\n - **title** - [required]
 		\n - **content** - [required]
-		\n - **cover_image** - [required]
 		\n - **category_id** - [optional]
-		\n - **is_like_enabled** - [required]
-		\n - **is_copy_enabled** - [required]
-		\n - **is_extra_like_enabled** - [optional]
-		\n - **extra_like_icon** - [optional]`,
+		\n - **is_copy_enabled** - [required]`,
 	})
 	async update(
 		@Param("id") id: number,

@@ -117,11 +117,16 @@ export class ClientService {
 						.addSelect(
 							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
 						)
+						.addSelect(
+							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name) as premise",
+						)
 						.from(LeadsEntity, "l")
 						.leftJoin("projects", "p", "p.id = l.project_id")
+						.leftJoin("premises", "p2", "p2.id = l.premise_id")
 						.where("l.client_id = c.id")
 						.groupBy("l.id")
 						.addGroupBy("p.id")
+						.addGroupBy("p2.id")
 						.orderBy("l.id")
 						.limit(5)
 						.getQuery();
@@ -165,7 +170,7 @@ export class ClientService {
 			});
 		}
 		if (dto.status) {
-			queryBuilder = queryBuilder.andWhere("l.status = :status", {
+			queryBuilder = queryBuilder.andWhere("l.current_status = :status", {
 				status: dto.status,
 			});
 		}

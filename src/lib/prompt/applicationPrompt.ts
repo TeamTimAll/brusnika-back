@@ -40,6 +40,7 @@ export enum ApplicationPromptID {
 	MAX_CREATABLE_BOOKING_COUNT_REACHED_ERROR = 433,
 	NOTIFICATION_NOT_FOUND_ERROR = 434,
 	USER_BLOCKED_ERROR = 435,
+	CONTACT_NOT_FOUND_ERROR = 436,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -479,6 +480,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "You are denied access (Contact the administration)",
 			ru: "Вам отказано в доступе (Обратитесь к администрации)",
 			uz: "You are denied access (Contact the administration)",
+		},
+	},
+	[ApplicationPromptID.CONTACT_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.CONTACT_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "contact_not_found_error",
+		promptLabels: {
+			en: "Contact not found error",
+			ru: "Ошибка «Контакт не найден»",
+			uz: "Contact not found error",
 		},
 	},
 };

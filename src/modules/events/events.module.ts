@@ -6,7 +6,7 @@ import { CityModule } from "../../modules/cities/cities.module";
 import { UserModule } from "../../modules/user/user.module";
 import { NotificationModule } from "../notification/notification.module";
 
-import { ContactEntity } from "./entities/contact.entity";
+import { EventContactEntity } from "./entities/event-contact.entity";
 import { EventInvitationEntity } from "./entities/event-invition.entity";
 import { EventLikesEntity } from "./entities/event-likes.entity";
 import { EventViewsEntity } from "./entities/event-views.entity";
@@ -18,7 +18,7 @@ import { EventsService } from "./events.service";
 	imports: [
 		TypeOrmModule.forFeature([
 			EventsEntity,
-			ContactEntity,
+			EventContactEntity,
 			EventViewsEntity,
 			EventLikesEntity,
 			EventInvitationEntity,
