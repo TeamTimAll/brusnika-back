@@ -358,13 +358,16 @@ export class TrainingsService {
 	private getIdsFromPrefix(
 		trainings: BulkCreateTrainingDto[],
 		prefix: string,
-	): number[] {
-		return trainings
-			.filter(
-				(e) =>
-					typeof e.category_ref_id.split(prefix)[1] !== "undefined",
-			)
-			.map((e) => parseInt(e.category_ref_id.split(prefix)[1]));
+	): Set<number> {
+		return new Set(
+			trainings
+				.filter(
+					(e) =>
+						typeof e.category_ref_id.split(prefix)[1] !==
+						"undefined",
+				)
+				.map((e) => parseInt(e.category_ref_id.split(prefix)[1])),
+		);
 	}
 
 	private async bulkCreateTrainings(
@@ -378,23 +381,26 @@ export class TrainingsService {
 		}
 		const newCategoryIds = this.getIdsFromPrefix(trainings, "new-");
 		const oldCategoryIds = this.getIdsFromPrefix(trainings, "old-");
-		if (oldCategoryIds.length) {
+		if (oldCategoryIds.size) {
 			const foundCategories = await manager.find(TrainingCategoryEntity, {
 				select: { id: true },
-				where: { id: In(oldCategoryIds) },
+				where: { id: In([...oldCategoryIds]) },
 			});
 			const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
-			if (foundCategories.length !== oldCategoryIds.length) {
+			if (foundCategories.length !== oldCategoryIds.size) {
 				throw new TrainingCategoryNotFoundError(
 					`category_ids(old): ${[...new Set([...foundCategoryIds, ...oldCategoryIds])].join(", ")}`,
 				);
 			}
 		}
-		if (newCategoryIds.length) {
+		if (newCategoryIds.size) {
 			const categoryIds: number[] = categories.map((e) =>
 				parseInt(e.ref_id.split("new-")[1]),
 			);
-			const isCategoryIdsEqual = arraysEqual(newCategoryIds, categoryIds);
+			const isCategoryIdsEqual = arraysEqual(
+				[...newCategoryIds],
+				categoryIds,
+			);
 			if (!isCategoryIdsEqual) {
 				throw new TrainingCategoryNotFoundError(
 					`category_ids(new): ${[...new Set([...newCategoryIds, ...categoryIds])].join(", ")}`,
