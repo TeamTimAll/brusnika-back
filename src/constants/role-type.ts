@@ -1,5 +1,5 @@
 export enum RoleType {
-	USER              = "USER",               // Пользователь
+	// USER              = "USER",               // Пользователь
 	ADMIN             = "ADMIN",              // Администрация
 	AGENT             = "AGENT",              // Агент
 	MANAGER           = "MANAGER",            // Менеджер

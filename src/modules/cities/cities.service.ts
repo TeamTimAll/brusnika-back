@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ILike, Repository } from "typeorm";
+import { EntityManager, ILike, In, Repository } from "typeorm";
 
 import { CityEntity } from "./cities.entity";
 import { CreateCitiesDto } from "./dtos/CreateCities.dto";
@@ -47,6 +47,23 @@ export class CityService {
 		const city = await this.cityRepository.existsBy({ id });
 		if (!city) {
 			throw new CityNotFoundError(`'${id}' city not found`);
+		}
+	}
+
+	async checkExsitsIds(ids: number[]): Promise<void> {
+		const city = await this.cityRepository.existsBy({ id: In(ids) });
+		if (!city) {
+			throw new CityNotFoundError(`'${ids.join(", ")}' city not found`);
+		}
+	}
+
+	async checkExsitsIdsManager(
+		manager: EntityManager,
+		ids: number[],
+	): Promise<void> {
+		const city = await manager.existsBy(CityEntity, { id: In(ids) });
+		if (!city) {
+			throw new CityNotFoundError(`'${ids.join(", ")}' city not found`);
 		}
 	}
 

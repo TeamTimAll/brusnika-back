@@ -10,6 +10,7 @@ import { CalendarModule } from "./calendar/calendar.module";
 import { CityModule } from "./cities/cities.module";
 import { ClientModule } from "./client/client.module";
 import { CommentsModule } from "./comments/comments.module";
+import { ContactModule } from "./contacts/contact.module";
 import { EventsModule } from "./events/events.module";
 import { FileUploadModule } from "./file-upload/file-upload.module";
 import { LeadsModule } from "./leads/leads.module";
@@ -52,6 +53,7 @@ import { VisitsModule } from "./visits/visits.module";
 		CalendarModule,
 		NotificationModule,
 		SettingsModule,
+		ContactModule,
 	],
 	exports: [],
 })
