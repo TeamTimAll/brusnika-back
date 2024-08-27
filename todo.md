@@ -334,6 +334,7 @@ Fasllar entity shakli:
 - [x] User verification uchun is_verified va kirmoqchi bo'lgan role'ni saqlash kerak. verification'dan o'tsa so'ralgan role'iga o'tkazib qo'yish kerak.
 
 - [x] Client Lead'ga premise object qo'shib berish.
+
 - [x] Contact'lar CRUD
 - [x] User role'ni olib tashlash kerak.
 - [x] Training'ga access user object qo'shib berish kerak.
