@@ -305,11 +305,11 @@ export class TrainingsService {
 			);
 			const deletedTrainings = await this.bulkDeleteTrainings(
 				queryRunner.manager,
-				dto.delete.trainings,
+				new Set(dto.delete.trainings),
 			);
 			const deletedCategories = await this.bulkDeleteCategories(
 				queryRunner.manager,
-				dto.delete.categories,
+				new Set(dto.delete.categories),
 			);
 			await queryRunner.commitTransaction();
 			return {
@@ -494,18 +494,18 @@ export class TrainingsService {
 
 	async bulkDeleteTrainings(
 		manager: EntityManager,
-		trainingIds: number[],
+		trainingIds: Set<number>,
 	): Promise<number[]> {
-		if (!trainingIds.length) {
+		if (!trainingIds.size) {
 			return [];
 		}
 		const foundTraining = await manager.find(TrainingEntity, {
 			where: {
-				id: In(trainingIds),
+				id: In([...trainingIds]),
 			},
 		});
 		const foundTrainingIds = foundTraining.map((e) => e.id);
-		if (foundTrainingIds.length !== trainingIds.length) {
+		if (foundTrainingIds.length !== trainingIds.size) {
 			throw new TrainingNotFoundError(
 				`ids: ${[...new Set([...trainingIds, ...foundTrainingIds])].join(", ")}`,
 			);
@@ -516,17 +516,17 @@ export class TrainingsService {
 
 	async bulkDeleteCategories(
 		manager: EntityManager,
-		categoryIds: number[],
+		categoryIds: Set<number>,
 	): Promise<number[]> {
-		if (!categoryIds.length) {
+		if (!categoryIds.size) {
 			return [];
 		}
 		const foundCategories = await manager.find(TrainingCategoryEntity, {
 			select: { id: true },
-			where: { id: In(categoryIds) },
+			where: { id: In([...categoryIds]) },
 		});
 		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
-		if (foundCategories.length !== categoryIds.length) {
+		if (foundCategories.length !== categoryIds.size) {
 			throw new TrainingCategoryNotFoundError(
 				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
 			);
