@@ -1,15 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsDefined, IsInt, IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import {
+	ArrayMinSize,
+	IsDefined,
+	IsInt,
+	IsNotEmpty,
+	IsString,
+	ValidateNested,
+} from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
 import { ContactDto } from "./Contact.dto";
-import { ContactWorkScheduleDto } from "./ContactWorkSchedule.dto";
+import { CreateContactAddressDto } from "./ContactAddress.dto";
+import { CreateContactWorkScheduleDto } from "./ContactWorkSchedule.dto";
 
 type ICreateContactDto = Omit<
 	ContactDto,
-	"id" | "is_active" | "created_at" | "updated_at"
+	"id" | "is_active" | "created_at" | "updated_at" | "work_schedule"
 >;
 
 export class CreateContactDto implements ICreateContactDto {
@@ -23,10 +31,11 @@ export class CreateContactDto implements ICreateContactDto {
 	@IsNotEmpty()
 	phone_number!: string;
 
-	@ApiProperty()
-	@IsString()
+	@ApiProperty({ type: CreateContactAddressDto })
+	@Type(() => CreateContactAddressDto)
+	@ValidateNested()
 	@IsNotEmpty()
-	address?: string;
+	address!: CreateContactAddressDto;
 
 	@ApiProperty()
 	@IsString()
@@ -34,22 +43,17 @@ export class CreateContactDto implements ICreateContactDto {
 	address_link?: string;
 
 	@ApiProperty()
-	@IsString()
-	@IsNotEmpty()
-	email?: string;
-
-	@ApiProperty()
 	@Type(() => Number)
 	@IsInt()
 	@IsNotEmpty()
 	city_id!: number;
 
-	@ApiProperty({ type: ContactWorkScheduleDto, isArray: true })
-	@Type(() => ContactWorkScheduleDto)
+	@ApiProperty({ type: CreateContactWorkScheduleDto, isArray: true })
+	@Type(() => CreateContactWorkScheduleDto)
 	@ValidateNested({ each: true })
-    @ArrayMinSize(0)
-    @IsDefined()
-	work_schedule!: ContactWorkScheduleDto[];
+	@ArrayMinSize(0)
+	@IsDefined()
+	work_schedule!: CreateContactWorkScheduleDto[];
 }
 
 export class CreateContactMetaDataDto extends BaseDto<CreateContactDto> {

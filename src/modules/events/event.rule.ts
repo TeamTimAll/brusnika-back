@@ -7,7 +7,6 @@ type IRule = {
 };
 
 export const EventRule: IRule = {
-	[RoleType.USER]: undefined,
 	[RoleType.ADMIN]: undefined,
 	[RoleType.AGENT]: undefined,
 	[RoleType.MANAGER]: undefined,
