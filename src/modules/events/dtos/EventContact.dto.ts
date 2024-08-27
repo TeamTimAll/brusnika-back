@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from "class-validator";
 
 import { EventContactEntity } from "../entities/event-contact.entity";
 
-export class ContactDto
+export class EventContactDto
 	implements
 		Omit<
 			EventContactEntity,
