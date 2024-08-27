@@ -1,8 +1,9 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { CityEntity } from "../cities/cities.entity";
 
+import { ContactAddressEntity } from "./contact_address.entity";
 import { ContactWorkScheduleEntity } from "./contact_work_schedule.entity";
 
 @Entity("contacts")
@@ -13,14 +14,14 @@ export class ContactEntity extends BaseEntity {
 	@Column({ type: "varchar" })
 	phone_number!: string;
 
-	@Column({ type: "varchar", nullable: true })
-	address?: string;
+	@OneToOne(() => ContactAddressEntity, (ca) => ca.contact, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	address!: ContactAddressEntity;
 
 	@Column({ type: "varchar", nullable: true })
 	address_link?: string;
-
-	@Column({ type: "varchar", nullable: true })
-	email?: string;
 
 	@Column({ type: "integer" })
 	city_id!: number;
@@ -36,5 +37,5 @@ export class ContactEntity extends BaseEntity {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
 	})
-	work_schedule!: ContactWorkScheduleEntity;
+	work_schedule!: ContactWorkScheduleEntity[];
 }

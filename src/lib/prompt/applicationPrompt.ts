@@ -41,6 +41,8 @@ export enum ApplicationPromptID {
 	NOTIFICATION_NOT_FOUND_ERROR = 434,
 	USER_BLOCKED_ERROR = 435,
 	CONTACT_NOT_FOUND_ERROR = 436,
+	CONTACT_WORK_SCHEDULE_NOT_FOUND_ERROR = 437,
+	CONTACT_ADDRESS_NOT_FOUND_ERROR = 438,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -491,6 +493,28 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Contact not found error",
 			ru: "Ошибка «Контакт не найден»",
 			uz: "Contact not found error",
+		},
+	},
+	[ApplicationPromptID.CONTACT_WORK_SCHEDULE_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.CONTACT_WORK_SCHEDULE_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "contact_work_schedule_not_found_error",
+		promptLabels: {
+			en: "Contact work schedule not found error",
+			ru: "Ошибка «Контактный график работы не найден»",
+			uz: "Contact work schedule not found error",
+		},
+	},
+	[ApplicationPromptID.CONTACT_ADDRESS_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.CONTACT_ADDRESS_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "contact_address_not_found_error",
+		promptLabels: {
+			en: "Contact address not found error",
+			ru: "Контактный адрес не найден ошибка",
+			uz: "Contact address not found error",
 		},
 	},
 };

@@ -34,7 +34,7 @@ export class UserEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	lastName!: string | null;
 
-	@Column({ type: "enum", enum: RoleType, default: RoleType.USER })
+	@Column({ type: "enum", enum: RoleType, default: RoleType.NEW_MEMBER })
 	role!: RoleType;
 
 	@Column({ unique: true, nullable: true, type: "varchar" })

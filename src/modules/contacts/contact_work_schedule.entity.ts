@@ -1,14 +1,14 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
-import { RussianWeekdaysString } from "../../common/enums/weekdays";
+import { Weekdays } from "../../common/enums/weekdays";
 
 import { ContactEntity } from "./contact.entity";
 
 @Entity("contact_work_schedules")
 export class ContactWorkScheduleEntity extends BaseEntity {
-	@Column({ type: "enum", enum: RussianWeekdaysString })
-	weekday!: RussianWeekdaysString;
+	@Column({ type: "enum", enum: Weekdays })
+	weekday!: Weekdays;
 
 	@Column({ type: "time" })
 	start_time!: string;

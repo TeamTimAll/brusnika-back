@@ -163,11 +163,21 @@ export class TrainingsService {
 		let trainingQuery = this.trainingRepository
 			.createQueryBuilder("trainings")
 			.leftJoinAndSelect("trainings.category", "category")
+			.leftJoinAndSelect("trainings.access_user", "access_user")
+			.leftJoinAndSelect("access_user.agency", "access_user_agency")
 			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
-			.loadRelationCountAndMap(
-				"trainings.views_count",
-				"trainings.views",
-			);
+			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
+			.select([
+				"trainings",
+				"category",
+				"access_user.id",
+				"access_user.firstName",
+				"access_user.lastName",
+				"access_user.fullName",
+				"access_user.avatar",
+				"access_user_agency.id",
+				"access_user_agency.legalName",
+			]);
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.andWhere(
 				"trainings.category_id = :category_id",
@@ -389,7 +399,7 @@ export class TrainingsService {
 			const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
 			if (foundCategories.length !== oldCategoryIds.size) {
 				throw new TrainingCategoryNotFoundError(
-					`category_ids(old): ${[...new Set([...foundCategoryIds, ...oldCategoryIds])].join(", ")}`,
+					`category_ids(old): ${[...foundCategoryIds, ...oldCategoryIds].join(", ")}`,
 				);
 			}
 		}
@@ -403,7 +413,7 @@ export class TrainingsService {
 			);
 			if (!isCategoryIdsEqual) {
 				throw new TrainingCategoryNotFoundError(
-					`category_ids(new): ${[...new Set([...newCategoryIds, ...categoryIds])].join(", ")}`,
+					`category_ids(new): ${[...newCategoryIds, ...categoryIds].join(", ")}`,
 				);
 			}
 		}
@@ -438,10 +448,12 @@ export class TrainingsService {
 		const foundCategories = await manager.find(TrainingCategoryEntity, {
 			where: { id: In([...categoryIds]) },
 		});
-		const foundCategoryIds: Set<number> = new Set(foundCategories.map((e) => e.id));
+		const foundCategoryIds: Set<number> = new Set(
+			foundCategories.map((e) => e.id),
+		);
 		if (foundCategoryIds.size !== categoryIds.size) {
 			throw new TrainingCategoryNotFoundError(
-				`ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
+				`ids: ${[...foundCategoryIds, ...categoryIds].join(", ")}`,
 			);
 		}
 		const mergedCategories: TrainingCategoryEntity[] = [];
@@ -466,21 +478,27 @@ export class TrainingsService {
 				id: In([...trainingIds]),
 			},
 		});
-		const foundTrainingIds: Set<number> = new Set(foundTraining.map((e) => e.id));
+		const foundTrainingIds: Set<number> = new Set(
+			foundTraining.map((e) => e.id),
+		);
 		if (foundTrainingIds.size !== trainingIds.size) {
 			throw new TrainingNotFoundError(
-				`ids: ${[...new Set([...trainingIds, ...foundTrainingIds])].join(", ")}`,
+				`ids: ${[...trainingIds, ...foundTrainingIds].join(", ")}`,
 			);
 		}
-		const categoryIds: Set<number> = new Set(trainings.map((e) => e.category_id));
+		const categoryIds: Set<number> = new Set(
+			trainings.map((e) => e.category_id),
+		);
 		const foundCategories = await manager.find(TrainingCategoryEntity, {
 			select: { id: true },
 			where: { id: In([...categoryIds]) },
 		});
-		const foundCategoryIds: Set<number> = new Set(foundCategories.map((e) => e.id));
+		const foundCategoryIds: Set<number> = new Set(
+			foundCategories.map((e) => e.id),
+		);
 		if (foundCategoryIds.size !== categoryIds.size) {
 			throw new TrainingCategoryNotFoundError(
-				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
+				`category_ids: ${[...foundCategoryIds, ...categoryIds].join(", ")}`,
 			);
 		}
 		const mergedTrainings: TrainingEntity[] = [];
@@ -507,7 +525,7 @@ export class TrainingsService {
 		const foundTrainingIds = foundTraining.map((e) => e.id);
 		if (foundTrainingIds.length !== trainingIds.size) {
 			throw new TrainingNotFoundError(
-				`ids: ${[...new Set([...trainingIds, ...foundTrainingIds])].join(", ")}`,
+				`ids: ${[...trainingIds, ...foundTrainingIds].join(", ")}`,
 			);
 		}
 		await manager.delete(TrainingEntity, [...trainingIds]);
@@ -528,7 +546,7 @@ export class TrainingsService {
 		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
 		if (foundCategories.length !== categoryIds.size) {
 			throw new TrainingCategoryNotFoundError(
-				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
+				`category_ids: ${[...foundCategoryIds, ...categoryIds].join(", ")}`,
 			);
 		}
 		await manager.delete(TrainingCategoryEntity, [...categoryIds]);
