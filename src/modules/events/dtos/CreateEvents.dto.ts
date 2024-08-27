@@ -17,7 +17,7 @@ import {
 import { BaseDto } from "../../../common/base/base_dto";
 import { EVENT_FORMAT, EVENT_TYPES } from "../events.entity";
 
-import { ContactDto } from "./Contact.dto";
+import { EventContactDto } from "./EventContact.dto";
 
 export class CreateEventsDto {
 	@ApiProperty({
@@ -102,14 +102,14 @@ export class CreateEventsDto {
 	is_draft?: boolean;
 
 	@ApiProperty({
-		oneOf: [{ $ref: getSchemaPath(ContactDto) }],
-		type: () => [ContactDto],
+		oneOf: [{ $ref: getSchemaPath(EventContactDto) }],
+		type: () => [EventContactDto],
 	})
 	@IsArray()
 	@ValidateNested({ each: true })
 	@ArrayMinSize(1)
-	@Type(() => ContactDto)
-	contacts!: ContactDto[];
+	@Type(() => EventContactDto)
+	contacts!: EventContactDto[];
 
 	@ApiProperty({ required: false, default: [] })
 	@IsArray()
