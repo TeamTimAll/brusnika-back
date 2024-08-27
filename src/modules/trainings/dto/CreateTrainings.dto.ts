@@ -11,7 +11,7 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
-import { RoleType } from "../../../constants";
+import { TrainingAccess } from "../trainings.entity";
 
 export class CreateTrainingDto {
 	@IsString()
@@ -55,10 +55,10 @@ export class CreateTrainingDto {
 	@IsOptional()
 	user_id?: number;
 
-	@ApiProperty({ enum: RoleType })
-	@IsEnum(RoleType)
+	@ApiProperty({ enum: TrainingAccess })
+	@IsEnum(TrainingAccess)
 	@IsOptional()
-	access_role?: RoleType;
+	access?: TrainingAccess;
 
 	@ApiProperty()
 	@IsInt()
