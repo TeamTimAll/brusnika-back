@@ -65,6 +65,11 @@ export class CreateTrainingDto {
 	@Type(() => Number)
 	@IsOptional()
 	access_user_id?: number;
+
+	@ApiProperty({ required: false })
+	@IsBoolean()
+	@IsOptional()
+	is_active?: boolean;
 }
 
 export class CreateTrainingsMetaDataDto extends BaseDto<CreateTrainingDto> {

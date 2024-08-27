@@ -434,12 +434,12 @@ export class TrainingsService {
 		if (!categories.length) {
 			return [];
 		}
-		const categoryIds: number[] = categories.map((e) => e.id);
+		const categoryIds: Set<number> = new Set(categories.map((e) => e.id));
 		const foundCategories = await manager.find(TrainingCategoryEntity, {
-			where: { id: In(categoryIds) },
+			where: { id: In([...categoryIds]) },
 		});
-		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
-		if (foundCategoryIds.length !== categoryIds.length) {
+		const foundCategoryIds: Set<number> = new Set(foundCategories.map((e) => e.id));
+		if (foundCategoryIds.size !== categoryIds.size) {
 			throw new TrainingCategoryNotFoundError(
 				`ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
 			);
@@ -460,25 +460,25 @@ export class TrainingsService {
 		if (!trainings.length) {
 			return [];
 		}
-		const trainingIds: number[] = trainings.map((e) => e.id);
+		const trainingIds: Set<number> = new Set(trainings.map((e) => e.id));
 		const foundTraining = await manager.find(TrainingEntity, {
 			where: {
-				id: In(trainingIds),
+				id: In([...trainingIds]),
 			},
 		});
-		const foundTrainingIds = foundTraining.map((e) => e.id);
-		if (foundTrainingIds.length !== trainingIds.length) {
+		const foundTrainingIds: Set<number> = new Set(foundTraining.map((e) => e.id));
+		if (foundTrainingIds.size !== trainingIds.size) {
 			throw new TrainingNotFoundError(
 				`ids: ${[...new Set([...trainingIds, ...foundTrainingIds])].join(", ")}`,
 			);
 		}
-		const categoryIds: number[] = trainings.map((e) => e.category_id);
+		const categoryIds: Set<number> = new Set(trainings.map((e) => e.category_id));
 		const foundCategories = await manager.find(TrainingCategoryEntity, {
 			select: { id: true },
-			where: { id: In(categoryIds) },
+			where: { id: In([...categoryIds]) },
 		});
-		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
-		if (foundCategories.length !== categoryIds.length) {
+		const foundCategoryIds: Set<number> = new Set(foundCategories.map((e) => e.id));
+		if (foundCategoryIds.size !== categoryIds.size) {
 			throw new TrainingCategoryNotFoundError(
 				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
 			);
