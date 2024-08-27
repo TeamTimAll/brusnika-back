@@ -305,11 +305,11 @@ export class TrainingsService {
 			);
 			const deletedTrainings = await this.bulkDeleteTrainings(
 				queryRunner.manager,
-				dto.delete.trainings,
+				new Set(dto.delete.trainings),
 			);
 			const deletedCategories = await this.bulkDeleteCategories(
 				queryRunner.manager,
-				dto.delete.categories,
+				new Set(dto.delete.categories),
 			);
 			await queryRunner.commitTransaction();
 			return {
@@ -358,13 +358,16 @@ export class TrainingsService {
 	private getIdsFromPrefix(
 		trainings: BulkCreateTrainingDto[],
 		prefix: string,
-	): number[] {
-		return trainings
-			.filter(
-				(e) =>
-					typeof e.category_ref_id.split(prefix)[1] !== "undefined",
-			)
-			.map((e) => parseInt(e.category_ref_id.split(prefix)[1]));
+	): Set<number> {
+		return new Set(
+			trainings
+				.filter(
+					(e) =>
+						typeof e.category_ref_id.split(prefix)[1] !==
+						"undefined",
+				)
+				.map((e) => parseInt(e.category_ref_id.split(prefix)[1])),
+		);
 	}
 
 	private async bulkCreateTrainings(
@@ -378,23 +381,26 @@ export class TrainingsService {
 		}
 		const newCategoryIds = this.getIdsFromPrefix(trainings, "new-");
 		const oldCategoryIds = this.getIdsFromPrefix(trainings, "old-");
-		if (oldCategoryIds.length) {
+		if (oldCategoryIds.size) {
 			const foundCategories = await manager.find(TrainingCategoryEntity, {
 				select: { id: true },
-				where: { id: In(oldCategoryIds) },
+				where: { id: In([...oldCategoryIds]) },
 			});
 			const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
-			if (foundCategories.length !== oldCategoryIds.length) {
+			if (foundCategories.length !== oldCategoryIds.size) {
 				throw new TrainingCategoryNotFoundError(
 					`category_ids(old): ${[...new Set([...foundCategoryIds, ...oldCategoryIds])].join(", ")}`,
 				);
 			}
 		}
-		if (newCategoryIds.length) {
+		if (newCategoryIds.size) {
 			const categoryIds: number[] = categories.map((e) =>
 				parseInt(e.ref_id.split("new-")[1]),
 			);
-			const isCategoryIdsEqual = arraysEqual(newCategoryIds, categoryIds);
+			const isCategoryIdsEqual = arraysEqual(
+				[...newCategoryIds],
+				categoryIds,
+			);
 			if (!isCategoryIdsEqual) {
 				throw new TrainingCategoryNotFoundError(
 					`category_ids(new): ${[...new Set([...newCategoryIds, ...categoryIds])].join(", ")}`,
@@ -488,18 +494,18 @@ export class TrainingsService {
 
 	async bulkDeleteTrainings(
 		manager: EntityManager,
-		trainingIds: number[],
+		trainingIds: Set<number>,
 	): Promise<number[]> {
-		if (!trainingIds.length) {
+		if (!trainingIds.size) {
 			return [];
 		}
 		const foundTraining = await manager.find(TrainingEntity, {
 			where: {
-				id: In(trainingIds),
+				id: In([...trainingIds]),
 			},
 		});
 		const foundTrainingIds = foundTraining.map((e) => e.id);
-		if (foundTrainingIds.length !== trainingIds.length) {
+		if (foundTrainingIds.length !== trainingIds.size) {
 			throw new TrainingNotFoundError(
 				`ids: ${[...new Set([...trainingIds, ...foundTrainingIds])].join(", ")}`,
 			);
@@ -510,17 +516,17 @@ export class TrainingsService {
 
 	async bulkDeleteCategories(
 		manager: EntityManager,
-		categoryIds: number[],
+		categoryIds: Set<number>,
 	): Promise<number[]> {
-		if (!categoryIds.length) {
+		if (!categoryIds.size) {
 			return [];
 		}
 		const foundCategories = await manager.find(TrainingCategoryEntity, {
 			select: { id: true },
-			where: { id: In(categoryIds) },
+			where: { id: In([...categoryIds]) },
 		});
 		const foundCategoryIds: number[] = foundCategories.map((e) => e.id);
-		if (foundCategories.length !== categoryIds.length) {
+		if (foundCategories.length !== categoryIds.size) {
 			throw new TrainingCategoryNotFoundError(
 				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
 			);
