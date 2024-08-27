@@ -510,7 +510,7 @@ export class TrainingsService {
 				`ids: ${[...new Set([...trainingIds, ...foundTrainingIds])].join(", ")}`,
 			);
 		}
-		await manager.delete(TrainingEntity, trainingIds);
+		await manager.delete(TrainingEntity, [...trainingIds]);
 		return foundTrainingIds;
 	}
 
@@ -531,7 +531,7 @@ export class TrainingsService {
 				`category_ids: ${[...new Set([...foundCategoryIds, ...categoryIds])].join(", ")}`,
 			);
 		}
-		await manager.delete(TrainingCategoryEntity, categoryIds);
+		await manager.delete(TrainingCategoryEntity, [...categoryIds]);
 		return foundCategoryIds;
 	}
 }

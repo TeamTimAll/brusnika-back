@@ -335,5 +335,61 @@ Fasllar entity shakli:
 
 - [x] Client Lead'ga premise object qo'shib berish.
 - [ ] Contact'lar CRUD
+- [ ] User role'ni olib tashlash kerak.
+- [ ] Training'ga access user object qo'shib berish kerak.
 - [ ] Training categories da is_active false larni olib beruvchi api
 
+#gate #lowlevel
+
+Binary numbers (ikkilik sanoq sistemasi)
+
+Ikkilik sanoq sistemasi sonlarni faqat 2 belgi, 0 va 1 raqamlaridan foydalanib yozishga asoslangan sanoq tizimidir.
+Dasturlashda har bir ma'lumot ushbu sistemadan tashkil topgan. Agar o'nlik sanoq sistemasini ikkilik sanoq sistemasida ifodalansa, quyidagi jadaval hosil bo'ladi:
+```
+| O'nlik | Ikkilik |
+| 0      | 0       |
+| 1      | 1       |
+| 2      | 10      |
+| 3      | 11      |
+| 4      | 100     |
+| 5      | 101     |
+| 6      | 110     |
+| 7      | 111     |
+| 8      | 1000    |
+| 9      | 1001    |
+```
+
+Agar ikkilik sanoq sistemasidan o'lik sanoq sistemasiga o'tkazmoqchi bo'lsangiz, formula: 
+```
+(O'nlik son)10=(b0 × 2^0) + (b1 × 2^1) + (b2 × 2^2)+ ...
+```
+Keling 11111 sonini o'likga o'tkazib ko'raylik. 
+```
+11111 = (1 × 2^0) + (1 × 2^1) + (1 × 2^2) + (1 × 2^3) + (1 × 2^4) = 1 + 2 + 4 + 8 + 16 = 31
+```
+
+O'nlikdan ikkilik sanoq sistemasiga o'tkazish uchun esa, berilgan sonni 2 ga bo'lib chiqish kifoya. Undan qolgan qoldiqlarni pastdan tepga qarab o'qish ikkilik raqamini beradi. Keling 99 sonini ikkilikga o'tkazamiz:
+```
+| Son | Bo'luvchi | Qoldiq
+| 99  |     2     | 1      ^
+| 49  |     2     | 1      |
+| 24  |     2     | 0      |
+| 12  |     2     | 0      |
+| 6   |     2     | 0      |
+| 3   |     2     | 1      |
+| 1   |     2     | 1      |
+```
+Pastdan tepaga o'qib chiqadigan bo'lsangiz 1100011 soni hosil bo'ladi.
+
+Dasturlashda ikkilik sonilarini bit deb ataladi. 8 bit'dan tashkil topgan bit'lar to'plami byte deyiladi. 1 byte 256 ta sonlarni o'z ichiga oladi 0 - 255. Agar byte manfiy bo'lsa -127 - +127 gacha bo'ladi. Manfiy sonlarga boshqa postlarda yana to'xtalamiz.
+
+Agar berilgan son 8 bit'dan ketta bo'lsa nima bo'ladi?
+
+Javob: shunchaki qo'shimcha bit'ni ahamiyatga olmaydi va oshgan son miqdorida yana 0 dan 255 gacha songa aylanadi. Misol 257 berilsa 256 = 0, 257 = 1 demak 1 soniga aylanadi.
+
+#gate #lowlevel
+
+Half adder, Full adder ikkilik sonlarini qo'shish.
+
+Oddiy matematik qo'shish amalini hammamiz bilamiz. 2 ta katta sonni qo'shayotganimizda dilda saqlash tushunchasi bor. Shu tushunchaga amal qilgan holda, qanday qilib ikkilik sonlarida buni amalga oshirsa bo'ladi?
+Ikkilik sonlarini qo'shish o'nlik sonlarini qo'shishdan ko'ra osonroq. 1 ga 0 yoki 0 ga 1 qo'shilsa 1, 0 ga 0 esa 0 va 1 ga 1 ham 0 lekin 1 dilda.
