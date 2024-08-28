@@ -8,9 +8,14 @@ import {
 	PuchaseOptions,
 } from "../premises.entity";
 
+import { PremiseSchemaDto } from "./CreatePremises.dto";
+
 export class PremiseDto
 	implements
-		Omit<Required<PremiseEntity>, "building" | "bookings" | "season">
+		Omit<
+			Required<PremiseEntity>,
+			"building" | "bookings" | "season" | "schema"
+		>
 {
 	@ApiProperty()
 	id!: number;
@@ -79,11 +84,11 @@ export class PremiseDto
 	is_active!: boolean;
 
 	@ApiProperty()
-	sunrise_angle!: number;
-
-	@ApiProperty()
-	schema_image!: string;
-
-	@ApiProperty()
 	season_id!: number;
+
+	@ApiProperty()
+	schema_id!: number;
+
+	@ApiProperty({ type: PremiseSchemaDto })
+	schema!: PremiseSchemaDto;
 }

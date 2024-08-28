@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { BuildingsModule } from "../buildings/buildings.module";
 import { SectionsModule } from "../sections/sections.module";
 
+import { PremiseSchemaEntity } from "./premise_schema.entity";
 import { PremisesController } from "./premises.controller";
 import { PremiseEntity } from "./premises.entity";
 import { PremisesService } from "./premises.service";
@@ -11,7 +12,11 @@ import { SeasonEntity } from "./season.entity";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([PremiseEntity, SeasonEntity]),
+		TypeOrmModule.forFeature([
+			PremiseEntity,
+			PremiseSchemaEntity,
+			SeasonEntity,
+		]),
 		BuildingsModule,
 		SectionsModule,
 	],
