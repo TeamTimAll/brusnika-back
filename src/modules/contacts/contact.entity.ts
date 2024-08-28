@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+} from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { CityEntity } from "../cities/cities.entity";
@@ -11,8 +18,8 @@ export class ContactEntity extends BaseEntity {
 	@Column({ type: "varchar" })
 	title!: string;
 
-	@Column({ type: "varchar" })
-	phone_number!: string;
+	@Column({ type: "varchar", array: true, default: [] })
+	phone_number!: string[];
 
 	@OneToOne(() => ContactAddressEntity, (ca) => ca.contact, {
 		onDelete: "CASCADE",
