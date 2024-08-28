@@ -13,8 +13,9 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
+import { RoleType } from "../../constants";
 import { ApiDtoResponse, User } from "../../decorators";
-import { RolesGuard } from "../../guards/roles.guard";
+import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
@@ -41,6 +42,7 @@ export class ContactController {
 		return this.contactService.readAll(user, dto);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post("bulk")
 	@ApiOperation({ summary: "Bulk create, update, delete contacts" })
 	@ApiDtoResponse(ContactMetaDataDto, HttpStatus.CREATED)

@@ -341,3 +341,5 @@ Fasllar entity shakli:
 - [x] Training categories da is_active false larni olib beruvchi api
 - [x] Training, category Update da set'ga solish kerak.
 - [x] Contact'da city bo'yicha filter
+
+- [x] Contact'da telefon raqam array'ga o'tkazish kerak.

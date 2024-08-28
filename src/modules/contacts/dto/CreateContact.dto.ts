@@ -26,10 +26,10 @@ export class CreateContactDto implements ICreateContactDto {
 	@IsNotEmpty()
 	title!: string;
 
-	@ApiProperty()
-	@IsString()
+	@ApiProperty({ isArray: true })
+	@IsString({ each: true })
 	@IsNotEmpty()
-	phone_number!: string;
+	phone_number!: string[];
 
 	@ApiProperty({ type: CreateContactAddressDto })
 	@Type(() => CreateContactAddressDto)
