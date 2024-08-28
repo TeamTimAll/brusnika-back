@@ -17,8 +17,8 @@ export class ContactDto implements IContact {
 	@ApiProperty()
 	title!: string;
 
-	@ApiProperty()
-	phone_number!: string;
+	@ApiProperty({ isArray: true })
+	phone_number!: string[];
 
 	@ApiProperty({ type: ContactAddressDto })
 	address!: ContactAddressDto;
