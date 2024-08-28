@@ -343,3 +343,4 @@ Fasllar entity shakli:
 - [x] Contact'da city bo'yicha filter
 
 - [x] Contact'da telefon raqam array'ga o'tkazish kerak.
+- [ ] Premise'ga schema field va quyosh tushish burchaki qo'shish kerak.
