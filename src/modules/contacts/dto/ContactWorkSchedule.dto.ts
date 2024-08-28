@@ -1,5 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsMilitaryTime, IsNotEmpty } from "class-validator";
+import {
+	IsEnum,
+	IsMilitaryTime,
+	IsNotEmpty,
+	IsOptional,
+} from "class-validator";
 
 import { Weekdays } from "../../../common/enums/weekdays";
 import { ContactWorkScheduleEntity } from "../contact_work_schedule.entity";
@@ -34,7 +39,13 @@ export class ContactWorkScheduleDto implements IContactWorkScheduleDto {
 
 type ICreateContactWorkScheduleDto = Omit<
 	ContactWorkScheduleEntity,
-	"id" | "is_active" | "created_at" | "updated_at" | "contact"
+	| "id"
+	| "is_active"
+	| "created_at"
+	| "updated_at"
+	| "contact"
+	| "start_time"
+	| "end_time"
 >;
 
 export class CreateContactWorkScheduleDto
@@ -47,13 +58,13 @@ export class CreateContactWorkScheduleDto
 
 	@ApiProperty({ default: "00:00" })
 	@IsMilitaryTime()
-	@IsNotEmpty()
-	start_time!: string;
+	@IsOptional()
+	start_time?: string;
 
 	@ApiProperty({ default: "00:00" })
 	@IsMilitaryTime()
-	@IsNotEmpty()
-	end_time!: string;
+	@IsOptional()
+	end_time?: string;
 
 	contact_id!: number;
 }
