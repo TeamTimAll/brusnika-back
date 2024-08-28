@@ -14,17 +14,38 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
+import { PremiseSchemaEntity } from "../premise_schema.entity";
 import {
 	CommercialStatus,
 	PremisesType,
 	PuchaseOptions,
 } from "../premises.entity";
 
+type IPremiseSchemaDto = Omit<
+	PremiseSchemaEntity,
+	"id" | "is_active" | "created_at" | "updated_at" | "premise" | "premise_id"
+>;
+
+export class PremiseSchemaDto implements IPremiseSchemaDto {
+	@ApiProperty({ description: "Angle must be between 0° and 360°" })
+	@Type(() => Number)
+	@IsInt()
+	@Min(0)
+	@Max(360)
+	@IsOptional()
+	sunrise_angle?: number;
+
+	@ApiProperty()
+	@IsString()
+	@IsOptional()
+	schema_image?: string;
+}
+
 export class CreatePremisesDto {
 	@ApiProperty({ description: "Type of the premise", enum: PremisesType })
 	@IsEnum(PremisesType)
 	@IsNotEmpty()
-	type: PremisesType | undefined;
+	type!: PremisesType;
 
 	@ApiProperty({ description: "Building ID", required: false })
 	@IsInt()
@@ -110,18 +131,11 @@ export class CreatePremisesDto {
 	@IsOptional()
 	purchaseOption?: PuchaseOptions;
 
-	@ApiProperty({ description: "Angle must be between 0° and 360°" })
-	@Type(() => Number)
-	@IsInt()
-	@Min(0)
-	@Max(360)
+	@ApiProperty({ type: PremiseSchemaDto })
+	@Type(() => PremiseSchemaDto)
+	@ValidateNested()
 	@IsOptional()
-	sunrise_angle?: number;
-
-	@ApiProperty()
-	@IsString()
-	@IsOptional()
-	schema_image?: string;
+	schema?: PremiseSchemaDto;
 }
 
 export class CreatePremisesMetaDataDto extends BaseDto<CreatePremisesDto> {

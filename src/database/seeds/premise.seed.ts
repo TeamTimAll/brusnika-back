@@ -47,6 +47,7 @@ export async function up(query: QueryBuilder<object>) {
 		| "created_at"
 		| "updated_at"
 		| "season"
+		| "schema"
 		| "is_active"
 	>[] = [
 		{
