@@ -10,10 +10,10 @@ export class ContactWorkScheduleEntity extends BaseEntity {
 	@Column({ type: "enum", enum: Weekdays })
 	weekday!: Weekdays;
 
-	@Column({ type: "time" })
+	@Column({ type: "time", nullable: true })
 	start_time!: string;
 
-	@Column({ type: "time" })
+	@Column({ type: "time", nullable: true })
 	end_time!: string;
 
 	@Column({ type: "integer" })
