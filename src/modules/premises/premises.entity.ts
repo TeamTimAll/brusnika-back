@@ -1,10 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+} from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { BuildingEntity } from "../buildings/buildings.entity";
 import { SectionEntity } from "../sections/sections.entity";
 
+import { PremiseSchemaEntity } from "./premise_schema.entity";
 import { SeasonEntity } from "./season.entity";
 
 export enum PremisesType {
@@ -78,8 +86,15 @@ export class PremiseEntity extends BaseEntity {
 	@Column({ nullable: true })
 	similiarApartmentCount!: number;
 
+	@OneToOne(() => PremiseSchemaEntity, (s) => s.premise, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
+	@JoinColumn({ name: "schema_id" })
+	schema!: PremiseSchemaEntity;
+
 	@Column({ type: "integer", nullable: true })
-	sunrise_angle?: number;
+	schema_id?: number;
 
 	@ManyToOne(() => SeasonEntity, {
 		onDelete: "CASCADE",

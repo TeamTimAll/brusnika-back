@@ -12,15 +12,18 @@ import { SectionsService } from "../sections/sections.service";
 import { CreatePremisesDto } from "./dtos/CreatePremises.dto";
 import { PremisesFilterDto } from "./dtos/PremisesFilter.dto";
 import { UpdatePremisesDto } from "./dtos/UpdatePremises.dto";
+import { PremiseNotFoundError } from "./errors/PremiseNotFound.error";
+import { PremiseSchemaEntity } from "./premise_schema.entity";
 import { PremiseEntity } from "./premises.entity";
 import { SeasonEntity } from "./season.entity";
-import { PremiseNotFoundError } from "./errors/PremiseNotFound.error";
 
 @Injectable()
 export class PremisesService {
 	constructor(
 		@InjectRepository(PremiseEntity)
 		private premiseRepository: Repository<PremiseEntity>,
+		@InjectRepository(PremiseSchemaEntity)
+		private premiseSchemaRepository: Repository<PremiseSchemaEntity>,
 		@InjectRepository(SeasonEntity)
 		private seasonRepository: Repository<SeasonEntity>,
 		@Inject()
@@ -41,7 +44,17 @@ export class PremisesService {
 			await this.sectionService.readOne(dto.section_id);
 		}
 		const premise = this.premiseRepository.create(dto);
-		return await this.premiseRepository.save(premise);
+		const createdPremise = await this.premiseRepository.save(premise);
+		if (dto.schema) {
+			const schema = this.premiseSchemaRepository.create(dto.schema);
+			schema.premise_id = createdPremise.id;
+			const createdSchema =
+				await this.premiseSchemaRepository.save(schema);
+			await this.premiseRepository.update(createdPremise.id, {
+				schema_id: createdSchema.id,
+			});
+		}
+		return createdPremise;
 	}
 
 	async readOne(id: number): Promise<PremiseEntity> {
@@ -127,6 +140,11 @@ export class PremisesService {
 				ProjectEntity,
 				"project",
 				"project.id = building.project_id",
+			)
+			.leftJoin(
+				PremiseSchemaEntity,
+				"premise_schema",
+				"premise_schema.premise_id = premise.id",
 			);
 
 		if (filter) {
@@ -341,11 +359,17 @@ export class PremisesService {
 				'end_date',				project.end_date,
 				'city_id',				project.city_id
 			)) as project`,
+				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
+				'id',					premise_schema.id,
+				'sunrise_angle',		premise_schema.sunrise_angle,
+				'schema_image',			premise_schema.schema_image
+			)) as schema`,
 			])
 			.addSelect(
 				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
 			)
-			.addGroupBy("season.id");
+			.addGroupBy("season.id")
+			.addGroupBy("premise_schema.id");
 
 		const premises = await query.getRawMany<PremiseEntity>();
 
