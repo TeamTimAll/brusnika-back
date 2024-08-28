@@ -21,6 +21,7 @@ import {
 import { CreateTrainingDto } from "./dto/CreateTrainings.dto";
 import { FilterTrainingDto } from "./dto/FilterTraining.dto";
 import { LikeTrainingsDto } from "./dto/LikeTrainings.dto";
+import { TrainingCategoryFilterDto } from "./dto/TrainingCategoryFilter.dto";
 import { UpdateTrainingCategoryDto } from "./dto/UpdateTrainingCategory.dto";
 import { UpdateTrainingDto } from "./dto/UpdateTrainings.dto";
 import { CreateTrainingCategoryDto } from "./dto/categories.dto";
@@ -112,10 +113,16 @@ export class TrainingsService {
 		return this.trainingCategoryRepository.save(category);
 	}
 
-	getCategories() {
+	getCategories(dto: TrainingCategoryFilterDto, user: ICurrentUser) {
 		return this.trainingCategoryRepository.find({
 			relations: {
 				training: true,
+			},
+			where: {
+				is_active:
+					user.role === RoleType.ADMIN
+						? !dto.include_non_actives
+						: true,
 			},
 		});
 	}

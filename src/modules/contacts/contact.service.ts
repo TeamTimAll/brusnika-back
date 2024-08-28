@@ -2,6 +2,9 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, EntityManager, In, Repository } from "typeorm";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
+import { RoleType } from "../../constants";
 import { CityService } from "../cities/cities.service";
 
 import { ContactEntity } from "./contact.entity";
@@ -12,6 +15,7 @@ import {
 	CreateContactBulkDto,
 	UpdateContactBulkDto,
 } from "./dto/ContactBulk.dto";
+import { ContactFilterDto } from "./dto/ContactFilter.dto";
 import { CreateContactDto } from "./dto/CreateContact.dto";
 import { ContactAddressNotFoundError } from "./errors/ContactAddressNotFound.error";
 import { ContactNotFoundError } from "./errors/ContactNotFound.error";
@@ -31,14 +35,18 @@ export class ContactService {
 		private dataSource: DataSource,
 	) {}
 
-	readAll(city_id?: number) {
+	readAll(user: ICurrentUser, dto: ContactFilterDto) {
 		return this.contactRepository.find({
 			relations: {
 				address: true,
 				work_schedule: true,
 			},
 			where: {
-				city_id: city_id,
+				city_id: dto.city_id,
+				is_active:
+					user.role === RoleType.ADMIN
+						? !dto.include_non_actives
+						: true,
 			},
 		});
 	}
