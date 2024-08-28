@@ -11,7 +11,9 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { ApiDtoResponse } from "../../decorators";
+import { ICurrentUser } from "interfaces/current-user.interface";
+
+import { ApiDtoResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
@@ -35,8 +37,8 @@ export class ContactController {
 	@Get()
 	@ApiOperation({ summary: "Get all contacts" })
 	@ApiDtoResponse(ContactArrayMetaDataDto, HttpStatus.OK)
-	readAll(@Query() dto: ContactFilterDto) {
-		return this.contactService.readAll(dto.city_id);
+	readAll(@Query() dto: ContactFilterDto, @User() user: ICurrentUser) {
+		return this.contactService.readAll(user, dto);
 	}
 
 	@Post("bulk")

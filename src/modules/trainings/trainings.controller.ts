@@ -25,6 +25,7 @@ import { BulkMetaDataDto } from "./dto/Bulk.dto";
 import { CreateTrainingsMetaDataDto } from "./dto/CreateTrainings.dto";
 import { FilterTrainingDto } from "./dto/FilterTraining.dto";
 import { LikeTrainingsMetaDataDto } from "./dto/LikeTrainings.dto";
+import { TrainingCategoryFilterDto } from "./dto/TrainingCategoryFilter.dto";
 import { UpdateTrainingCategoryMetaDataDto } from "./dto/UpdateTrainingCategory.dto";
 import { UpdateTrainingMetaDataDto } from "./dto/UpdateTrainings.dto";
 import { CreateTrainingCategoryMetaDataDto } from "./dto/categories.dto";
@@ -116,8 +117,11 @@ export class TrainingController {
 
 	@Get("categories")
 	@ApiOperation({ summary: "Get all trainings categories" })
-	async getCategories() {
-		return await this.service.getCategories();
+	async getCategories(
+		@Query() dto: TrainingCategoryFilterDto,
+		@User() user: ICurrentUser,
+	) {
+		return await this.service.getCategories(dto, user);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
