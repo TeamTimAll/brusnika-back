@@ -124,6 +124,9 @@ export class TrainingsService {
 						? !dto.include_non_actives
 						: true,
 			},
+			order: {
+				sequnce_id: "ASC",
+			},
 		});
 	}
 
