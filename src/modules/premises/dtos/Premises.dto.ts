@@ -72,6 +72,9 @@ export class PremiseDto
 	section_id?: number;
 
 	@ApiProperty()
+	sunrise_angle?: number;
+
+	@ApiProperty()
 	is_sold!: boolean;
 
 	@ApiProperty()

@@ -78,6 +78,9 @@ export class PremiseEntity extends BaseEntity {
 	@Column({ nullable: true })
 	similiarApartmentCount!: number;
 
+	@Column({ type: "integer", nullable: true })
+	sunrise_angle?: number;
+
 	@ManyToOne(() => SeasonEntity, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",
