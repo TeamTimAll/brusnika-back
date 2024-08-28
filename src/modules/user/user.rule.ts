@@ -3,7 +3,6 @@ import { IRule } from "interfaces/rule.inteface";
 import { RoleType } from "../../constants";
 
 export const UserChangeRoleRule: IRule = {
-	[RoleType.USER]: undefined,
 	[RoleType.ADMIN]: undefined,
 	[RoleType.AGENT]: undefined,
 	[RoleType.MANAGER]: undefined,

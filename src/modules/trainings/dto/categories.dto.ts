@@ -1,6 +1,13 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import {
+	IsBoolean,
+	IsInt,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 import { TrainingCategoryEntity } from "../entities/categories.entity";
@@ -39,6 +46,11 @@ export class CreateTrainingCategoryDto {
 	@IsInt()
 	@IsNotEmpty()
 	sequnce_id!: number;
+
+	@ApiProperty({ required: false })
+	@IsBoolean()
+	@IsOptional()
+	is_active?: boolean;
 }
 
 export class CreateTrainingCategoryMetaDataDto extends BaseDto<CreateTrainingCategoryDto> {
