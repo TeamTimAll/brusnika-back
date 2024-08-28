@@ -9,7 +9,8 @@ import {
 } from "../premises.entity";
 
 export class PremiseDto
-	implements Omit<PremiseEntity, "building" | "bookings" | "season">
+	implements
+		Omit<Required<PremiseEntity>, "building" | "bookings" | "season">
 {
 	@ApiProperty()
 	id!: number;
@@ -27,7 +28,7 @@ export class PremiseDto
 	type!: PremisesType;
 
 	@ApiProperty()
-	building_id?: number;
+	building_id!: number;
 
 	@ApiProperty()
 	price!: number;
@@ -69,14 +70,20 @@ export class PremiseDto
 	section!: SectionEntity;
 
 	@ApiProperty()
-	section_id?: number;
-
-	@ApiProperty()
-	sunrise_angle?: number;
+	section_id!: number;
 
 	@ApiProperty()
 	is_sold!: boolean;
 
 	@ApiProperty()
 	is_active!: boolean;
+
+	@ApiProperty()
+	sunrise_angle!: number;
+
+	@ApiProperty()
+	schema_image!: string;
+
+	@ApiProperty()
+	season_id!: number;
 }
