@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	ArrayMinSize,
+	IsArray,
 	IsDefined,
 	IsInt,
 	IsNotEmpty,
@@ -28,6 +29,7 @@ export class CreateContactDto implements ICreateContactDto {
 
 	@ApiProperty({ isArray: true })
 	@IsString({ each: true })
+	@IsArray()
 	@IsNotEmpty()
 	phone_number!: string[];
 
