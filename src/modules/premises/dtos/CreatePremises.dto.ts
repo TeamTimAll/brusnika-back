@@ -8,6 +8,8 @@ import {
 	IsNumber,
 	IsOptional,
 	IsString,
+	Max,
+	Min,
 	ValidateNested,
 } from "class-validator";
 
@@ -107,6 +109,19 @@ export class CreatePremisesDto {
 	@IsEnum(PuchaseOptions)
 	@IsOptional()
 	purchaseOption?: PuchaseOptions;
+
+	@ApiProperty({ description: "Angle must be between 0° and 360°" })
+	@Type(() => Number)
+	@IsInt()
+	@Min(0)
+	@Max(360)
+	@IsOptional()
+	sunrise_angle?: number;
+
+	@ApiProperty()
+	@IsString()
+	@IsOptional()
+	schema_image?: string;
 }
 
 export class CreatePremisesMetaDataDto extends BaseDto<CreatePremisesDto> {

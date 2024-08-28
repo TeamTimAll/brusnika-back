@@ -78,8 +78,11 @@ export class PremiseEntity extends BaseEntity {
 	@Column({ nullable: true })
 	similiarApartmentCount!: number;
 
-	@Column({ type: "integer", nullable: true })
+	@Column({ type: "integer", default: 0, nullable: true })
 	sunrise_angle?: number;
+
+	@Column({ type: "text", nullable: true })
+	schema_image?: string;
 
 	@ManyToOne(() => SeasonEntity, {
 		onDelete: "CASCADE",
