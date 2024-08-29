@@ -44,6 +44,7 @@ type ICreateContactWorkScheduleDto = Omit<
 	| "created_at"
 	| "updated_at"
 	| "contact"
+	| "contact_id"
 	| "start_time"
 	| "end_time"
 >;
@@ -65,6 +66,4 @@ export class CreateContactWorkScheduleDto
 	@IsMilitaryTime()
 	@IsOptional()
 	end_time?: string;
-
-	contact_id!: number;
 }
