@@ -230,23 +230,51 @@ export class TrainingsService {
 		const dayDiff = foundUser?.workStartDate
 			? getDaysDiff(new Date(), new Date(foundUser.workStartDate))
 			: 0;
-		if (dto.is_show && settings.training_show_date_limit > dayDiff) {
+		if (settings.training_show_date_limit < dayDiff) {
 			trainingQuery = trainingQuery
-				.andWhere("trainings.access = :role_access", {
+				.orWhere("trainings.access = :role_access", {
 					role_access: TrainingAccess.NEW_USER,
 				})
-				.andWhere("trainings.is_show IS TRUE");
-		} else if (settings.training_show_date_limit > dayDiff) {
-			trainingQuery = trainingQuery.andWhere(
-				"trainings.is_show IS :is_show",
-				{ is_show: dto.is_show },
-			);
-		} else {
-			trainingQuery = trainingQuery.andWhere(
-				"trainings.is_show IS FALSE",
-			);
+				.andWhere("trainings.is_show IS FALSE");
 		}
 		return trainingQuery.getMany();
+	}
+
+	async readAllNewbie(user: ICurrentUser): Promise<TrainingEntity[]> {
+		const settings = await this.settingsService.read();
+		const foundUser = await this.userService.repository.findOneBy({
+			id: user.user_id,
+		});
+		const dayDiff = foundUser?.workStartDate
+			? getDaysDiff(new Date(), new Date(foundUser.workStartDate))
+			: 0;
+		if (settings.training_show_date_limit < dayDiff) {
+			return [];
+		}
+		return this.trainingRepository
+			.createQueryBuilder("trainings")
+			.leftJoinAndSelect("trainings.category", "category")
+			.leftJoinAndSelect("trainings.access_user", "access_user")
+			.leftJoinAndSelect("access_user.agency", "access_user_agency")
+			.loadRelationCountAndMap("trainings.likes_count", "trainings.likes")
+			.loadRelationCountAndMap("trainings.views_count", "trainings.views")
+			.select([
+				"trainings",
+				"category",
+				"access_user.id",
+				"access_user.firstName",
+				"access_user.lastName",
+				"access_user.fullName",
+				"access_user.avatar",
+				"access_user_agency.id",
+				"access_user_agency.legalName",
+			])
+			.andWhere("trainings.is_show IS TRUE")
+			.andWhere("trainings.access = :role_access", {
+				role_access: TrainingAccess.NEW_USER,
+			})
+			.andWhere("trainings.is_active IS TRUE")
+			.getMany();
 	}
 
 	async update(id: number, dto: UpdateTrainingDto) {
