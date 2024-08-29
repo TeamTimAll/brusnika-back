@@ -48,6 +48,12 @@ export class ContactService {
 						? !dto.include_non_actives
 						: true,
 			},
+			order: {
+				id: "ASC",
+				work_schedule: {
+					weekday: "ASC"
+				}
+			}
 		});
 	}
 
