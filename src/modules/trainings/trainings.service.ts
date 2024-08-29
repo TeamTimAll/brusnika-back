@@ -227,8 +227,8 @@ export class TrainingsService {
 		const foundUser = await this.userService.repository.findOneBy({
 			id: user.user_id,
 		});
-		const dayDiff = foundUser?.workStartDate
-			? getDaysDiff(new Date(), new Date(foundUser.workStartDate))
+		const dayDiff = foundUser?.created_at
+			? getDaysDiff(new Date(), new Date(foundUser.created_at))
 			: 0;
 		if (settings.training_show_date_limit < dayDiff) {
 			trainingQuery = trainingQuery
@@ -245,8 +245,8 @@ export class TrainingsService {
 		const foundUser = await this.userService.repository.findOneBy({
 			id: user.user_id,
 		});
-		const dayDiff = foundUser?.workStartDate
-			? getDaysDiff(new Date(), new Date(foundUser.workStartDate))
+		const dayDiff = foundUser?.created_at
+			? getDaysDiff(new Date(), new Date(foundUser.created_at))
 			: 0;
 		if (settings.training_show_date_limit < dayDiff) {
 			return [];
