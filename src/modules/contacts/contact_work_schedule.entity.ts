@@ -15,7 +15,7 @@ export class ContactWorkScheduleEntity extends BaseEntity {
 		type: "time",
 		nullable: true,
 		transformer: {
-			to: () => {},
+			to: (value: string | null) => value,
 			from: (value: string | null) =>
 				value ? formatTime(value, "HH:MM") : value,
 		},
@@ -26,7 +26,7 @@ export class ContactWorkScheduleEntity extends BaseEntity {
 		type: "time",
 		nullable: true,
 		transformer: {
-			to: () => {},
+			to: (value: string | null) => value,
 			from: (value: string | null) =>
 				value ? formatTime(value, "HH:MM") : value,
 		},
