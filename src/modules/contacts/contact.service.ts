@@ -48,6 +48,12 @@ export class ContactService {
 						? !dto.include_non_actives
 						: true,
 			},
+			order: {
+				id: "ASC",
+				work_schedule: {
+					weekday: "ASC",
+				},
+			},
 		});
 	}
 
@@ -73,7 +79,7 @@ export class ContactService {
 		});
 		const newContact = await this.contactRepository.save(contact);
 		dto.work_schedule = dto.work_schedule.map((w) => {
-			w.contact_id = newContact.id;
+			w["contact_id"] = newContact.id;
 			return w;
 		});
 		await this.contactWorkScheduleRepository.save(dto.work_schedule);
@@ -261,6 +267,7 @@ export class ContactService {
 					foundWorkSchedule[j],
 					w,
 				);
+				workSchedule.contact_id = contacts[i].id;
 				workSchedules.push(workSchedule);
 			});
 			const contactAddress = this.contactAddressRepository.merge(
