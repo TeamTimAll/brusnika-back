@@ -230,12 +230,21 @@ export class TrainingsService {
 		const dayDiff = foundUser?.workStartDate
 			? getDaysDiff(new Date(), new Date(foundUser.workStartDate))
 			: 0;
-		if (settings.training_show_date_limit < dayDiff) {
+		if (dto.is_show && settings.training_show_date_limit > dayDiff) {
 			trainingQuery = trainingQuery
-				.orWhere("trainings.access = :role_access", {
+				.andWhere("trainings.access = :role_access", {
 					role_access: TrainingAccess.NEW_USER,
 				})
-				.andWhere("trainings.is_show IS FALSE");
+				.andWhere("trainings.is_show IS TRUE");
+		} else if (settings.training_show_date_limit > dayDiff) {
+			trainingQuery = trainingQuery.andWhere(
+				"trainings.is_show IS :is_show",
+				{ is_show: dto.is_show },
+			);
+		} else {
+			trainingQuery = trainingQuery.andWhere(
+				"trainings.is_show IS FALSE",
+			);
 		}
 		return trainingQuery.getMany();
 	}

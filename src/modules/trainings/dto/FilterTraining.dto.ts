@@ -14,4 +14,10 @@ export class FilterTrainingDto {
 	@IsBoolean()
 	@IsOptional()
 	include_non_actives?: boolean;
+
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_show?: boolean;
 }
