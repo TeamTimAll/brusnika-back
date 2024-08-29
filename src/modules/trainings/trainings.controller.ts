@@ -51,6 +51,13 @@ export class TrainingController {
 		return this.service.readAll(dto, user);
 	}
 
+	@Get("newbie")
+	@ApiOperation({ summary: "Get all newbie trainings" })
+	@ApiDtoResponse(TrainingArrayMetaDataDto, HttpStatus.OK)
+	async readAllNewbie(@User() user: ICurrentUser) {
+		return this.service.readAllNewbie(user);
+	}
+
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post()
 	@ApiOperation({
