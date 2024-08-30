@@ -18,8 +18,8 @@ export enum LeadState {
 @Entity({ name: "leads" })
 export class LeadsEntity extends BaseEntity {
 	@ManyToOne(() => ClientEntity, (c) => c.leads, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	@JoinColumn({ name: "client_id" })
 	client!: ClientEntity;
@@ -28,8 +28,8 @@ export class LeadsEntity extends BaseEntity {
 	client_id?: number;
 
 	@ManyToOne(() => UserEntity, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	@JoinColumn({ name: "agent_id" })
 	agent!: UserEntity;
@@ -38,8 +38,8 @@ export class LeadsEntity extends BaseEntity {
 	agent_id?: number;
 
 	@ManyToOne(() => UserEntity, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	@JoinColumn({ name: "manager_id" })
 	manager?: UserEntity;
@@ -48,8 +48,8 @@ export class LeadsEntity extends BaseEntity {
 	manager_id?: number;
 
 	@ManyToOne(() => ProjectEntity, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	@JoinColumn({ name: "project_id" })
 	project!: ProjectEntity;
@@ -58,8 +58,8 @@ export class LeadsEntity extends BaseEntity {
 	project_id?: number;
 
 	@ManyToOne(() => PremiseEntity, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	@JoinColumn({ name: "premise_id" })
 	premise!: PremiseEntity;
@@ -80,8 +80,8 @@ export class LeadsEntity extends BaseEntity {
 	state!: LeadState;
 
 	@OneToMany(() => LeadOpsEntity, (type) => type.lead, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	lead_ops?: LeadOpsEntity[];
 }
