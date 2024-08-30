@@ -1,7 +1,14 @@
 import { join } from "path";
 
-import { Module } from "@nestjs/common";
+import {
+	MiddlewareConsumer,
+	Module,
+	NestModule,
+	RequestMethod,
+} from "@nestjs/common";
 import { ServeStaticModule } from "@nestjs/serve-static";
+
+import { StaticFilesMiddleware } from "../middlewares/StaticFilesMiddleware";
 
 import { AuthModule } from "./auth/auth.module";
 import { BookingsModule } from "./bookings/bookings.module";
@@ -57,4 +64,10 @@ import { VisitsModule } from "./visits/visits.module";
 	],
 	exports: [],
 })
-export class SecuredModule {}
+export class SecuredModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer
+			.apply(StaticFilesMiddleware)
+			.forRoutes({ method: RequestMethod.GET, path: "/api/files/*" });
+	}
+}

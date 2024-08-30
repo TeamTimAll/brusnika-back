@@ -1,8 +1,6 @@
 import {
 	Controller,
 	Header,
-	HttpException,
-	HttpStatus,
 	Post,
 	UploadedFile,
 	UseInterceptors,
@@ -10,10 +8,11 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
 
+import { FileExtensionNotAllowedError } from "../../common/errors/FileExtensionNotAllowedError";
+import { FileIsRequiredError } from "../../common/errors/FileIsRequiredError";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
 import { FileUploadService } from "./file-upload.service";
-// ... Other imports
 
 @Controller("/api/file-upload")
 @ApiTags("FileUpload endpoints")
@@ -48,10 +47,7 @@ export class FileUploadController {
 		@UploadedFile() file: Express.Multer.File,
 	): Promise<{ filename: string }> {
 		if (!file) {
-			throw new HttpException(
-				"Image file required",
-				HttpStatus.BAD_REQUEST,
-			);
+			throw new FileIsRequiredError();
 		}
 
 		const filename = await this.fileUploadService.uploadImage(file);
@@ -64,7 +60,12 @@ export class FileUploadController {
 		callback: (error: Error | null, acceptFile: boolean) => void,
 	): void {
 		if (!file.originalname.match(/\.(jpg|jpeg|png|gif|pdf|doc)$/)) {
-			return callback(new Error("Only image files are allowed!"), false);
+			callback(
+				new FileExtensionNotAllowedError(
+					"Allowed file extension: jpg, jpeg, png, gif, pdf, doc",
+				),
+				false,
+			);
 		}
 		callback(null, true);
 	}
