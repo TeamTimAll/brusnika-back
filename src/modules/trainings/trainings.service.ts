@@ -114,31 +114,28 @@ export class TrainingsService {
 	}
 
 	getCategories(dto: TrainingCategoryFilterDto, user: ICurrentUser) {
-		return this.trainingCategoryRepository.find({
-			relations: {
-				training: true,
-			},
-			where: [
+		let query = this.trainingCategoryRepository
+			.createQueryBuilder("c")
+			.leftJoinAndMapMany(
+				"c.training",
+				TrainingEntity,
+				"training",
+				"training.category_id = c.id" +
+					(user.role !== RoleType.ADMIN && !dto.include_non_actives
+						? " AND training.is_active IS :is_active"
+						: ""),
 				{
 					is_active:
-						user.role === RoleType.ADMIN && dto.include_non_actives
-							? undefined
-							: true,
+						user.role !== RoleType.ADMIN && !dto.include_non_actives
+							? true
+							: undefined,
 				},
-				{
-					training: {
-						is_active:
-							user.role === RoleType.ADMIN &&
-							dto.include_non_actives
-								? undefined
-								: true,
-					},
-				},
-			],
-			order: {
-				sequnce_id: "ASC",
-			},
-		});
+			)
+			.orderBy("c.sequnce_id", "ASC");
+		if (user.role !== RoleType.ADMIN && !dto.include_non_actives) {
+			query = query.where("c.is_active IS TRUE");
+		}
+		return query.getMany();
 	}
 
 	async readOne(id: number, user: ICurrentUser): Promise<unknown> {
