@@ -17,35 +17,50 @@ export enum LeadState {
 
 @Entity({ name: "leads" })
 export class LeadsEntity extends BaseEntity {
-	@ManyToOne(() => ClientEntity)
+	@ManyToOne(() => ClientEntity, (c) => c.leads, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	@JoinColumn({ name: "client_id" })
 	client!: ClientEntity;
 
 	@Column({ type: "integer", nullable: true })
 	client_id?: number;
 
-	@ManyToOne(() => UserEntity)
+	@ManyToOne(() => UserEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	@JoinColumn({ name: "agent_id" })
 	agent!: UserEntity;
 
 	@Column({ type: "integer", nullable: true })
 	agent_id?: number;
 
-	@ManyToOne(() => UserEntity)
+	@ManyToOne(() => UserEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	@JoinColumn({ name: "manager_id" })
 	manager?: UserEntity;
 
 	@Column({ type: "integer", nullable: true })
 	manager_id?: number;
 
-	@ManyToOne(() => ProjectEntity)
+	@ManyToOne(() => ProjectEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	@JoinColumn({ name: "project_id" })
 	project!: ProjectEntity;
 
 	@Column({ type: "integer", nullable: true })
 	project_id?: number;
 
-	@ManyToOne(() => PremiseEntity)
+	@ManyToOne(() => PremiseEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	@JoinColumn({ name: "premise_id" })
 	premise!: PremiseEntity;
 
@@ -64,6 +79,9 @@ export class LeadsEntity extends BaseEntity {
 	@Column({ default: LeadState.ACTIVE, enum: LeadState })
 	state!: LeadState;
 
-	@OneToMany(() => LeadOpsEntity, (type) => type.lead)
+	@OneToMany(() => LeadOpsEntity, (type) => type.lead, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	lead_ops?: LeadOpsEntity[];
 }

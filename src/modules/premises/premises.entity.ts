@@ -96,6 +96,9 @@ export class PremiseEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	schema_id?: number;
 
+	@Column({ nullable: true, type: "varchar" })
+	link?: string;
+
 	@ManyToOne(() => SeasonEntity, {
 		onDelete: "CASCADE",
 		onUpdate: "CASCADE",

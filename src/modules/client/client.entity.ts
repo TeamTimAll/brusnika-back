@@ -43,12 +43,21 @@ export class ClientEntity extends BaseEntity {
 	@Column({ nullable: true, type: "integer" })
 	agent_id?: number;
 
-	@OneToMany(() => LeadsEntity, (l) => l.client)
+	@OneToMany(() => LeadsEntity, (l) => l.client, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	leads?: LeadsEntity[];
 
-	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.client)
+	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.client, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	bookings?: BookingsEntity[];
 
-	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.project)
+	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.project, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
 	visits?: VisitsEntity[];
 }
