@@ -44,20 +44,20 @@ export class ClientEntity extends BaseEntity {
 	agent_id?: number;
 
 	@OneToMany(() => LeadsEntity, (l) => l.client, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	leads?: LeadsEntity[];
 
 	@OneToMany(() => BookingsEntity, (Bookings) => Bookings.client, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	bookings?: BookingsEntity[];
 
 	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.project, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
 	})
 	visits?: VisitsEntity[];
 }
