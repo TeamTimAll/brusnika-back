@@ -120,9 +120,15 @@ export class TrainingsService {
 			},
 			where: {
 				is_active:
-					user.role === RoleType.ADMIN
-						? !dto.include_non_actives
+					user.role === RoleType.ADMIN && dto.include_non_actives
+						? undefined
 						: true,
+				training: {
+					is_active:
+						user.role === RoleType.ADMIN && dto.include_non_actives
+							? undefined
+							: true,
+				},
 			},
 			order: {
 				sequnce_id: "ASC",
