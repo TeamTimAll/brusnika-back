@@ -28,7 +28,10 @@ export enum PremisesType {
 
 @Entity({ name: "lead_ops" })
 export class LeadOpsEntity extends BaseEntity {
-	@ManyToOne(() => LeadsEntity, (type) => type.lead_ops)
+	@ManyToOne(() => LeadsEntity, (type) => type.lead_ops, {
+		onDelete: "CASCADE",
+		onUpdate: "CASCADE",
+	})
 	@JoinColumn({ name: "lead_id" })
 	lead!: LeadsEntity;
 
