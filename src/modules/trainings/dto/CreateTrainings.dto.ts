@@ -49,6 +49,11 @@ export class CreateTrainingDto {
 	@IsOptional()
 	is_copy_enabled?: boolean;
 
+	@ApiProperty({ required: false })
+	@IsBoolean()
+	@IsOptional()
+	is_show?: boolean;
+
 	// @ApiProperty()
 	@IsInt()
 	@Type(() => Number)
