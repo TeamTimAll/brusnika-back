@@ -118,18 +118,23 @@ export class TrainingsService {
 			relations: {
 				training: true,
 			},
-			where: {
-				is_active:
-					user.role === RoleType.ADMIN && dto.include_non_actives
-						? undefined
-						: true,
-				training: {
+			where: [
+				{
 					is_active:
 						user.role === RoleType.ADMIN && dto.include_non_actives
 							? undefined
 							: true,
 				},
-			},
+				{
+					training: {
+						is_active:
+							user.role === RoleType.ADMIN &&
+							dto.include_non_actives
+								? undefined
+								: true,
+					},
+				},
+			],
 			order: {
 				sequnce_id: "ASC",
 			},
