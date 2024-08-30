@@ -12,6 +12,10 @@ export enum ApplicationPromptID {
 	INPUT_VALIDATION_ERROR = 300,
 	METHOD_NOT_FOUND_ERROR = 301,
 	INTERNAL_SERVER_ERROR = 302,
+	INVALID_FILE_TYPE_ERROR = 303,
+	FILE_NOT_FOUND_ERROR = 304,
+	FILE_IS_REQUIRED_ERROR = 305,
+	FILE_EXTENSION_NOT_ALLOWED_ERROR = 306,
 
 	// Module Errors
 	USER_NOT_FOUND_ERROR = 403,
@@ -86,6 +90,50 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Internal server error",
 			ru: "Внутренняя ошибка сервера",
 			uz: "Internal server error",
+		},
+	},
+	[ApplicationPromptID.INVALID_FILE_TYPE_ERROR]: {
+		promptId: ApplicationPromptID.INVALID_FILE_TYPE_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "invalid_file_type_error",
+		promptLabels: {
+			en: "Invalid file type error",
+			ru: "Ошибка неверного типа файла",
+			uz: "Invalid file type error",
+		},
+	},
+	[ApplicationPromptID.FILE_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.FILE_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "file_not_found_error",
+		promptLabels: {
+			en: "File not found error",
+			ru: "Ошибка «Файл не найден»",
+			uz: "File not found error",
+		},
+	},
+	[ApplicationPromptID.FILE_IS_REQUIRED_ERROR]: {
+		promptId: ApplicationPromptID.FILE_IS_REQUIRED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "file_is_required_error",
+		promptLabels: {
+			en: "File is required error",
+			ru: "Ошибка «Необходим файл»",
+			uz: "File is required error",
+		},
+	},
+	[ApplicationPromptID.FILE_EXTENSION_NOT_ALLOWED_ERROR]: {
+		promptId: ApplicationPromptID.FILE_EXTENSION_NOT_ALLOWED_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "FILE_EXTENSION_NOT_ALLOWED_ERROR",
+		promptLabels: {
+			en: "File extension not allowed error",
+			ru: "Ошибка расширения файла не допускается",
+			uz: "File extension not allowed error",
 		},
 	},
 	[ApplicationPromptID.UNAUTHORIZED_ERROR]: {
@@ -480,7 +528,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "user_blocked_error",
 		promptLabels: {
 			en: "You are denied access (Contact the administration)",
-			ru: "Вам отказано в доступе (Обратитесь к администрации)",
+			ru: "Вход по указанному номеру телефона более не возможен",
 			uz: "You are denied access (Contact the administration)",
 		},
 	},
