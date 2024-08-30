@@ -121,18 +121,12 @@ export class TrainingsService {
 				TrainingEntity,
 				"training",
 				"training.category_id = c.id" +
-					(user.role !== RoleType.ADMIN && !dto.include_non_actives
-						? " AND training.is_active IS :is_active"
-						: ""),
-				{
-					is_active:
-						user.role !== RoleType.ADMIN && !dto.include_non_actives
-							? true
-							: undefined,
-				},
+					(user.role === RoleType.ADMIN && dto.include_non_actives
+						? ""
+						: " AND training.is_active IS TRUE"),
 			)
 			.orderBy("c.sequnce_id", "ASC");
-		if (user.role !== RoleType.ADMIN && !dto.include_non_actives) {
+		if (!(user.role === RoleType.ADMIN && dto.include_non_actives)) {
 			query = query.where("c.is_active IS TRUE");
 		}
 		return query.getMany();
