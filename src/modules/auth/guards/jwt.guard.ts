@@ -10,8 +10,9 @@ import { type Request } from "express";
 import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { ConfigManager } from "../../../config";
-import { UnauthorizedError } from "../errors/Unauthorized.error";
+import { UserRequest } from "../../../decorators";
 import { UserService } from "../../../modules/user/user.service";
+import { UnauthorizedError } from "../errors/Unauthorized.error";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -22,7 +23,7 @@ export class JwtAuthGuard implements CanActivate {
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const request = context.switchToHttp().getRequest<Request>();
+		const request = context.switchToHttp().getRequest<UserRequest>();
 		const token = this.extractTokenFromHeader(request);
 
 		if (!token) {
@@ -35,20 +36,32 @@ export class JwtAuthGuard implements CanActivate {
 					secret: ConfigManager.config.JWT_PRIVATE_KEY,
 				},
 			);
-			if (payload.user_id) {
-				const user = await this.userService.repository.findOne({
-					select: { id: true },
-					where: {
-						id: payload.user_id,
-					},
-				});
-				if (!user) {
-					throw new UnauthorizedError();
-				}
+			if (!payload.user_id) {
+				throw new UnauthorizedError();
 			}
-			// 💡 We're assigning the payload to the request object here
-			// so that we can access it in our route handlers
-			request["user"] = payload;
+			const user = await this.userService.repository.findOne({
+				select: {
+					id: true,
+					role: true,
+					email: true,
+					username: true,
+					firebase_token: true,
+				},
+				where: {
+					id: payload.user_id,
+				},
+			});
+			if (!user) {
+				throw new UnauthorizedError();
+			}
+
+			request.user = {
+				user_id: user.id,
+				role: user.role,
+				email: user.email,
+				username: user.username,
+				firebase_token: user.firebase_token,
+			};
 		} catch (error) {
 			throw new UnauthorizedError();
 		}

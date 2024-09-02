@@ -38,7 +38,7 @@ export class UserEntity extends BaseEntity {
 	role!: RoleType;
 
 	@Column({ unique: true, nullable: true, type: "varchar" })
-	email!: string | null;
+	email?: string | null;
 
 	@Column({ unique: true, nullable: true, type: "varchar" })
 	username!: string;
@@ -100,6 +100,9 @@ export class UserEntity extends BaseEntity {
 
 	@Column({ nullable: true, type: "varchar" })
 	temporary_email?: string | null;
+
+	@Column({ nullable: true, type: "text" })
+	firebase_token?: string;
 
 	@Column({ type: "enum", enum: UserStatus, default: UserStatus.ACTIVE })
 	status!: UserStatus;

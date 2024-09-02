@@ -47,6 +47,12 @@ export class FilterEventsDto {
 	@Limit()
 	limit: number = 50;
 
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	include_non_actives?: boolean;
+
 	@ApiProperty({
 		required: false,
 		type: "enum",

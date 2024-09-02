@@ -20,6 +20,7 @@ import {
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ApiDtoResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
@@ -71,8 +72,8 @@ export class UserController {
 	@Get("/me")
 	@ApiOperation({ description: "### User o'z ma'lumotlarini olish." })
 	@ApiDtoResponse(UserReadAllMetaDataDto, HttpStatus.OK)
-	async getUser(@User() user: ICurrentUser): Promise<UserEntity> {
-		return this.userService.readOne(user.user_id);
+	async getUser(@User() user: ICurrentUser): Promise<BaseDto<UserEntity>> {
+		return this.userService.me(user.user_id);
 	}
 
 	@Put("/")
