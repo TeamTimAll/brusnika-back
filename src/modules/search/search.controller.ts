@@ -22,6 +22,6 @@ export class SearchController {
 
 	@Get()
 	search(@Query() dto: SearchDto) {
-		return this.searchService.search(dto.text);
+		return this.searchService.search(dto);
 	}
 }
