@@ -46,7 +46,7 @@ export class UserService {
 		@Inject(forwardRef(() => CityService))
 		private cityService: CityService,
 		@Inject()
-		private bookingRepository:BookingRepository,
+		private bookingRepository: BookingRepository,
 		@Inject()
 		private readonly settingsRepository: SettingsRepository,
 	) {}
@@ -108,15 +108,31 @@ export class UserService {
 				agency: true,
 				city: true,
 			},
-			where: {
-				fullName: dto.fullname ? ILike(`%${dto.fullname}%`) : undefined,
-				city_id: dto.city_id,
-				role: dto.role,
-				agency_id: dto.agency_id,
-				created_at: dto.registered_at
-					? (MoreThanOrEqual(dto.registered_at) as unknown as Date)
-					: undefined,
-			},
+			where: [
+				{
+					city_id: dto.city_id,
+					role: dto.role,
+					agency_id: dto.agency_id,
+					created_at: dto.registered_at
+						? (MoreThanOrEqual(
+								dto.registered_at,
+							) as unknown as Date)
+						: undefined,
+				},
+				{
+					fullName: dto.text ? ILike(`%${dto.text}%`) : undefined,
+				},
+				{
+					phone: dto.text ? ILike(`%${dto.text}%`) : undefined,
+				},
+				{
+					agency: {
+						legalName: dto.text
+							? ILike(`%${dto.text}%`)
+							: undefined,
+					},
+				},
+			],
 			// prettier-ignore
 			order: {
 				fullName: dto.sort_by === UserSortBy.FULLNAME ? dto.order_by : undefined,
