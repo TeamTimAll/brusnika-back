@@ -352,3 +352,4 @@ Fasllar entity shakli:
     - klient
     - proekt
     - obyekt
+- [ ] Global search hamma entitylar bo'yicha alohida pagination.
