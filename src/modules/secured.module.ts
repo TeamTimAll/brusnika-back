@@ -27,6 +27,7 @@ import { PremisesModule } from "./premises/premises.module";
 import { PremisesBasketModule } from "./premises_basket/premises_basket.module";
 import { PremisesBasketMetaModule } from "./premises_basket_meta/premises_basket_meta.module";
 import { ProjectsModule } from "./projects/projects.module";
+import { SearchModule } from "./search/search.module";
 import { SectionsModule } from "./sections/sections.module";
 import { SettingsModule } from "./settings/settings.module";
 import { TrainingModule } from "./trainings/trainings.module";
@@ -61,6 +62,7 @@ import { VisitsModule } from "./visits/visits.module";
 		NotificationModule,
 		SettingsModule,
 		ContactModule,
+		SearchModule,
 	],
 	exports: [],
 })

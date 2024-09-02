@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Logger, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AgenciesModule } from "../../modules/agencies/agencies.module";
@@ -28,7 +28,7 @@ import { EventsService } from "./events.service";
 		CityModule,
 		NotificationModule,
 	],
-	providers: [EventsService],
+	providers: [EventsService, Logger],
 	controllers: [EventsController],
 	exports: [EventsService],
 })

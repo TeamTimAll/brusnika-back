@@ -8,8 +8,7 @@ import { AgenciesModule } from "../agencies/agencies.module";
 import { CityEntity } from "../cities/cities.entity";
 import { CityModule } from "../cities/cities.module";
 import { CityService } from "../cities/cities.service";
-import { UserEntity } from "../user/user.entity";
-import { UserService } from "../user/user.service";
+import { UserModule } from "../user/user.module";
 
 import { ProjectEntity } from "./project.entity";
 import { ProjectsController } from "./projects.controller";
@@ -20,12 +19,13 @@ import { ProjectService } from "./projects.service";
 		MulterModule.register({
 			dest: path.join(__dirname, "..", "media"),
 		}),
-		TypeOrmModule.forFeature([ProjectEntity, UserEntity, CityEntity]),
+		TypeOrmModule.forFeature([ProjectEntity, CityEntity]),
 		CityModule,
 		AgenciesModule,
+		UserModule,
 	],
 	controllers: [ProjectsController],
-	providers: [ProjectService, CityService, UserService],
+	providers: [ProjectService, CityService],
 	exports: [ProjectService],
 })
 export class ProjectsModule {}
