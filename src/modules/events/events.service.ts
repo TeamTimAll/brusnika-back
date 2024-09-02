@@ -277,10 +277,11 @@ export class EventsService {
 		event.create_by_id = user.user_id;
 		await this.citiesService.readOne(dto.city_id);
 		const newEvent = await this.eventRepository.save(event);
-		let contacts = this.contactsRepository.create(dto.contacts);
-		contacts = contacts.map((e) => {
-			e.event_id = event.id;
-			return e;
+		const contacts: EventContactEntity[] = [];
+		dto.contacts.forEach((c) => {
+			const contact = this.contactsRepository.create(c);
+			contact.event_id = newEvent.id;
+			contacts.push(contact);
 		});
 		newEvent.contacts = await this.contactsRepository.save(contacts);
 		return newEvent;
