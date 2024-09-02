@@ -301,9 +301,6 @@ export class UserService {
 				new PermissionDeniedError(`role: ${user.role}`);
 			}
 		}
-		if (user.role === RoleType.AGENT && dto.role) {
-			throw new PermissionDeniedError(`role: ${user.role}`);
-		}
 		await this.userRepository.update(id, dto);
 		return this.readOne(id);
 	}
