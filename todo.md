@@ -272,7 +272,7 @@
 - [x] Training update qila oladi.
 - [x] News create qila oladi.
 - [x] Event create qila oladi.
-- [ ] Contact'larni boshqaruvini qila oladi.
+- [x] Contact'larni boshqaruvini qila oladi.
 - [x] Project'larni boshqaruvini qila oladi.
 
 ### ADMIN (Администратор)

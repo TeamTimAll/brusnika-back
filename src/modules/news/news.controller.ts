@@ -38,7 +38,7 @@ export class NewsController {
 		return this.service.readAll();
 	}
 
-	@Roles([RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post()
 	@ApiOperation({ summary: "create news" })
 	async createNews(
@@ -57,7 +57,7 @@ export class NewsController {
 		return this.service.toggleLike(dto.data, user);
 	}
 
-	@Roles([RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Put(":id")
 	@ApiOperation({ summary: "update news" })
 	async updateNews(
@@ -79,7 +79,7 @@ export class NewsController {
 		return await this.service.banner();
 	}
 
-	@Roles([RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post("categories")
 	@ApiOperation({ summary: "Create news categories" })
 	async createCategories(@Body() body: CreateNewsCategoriesMetaDataDto) {
