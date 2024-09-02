@@ -1,20 +1,19 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Inject, Injectable } from "@nestjs/common";
 
 import { UpdateSettingsDto } from "./dto/UpdateSettings.dto";
 import { SettingsNotFoundError } from "./errors/SettingsNotFound.error";
 import { SettingsEntity } from "./settings.entity";
+import { SettingsRepository } from "./settings.repository";
 
 @Injectable()
 export class SettingsService {
 	constructor(
-		@InjectRepository(SettingsEntity)
-		private readonly settingsRepository: Repository<SettingsEntity>,
+		@Inject()
+		private readonly settingsRepository: SettingsRepository,
 	) {}
 
 	async read(): Promise<SettingsEntity> {
-		const [settings] = await this.settingsRepository.find();
+		const settings = await this.settingsRepository.readOne();
 		if (!settings) {
 			throw new SettingsNotFoundError();
 		}

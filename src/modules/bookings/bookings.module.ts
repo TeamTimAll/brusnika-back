@@ -7,6 +7,7 @@ import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesModule } from "../premises/premises.module";
 import { SettingsModule } from "../settings/settings.module";
 
+import { BookingRepository } from "./booking.repository";
 import { BookingsController } from "./bookings.controller";
 import { BookingsEntity } from "./bookings.entity";
 import { BookingsService } from "./bookings.service";
@@ -19,7 +20,7 @@ import { BookingsService } from "./bookings.service";
 		PremisesModule,
 		SettingsModule,
 	],
-	providers: [BookingsService],
+	providers: [BookingsService, BookingRepository],
 	controllers: [BookingsController],
 	exports: [BookingsService],
 })
