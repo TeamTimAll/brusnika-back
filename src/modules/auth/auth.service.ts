@@ -22,10 +22,10 @@ import { UserLoginDto } from "./dtos/UserLogin.dto";
 import { UserLoginResendCodeDto } from "./dtos/UserLoginResendCode.dto";
 import { UserLoginVerifyCodeDto } from "./dtos/UserLoginVerifyCode.dto";
 import { NoVerificationCodeSentError } from "./errors/NoVerificationCodeSent.error";
-import { UnauthorizedError } from "./errors/Unauthorized.error";
 import { UserEmailAlreadyExistsError } from "./errors/UserAlreadyExists.error";
 import { UserBlockedError } from "./errors/UserBlocked.error";
 import { UserPasswordIsNotCorrectError } from "./errors/UserPasswordIsNotCorrect.error";
+import { UserPasswordOrEmailNotCorrectError } from "./errors/UserPasswordOrEmailNotCorrect.error";
 import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "./errors/VerificationExists.error";
@@ -186,7 +186,7 @@ export class AuthService {
 		});
 
 		if (!user) {
-			throw new UnauthorizedError(
+			throw new UserPasswordOrEmailNotCorrectError(
 				`User not found. email: ${loginDto.email}`,
 			);
 		}
