@@ -30,6 +30,7 @@ import { UserResponseDto } from "./dtos/UserResponse.dto";
 import { UserUpdateDto } from "./dtos/UserUpdate.dto";
 import { UserUpdateRoleDto } from "./dtos/UserUpdateRole.dto";
 import { UserVerifyDto } from "./dtos/UserVerify.dto";
+import { UserAlreadyExistsError } from "./errors/UserExists.error";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
@@ -326,6 +327,12 @@ export class UserService {
 		dto: UserCreateDto,
 	): Promise<UserResponseDto> {
 		const user = await this.readOne(id);
+		const doesUserExist = await this.userRepository.existsBy({
+			phone: dto.phone,
+		});
+		if (doesUserExist) {
+			throw new UserAlreadyExistsError(`phone: ${dto.phone}`);
+		}
 		if (
 			user.verification_code_sent_date &&
 			!this.hasOneMinutePassed(user.verification_code_sent_date)
