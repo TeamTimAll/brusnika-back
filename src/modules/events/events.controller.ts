@@ -50,7 +50,7 @@ import { EventsService } from "./events.service";
 export class EventsController {
 	constructor(private eventsService: EventsService) {}
 
-	@Roles([RoleType.ADMIN])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	@ApiCreatedResponse({ type: EventsDto })
@@ -98,7 +98,7 @@ export class EventsController {
 		return await this.eventsService.toggleLike(dto.data, user);
 	}
 
-	@Roles([RoleType.ADMIN])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post("toggle-draft")
 	@ApiOperation({ summary: "toggle draft events" })
 	async toggleDraft(@Body() dto: ToggleEventMetaDataDto) {
@@ -157,7 +157,7 @@ export class EventsController {
 		return await this.eventsService.update(id, dto.data);
 	}
 
-	@Roles([RoleType.ADMIN])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
