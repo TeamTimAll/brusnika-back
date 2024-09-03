@@ -81,6 +81,11 @@ export class UserUpdateDto {
 	@IsEnum(UserStatus)
 	@IsOptional()
 	status?: UserStatus;
+
+	@ApiProperty()
+	@IsString()
+	@IsOptional()
+	firebase_token?: UserStatus;
 }
 
 export class UserUpdateMetaDataDto extends BaseDto<UserUpdateDto> {

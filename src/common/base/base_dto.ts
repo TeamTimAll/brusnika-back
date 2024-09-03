@@ -9,10 +9,18 @@ import {
 
 import { PromptLabel } from "lib/prompt/prompt";
 
+import { SearchData } from "../../modules/search/search.service";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
 
 import { BaseEntity } from "./base.entity";
 import { BaseError } from "./baseError";
+
+export interface Pagination {
+	module_name?: SearchData["module_name"];
+	count: number;
+	page: number;
+	limit: number;
+}
 
 export class Dto {
 	desc!: string;
@@ -24,7 +32,8 @@ export class MetaPrompt {
 	meta!: object;
 }
 
-export class MetaLinks {
+export class MetaLink {
+	module_name?: SearchData["module_name"];
 	totalPage!: number;
 	currPage!: number;
 	limit!: number;
@@ -36,7 +45,7 @@ export class MetaDto<T = object> {
 	type: ResponseStatusType = ResponseStatusType.SUCCESS;
 
 	@IsOptional()
-	links!: MetaLinks;
+	links!: MetaLink | MetaLink[];
 
 	@IsOptional()
 	taskId!: string;
@@ -57,7 +66,7 @@ export class MetaResponseDto<T = object> implements MetaDto<T> {
 	@ApiProperty()
 	params!: T;
 
-	links!: MetaLinks;
+	links!: MetaLink;
 	taskId!: string;
 	data?: object;
 	prompt!: MetaPrompt;
@@ -83,7 +92,12 @@ export class BaseDto<T = unknown> {
 		return this;
 	}
 
-	setLinks(links: MetaLinks) {
+	setLink(link: MetaLink) {
+		this.meta.links = link;
+		return this;
+	}
+
+	setLinks(links: MetaLink[]) {
 		this.meta.links = links;
 		return this;
 	}
@@ -95,12 +109,27 @@ export class BaseDto<T = unknown> {
 
 	setPagination(count: number, page: number, limit: number): void {
 		const maxPage = Math.ceil(count / limit);
-		this.setLinks({
+		this.setLink({
 			currPage: page,
 			totalPage: maxPage,
 			limit: limit,
 			total: count,
 		});
+	}
+
+	setPaginations(paginations: Pagination[]): void {
+		const links: MetaLink[] = [];
+		paginations.forEach((p) => {
+			const maxPage = Math.ceil(p.count / p.limit);
+			links.push({
+				module_name: p.module_name,
+				currPage: p.page,
+				totalPage: maxPage,
+				limit: p.limit,
+				total: p.count,
+			});
+		});
+		this.setLinks(links);
 	}
 
 	static createFromDto<T extends BaseDto, D>(dto: T, data?: D): T {
@@ -123,7 +152,7 @@ export class BaseDto<T = unknown> {
 		return dto;
 	}
 
-	static create<T extends BaseEntity | BaseEntity[], D = unknown>(data?: D) {
+	static create<T = BaseEntity[], D = unknown>(data?: D) {
 		return this.createFromDto(new BaseDto<T>(), data);
 	}
 }

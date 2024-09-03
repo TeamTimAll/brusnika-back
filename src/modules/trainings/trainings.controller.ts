@@ -58,7 +58,7 @@ export class TrainingController {
 		return this.service.readAllNewbie(user);
 	}
 
-	@Roles([RoleType.ADMIN /*RoleType.AFFILIATE_MANAGER*/])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post()
 	@ApiOperation({
 		summary: "create trainings",

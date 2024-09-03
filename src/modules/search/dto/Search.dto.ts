@@ -10,7 +10,7 @@ export class SearchDto {
 
 	@ApiProperty({ required: false })
 	@Limit()
-	limit: number = 30;
+	limit: number = 10;
 
 	@ApiProperty()
 	@IsString()
