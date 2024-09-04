@@ -10,8 +10,9 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
+import { RoleType } from "../../constants";
 import { User } from "../../decorators";
-import { RolesGuard } from "../../guards/roles.guard";
+import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
@@ -49,6 +50,13 @@ export class ClientController {
 		return await this.clientService.quickSearch(dto.text, user);
 	}
 
+	@Roles([
+		RoleType.ADMIN,
+		RoleType.AGENT,
+		RoleType.MANAGER,
+		RoleType.HEAD_OF_AGENCY,
+		RoleType.AFFILIATE_MANAGER,
+	])
 	@Get()
 	@ApiOkResponse({ type: CreateClientMetaDataDto })
 	async readAll(@User() user: ICurrentUser, @Query() dto: FilterClientDto) {

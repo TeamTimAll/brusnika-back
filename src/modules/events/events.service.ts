@@ -468,7 +468,10 @@ export class EventsService {
 			const response =
 				await FirebaseService.sendMessageBulk(firebaseMessages);
 			this.logger.log(
-				`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}\n${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
+				`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}`,
+			);
+			this.logger.log(
+				`${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
 			);
 		}
 		return await this.eventInvitationRepository.save(invitations);

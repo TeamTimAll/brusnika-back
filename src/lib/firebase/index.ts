@@ -34,13 +34,14 @@ export class FirebaseService {
 		});
 	}
 
-	static sendMessage(token: string, title: string, message: string) {
+	static sendMessage<T>(message: FirebaseMessage<T>) {
 		return firebaseAdmin.messaging(this.app).send({
-			token: token,
+			token: message.token,
 			notification: {
-				title: title,
-				body: message,
+				title: message.title,
+				body: message.message,
 			},
+			data: { data: JSON.stringify(message.data) },
 			android: {
 				priority: "high",
 				ttl: 1000 * 60 * 60 * 24, // 1 day
