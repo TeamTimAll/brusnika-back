@@ -362,6 +362,12 @@ export class UserService {
 		dto: UserChangeEmailDto,
 	): Promise<UserResponseDto> {
 		const user = await this.readOne(id);
+		const doesUserExist = await this.userRepository.existsBy({
+			email: dto.email,
+		});
+		if (doesUserExist) {
+			throw new UserAlreadyExistsError(`email: ${dto.email}`);
+		}
 		if (
 			user.email_verification_code_sent_date &&
 			!this.hasOneMinutePassed(user.email_verification_code_sent_date)

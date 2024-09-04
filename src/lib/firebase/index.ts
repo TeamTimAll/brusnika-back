@@ -1,5 +1,4 @@
-import { messaging } from "firebase-admin";
-import { App, cert, initializeApp } from "firebase-admin/app";
+import * as firebaseAdmin from "firebase-admin";
 
 export interface FirebaseConfig {
 	type: string;
@@ -15,18 +14,19 @@ export interface FirebaseConfig {
 	universe_domain: string;
 }
 
-export interface FirebaseMessage {
+export interface FirebaseMessage<T> {
 	token: string;
-	notification_type: string;
+	title: string;
 	message: string;
+	data: T;
 }
 
 export class FirebaseService {
-	private static app: App;
+	private static app: firebaseAdmin.app.App;
 
 	static init(config: FirebaseConfig) {
-		this.app = initializeApp({
-			credential: cert({
+		this.app = firebaseAdmin.initializeApp({
+			credential: firebaseAdmin.credential.cert({
 				clientEmail: config.client_email,
 				projectId: config.project_id,
 				privateKey: config.private_key.replace(/\\n/g, "\n"),
@@ -34,17 +34,14 @@ export class FirebaseService {
 		});
 	}
 
-	static sendMessage(
-		token: string,
-		notification_type: string,
-		message: string,
-	) {
-		return messaging(this.app).send({
-			token: token,
+	static sendMessage<T>(message: FirebaseMessage<T>) {
+		return firebaseAdmin.messaging(this.app).send({
+			token: message.token,
 			notification: {
-				title: notification_type,
-				body: message,
+				title: message.title,
+				body: message.message,
 			},
+			data: { data: JSON.stringify(message.data) },
 			android: {
 				priority: "high",
 				ttl: 1000 * 60 * 60 * 24, // 1 day
@@ -52,14 +49,15 @@ export class FirebaseService {
 		});
 	}
 
-	static sendMessageBulk(messages: FirebaseMessage[]) {
-		return messaging(this.app).sendEach(
+	static sendMessageBulk<T>(messages: FirebaseMessage<T>[]) {
+		return firebaseAdmin.messaging(this.app).sendEach(
 			messages.map((m) => ({
 				token: m.token,
 				notification: {
-					title: m.notification_type,
+					title: m.title,
 					body: m.message,
 				},
+				data: { data: JSON.stringify(m.data) },
 				android: {
 					priority: "high",
 					ttl: 1000 * 60 * 60 * 24, // 1 day

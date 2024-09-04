@@ -16,7 +16,7 @@ export class NotificationEntity extends BaseEntity {
 	description?: string;
 
 	@Column({ enum: NotificationType })
-	type!: string;
+	type!: NotificationType;
 
 	@Column({ type: "integer" })
 	object_id!: number;

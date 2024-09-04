@@ -49,6 +49,7 @@ export enum ApplicationPromptID {
 	CONTACT_WORK_SCHEDULE_NOT_FOUND_ERROR = 437,
 	CONTACT_ADDRESS_NOT_FOUND_ERROR = 438,
 	USER_ALREADY_EXISTS_ERROR = 439,
+	CLIENT_EXISTS_ERROR = 440,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -587,6 +588,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "User already exists error",
 			ru: "Ошибка «Пользователь уже существует»",
 			uz: "User already exists error",
+		},
+	},
+	[ApplicationPromptID.CLIENT_EXISTS_ERROR]: {
+		promptId: ApplicationPromptID.CLIENT_EXISTS_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "client_exists_error",
+		promptLabels: {
+			en: "Client already exists error",
+			ru: "Ошибка «Клиент уже существует»",
+			uz: "Client already exists error",
 		},
 	},
 };
