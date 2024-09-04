@@ -225,6 +225,9 @@ export class AuthService {
 			user.is_phone_verified &&
 			user.register_status === UserRegisterStatus.FINISHED
 		) {
+			await this.userService.repository.update(user.id, {
+				verification_code_sent_date: null,
+			});
 			return {
 				accessToken: this.jwtService.sign({
 					user_id: user.id,
