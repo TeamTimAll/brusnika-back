@@ -17,7 +17,7 @@
 ---
 ### Client
 - [x] Client module'ni ko'rib chiqish kerak.
-- [x] Client filter'ida active/hamma (default active) bo'yicha ma'lumot olinadi. 
+- [x] Client filter'ida active/hamma (default active) bo'yicha ma'lumot olinadi.
     Lekin lead'dagi status "на паузе" yoki "проиграна" bo'lmasligi kerak.
     - [x] Filter field `fullname`
     - [x] Filter field `phone_number`
@@ -54,7 +54,7 @@
 - [x] Client fullname va phone bo'yicha quick search.
 - [x] Client fullname bilan emas id'si bilan filter qilish.
 - [x] Read All'da client id qo'shish kerak.
-- [x] Client ma'lumotlari auth bilan olinishi kerak. 
+- [x] Client ma'lumotlari auth bilan olinishi kerak.
 - [x] phone va fullname birgalikda quick search.
 - [x] lead'larini ham qo'shib berish kerak. Project'ni ham qo'shish kerak. LeadOps qo'shish kerak emas.
 - [ ] "Проверить закрепление" da BPMSoft'ga ma'lumot jo'natish mock data bilan.
@@ -100,7 +100,7 @@
 - [ ] ~~manager entity bilan bog'liqlik.~~
 - [ ] mock'da qo'shib berish
 - [X] visits'ni premise'dan project'ga almashtirish.
-- [x] visits'da project, client, agent  ma'lumotlari kerak. 
+- [x] visits'da project, client, agent  ma'lumotlari kerak.
     project
         - id
         - name
@@ -130,7 +130,7 @@
 - [x] event read all va city bo'yicha filter
 - [x] event'da dto ichida ko'p ma'lumotlar chiqarilmagan
 - [x] keycloak uchun mini-tiny server qilish.
-- [x] ma'lumot heshlash algaritmi. 
+- [x] ma'lumot heshlash algaritmi.
 - [x] user role'larni qo'shib berish.
 
 ### 2024-07-22
@@ -156,7 +156,7 @@
 - [x] Front dev uchun domain ulash. URI: https://dev-dashboard-brusnika.teamtim.tech
 - [x] Event'da accept qilganlarni count'ni chiqarish.
 - [x] My events api kerak.
-- [x] Event'ni read all qilganida is_draft true'larni chiqarmaslik. 
+- [x] Event'ni read all qilganida is_draft true'larni chiqarmaslik.
     - [x] Calendar'da ham.
     - [x] User'ga nisbattan olish kerak. Yani faqat Admin draft'larni ko'ra oladi.
 - [x] Event'da is_banner bilan query.
@@ -167,7 +167,7 @@
 - [x] Event'ga role bilan yasashi va invite qilishi. Ruxsat **админ**, **партнерский менеджер** role'larga beriladi.
 - [x] Event pagination.
 - [x] Events'ga tag qo'shish kerak.
-- [x] User'lar listini chiqarish kerak. Faqat **админ** va **партнерский менеджер** role olishi kerak. 
+- [x] User'lar listini chiqarish kerak. Faqat **админ** va **партнерский менеджер** role olishi kerak.
 - [x] Calendar'da news'ni olib tashlash kerak.
 
 ### 2024-07-26
@@ -272,7 +272,7 @@
 - [x] Training update qila oladi.
 - [x] News create qila oladi.
 - [x] Event create qila oladi.
-- [ ] Contact'larni boshqaruvini qila oladi.
+- [x] Contact'larni boshqaruvini qila oladi.
 - [x] Project'larni boshqaruvini qila oladi.
 
 ### ADMIN (Администратор)
@@ -293,13 +293,14 @@ Brusnika API'dan olish kerak bo'lgan ma'lumotlar:
 - Contact [https://clients-base.staging.brusnika.tech/v1/contact]
 - Lead [https://crm.brusnika.ru/crm/hs/bpm/deals]
     - Lead Task: [https://crm.brusnika.ru/crm/hs/bpm/deal-tasks]
-- Task 
+- Task
 - Time Slots [https://crm.brusnika.ru/crm/hs/ofo/FreeTime]
 - User
     - Register
     - Create
 - Client
 - Bron
+- Agency
 
 Brusnika API'lari
 - Contact API: [https://clients-base.staging.brusnika.tech/v1/contact]
@@ -344,3 +345,11 @@ Fasllar entity shakli:
 
 - [x] Contact'da telefon raqam array'ga o'tkazish kerak.
 - [x] Premise'ga schema field va quyosh tushish burchaki qo'shish kerak.
+
+- [ ] push notification sending integration
+- [ ] check from when it should be send. (for event for sure and for visit maybe if so integate it please)
+- [x] Global search hamma entitylar bo'yicha.
+    - klient
+    - proekt
+    - obyekt
+- [ ] Global search hamma entitylar bo'yicha alohida pagination.

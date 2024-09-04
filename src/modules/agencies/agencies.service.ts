@@ -7,6 +7,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { CityService } from "../../modules/cities/cities.service";
 
 import { AgencyEntity } from "./agencies.entity";
+import { CounterAgent } from "./dtos/AgencySync.dto";
 import { CreateAgenciesDto } from "./dtos/CreateAgencies.dto";
 import { UpdateAgenciesDto } from "./dtos/UpdateAgencies.dto";
 import { AgencyNotFoundError } from "./errors/AgencyNotFound.error";
@@ -76,5 +77,54 @@ export class AgencyService {
 		const foundAgency = await this.readOne(id);
 		await this.agencyRepository.delete(foundAgency.id);
 		return foundAgency;
+	}
+
+	async sync() {
+		// const counterAgenciesResponse = await fetch(
+		// 	"https://counter-server.com/agency",
+		// );
+		// const counterAgencies = (await counterAgenciesResponse.json()) as
+		// 	| CounterAgent[]
+		// 	| undefined;
+		const counterAgencies: CounterAgent[] = [
+			{
+				id: "9f938798-3438-491b-9e02-25751a7eff14",
+				type: "type",
+				isClient: false,
+				localIds: [],
+				name: "Agency 1",
+				inn: "He found the end of the rainbow and was surprised at what he found there.",
+				passport: "",
+				registeredAddress: "",
+				actualAddress: "",
+				organizationName: "privilege",
+				organizationFullName: "privilege acid",
+				kpp: "",
+				ogrn: "",
+			},
+		];
+		if (!counterAgencies) {
+			throw new AgencyNotFoundError();
+		}
+		const agencies: AgencyEntity[] = [];
+		counterAgencies.forEach((ca) => {
+			agencies.push(
+				this.agencyRepository.create({
+					ext_id: ca.id,
+					legalName: ca.name,
+					inn: ca.inn,
+					ownerFullName: ca.organizationFullName,
+				}),
+			);
+		});
+		return (
+			await this.agencyRepository
+				.createQueryBuilder()
+				.insert()
+				.values(agencies)
+				.orIgnore()
+				.returning("*")
+				.execute()
+		).generatedMaps;
 	}
 }

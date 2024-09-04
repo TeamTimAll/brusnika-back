@@ -1,13 +1,15 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
 
+import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 import { LikedResponseDto } from "common/dtos/likeResponse.dto";
 import { ICurrentUser } from "interfaces/current-user.interface";
-import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
+import { FirebaseMessage, FirebaseService } from "../../lib/firebase";
+import { LogColor, logColorize } from "../../lib/log";
 import { AgencyService } from "../../modules/agencies/agencies.service";
 import { AgencyNotFoundError } from "../../modules/agencies/errors/AgencyNotFound.error";
 import { CityService } from "../../modules/cities/cities.service";
@@ -62,6 +64,7 @@ export class EventsService {
 		private citiesService: CityService,
 		@Inject()
 		private notificationService: NotificationService,
+		private logger: Logger,
 	) {}
 
 	get repository() {
@@ -94,6 +97,9 @@ export class EventsService {
 	async readAll(dto: FilterEventsDto, user: ICurrentUser) {
 		const pageSize = (dto.page - 1) * dto.limit;
 		let eventsQuery = this.selectEventQuery(user);
+		if (!(user.role === RoleType.ADMIN && dto.include_non_actives)) {
+			eventsQuery = eventsQuery.andWhere("e.is_active IS TRUE");
+		}
 		if (dto.query_type !== QueryType.ALL) {
 			const today_date = new Date();
 			eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
@@ -271,10 +277,11 @@ export class EventsService {
 		event.create_by_id = user.user_id;
 		await this.citiesService.readOne(dto.city_id);
 		const newEvent = await this.eventRepository.save(event);
-		let contacts = this.contactsRepository.create(dto.contacts);
-		contacts = contacts.map((e) => {
-			e.event_id = event.id;
-			return e;
+		const contacts: EventContactEntity[] = [];
+		dto.contacts.forEach((c) => {
+			const contact = this.contactsRepository.create(c);
+			contact.event_id = newEvent.id;
+			contacts.push(contact);
 		});
 		newEvent.contacts = await this.contactsRepository.save(contacts);
 		return newEvent;
@@ -397,7 +404,7 @@ export class EventsService {
 			);
 		}
 		const users = await this.userService.repository.find({
-			select: { id: true },
+			select: { id: true, firebase_token: true },
 			where: {
 				id: In(dto.user_ids),
 			},
@@ -419,6 +426,7 @@ export class EventsService {
 		}
 		const invitations: EventInvitationEntity[] = [];
 		const notifications: NotificationEntity[] = [];
+		const firebaseTokens: Array<string | null> = [];
 		users.forEach((u) => {
 			invitations.push(
 				this.eventInvitationRepository.create({
@@ -435,8 +443,33 @@ export class EventsService {
 					object_id: foundEvent.id,
 				}),
 			);
+
+			firebaseTokens.push(
+				u.firebase_token && u.firebase_token.length
+					? u.firebase_token
+					: null,
+			);
 		});
-		await this.notificationService.repository.save(notifications);
+		const createdNotifications: NotificationEntity[] =
+			await this.notificationService.repository.save(notifications);
+		const firebaseMessages: FirebaseMessage[] = [];
+		createdNotifications.forEach((n, i) => {
+			const token = firebaseTokens[i];
+			if (token) {
+				firebaseMessages.push({
+					message: JSON.stringify(n),
+					notification_type: "Мероприятие",
+					token: token,
+				});
+			}
+		});
+		if (firebaseMessages.length) {
+			const response =
+				await FirebaseService.sendMessageBulk(firebaseMessages);
+			this.logger.log(
+				`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}\n${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
+			);
+		}
 		return await this.eventInvitationRepository.save(invitations);
 	}
 

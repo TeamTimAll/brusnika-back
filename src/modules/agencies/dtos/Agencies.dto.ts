@@ -10,6 +10,9 @@ export class AgencyDto implements IAgencyDto {
 	id!: number;
 
 	@ApiProperty()
+	ext_id!: string | null;
+
+	@ApiProperty()
 	created_at!: Date;
 
 	@ApiProperty()

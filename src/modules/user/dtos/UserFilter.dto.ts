@@ -32,7 +32,7 @@ export class UserFilterDto {
 	@ApiProperty({ required: false })
 	@IsString()
 	@IsOptional()
-	fullname?: string;
+	text?: string;
 
 	@ApiProperty({ required: false })
 	@IsInt()

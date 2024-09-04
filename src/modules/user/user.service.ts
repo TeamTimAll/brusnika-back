@@ -3,19 +3,22 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, MoreThanOrEqual, Repository } from "typeorm";
 
-import { AuthResponeWithTokenDto } from "modules/auth/dtos/AuthResponeWithToken.dto";
-
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { AgencyService } from "../agencies/agencies.service";
+import { AuthResponeWithTokenDto } from "../auth/dtos/AuthResponeWithToken.dto";
 import { UserLoginResendCodeDto } from "../auth/dtos/UserLoginResendCode.dto";
 import { NoVerificationCodeSentError } from "../auth/errors/NoVerificationCodeSent.error";
 import { PermissionDeniedError } from "../auth/errors/PermissionDenied.error";
 import { VerificationCodeExpiredError } from "../auth/errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
+import { BookingRepository } from "../bookings/booking.repository";
+import { IUserCreation } from "../bookings/bookings.service";
 import { CityService } from "../cities/cities.service";
+import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
+import { SettingsRepository } from "../settings/settings.repository";
 
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
 import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
@@ -27,6 +30,7 @@ import { UserResponseDto } from "./dtos/UserResponse.dto";
 import { UserUpdateDto } from "./dtos/UserUpdate.dto";
 import { UserUpdateRoleDto } from "./dtos/UserUpdateRole.dto";
 import { UserVerifyDto } from "./dtos/UserVerify.dto";
+import { UserAlreadyExistsError } from "./errors/UserExists.error";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
@@ -42,6 +46,10 @@ export class UserService {
 		private jwtService: JwtService,
 		@Inject(forwardRef(() => CityService))
 		private cityService: CityService,
+		@Inject()
+		private bookingRepository: BookingRepository,
+		@Inject()
+		private readonly settingsRepository: SettingsRepository,
 	) {}
 
 	get repository(): Repository<UserEntity> {
@@ -101,15 +109,31 @@ export class UserService {
 				agency: true,
 				city: true,
 			},
-			where: {
-				fullName: dto.fullname ? ILike(`%${dto.fullname}%`) : undefined,
-				city_id: dto.city_id,
-				role: dto.role,
-				agency_id: dto.agency_id,
-				created_at: dto.registered_at
-					? (MoreThanOrEqual(dto.registered_at) as unknown as Date)
-					: undefined,
-			},
+			where: [
+				{
+					city_id: dto.city_id,
+					role: dto.role,
+					agency_id: dto.agency_id,
+					created_at: dto.registered_at
+						? (MoreThanOrEqual(
+								dto.registered_at,
+							) as unknown as Date)
+						: undefined,
+				},
+				{
+					fullName: dto.text ? ILike(`%${dto.text}%`) : undefined,
+				},
+				{
+					phone: dto.text ? ILike(`%${dto.text}%`) : undefined,
+				},
+				{
+					agency: {
+						legalName: dto.text
+							? ILike(`%${dto.text}%`)
+							: undefined,
+					},
+				},
+			],
 			// prettier-ignore
 			order: {
 				fullName: dto.sort_by === UserSortBy.FULLNAME ? dto.order_by : undefined,
@@ -149,7 +173,7 @@ export class UserService {
 		metaData.data = users;
 		metaData.meta.data = {
 			new_user_count: newUserCount,
-			total_user_count: totalUserCount
+			total_user_count: totalUserCount,
 		};
 		return metaData;
 	}
@@ -200,6 +224,29 @@ export class UserService {
 			throw new UserNotFoundError(`id: ${id}`);
 		}
 		return foundUser;
+	}
+
+	async me(user_id: number) {
+		const foundUser = await this.readOne(user_id);
+		let userCreatedCount = await this.bookingRepository.count({
+			where: {
+				create_by_id: user_id,
+			},
+		});
+		userCreatedCount += 1; // One increased. Because created users count is 0
+		const settings = await this.settingsRepository.readOne();
+		if (!settings) {
+			throw new SettingsNotFoundError();
+		}
+		const metaData = BaseDto.create<UserEntity>();
+		metaData.data = foundUser;
+		metaData.meta.data = {
+			user_created_count: userCreatedCount,
+			max_user_creation_limit: settings.booking_limit,
+			remaining_user_creation_limit:
+				settings.booking_limit - userCreatedCount,
+		} as IUserCreation;
+		return metaData;
 	}
 
 	async changeAgency(dto: UserChangeAgencyDto, user: ICurrentUser) {
@@ -271,9 +318,6 @@ export class UserService {
 				new PermissionDeniedError(`role: ${user.role}`);
 			}
 		}
-		if (user.role === RoleType.AGENT && dto.role) {
-			throw new PermissionDeniedError(`role: ${user.role}`);
-		}
 		await this.userRepository.update(id, dto);
 		return this.readOne(id);
 	}
@@ -283,6 +327,12 @@ export class UserService {
 		dto: UserCreateDto,
 	): Promise<UserResponseDto> {
 		const user = await this.readOne(id);
+		const doesUserExist = await this.userRepository.existsBy({
+			phone: dto.phone,
+		});
+		if (doesUserExist) {
+			throw new UserAlreadyExistsError(`phone: ${dto.phone}`);
+		}
 		if (
 			user.verification_code_sent_date &&
 			!this.hasOneMinutePassed(user.verification_code_sent_date)

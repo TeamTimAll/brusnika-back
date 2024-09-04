@@ -12,8 +12,8 @@ export class EventContactEntity extends BaseEntity {
 	phone!: string;
 
 	@ManyToOne(() => EventsEntity, (e) => e.contacts, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
 	})
 	@JoinColumn({ name: "event_id" })
 	event?: EventsEntity;

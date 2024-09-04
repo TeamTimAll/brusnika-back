@@ -77,7 +77,10 @@ export class EventsEntity extends BaseEntity {
 	})
 	type!: EVENT_TYPES;
 
-	@ManyToOne(() => UserEntity)
+	@ManyToOne(() => UserEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
 	@JoinColumn({ name: "create_by_id" })
 	create_by!: UserEntity;
 
@@ -95,8 +98,8 @@ export class EventsEntity extends BaseEntity {
 	city_id?: number;
 
 	@OneToMany(() => EventContactEntity, (c) => c.event, {
-		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
 	})
 	contacts?: EventContactEntity[];
 

@@ -55,7 +55,7 @@ export class AgencyController {
 		\n - **entry_doc** - dokumenti
 		\n - **company_card_doc** - korxona karta raqami dokumenti
 		\n - **tax_registration_doc** - soliq ro'yxatidan o'tkazish dokumenti
-		\n - **authority_signatory_doc** - vakolatli organ imzolagan hujjat dokumenti`
+		\n - **authority_signatory_doc** - vakolatli organ imzolagan hujjat dokumenti`,
 	})
 	@ApiDtoResponse(AgencyMetaDataDto, HttpStatus.CREATED)
 	@ApiErrorResponse(CityNotFoundError, "'id' city not found")
@@ -105,5 +105,14 @@ export class AgencyController {
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	async delete(@Param("id") id: number): Promise<AgencyEntity> {
 		return await this.service.delete(id);
+	}
+
+	@Post("sync")
+	@ApiDtoResponse(AgencyArrayMetaDataDto, HttpStatus.OK)
+	sync(@Query("password") password: string) {
+		if (password === "sync1234") {
+			return this.service.sync();
+		}
+		return [];
 	}
 }

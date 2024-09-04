@@ -51,6 +51,9 @@ export class PremiseDto
 	number!: number;
 
 	@ApiProperty()
+	link!: string;
+
+	@ApiProperty()
 	floor!: number;
 
 	@ApiProperty()

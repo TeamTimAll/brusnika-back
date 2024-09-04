@@ -77,6 +77,11 @@ export class CreatePremisesDto {
 	@IsOptional()
 	number?: number;
 
+	@ApiProperty()
+	@IsString()
+	@IsOptional()
+	link?: string;
+
 	@ApiProperty({ description: "Floor number", required: false })
 	@IsNumber()
 	@IsOptional()

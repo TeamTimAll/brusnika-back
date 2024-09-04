@@ -1,6 +1,4 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
@@ -11,6 +9,7 @@ import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesService } from "../premises/premises.service";
 import { SettingsService } from "../settings/settings.service";
 
+import { BookingRepository } from "./booking.repository";
 import { BookingsEntity as BookingEntity } from "./bookings.entity";
 import { CreateBookingsDto } from "./dtos/CreateBookings.dto";
 import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
@@ -27,12 +26,16 @@ export interface IUserCreation {
 @Injectable()
 export class BookingsService {
 	constructor(
-		@InjectRepository(BookingEntity)
-		private bookingRepository: Repository<BookingEntity>,
+		@Inject()
+		private bookingRepository: BookingRepository,
 		@Inject() private premiseService: PremisesService,
 		@Inject() private clientService: ClientService,
 		@Inject() private settingsService: SettingsService,
 	) {}
+
+	get repository(): BookingRepository {
+		return this.bookingRepository;
+	}
 
 	async create(dto: CreateBookingsDto, user: ICurrentUser) {
 		if (typeof dto.premise_id !== "undefined") {
@@ -68,13 +71,13 @@ export class BookingsService {
 	}
 
 	async readAll(user: ICurrentUser): Promise<BookingEntity[]> {
-		return this.bookingRepository.find({
+		return this.bookingRepository.readAll({
 			where: { agent_id: user.user_id },
 		});
 	}
 
 	async readOne(id: number): Promise<BookingEntity> {
-		const findOne = await this.bookingRepository.findOne({
+		const findOne = await this.bookingRepository.readOne({
 			where: { id },
 		});
 		if (!findOne) {
