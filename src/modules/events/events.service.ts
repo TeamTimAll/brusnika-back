@@ -458,7 +458,7 @@ export class EventsService {
 			if (token) {
 				firebaseMessages.push({
 					message: JSON.stringify(n),
-					notification_type: "Мероприятие",
+					title: "Мероприятие",
 					token: token,
 				});
 			}

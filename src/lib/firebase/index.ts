@@ -1,5 +1,4 @@
-import { messaging } from "firebase-admin";
-import { App, cert, initializeApp } from "firebase-admin/app";
+import * as firebaseAdmin from "firebase-admin";
 
 export interface FirebaseConfig {
 	type: string;
@@ -17,16 +16,16 @@ export interface FirebaseConfig {
 
 export interface FirebaseMessage {
 	token: string;
-	notification_type: string;
+	title: string;
 	message: string;
 }
 
 export class FirebaseService {
-	private static app: App;
+	private static app: firebaseAdmin.app.App;
 
 	static init(config: FirebaseConfig) {
-		this.app = initializeApp({
-			credential: cert({
+		this.app = firebaseAdmin.initializeApp({
+			credential: firebaseAdmin.credential.cert({
 				clientEmail: config.client_email,
 				projectId: config.project_id,
 				privateKey: config.private_key.replace(/\\n/g, "\n"),
@@ -34,15 +33,11 @@ export class FirebaseService {
 		});
 	}
 
-	static sendMessage(
-		token: string,
-		notification_type: string,
-		message: string,
-	) {
-		return messaging(this.app).send({
+	static sendMessage(token: string, title: string, message: string) {
+		return firebaseAdmin.messaging(this.app).send({
 			token: token,
 			notification: {
-				title: notification_type,
+				title: title,
 				body: message,
 			},
 			android: {
@@ -53,11 +48,11 @@ export class FirebaseService {
 	}
 
 	static sendMessageBulk(messages: FirebaseMessage[]) {
-		return messaging(this.app).sendEach(
+		return firebaseAdmin.messaging(this.app).sendEach(
 			messages.map((m) => ({
 				token: m.token,
 				notification: {
-					title: m.notification_type,
+					title: m.title,
 					body: m.message,
 				},
 				android: {
