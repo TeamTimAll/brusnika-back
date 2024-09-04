@@ -21,16 +21,21 @@ export class ClientEntity extends BaseEntity {
 	@Column({ type: "varchar", length: 15 })
 	phone_number!: string;
 
-	@Column({ type: "timestamp" })
-	actived_date!: Date;
+	@Column({ type: "timestamp", nullable: true })
+	actived_date?: Date;
 
 	@Column({ type: "text", nullable: true })
 	comment?: string;
 
-	@Column({ type: "enum", enum: FixingType, nullable: true })
+	@Column({
+		type: "enum",
+		enum: FixingType,
+		nullable: true,
+		default: FixingType.LEAD_VERIFICATION,
+	})
 	fixing_type?: FixingType;
 
-	@Column({ type: "timestamp" })
+	@Column({ type: "timestamp", nullable: true })
 	expiration_date!: Date;
 
 	@Column({ type: "text", nullable: true })

@@ -3,12 +3,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
+import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadsEntity } from "../leads/leads.entity";
+import { UserEntity } from "../user/user.entity";
+import { UserService } from "../user/user.service";
 
 import { ClientEntity, FixingType } from "./client.entity";
-import { ClientDto } from "./dto/Client.dto";
 import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
+import { CreateClientDto } from "./dto/CreateClient.dto";
 import { DeleteClientDto } from "./dto/DeleteClient.dto";
 import { FilterClientDto } from "./dto/FilterClient.dto";
 import { ClientNotFoundError } from "./errors/ClientNotFound.error";
@@ -18,13 +21,14 @@ export class ClientService {
 	constructor(
 		@InjectRepository(ClientEntity)
 		private clientRepository: Repository<ClientEntity>,
+		private userService: UserService,
 	) {}
 
 	get repository(): Repository<ClientEntity> {
 		return this.clientRepository;
 	}
 
-	create(dto: ClientDto) {
+	create(dto: CreateClientDto) {
 		const client = this.clientRepository.create(dto);
 		return this.clientRepository.save(client);
 	}
@@ -137,14 +141,31 @@ export class ClientService {
 				"l",
 				"c.id = l.client_id",
 			)
-			.where(
-				"(c.agent_id = :client_agent_id or c.fixing_type = :client_status)",
-				{
-					client_agent_id: user.user_id,
-					client_status: FixingType.WEAK_FIXING,
-				},
-			)
 			.groupBy("c.id");
+
+		if (user.role === RoleType.AGENT) {
+			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
+				client_agent_id: user.user_id,
+			});
+		} else if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const foundUser = await this.userService.repository.findOne({
+				select: { agency_id: true },
+				where: { id: user.user_id },
+			});
+			queryBuilder = queryBuilder.where(
+				(qb) =>
+					"c.agent_id IN (" +
+					qb
+						.subQuery()
+						.from(UserEntity, "u")
+						.select("u.id")
+						.where("u.agency_id = :agency_id", {
+							agency_id: foundUser?.agency_id,
+						})
+						.getQuery() +
+					")",
+			);
+		}
 
 		if (dto.client_id) {
 			queryBuilder = queryBuilder.andWhere("c.id = :client_id", {
