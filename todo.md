@@ -357,3 +357,5 @@ Fasllar entity shakli:
 # Clinet 
 
 Client yasash tartibi quyidagicha bo'ladi, Clinet frontend'dan yasaladi va fixing_type'i LEAD_VERIFICATION'ga o'tkaziladi. CRM'dan javob kelsa WEAK_FIXING ga o'tkaziladi. Client'ni ham bir agent o'zi yasaganlarini ko'ra oladi. Agency boshlig'i esa butun agency bo'yicha ko'ra oladi. Admin hammasini ko'ra oladi. Client bor yoki yo'qligini tekshirish imkoniyati mavjud. Tekshirilganda client mavjud bo'lmasa yangi yasay olishi kerak.
+
+- [ ] Kalendarni oyga bo'lib olish.
