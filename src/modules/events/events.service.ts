@@ -452,13 +452,14 @@ export class EventsService {
 		});
 		const createdNotifications: NotificationEntity[] =
 			await this.notificationService.repository.save(notifications);
-		const firebaseMessages: FirebaseMessage[] = [];
+		const firebaseMessages: FirebaseMessage<NotificationEntity>[] = [];
 		createdNotifications.forEach((n, i) => {
 			const token = firebaseTokens[i];
 			if (token) {
 				firebaseMessages.push({
-					message: JSON.stringify(n),
 					title: "Мероприятие",
+					message: `Вас пригласили на мероприятие ${n.title}`,
+					data: n,
 					token: token,
 				});
 			}

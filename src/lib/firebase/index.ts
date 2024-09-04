@@ -14,10 +14,11 @@ export interface FirebaseConfig {
 	universe_domain: string;
 }
 
-export interface FirebaseMessage {
+export interface FirebaseMessage<T> {
 	token: string;
 	title: string;
 	message: string;
+	data: T;
 }
 
 export class FirebaseService {
@@ -47,7 +48,7 @@ export class FirebaseService {
 		});
 	}
 
-	static sendMessageBulk(messages: FirebaseMessage[]) {
+	static sendMessageBulk<T>(messages: FirebaseMessage<T>[]) {
 		return firebaseAdmin.messaging(this.app).sendEach(
 			messages.map((m) => ({
 				token: m.token,
@@ -55,6 +56,7 @@ export class FirebaseService {
 					title: m.title,
 					body: m.message,
 				},
+				data: { data: JSON.stringify(m.data) },
 				android: {
 					priority: "high",
 					ttl: 1000 * 60 * 60 * 24, // 1 day
