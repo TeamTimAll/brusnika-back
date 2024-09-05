@@ -10,7 +10,8 @@ export class CreateClientDto extends PickType(ClientDto, [
 	"fullname",
 	"phone_number",
 	"comment",
-	"agent_id"
+	"agent_id",
+	"confirmation_type",
 ]) {}
 
 export class CreateClientMetaDataDto extends BaseDto<CreateClientDto> {
