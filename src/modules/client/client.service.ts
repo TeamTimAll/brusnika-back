@@ -53,7 +53,7 @@ export class ClientService {
 	}
 
 	async quickSearch(text: string = "", user: ICurrentUser) {
-		return this.clientRepository
+		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
 			.select([
 				"c.id",
@@ -62,20 +62,36 @@ export class ClientService {
 			] as `c.${keyof ClientEntity}`[])
 			.limit(25)
 			.where(
-				"(c.agent_id = :client_agent_id OR c.fixing_type = :client_status)",
-				{
-					client_agent_id: user.user_id,
-					client_status: FixingType.WEAK_FIXING,
-				},
-			)
-			.andWhere(
 				"(c.fullname ILIKE :fullname OR c.phone_number ILIKE :phone_number)",
 				{
 					fullname: `%${text}%`,
 					phone_number: `%${text}%`,
 				},
-			)
-			.getMany();
+			);
+		if (user.role === RoleType.AGENT) {
+			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
+				client_agent_id: user.user_id,
+			});
+		} else if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const foundUser = await this.userService.repository.findOne({
+				select: { agency_id: true },
+				where: { id: user.user_id },
+			});
+			queryBuilder = queryBuilder.where(
+				(qb) =>
+					"c.agent_id IN (" +
+					qb
+						.subQuery()
+						.from(UserEntity, "u")
+						.select("u.id")
+						.where("u.agency_id = :agency_id", {
+							agency_id: foundUser?.agency_id,
+						})
+						.getQuery() +
+					")",
+			);
+		}
+		return queryBuilder.getMany();
 	}
 
 	async searchFromBmpsoft(
