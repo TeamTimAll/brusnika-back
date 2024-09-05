@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, Repository } from "typeorm";
+import { In, IsNull, Not, Repository } from "typeorm";
 
 import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 import { LikedResponseDto } from "common/dtos/likeResponse.dto";
@@ -275,7 +275,7 @@ export class EventsService {
 	async create(dto: CreateEventsDto, user: ICurrentUser) {
 		const event = this.eventRepository.create(dto);
 		event.create_by_id = user.user_id;
-		await this.citiesService.readOne(dto.city_id);
+		await this.citiesService.checkExsits(dto.city_id);
 		const newEvent = await this.eventRepository.save(event);
 		const contacts: EventContactEntity[] = [];
 		dto.contacts.forEach((c) => {
@@ -284,6 +284,61 @@ export class EventsService {
 			contacts.push(contact);
 		});
 		newEvent.contacts = await this.contactsRepository.save(contacts);
+
+		if (!dto.is_draft && dto.push_notification) {
+			const userTokens = (await this.userService.repository.find({
+				select: { id: true, firebase_token: true },
+				where: {
+					role: In([RoleType.HEAD_OF_AGENCY, RoleType.AGENT]),
+					firebase_token: Not(IsNull()),
+					city_id: newEvent.city_id,
+				},
+				take: 500, // Firebase limit is 500
+			})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
+			if (userTokens.length) {
+				const notifications: NotificationEntity[] = [];
+				userTokens.forEach((u) => {
+					notifications.push(
+						this.notificationService.repository.create({
+							title: "Мероприятие",
+							description: `Новое мероприятие создано ${newEvent.title}`,
+							type: NotificationType.EVENT,
+							user_id: u.id,
+							object_id: newEvent.id,
+						}),
+					);
+				});
+
+				const createdNotifications: NotificationEntity[] =
+					await this.notificationService.repository.save(
+						notifications,
+					);
+				const firebaseMessages: FirebaseMessage<NotificationEntity>[] =
+					[];
+				createdNotifications.forEach((n, i) => {
+					const token = userTokens[i].firebase_token;
+					if (token) {
+						firebaseMessages.push({
+							title: n.title,
+							message: n.description ?? "",
+							data: n,
+							token: token,
+						});
+					}
+				});
+				if (firebaseMessages.length) {
+					const response =
+						await FirebaseService.sendMessageBulk(firebaseMessages);
+					this.logger.log(
+						`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}`,
+					);
+					this.logger.log(
+						`${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
+					);
+				}
+			}
+		}
+
 		return newEvent;
 	}
 
@@ -437,7 +492,8 @@ export class EventsService {
 
 			notifications.push(
 				this.notificationService.repository.create({
-					title: "Event invatation",
+					title: "Мероприятие",
+					description: `Вас пригласили на мероприятие ${foundEvent.title}`,
 					type: NotificationType.EVENT,
 					user_id: u.id,
 					object_id: foundEvent.id,
@@ -450,6 +506,8 @@ export class EventsService {
 					: null,
 			);
 		});
+		const createdInvitations =
+			await this.eventInvitationRepository.save(invitations);
 		const createdNotifications: NotificationEntity[] =
 			await this.notificationService.repository.save(notifications);
 		const firebaseMessages: FirebaseMessage<NotificationEntity>[] = [];
@@ -457,8 +515,8 @@ export class EventsService {
 			const token = firebaseTokens[i];
 			if (token) {
 				firebaseMessages.push({
-					title: "Мероприятие",
-					message: `Вас пригласили на мероприятие ${n.title}`,
+					title: n.title,
+					message: n.description ?? "",
 					data: n,
 					token: token,
 				});
@@ -474,7 +532,7 @@ export class EventsService {
 				`${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
 			);
 		}
-		return await this.eventInvitationRepository.save(invitations);
+		return createdInvitations;
 	}
 
 	async deleteUserInvitation(id: number) {
