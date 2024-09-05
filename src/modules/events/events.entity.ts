@@ -109,6 +109,9 @@ export class EventsEntity extends BaseEntity {
 	@Column({ type: "boolean", default: false })
 	is_draft!: boolean;
 
+	@Column({ type: "boolean", default: false })
+	push_notification!: boolean;
+
 	@Column({ type: "text", array: true, nullable: true })
 	tags?: string[];
 
