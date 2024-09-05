@@ -8,7 +8,7 @@ import {
 	IsString,
 } from "class-validator";
 
-import { FixingType } from "../client.entity";
+import { ConfirmationType, FixingType } from "../client.entity";
 
 export class ClientDto {
 	@ApiProperty({ default: "client fullname" })
@@ -33,7 +33,7 @@ export class ClientDto {
 	@IsOptional()
 	comment?: string;
 
-	@ApiProperty({ default: FixingType.LEAD_VERIFICATION })
+	@ApiProperty({ enum: FixingType, default: FixingType.LEAD_VERIFICATION })
 	@IsEnum(FixingType)
 	@IsOptional()
 	fixing_type?: FixingType;
@@ -47,4 +47,9 @@ export class ClientDto {
 	@IsString()
 	@IsOptional()
 	node?: string;
+
+	@ApiProperty({ enum: ConfirmationType, default: ConfirmationType.SMS })
+	@IsEnum(ConfirmationType)
+	@IsNotEmpty()
+	confirmation_type!: ConfirmationType;
 }

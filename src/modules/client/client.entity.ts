@@ -13,6 +13,11 @@ export enum FixingType {
 	STRONG_FIXING = "сильное закрепление",
 }
 
+export enum ConfirmationType {
+	PHONE = "звонок",
+	SMS = "смс",
+}
+
 @Entity({ name: "clients" })
 export class ClientEntity extends BaseEntity {
 	@Column({ type: "varchar", length: 255 })
@@ -26,6 +31,13 @@ export class ClientEntity extends BaseEntity {
 
 	@Column({ type: "text", nullable: true })
 	comment?: string;
+
+	@Column({
+		type: "enum",
+		enum: ConfirmationType,
+		default: ConfirmationType.PHONE,
+	})
+	confirmation_type!: ConfirmationType;
 
 	@Column({
 		type: "enum",

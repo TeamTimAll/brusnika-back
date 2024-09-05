@@ -1,6 +1,10 @@
 import { QueryBuilder } from "typeorm";
 
-import { ClientEntity, FixingType } from "../../modules/client/client.entity";
+import {
+	ClientEntity,
+	ConfirmationType,
+	FixingType,
+} from "../../modules/client/client.entity";
 import { UserEntity } from "../../modules/user/user.entity";
 
 export async function up(query: QueryBuilder<object>) {
@@ -32,6 +36,7 @@ export async function up(query: QueryBuilder<object>) {
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
+			confirmation_type: ConfirmationType.PHONE,
 		},
 		{
 			fullname: "Dmitry Sergeevich Smirnov",
@@ -42,6 +47,7 @@ export async function up(query: QueryBuilder<object>) {
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
+			confirmation_type: ConfirmationType.PHONE,
 		},
 		{
 			fullname: "Alexei Nikolaevich Sokolov",
@@ -52,6 +58,7 @@ export async function up(query: QueryBuilder<object>) {
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
+			confirmation_type: ConfirmationType.PHONE,
 		},
 		{
 			fullname: "Nikolai Andreevich Popov",
@@ -62,6 +69,7 @@ export async function up(query: QueryBuilder<object>) {
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
+			confirmation_type: ConfirmationType.PHONE,
 		},
 		{
 			fullname: "Sergey Vladimirovich Vasiliev",
@@ -72,6 +80,7 @@ export async function up(query: QueryBuilder<object>) {
 			expiration_date: new Date(),
 			node: "очень хороший клиент",
 			agent_id: agent.id,
+			confirmation_type: ConfirmationType.PHONE,
 		},
 	];
 
