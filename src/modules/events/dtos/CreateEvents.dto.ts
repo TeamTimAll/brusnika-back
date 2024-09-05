@@ -101,6 +101,11 @@ export class CreateEventsDto {
 	@IsOptional()
 	is_draft?: boolean;
 
+	@ApiProperty({ default: false })
+	@IsBoolean()
+	@IsOptional()
+	push_notification?: boolean;
+
 	@ApiProperty({
 		oneOf: [{ $ref: getSchemaPath(EventContactDto) }],
 		type: () => [EventContactDto],
