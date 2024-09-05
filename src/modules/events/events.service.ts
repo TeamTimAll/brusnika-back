@@ -301,7 +301,7 @@ export class EventsService {
 						this.notificationService.repository.create({
 							title: "Мероприятие",
 							description: `Новое мероприятие создано ${newEvent.title}`,
-							type: NotificationType.EVENT,
+							type: NotificationType.CREATED_EVENT,
 							user_id: u.id,
 							object_id: newEvent.id,
 						}),
