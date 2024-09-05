@@ -452,13 +452,14 @@ export class EventsService {
 		});
 		const createdNotifications: NotificationEntity[] =
 			await this.notificationService.repository.save(notifications);
-		const firebaseMessages: FirebaseMessage[] = [];
+		const firebaseMessages: FirebaseMessage<NotificationEntity>[] = [];
 		createdNotifications.forEach((n, i) => {
 			const token = firebaseTokens[i];
 			if (token) {
 				firebaseMessages.push({
-					message: JSON.stringify(n),
-					notification_type: "Мероприятие",
+					title: "Мероприятие",
+					message: `Вас пригласили на мероприятие ${n.title}`,
+					data: n,
 					token: token,
 				});
 			}
@@ -467,7 +468,10 @@ export class EventsService {
 			const response =
 				await FirebaseService.sendMessageBulk(firebaseMessages);
 			this.logger.log(
-				`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}\n${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
+				`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}`,
+			);
+			this.logger.log(
+				`${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
 			);
 		}
 		return await this.eventInvitationRepository.save(invitations);

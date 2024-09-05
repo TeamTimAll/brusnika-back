@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 import { BaseDto, Dto } from "../../../common/base/base_dto";
-import { NotificationEntity } from "../notification.entity";
+import { NotificationEntity, NotificationType } from "../notification.entity";
 
 export type INotificationDto = Omit<NotificationEntity, "user">;
 
@@ -22,7 +22,7 @@ export class NotificationDto implements INotificationDto {
 	description?: string;
 
 	@ApiProperty()
-	type!: string;
+	type!: NotificationType;
 
 	@ApiProperty()
 	object_id!: number;
