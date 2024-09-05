@@ -97,11 +97,6 @@ export class ClientService {
 				phone_number: dto.phone_number,
 			},
 		});
-		if (!foundClient) {
-			throw new ClientNotFoundError(
-				`fullname: ${dto.fullname}; phone_number: ${dto.phone_number}`,
-			);
-		}
 		return foundClient;
 	}
 

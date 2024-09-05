@@ -359,6 +359,6 @@ Fasllar entity shakli:
 Client yasash tartibi quyidagicha bo'ladi, Clinet frontend'dan yasaladi va fixing_type'i LEAD_VERIFICATION'ga o'tkaziladi. CRM'dan javob kelsa WEAK_FIXING ga o'tkaziladi. Client'ni ham bir agent o'zi yasaganlarini ko'ra oladi. Agency boshlig'i esa butun agency bo'yicha ko'ra oladi. Admin hammasini ko'ra oladi. Client bor yoki yo'qligini tekshirish imkoniyati mavjud. Tekshirilganda client mavjud bo'lmasa yangi yasay olishi kerak.
 
 - [x] Event yasalayotganda push_notification field qo'shish. Bu field agar is_draft true bo'lsa o'z kuchini yo'qotadi. Notification faqat Event'ning city'siga tegishli bo'lgan user'larga yuborilishi kerak. HEAD_OF_AGENCY va AGENT'larga yuborish kerak.
-- [ ] Kalendarni oyga bo'lib olish.
+- [x] Kalendarni oyga bo'lib olish.
 - [ ] Event'ga 2 soat qolganida, event ishtirokchilariga ogohlantirish uchun notification yuborish kerak.
 
