@@ -14,6 +14,7 @@ import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
 import { CreateClientDto } from "./dto/CreateClient.dto";
 import { DeleteClientDto } from "./dto/DeleteClient.dto";
 import { FilterClientDto } from "./dto/FilterClient.dto";
+import { ClientExistsError } from "./errors/ClientExists.error";
 import { ClientNotFoundError } from "./errors/ClientNotFound.error";
 
 @Injectable()
@@ -29,6 +30,15 @@ export class ClientService {
 	}
 
 	async create(dto: CreateClientDto) {
+		const existClient = await this.clientRepository.existsBy({
+			phone_number: dto.phone_number,
+			agent_id: dto.agent_id,
+		});
+		if (existClient) {
+			throw new ClientExistsError(
+				`phone_number: ${dto.phone_number}; agent_id: ${dto.agent_id}`,
+			);
+		}
 		const client = this.clientRepository.create(dto);
 		return this.clientRepository.save(client);
 	}
