@@ -106,13 +106,6 @@ export class EventsService {
 				today_date: today_date,
 			});
 		}
-		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
-			eventsQuery = eventsQuery
-				.andWhere("e.is_draft IS FALSE")
-				.orWhere("e.create_by_id = :create_by_id", {
-					create_by_id: user.user_id,
-				});
-		}
 		if (dto.is_banner) {
 			eventsQuery = eventsQuery.andWhere("e.is_banner IS TRUE");
 		}
@@ -135,6 +128,12 @@ export class EventsService {
 			eventsQuery = eventsQuery.andWhere("e.type = :type", {
 				type: dto.type,
 			});
+		}
+		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
+			eventsQuery = eventsQuery.andWhere("e.is_draft IS FALSE");
+			// .orWhere("e.create_by_id = :create_by_id", {
+			// 	create_by_id: user.user_id,
+			// });
 		}
 		const eventCount = await eventsQuery.getCount();
 
@@ -302,7 +301,7 @@ export class EventsService {
 						this.notificationService.repository.create({
 							title: "Мероприятие",
 							description: `Новое мероприятие создано ${newEvent.title}`,
-							type: NotificationType.EVENT,
+							type: NotificationType.CREATED_EVENT,
 							user_id: u.id,
 							object_id: newEvent.id,
 						}),
