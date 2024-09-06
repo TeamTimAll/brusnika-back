@@ -95,7 +95,16 @@ export class PremisesService {
 	}
 
 	async readAllSeason(filter: PremisesFilterDto) {
-		const query = this.getPremiseQuery(filter).select(["premise.id as id"]);
+		const pageSize = (filter.page - 1) * filter.limit;
+		const query = this.getPremiseQuery(filter)
+			.select(["premise.id as id"])
+			.limit(filter.limit)
+			.offset(pageSize)
+			.groupBy("premise.id")
+			.addGroupBy("building.id")
+			.addGroupBy("section.id")
+			.addGroupBy("project.id")
+			.orderBy("project.id", "ASC");
 		const premises = await query.getRawMany<PremiseEntity>();
 		const premiseIds: number[] = premises.map((e) => e.id);
 		return this.seasonRepository.find({
@@ -272,29 +281,26 @@ export class PremisesService {
 			}
 		}
 
-		const pageSize = (filter.page - 1) * filter.limit;
-		return query
-			.limit(filter.limit)
-			.offset(pageSize)
-			.groupBy("premise.id")
-			.addGroupBy("building.id")
-			.addGroupBy("section.id")
-			.addGroupBy("project.id")
-			.orderBy("project.id", "ASC");
+		return query;
 	}
 
 	async getPremisesFiltered(
 		filter: PremisesFilterDto,
 	): Promise<BaseDto<PremiseEntity[]>> {
-		let query = this.getPremiseQuery(filter).leftJoin(
-			SeasonEntity,
-			"season",
-			"season.id = premise.season_id",
-		);
+		const pageSize = (filter.page - 1) * filter.limit;
+		let query = this.getPremiseQuery(filter);
 
 		const premiseCount = await query
 			.select("COUNT(premise.id)::int AS premise_count")
 			.getRawMany<Record<"premise_count", number>>();
+
+		query = query
+			.leftJoin(SeasonEntity, "season", "season.id = premise.season_id")
+			.groupBy("premise.id")
+			.addGroupBy("building.id")
+			.addGroupBy("section.id")
+			.addGroupBy("project.id")
+			.orderBy("project.id", "ASC");
 
 		query = query
 			.select([
@@ -369,7 +375,9 @@ export class PremisesService {
 				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
 			)
 			.addGroupBy("season.id")
-			.addGroupBy("premise_schema.id");
+			.addGroupBy("premise_schema.id")
+			.limit(filter.limit)
+			.offset(pageSize);
 
 		const premises = await query.getRawMany<PremiseEntity>();
 
