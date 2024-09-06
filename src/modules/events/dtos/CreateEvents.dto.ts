@@ -4,13 +4,13 @@ import {
 	ArrayMinSize,
 	IsArray,
 	IsBoolean,
-	IsDateString,
 	IsEnum,
 	IsInt,
 	IsMilitaryTime,
 	IsNotEmpty,
 	IsOptional,
 	IsString,
+	Matches,
 	ValidateNested,
 } from "class-validator";
 
@@ -59,15 +59,18 @@ export class CreateEventsDto {
 	@ApiProperty({ default: "00:00" })
 	@IsMilitaryTime()
 	@IsNotEmpty()
-	start_time!: Date;
+	start_time!: string;
 
 	@ApiProperty({ default: "00:00" })
 	@IsMilitaryTime()
 	@IsNotEmpty()
-	end_time!: Date;
+	end_time!: string;
 
 	@ApiProperty({ default: new Date() })
-	@IsDateString()
+	@IsString()
+	@Matches(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/, {
+		message: "Date must be in the format yyyy-mm-dd",
+	})
 	@IsNotEmpty()
 	date!: string;
 
