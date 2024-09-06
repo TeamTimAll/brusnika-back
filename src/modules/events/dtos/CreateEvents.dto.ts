@@ -1,16 +1,16 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
 	ArrayMinSize,
 	IsArray,
 	IsBoolean,
+	IsDateString,
 	IsEnum,
 	IsInt,
 	IsMilitaryTime,
 	IsNotEmpty,
 	IsOptional,
 	IsString,
-	Matches,
 	ValidateNested,
 } from "class-validator";
 
@@ -67,11 +67,9 @@ export class CreateEventsDto {
 	end_time!: string;
 
 	@ApiProperty({ default: new Date() })
-	@IsString()
-	@Matches(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/, {
-		message: "Date must be in the format yyyy-mm-dd",
-	})
+	@IsDateString()
 	@IsNotEmpty()
+	@Transform(({ value }) => (value as string).split("T")[0])
 	date!: string;
 
 	@ApiProperty({})
