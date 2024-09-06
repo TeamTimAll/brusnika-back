@@ -43,14 +43,14 @@ export class EventsEntity extends BaseEntity {
 	@Column({ type: "varchar", nullable: true })
 	location?: string;
 
-	@Column({ type: "date", nullable: true })
-	date?: Date;
+	@Column({ type: "date" })
+	date!: string;
 
-	@Column({ type: "time without time zone", nullable: true })
-	start_time?: Date;
+	@Column({ type: "time without time zone" })
+	start_time!: string;
 
-	@Column({ type: "time without time zone", nullable: true })
-	end_time?: Date;
+	@Column({ type: "time without time zone" })
+	end_time!: Date;
 
 	@Column({ type: "varchar", nullable: true })
 	leader?: string;
@@ -94,8 +94,8 @@ export class EventsEntity extends BaseEntity {
 	@JoinColumn({ name: "city_id" })
 	city!: CityEntity;
 
-	@Column({ type: "integer", nullable: true })
-	city_id?: number;
+	@Column({ type: "integer" })
+	city_id!: number;
 
 	@OneToMany(() => EventContactEntity, (c) => c.event, {
 		onDelete: "SET NULL",

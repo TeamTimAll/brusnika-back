@@ -6,6 +6,7 @@ import { UserEntity } from "../user/user.entity";
 export enum NotificationType {
 	EVENT = "event",
 	CREATED_EVENT = "created_event",
+	WARNING_EVENT = "warning_event",
 }
 
 @Entity("notification")
