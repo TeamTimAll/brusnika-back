@@ -360,5 +360,5 @@ Client yasash tartibi quyidagicha bo'ladi, Clinet frontend'dan yasaladi va fixin
 
 - [x] Event yasalayotganda push_notification field qo'shish. Bu field agar is_draft true bo'lsa o'z kuchini yo'qotadi. Notification faqat Event'ning city'siga tegishli bo'lgan user'larga yuborilishi kerak. HEAD_OF_AGENCY va AGENT'larga yuborish kerak.
 - [x] Kalendarni oyga bo'lib olish.
-- [ ] Event'ga 2 soat qolganida, event ishtirokchilariga ogohlantirish uchun notification yuborish kerak.
+- [x] Event'ga 2 soat qolganida, event ishtirokchilariga ogohlantirish uchun notification yuborish kerak.
 
