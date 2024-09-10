@@ -16,7 +16,7 @@ import { AuthService } from "./auth.service";
 		JwtModule.register({
 			global: true,
 			secret: ConfigManager.config.JWT_PRIVATE_KEY,
-			signOptions: { expiresIn: "24h" },
+			signOptions: { expiresIn: "1 day" },
 		}),
 		UserModule,
 		AgenciesModule,

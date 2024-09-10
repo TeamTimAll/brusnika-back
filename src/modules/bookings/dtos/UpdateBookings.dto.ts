@@ -1,4 +1,7 @@
-import { CreateBookingsDto, CreateBookingsMetaDataDto } from "./CreateBookings.dto";
+import {
+	CreateBookingsDto,
+	CreateBookingsMetaDataDto,
+} from "./CreateBookings.dto";
 
 export class UpdateBookingsDto extends CreateBookingsDto {}
 

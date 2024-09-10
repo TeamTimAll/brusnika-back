@@ -30,11 +30,19 @@ export class CreateBookingsDto {
 	// @Type(() => Number)
 	// agent_id?: number;
 
-	@ApiProperty({ required: true, description: "Date of booking", default: new Date() })
+	@ApiProperty({
+		required: true,
+		description: "Date of booking",
+		default: new Date(),
+	})
 	@IsDateString()
 	date!: string;
 
-	@ApiProperty({ required: true, description: "Time of booking", default: "00:00" })
+	@ApiProperty({
+		required: true,
+		description: "Time of booking",
+		default: "00:00",
+	})
 	@IsMilitaryTime()
 	time!: string;
 
