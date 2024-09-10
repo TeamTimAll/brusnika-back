@@ -1,7 +1,8 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { UserModule } from "../../modules/user/user.module";
+import { AnalyticsModule } from "../analytics/analytics.module";
+import { UserModule } from "../user/user.module";
 
 import { NewsCategoryEntity } from "./entities/categories.entity";
 import { NewsLikeEntity } from "./entities/likes.entity";
@@ -19,6 +20,7 @@ import { NewsService } from "./news.service";
 			NewsViewEntity,
 		]),
 		UserModule,
+		AnalyticsModule,
 	],
 	controllers: [NewsController],
 	providers: [NewsService],

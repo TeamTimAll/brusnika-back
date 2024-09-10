@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { AnalyticsModule } from "../analytics/analytics.module";
 import { SettingsModule } from "../settings/settings.module";
 import { UserModule } from "../user/user.module";
 
@@ -21,6 +22,7 @@ import { TrainingsService } from "./trainings.service";
 		]),
 		UserModule,
 		SettingsModule,
+		AnalyticsModule,
 	],
 	controllers: [TrainingController],
 	providers: [TrainingsService],

@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
+import { AnalyticsModule } from "../analytics/analytics.module";
 import { ClientModule } from "../client/client.module";
 import { ProjectsModule } from "../projects/projects.module";
 
@@ -14,7 +15,8 @@ import { VisitsService } from "./visits.service";
 		TypeOrmModule.forFeature([VisitsEntity]),
 		UserModule,
 		ProjectsModule,
-		ClientModule
+		ClientModule,
+		AnalyticsModule,
 	],
 	providers: [VisitsService],
 	controllers: [VisitsController],

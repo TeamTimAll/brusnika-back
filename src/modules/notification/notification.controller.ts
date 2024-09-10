@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	Inject,
 	Param,
 	Post,
 	Put,
@@ -18,6 +19,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { ApiDtoResponse, ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateNotificationMetaDataDto } from "./dto/CreateNotification.dto";
@@ -34,7 +36,11 @@ import { NotificationService } from "./notification.service";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class NotificationController {
-	constructor(private notificationService: NotificationService) {}
+	constructor(
+		private notificationService: NotificationService,
+		@Inject()
+		private readonly analyticsService: AnalyticsService,
+	) {}
 
 	@Get()
 	@ApiOperation({
@@ -60,7 +66,9 @@ export class NotificationController {
 		@Body() dto: CreateNotificationMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		return this.notificationService.create(dto.data, user);
+		const res = this.notificationService.create(dto.data, user);
+		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
+		return res;
 	}
 
 	@Put(":id")
