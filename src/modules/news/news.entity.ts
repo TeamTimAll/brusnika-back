@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { RoleType } from "../../constants";
+import { CityEntity } from "../../modules/cities/cities.entity";
 
 import { NewsCategoryEntity } from "./entities/categories.entity";
 import { NewsLikeEntity } from "./entities/likes.entity";
@@ -43,6 +44,9 @@ export class NewsEntity extends BaseEntity {
 	@Column({ type: "boolean", default: false })
 	is_banner!: boolean;
 
+	@Column({ type: "boolean", default: false })
+	is_draft!: boolean;
+
 	@Column({ type: "integer", nullable: true })
 	primary_category_id?: number;
 
@@ -68,4 +72,14 @@ export class NewsEntity extends BaseEntity {
 		onUpdate: "CASCADE",
 	})
 	likes?: NewsLikeEntity[];
+
+	@ManyToOne(() => CityEntity, (citiesEntity) => citiesEntity.users, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
+	@JoinColumn({ name: "city_id" })
+	city?: CityEntity;
+
+	@Column({ type: "integer", nullable: true })
+	city_id?: number;
 }

@@ -23,6 +23,7 @@ import { CreateNewsCategoriesMetaDataDto } from "./dto/CreateNewsCategories.dto"
 import { LikeNewsMetaDataDto } from "./dto/LikeNews.dto";
 import { UpdateNewsMetaDataDto } from "./dto/UpdateNews.dto";
 import { NewsService } from "./news.service";
+import { ReadAllNewsDto } from "./dto/read-all-news.dto";
 
 @ApiTags("News")
 @Controller("news")
@@ -34,8 +35,11 @@ export class NewsController {
 
 	@Get()
 	@ApiOperation({ summary: "Get all news" })
-	async getAllNews(@User() user: ICurrentUser) {
-		return this.service.readAll(user);
+	async getAllNews(
+		@User() user: ICurrentUser,
+		@Query() query: ReadAllNewsDto,
+	) {
+		return this.service.readAll(user, query);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
@@ -88,7 +92,7 @@ export class NewsController {
 
 	@Get(":id")
 	@ApiOperation({ summary: "Get news by id" })
-	async getNewsById(@Query("id") id: number, @User() user: ICurrentUser) {
+	async getNewsById(@Param("id") id: number, @User() user: ICurrentUser) {
 		return this.service.readOne(id, user);
 	}
 }

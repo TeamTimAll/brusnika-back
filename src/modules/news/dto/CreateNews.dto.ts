@@ -16,6 +16,7 @@ import {
 
 import { BaseDto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
+import { IsDifferent } from "../../../decorators";
 
 export class CreateNewsDto {
 	@IsString()
@@ -50,7 +51,7 @@ export class CreateNewsDto {
 	@Type(() => Number)
 	@ApiProperty({
 		description: "The first category of the news",
-		example: "The first category of the news",
+		example: 0,
 		required: false,
 	})
 	primary_category_id!: number;
@@ -58,9 +59,10 @@ export class CreateNewsDto {
 	@IsOptional()
 	@IsInt()
 	@Type(() => Number)
+	@IsDifferent("primary_category_id")
 	@ApiProperty({
 		description: "The second category of the news",
-		example: "The second category of the news",
+		example: 1,
 		required: false,
 	})
 	second_category_id!: number;
@@ -84,6 +86,20 @@ export class CreateNewsDto {
 	})
 	@IsBoolean()
 	is_banner!: boolean;
+
+	@ApiProperty({
+		required: false,
+		description: "Is Draft",
+		default: false,
+	})
+	@IsBoolean()
+	is_draft!: boolean;
+
+	@ApiProperty({ type: Number })
+	@IsInt()
+	@Type(() => Number)
+	@IsNotEmpty()
+	city_id!: number;
 
 	@IsBoolean()
 	@IsOptional()
