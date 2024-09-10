@@ -82,7 +82,7 @@ export class PremisesFilterDto {
 	@Type(() => Number)
 	city_id?: number;
 
-	@ApiProperty({required: false})
+	@ApiProperty({ required: false })
 	@IsOptional()
 	@IsInt()
 	@Type(() => Number)

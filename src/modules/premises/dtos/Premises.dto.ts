@@ -36,7 +36,7 @@ export class PremiseDto
 	building_id!: number;
 
 	@ApiProperty()
-	price!: number;
+	price!: bigint;
 
 	@ApiProperty()
 	size!: number;

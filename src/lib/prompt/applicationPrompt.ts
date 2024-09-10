@@ -50,6 +50,7 @@ export enum ApplicationPromptID {
 	CONTACT_ADDRESS_NOT_FOUND_ERROR = 438,
 	USER_ALREADY_EXISTS_ERROR = 439,
 	CLIENT_EXISTS_ERROR = 440,
+	ANALYTICS_NOT_FOUND_ERROR = 441,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -599,6 +600,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Client already exists error",
 			ru: "Ошибка «Клиент уже существует»",
 			uz: "Client already exists error",
+		},
+	},
+	[ApplicationPromptID.ANALYTICS_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.ANALYTICS_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "analytics_not_found_error",
+		promptLabels: {
+			en: "Analytics not found error",
+			ru: "Ошибка «Аналитика не найдена»",
+			uz: "Analytics not found error",
 		},
 	},
 };

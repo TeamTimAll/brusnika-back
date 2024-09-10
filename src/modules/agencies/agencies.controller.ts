@@ -5,6 +5,7 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
+	Inject,
 	Param,
 	Post,
 	Put,
@@ -24,6 +25,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { ApiDtoResponse, ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { CityNotFoundError } from "../cities/errors/CityNotFound.error";
 
@@ -37,7 +39,11 @@ import { UpdateAgenciesMetaDataDto } from "./dtos/UpdateAgencies.dto";
 @Controller("/agencies")
 @UseInterceptors(TransformInterceptor)
 export class AgencyController {
-	constructor(private service: AgencyService) {}
+	constructor(
+		private service: AgencyService,
+		@Inject()
+		private readonly analyticsService: AnalyticsService,
+	) {}
 
 	@Post()
 	@ApiOperation({
@@ -65,7 +71,9 @@ export class AgencyController {
 		@Body() dto: CreateAgenciesMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		return await this.service.create(dto.data, user);
+		const res = await this.service.create(dto.data, user);
+		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
+		return res;
 	}
 
 	@Get()
