@@ -37,8 +37,8 @@ export class CreateContactDto implements ICreateContactDto {
 	@ApiProperty({ type: CreateContactAddressDto })
 	@Type(() => CreateContactAddressDto)
 	@ValidateNested()
-	@IsNotEmpty()
-	address!: CreateContactAddressDto;
+	@IsOptional()
+	address?: CreateContactAddressDto;
 
 	@ApiProperty()
 	@IsString()
