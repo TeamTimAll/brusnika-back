@@ -21,7 +21,7 @@ export class ContactDto implements IContact {
 	phone_number!: string[];
 
 	@ApiProperty({ type: ContactAddressDto })
-	address!: ContactAddressDto;
+	address?: ContactAddressDto;
 
 	@ApiProperty({ type: ContactWorkScheduleDto, isArray: true })
 	work_schedule!: ContactWorkScheduleDto[];
