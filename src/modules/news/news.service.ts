@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { PermissionDeniedError } from "../auth/errors/PermissionDenied.error";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 
 import { CreateNewsDto } from "./dto/CreateNews.dto";
@@ -107,10 +106,6 @@ export class NewsService {
 
 		if (!findOne) {
 			throw new NewsNotFoundError(`'${id}' news not found`);
-		}
-
-		if (findOne.access && findOne.access === user.role) {
-			throw new PermissionDeniedError(`role: ${user.role}`);
 		}
 
 		const isViewed = await this.newsViewRepository.findOne({
