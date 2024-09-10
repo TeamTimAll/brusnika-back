@@ -56,7 +56,7 @@ export class CreatePremisesDto {
 	@ApiProperty({ description: "Price of the premise", required: false })
 	@IsNumber()
 	@IsOptional()
-	price?: number;
+	price?: bigint;
 
 	@ApiProperty({ description: "Size of the premise", required: false })
 	@IsNumber()

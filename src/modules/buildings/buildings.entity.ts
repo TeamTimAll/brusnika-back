@@ -60,9 +60,6 @@ export class BuildingEntity extends BaseEntity {
 	@OneToMany(() => PremiseEntity, (Premises) => Premises.building)
 	premises?: PremiseEntity[];
 
-	@OneToMany(
-		() => SectionEntity,
-		(SectionsEntity) => SectionsEntity.building,
-	)
+	@OneToMany(() => SectionEntity, (SectionsEntity) => SectionsEntity.building)
 	sections?: SectionEntity[];
 }

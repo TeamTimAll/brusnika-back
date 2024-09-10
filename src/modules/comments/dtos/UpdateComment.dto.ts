@@ -1,4 +1,7 @@
-import { CreateCommentDto, CreateCommentMetaDataDto } from "./CreateComment.dto";
+import {
+	CreateCommentDto,
+	CreateCommentMetaDataDto,
+} from "./CreateComment.dto";
 
 export class UpdateCommentDto extends CreateCommentDto {}
 

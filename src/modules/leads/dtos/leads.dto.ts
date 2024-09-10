@@ -21,7 +21,7 @@ export class LeadsDto implements LeadsEntity {
 	agent!: UserEntity;
 
 	@ApiProperty()
-	agent_id?: number;
+	agent_id!: number;
 
 	@ApiProperty()
 	manager?: UserEntity;

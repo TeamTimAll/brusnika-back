@@ -12,6 +12,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { ConfigManager } from "../../../config";
 import { UserRequest } from "../../../decorators";
 import { UserService } from "../../../modules/user/user.service";
+import { AnalyticsService } from "../../analytics/analytics.service";
 import { UnauthorizedError } from "../errors/Unauthorized.error";
 
 @Injectable()
@@ -20,6 +21,8 @@ export class JwtAuthGuard implements CanActivate {
 		private jwtService: JwtService,
 		@Inject()
 		private userService: UserService,
+		@Inject()
+		private analyticsService: AnalyticsService,
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -55,12 +58,18 @@ export class JwtAuthGuard implements CanActivate {
 				throw new UnauthorizedError();
 			}
 
+			const analytics = await this.analyticsService.createOrFind(user.id);
+			await this.analyticsService.update(analytics, {
+				active_at: new Date(),
+			});
+
 			request.user = {
 				user_id: user.id,
 				role: user.role,
 				email: user.email,
 				username: user.username,
 				firebase_token: user.firebase_token,
+				analytics_id: analytics.id,
 			};
 		} catch (error) {
 			throw new UnauthorizedError();

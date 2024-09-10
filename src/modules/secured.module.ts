@@ -10,6 +10,7 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 
 import { StaticFilesMiddleware } from "../middlewares/StaticFilesMiddleware";
 
+import { AnalyticsModule } from "./analytics/analytics.module";
 import { AuthModule } from "./auth/auth.module";
 import { BookingsModule } from "./bookings/bookings.module";
 import { BuildingsModule } from "./buildings/buildings.module";
@@ -63,6 +64,7 @@ import { VisitsModule } from "./visits/visits.module";
 		SettingsModule,
 		ContactModule,
 		SearchModule,
+		AnalyticsModule,
 	],
 	exports: [],
 })

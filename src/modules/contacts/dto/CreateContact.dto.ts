@@ -6,6 +6,7 @@ import {
 	IsDefined,
 	IsInt,
 	IsNotEmpty,
+	IsOptional,
 	IsString,
 	ValidateNested,
 } from "class-validator";
@@ -41,7 +42,7 @@ export class CreateContactDto implements ICreateContactDto {
 
 	@ApiProperty()
 	@IsString()
-	@IsNotEmpty()
+	@IsOptional()
 	address_link?: string;
 
 	@ApiProperty()

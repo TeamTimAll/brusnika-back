@@ -6,4 +6,5 @@ export interface ICurrentUser {
 	email?: string | null;
 	role: RoleType;
 	firebase_token?: string;
+	analytics_id?: number;
 }

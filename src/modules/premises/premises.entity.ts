@@ -56,10 +56,10 @@ export class PremiseEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	building_id?: number;
 
-	@Column({ nullable: true, type: "varchar" })
-	price!: number;
+	@Column({ nullable: true, type: "bigint" })
+	price!: bigint;
 
-	@Column({ nullable: true, type: "varchar" })
+	@Column({ nullable: true, type: "float", default: 0 })
 	size!: number;
 
 	@Column({ nullable: true })

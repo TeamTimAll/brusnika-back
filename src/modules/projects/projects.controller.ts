@@ -5,6 +5,7 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
+	Inject,
 	Param,
 	Post,
 	Put,
@@ -14,10 +15,13 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
 import { RoleType } from "../../constants";
-import { ApiErrorResponse } from "../../decorators";
+import { ApiErrorResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { CityNotFoundError } from "../cities/errors/CityNotFound.error";
 
@@ -30,7 +34,11 @@ import { ProjectService } from "./projects.service";
 @Controller("projects")
 @UseInterceptors(TransformInterceptor)
 export class ProjectsController {
-	constructor(private projectsService: ProjectService) {}
+	constructor(
+		private projectsService: ProjectService,
+		@Inject()
+		private readonly analyticsService: AnalyticsService,
+	) {}
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
@@ -50,8 +58,13 @@ export class ProjectsController {
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	@ApiErrorResponse(CityNotFoundError, "id: 1")
-	async createProject(@Body() dto: CreateProjectMetaDataDto) {
-		return await this.projectsService.create(dto.data);
+	async createProject(
+		@Body() dto: CreateProjectMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		const res = await this.projectsService.create(dto.data);
+		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
+		return res;
 	}
 
 	@Roles([RoleType.AFFILIATE_MANAGER])

@@ -3,6 +3,7 @@ import {
 	Controller,
 	Delete,
 	Get,
+	Inject,
 	Post,
 	Query,
 	UseGuards,
@@ -15,6 +16,7 @@ import { User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { ClientService } from "./client.service";
@@ -30,7 +32,11 @@ import { FilterClientDto } from "./dto/FilterClient.dto";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class ClientController {
-	constructor(private clientService: ClientService) {}
+	constructor(
+		private clientService: ClientService,
+		@Inject()
+		private readonly analyticsService: AnalyticsService,
+	) {}
 
 	@Post()
 	@ApiOkResponse({ type: CreateClientMetaDataDto })
@@ -39,7 +45,10 @@ export class ClientController {
 		@Body() dto: CreateClientMetaDataDto,
 	) {
 		dto.data.agent_id = user.user_id;
-		return await this.clientService.create(dto.data);
+		const res = await this.clientService.create(dto.data);
+		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
+		await this.analyticsService.incrementClientCount(user.analytics_id!);
+		return res;
 	}
 
 	@Get("/search")

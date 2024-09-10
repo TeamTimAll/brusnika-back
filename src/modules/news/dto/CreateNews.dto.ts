@@ -1,7 +1,12 @@
-import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import {
+	ApiProperty,
+	ApiPropertyOptional,
+	getSchemaPath,
+} from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsBoolean,
+	IsEnum,
 	IsInt,
 	IsNotEmpty,
 	IsOptional,
@@ -10,6 +15,7 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
+import { RoleType } from "../../../constants";
 
 export class CreateNewsDto {
 	@IsString()
@@ -65,6 +71,11 @@ export class CreateNewsDto {
 		required: true,
 	})
 	is_like_enabled!: boolean;
+
+	@ApiPropertyOptional({ enum: RoleType })
+	@IsEnum(RoleType)
+	@IsOptional()
+	access?: RoleType;
 
 	@ApiProperty({
 		required: false,

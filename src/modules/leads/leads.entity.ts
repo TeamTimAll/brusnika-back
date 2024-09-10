@@ -34,8 +34,8 @@ export class LeadsEntity extends BaseEntity {
 	@JoinColumn({ name: "agent_id" })
 	agent!: UserEntity;
 
-	@Column({ type: "integer", nullable: true })
-	agent_id?: number;
+	@Column({ type: "integer" })
+	agent_id!: number;
 
 	@ManyToOne(() => UserEntity, {
 		onDelete: "SET NULL",

@@ -2,6 +2,7 @@ import {
 	Body,
 	Controller,
 	Get,
+	Inject,
 	Param,
 	Post,
 	Put,
@@ -16,6 +17,7 @@ import { User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateNewsMetaDataDto } from "./dto/CreateNews.dto";
@@ -30,12 +32,16 @@ import { NewsService } from "./news.service";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class NewsController {
-	constructor(private service: NewsService) {}
+	constructor(
+		private service: NewsService,
+		@Inject()
+		private readonly analyticsService: AnalyticsService,
+	) {}
 
 	@Get()
 	@ApiOperation({ summary: "Get all news" })
-	async getAllNews() {
-		return this.service.readAll();
+	async getAllNews(@User() user: ICurrentUser) {
+		return this.service.readAll(user);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
@@ -45,7 +51,9 @@ export class NewsController {
 		@Body() dto: CreateNewsMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		return this.service.create(dto.data, user);
+		const res = this.service.create(dto.data, user);
+		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
+		return res;
 	}
 
 	@Post("toggle-like")

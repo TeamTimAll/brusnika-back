@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	Inject,
 	Param,
 	Post,
 	Put,
@@ -23,6 +24,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { ApiDtoResponse, ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 
@@ -40,15 +42,24 @@ import { MaxCreatableBookingCountReachedError } from "./errors/MaxCreatableBooki
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class BookingsController {
-	constructor(private service: BookingsService) {}
+	constructor(
+		private service: BookingsService,
+		@Inject()
+		private readonly analyticsService: AnalyticsService,
+	) {}
 
 	@ApiOperation({ summary: "Create a booking" })
 	@ApiErrorResponse(PremiseNotFoundError, 'id: "id"')
 	@ApiErrorResponse(MaxCreatableBookingCountReachedError, "count: 0")
 	@ApiDtoResponse(BookingMetaDataDto, HttpStatus.CREATED)
 	@Post()
-	create(@User() user: ICurrentUser, @Body() dto: CreateBookingsMetaDataDto) {
-		return this.service.create(dto.data, user);
+	async create(
+		@User() user: ICurrentUser,
+		@Body() dto: CreateBookingsMetaDataDto,
+	) {
+		const res = this.service.create(dto.data, user);
+		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
+		return res;
 	}
 
 	@ApiQuery({
