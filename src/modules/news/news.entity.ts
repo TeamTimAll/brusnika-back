@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
+import { RoleType } from "../../constants";
 
 import { NewsCategoryEntity } from "./entities/categories.entity";
 import { NewsLikeEntity } from "./entities/likes.entity";
@@ -35,6 +36,9 @@ export class NewsEntity extends BaseEntity {
 		default: () => "CURRENT_TIMESTAMP",
 	})
 	published_at!: Date;
+
+	@Column({ type: "enum", enum: RoleType, nullable: true })
+	access?: RoleType;
 
 	@Column({ type: "boolean", default: false })
 	is_banner!: boolean;

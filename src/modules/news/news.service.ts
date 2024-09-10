@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { PermissionDeniedError } from "../auth/errors/PermissionDenied.error";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 
 import { CreateNewsDto } from "./dto/CreateNews.dto";
@@ -108,6 +109,10 @@ export class NewsService {
 			throw new NewsNotFoundError(`'${id}' news not found`);
 		}
 
+		if (findOne.access && findOne.access === user.role) {
+			throw new PermissionDeniedError(`role: ${user.role}`);
+		}
+
 		const isViewed = await this.newsViewRepository.findOne({
 			where: {
 				news_id: id,
@@ -125,13 +130,16 @@ export class NewsService {
 		return findOne;
 	}
 
-	async readAll() {
+	async readAll(user: ICurrentUser) {
 		return this.newsRepository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
 			.loadRelationCountAndMap("news.likes_count", "news.likes")
 			.loadRelationCountAndMap("news.views_count", "news.views")
+			.where("news.access = :role OR news.access IS NULL", {
+				role: user.role,
+			})
 			.getMany();
 	}
 
