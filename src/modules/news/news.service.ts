@@ -125,13 +125,16 @@ export class NewsService {
 		return findOne;
 	}
 
-	async readAll() {
+	async readAll(user: ICurrentUser) {
 		return this.newsRepository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
 			.loadRelationCountAndMap("news.likes_count", "news.likes")
 			.loadRelationCountAndMap("news.views_count", "news.views")
+			.where("news.access = :role OR news.access IS NULL", {
+				role: user.role,
+			})
 			.getMany();
 	}
 

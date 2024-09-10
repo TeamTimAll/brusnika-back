@@ -34,8 +34,8 @@ export class NewsController {
 
 	@Get()
 	@ApiOperation({ summary: "Get all news" })
-	async getAllNews() {
-		return this.service.readAll();
+	async getAllNews(@User() user: ICurrentUser) {
+		return this.service.readAll(user);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])

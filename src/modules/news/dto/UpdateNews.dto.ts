@@ -1,34 +1,12 @@
-import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import { ApiProperty, getSchemaPath, PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsOptional, IsString, ValidateNested } from "class-validator";
+import { ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
-export class UpdateNewsDto {
-	@IsString()
-	@ApiProperty({
-		required: false,
-		description: "Title of the news",
-	})
-	@IsOptional()
-	title?: string;
+import { CreateNewsDto } from "./CreateNews.dto";
 
-	@IsString()
-	@ApiProperty({
-		required: false,
-		description: "Content of the news",
-	})
-	@IsOptional()
-	content?: string;
-
-	@IsString()
-	@ApiProperty({
-		required: false,
-		description: "Image URL",
-	})
-	@IsOptional()
-	cover_image?: string;
-}
+export class UpdateNewsDto extends PartialType(CreateNewsDto) {}
 
 export class UpdateNewsMetaDataDto extends BaseDto<UpdateNewsDto> {
 	@ApiProperty({
