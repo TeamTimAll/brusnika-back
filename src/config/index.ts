@@ -19,6 +19,8 @@ export interface IConfig {
 	JWT_PUBLIC_KEY: string;
 	JWT_EXPIRATION_TIME: number;
 	API_VERSION: string;
+	PUBLIC_KEY: string;
+	PRIVATE_KEY: string;
 }
 
 export class ConfigManager {
@@ -36,6 +38,8 @@ export class ConfigManager {
 		JWT_EXPIRATION_TIME: process.env
 			.JWT_EXPIRATION_TIME as unknown as number,
 		API_VERSION: process.env.API_VERSION as string,
+		PUBLIC_KEY: process.env.PUBLIC_KEY?.replace(/\\n/g, "\n") as string,
+		PRIVATE_KEY: process.env.PRIVATE_KEY?.replace(/\\n/g, "\n") as string,
 	};
 
 	public static get databaseConfig(): DatabaseConfig {
@@ -57,6 +61,8 @@ export class ConfigManager {
 		JWT_PUBLIC_KEY: Joi.string().required(),
 		JWT_EXPIRATION_TIME: Joi.number().required(),
 		API_VERSION: Joi.string().optional(),
+		PUBLIC_KEY: Joi.string().required(),
+		PRIVATE_KEY: Joi.string().required(),
 	});
 
 	static init() {

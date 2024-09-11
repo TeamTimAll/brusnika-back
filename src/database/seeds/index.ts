@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 
 import { ConfigManager } from "../../config";
+import { RoleType } from "../../constants";
 
 import * as bookedSeed from "./booked.seed";
 import * as buildingSeed from "./building.seed";
@@ -11,6 +12,8 @@ import * as projectSeed from "./project.seed";
 import * as sectionSeed from "./section.seed";
 import * as settingsSeed from "./settings.seed";
 import * as userSeed from "./user.seed";
+import * as agencySeed from "./agency.seed";
+import * as leadSeed from "./lead.seed";
 
 ConfigManager.init();
 export const dataSource = new DataSource(ConfigManager.databaseConfig);
@@ -20,12 +23,14 @@ export const dataSource = new DataSource(ConfigManager.databaseConfig);
 async function up(dataSource: DataSource) {
 	await settingsSeed.up(dataSource.createQueryBuilder());
 	const cities	= await citySeed.up(dataSource.createQueryBuilder());
+	const agencies	= await agencySeed.up(dataSource.createQueryBuilder(), cities);
 	const projects	= await projectSeed.up(dataSource.createQueryBuilder(), cities);
 	const buildings	= await buildingSeed.up(dataSource.createQueryBuilder(), projects);
 	const sections	= await sectionSeed.up(dataSource.createQueryBuilder(), buildings);
-	await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
-	await userSeed.up(dataSource.createQueryBuilder(), cities);
-	await clientSeed.up(dataSource.createQueryBuilder());
+	const premises	= await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
+	const users		= await userSeed.up(dataSource.createQueryBuilder(), cities, agencies);
+	const clients	= await clientSeed.up(dataSource.createQueryBuilder(), users.filter(e => e.role === RoleType.AGENT));
+	await leadSeed.up(dataSource.createQueryBuilder(), clients, buildings, premises);
 	// await bookedSeed.up(dataSource.createQueryBuilder());
 }
 
@@ -37,7 +42,9 @@ async function down(dataSource: DataSource) {
 	await sectionSeed.down(dataSource.createQueryBuilder());
 	await premiseSeed.down(dataSource.createQueryBuilder());
 	await clientSeed.down(dataSource.createQueryBuilder());
+	await leadSeed.down(dataSource.createQueryBuilder());
 	await userSeed.down(dataSource.createQueryBuilder());
+	await agencySeed.down(dataSource.createQueryBuilder());
 	await bookedSeed.down(dataSource.createQueryBuilder());
 }
 // ------------------------------------------------

@@ -57,8 +57,8 @@ export class ClientEntity extends BaseEntity {
 	@JoinColumn({ name: "agent_id" })
 	agent!: UserEntity;
 
-	@Column({ nullable: true, type: "integer" })
-	agent_id?: number;
+	@Column({ type: "integer" })
+	agent_id!: number;
 
 	@OneToMany(() => LeadsEntity, (l) => l.client, {
 		onDelete: "SET NULL",

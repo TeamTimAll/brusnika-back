@@ -82,7 +82,7 @@ export class LeadsService {
 
 	async readAll(dto: LeadReadByFilterDto): Promise<BaseDto<LeadsEntity[]>> {
 		const pageSize = (dto.page - 1) * dto.limit;
-		const leads = await this.leadRepository.find({
+		const [leads, leadsCount] = await this.leadRepository.findAndCount({
 			select: {
 				project: {
 					id: true,
@@ -141,11 +141,9 @@ export class LeadsService {
 			skip: pageSize,
 		});
 
-		const leadsCount = await this.leadRepository.count();
-
 		const metaData = BaseDto.create<LeadsEntity[]>();
 		metaData.data = leads;
-		metaData.setPagination(leadsCount, dto.page, dto.limit);
+		metaData.setPagination(leadsCount, dto.page, leads.length);
 		return metaData;
 	}
 
