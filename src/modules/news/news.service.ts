@@ -2,7 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { RoleType } from "../../constants";
 
 import { CreateNewsDto } from "./dto/CreateNews.dto";
 import { CreateNewsCategoriesDto } from "./dto/CreateNewsCategories.dto";
@@ -14,6 +16,7 @@ import { NewsViewEntity } from "./entities/views.entity";
 import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsEntity } from "./news.entity";
+import { ReadAllNewsDto } from "./dto/read-all-news.dto";
 
 interface NewsLikedResponse {
 	is_liked: boolean;
@@ -125,17 +128,47 @@ export class NewsService {
 		return findOne;
 	}
 
-	async readAll(user: ICurrentUser) {
-		return this.newsRepository
+	async readAll(user: ICurrentUser, payload: ReadAllNewsDto) {
+		const pageSize = (payload.page - 1) * payload.limit;
+
+		let query = this.newsRepository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
 			.loadRelationCountAndMap("news.likes_count", "news.likes")
-			.loadRelationCountAndMap("news.views_count", "news.views")
-			.where("news.access = :role OR news.access IS NULL", {
-				role: user.role,
-			})
-			.getMany();
+			.loadRelationCountAndMap("news.views_count", "news.views");
+
+		if (user.role !== RoleType.ADMIN) {
+			query = query
+				.where("news.access = :role OR news.access IS NULL", {
+					role: user.role,
+				})
+				.where("news.city_id = :city OR news.city_id IS NULL", {
+					city: payload.city_id,
+				});
+		}
+
+		if (!(user.role === RoleType.ADMIN && payload.include_non_actives)) {
+			query = query.andWhere("news.is_active IS TRUE");
+		}
+
+		if (payload.is_banner) {
+			query = query.andWhere("news.is_banner IS TRUE");
+		}
+
+		if (!payload.is_draft || user.role !== RoleType.ADMIN) {
+			query = query.andWhere("news.is_draft IS FALSE");
+		}
+
+		const newsCount = await query.getCount();
+
+		query = query.limit(payload.limit).offset(pageSize);
+
+		const metaData = BaseDto.create<NewsEntity[]>();
+		metaData.setPagination(newsCount, payload.page, payload.limit);
+		metaData.data = await query.getMany();
+
+		return metaData;
 	}
 
 	async banner() {

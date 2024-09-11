@@ -362,6 +362,10 @@ Client yasash tartibi quyidagicha bo'ladi, Clinet frontend'dan yasaladi va fixin
 - [x] Kalendarni oyga bo'lib olish.
 - [x] Event'ga 2 soat qolganida, event ishtirokchilariga ogohlantirish uchun notification yuborish kerak.
 
+# NEWS
+- [x] Primary va Secondary bir xil bo'lishi kerak emas
+- [x] is_draft qo'shish kerak. vazifasi is_draft bo'lsa UIda ko'rinishi kerak emas
+- [x] city qo'shishim kerak. faqat userni citysi bo'yicha chiqish kerak yoki hammaga. Access uchun
 
 # Agent uchun analitika
 
