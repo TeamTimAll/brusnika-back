@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
 import { RoleType } from "../../constants";
@@ -8,19 +9,28 @@ import {
 	UserStatus,
 } from "../../modules/user/user.entity";
 
-export async function up(query: QueryBuilder<object>) {
-	const [city] = await query
-		.select("id")
-		.from(CityEntity, "c")
-		.where("name = :name", {
-			name: "Москва",
-		})
-		.limit(1)
-		.getRawMany<CityEntity>();
-	const users: Omit<
-		UserEntity,
-		"id" | "city" | "agency" | "created_at" | "updated_at" | "is_active"
-	>[] = [
+type IUserEntity = Omit<
+	UserEntity,
+	| "id"
+	| "city"
+	| "agency"
+	| "created_at"
+	| "updated_at"
+	| "is_active"
+	| "temporary_email"
+	| "email_verification_code_sent_date"
+	| "email_verification_code"
+	| "temporary_number"
+	| "verification_code_sent_date"
+	| "verification_code"
+	| "workStartDate"
+>;
+
+export async function up(
+	query: QueryBuilder<object>,
+	cities: CityEntity[],
+): Promise<UserEntity[]> {
+	const users: IUserEntity[] = [
 		{
 			firstName: "Jon",
 			lastName: "Doe",
@@ -30,18 +40,11 @@ export async function up(query: QueryBuilder<object>) {
 			username: "jonadmin",
 			password: "jondoeadmin",
 			phone: "71234567891",
-			birthDate: new Date("2001-01-15"),
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 
@@ -54,18 +57,11 @@ export async function up(query: QueryBuilder<object>) {
 			username: "jonagent",
 			password: "jondoeagent",
 			phone: "71234567892",
-			birthDate: new Date("2001-01-16"),
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 
@@ -78,18 +74,11 @@ export async function up(query: QueryBuilder<object>) {
 			username: "jonagentblocked",
 			password: "jondoeagentblocked",
 			phone: "71234567882",
-			birthDate: new Date("2001-09-11"),
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 
@@ -102,18 +91,11 @@ export async function up(query: QueryBuilder<object>) {
 			username: "jonmanager",
 			password: "jondoemanager",
 			phone: "71234567894",
-			birthDate: new Date("2001-01-18"),
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 		{
@@ -122,21 +104,14 @@ export async function up(query: QueryBuilder<object>) {
 			fullName: "Саша, Шура- Alexander (ADMIN)",
 			firstName: "Саша",
 			lastName: "Шура",
-			birthDate: new Date("2001-01-18"),
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			email: null,
 			username: "sasha_admin",
 			password: "sasha_admin",
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 		{
@@ -145,21 +120,14 @@ export async function up(query: QueryBuilder<object>) {
 			fullName: "Саша, Шура- Alexander (AGENT)",
 			firstName: "Саша",
 			lastName: "Шура",
-			birthDate: new Date("2001-01-18"),
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			email: null,
 			username: "sasha_agent",
 			password: "sasha_agent",
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 		{
@@ -168,21 +136,14 @@ export async function up(query: QueryBuilder<object>) {
 			fullName: "Саша, Шура- Alexander (MANAGER)",
 			firstName: "Саша",
 			lastName: "Шура",
-			birthDate: new Date("2001-01-18"),
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			email: null,
 			username: "sasha_manager",
 			password: "sasha_manager",
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 		{
@@ -191,21 +152,14 @@ export async function up(query: QueryBuilder<object>) {
 			fullName: "Саша, Шура- Alexander (NEW_MEMBER)",
 			firstName: "Саша",
 			lastName: "Шура",
-			birthDate: new Date("2001-01-18"),
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			email: null,
 			username: "sasha_new_member",
 			password: "sasha_new_member",
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 		{
@@ -214,21 +168,14 @@ export async function up(query: QueryBuilder<object>) {
 			fullName: "Саша, Шура- Alexander (HEAD_OF_AGENCY)",
 			firstName: "Саша",
 			lastName: "Шура",
-			birthDate: new Date("2001-01-18"),
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			email: null,
 			username: "sasha_head_of_agency",
 			password: "sasha_head_of_agency",
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 		{
@@ -237,21 +184,14 @@ export async function up(query: QueryBuilder<object>) {
 			fullName: "Саша, Шура- Alexander (OZK_MANAGER)",
 			firstName: "Саша",
 			lastName: "Шура",
-			birthDate: new Date("2001-01-18"),
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			email: null,
 			username: "sasha_ozk_manager",
 			password: "sasha_ozk_manager",
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 		{
@@ -260,26 +200,25 @@ export async function up(query: QueryBuilder<object>) {
 			fullName: "Саша, Шура- Alexander",
 			firstName: "Саша (AFFILIATE_MANAGER)",
 			lastName: "Шура",
-			birthDate: new Date("2001-01-18"),
+			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
 			email: null,
 			username: "sasha_affiliate_manager",
 			password: "sasha_affiliate_manager",
-			workStartDate: null,
-			verification_code: null,
-			verification_code_sent_date: null,
 			avatar: "user_default_avatar.png",
 			register_status: UserRegisterStatus.FINISHED,
-			temporary_number: null,
 			is_phone_verified: true,
-			city_id: city.id,
-			email_verification_code: null,
-			email_verification_code_sent_date: null,
-			temporary_email: null,
+			city_id: faker.helpers.arrayElement(cities).id,
 			status: UserStatus.ACTIVE,
 		},
 	];
 
-	await query.insert().into(UserEntity).values(users).execute();
+	const { generatedMaps } = await query
+		.insert()
+		.into(UserEntity)
+		.values(users)
+		.returning("*")
+		.execute();
+	return generatedMaps as UserEntity[];
 }
 
 export async function down(query: QueryBuilder<object>) {

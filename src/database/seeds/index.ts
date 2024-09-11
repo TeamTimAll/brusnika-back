@@ -9,23 +9,24 @@ import * as clientSeed from "./client.seed";
 import * as premiseSeed from "./premise.seed";
 import * as projectSeed from "./project.seed";
 import * as sectionSeed from "./section.seed";
-import * as userSeed from "./user.seed";
 import * as settingsSeed from "./settings.seed";
+import * as userSeed from "./user.seed";
 
 ConfigManager.init();
 export const dataSource = new DataSource(ConfigManager.databaseConfig);
 
 // -----------------Planting seeds-----------------
+// prettier-ignore
 async function up(dataSource: DataSource) {
 	await settingsSeed.up(dataSource.createQueryBuilder());
-	await citySeed.up(dataSource.createQueryBuilder());
-	await projectSeed.up(dataSource.createQueryBuilder());
-	await buildingSeed.up(dataSource.createQueryBuilder());
-	await sectionSeed.up(dataSource.createQueryBuilder());
-	await premiseSeed.up(dataSource.createQueryBuilder());
-	await userSeed.up(dataSource.createQueryBuilder());
+	const cities	= await citySeed.up(dataSource.createQueryBuilder());
+	const projects	= await projectSeed.up(dataSource.createQueryBuilder(), cities);
+	const buildings	= await buildingSeed.up(dataSource.createQueryBuilder(), projects);
+	const sections	= await sectionSeed.up(dataSource.createQueryBuilder(), buildings);
+	await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
+	await userSeed.up(dataSource.createQueryBuilder(), cities);
 	await clientSeed.up(dataSource.createQueryBuilder());
-	await bookedSeed.up(dataSource.createQueryBuilder());
+	// await bookedSeed.up(dataSource.createQueryBuilder());
 }
 
 async function down(dataSource: DataSource) {

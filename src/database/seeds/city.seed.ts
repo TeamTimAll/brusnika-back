@@ -2,11 +2,13 @@ import { QueryBuilder } from "typeorm";
 
 import { CityEntity } from "../../modules/cities/cities.entity";
 
-export async function up(query: QueryBuilder<object>) {
-	const cities: Omit<
-		CityEntity,
-		"id" | "created_at" | "updated_at" | "is_active"
-	>[] = [
+type ICityEntity = Omit<
+	CityEntity,
+	"id" | "created_at" | "updated_at" | "is_active"
+>;
+
+export async function up(query: QueryBuilder<object>): Promise<CityEntity[]> {
+	const cities: ICityEntity[] = [
 		{ name: "Москва", long: "37.6173", lat: "55.7558" },
 		{ name: "Тюмень", long: "65.5619", lat: "57.1553" },
 		{ name: "Новосибирск", long: "82.8964", lat: "54.9833" },
@@ -16,7 +18,13 @@ export async function up(query: QueryBuilder<object>) {
 		{ name: "Омск", long: "73.3645", lat: "54.9914" },
 	];
 
-	await query.insert().into(CityEntity).values(cities).execute();
+	const { generatedMaps } = await query
+		.insert()
+		.into(CityEntity)
+		.values(cities)
+		.returning("*")
+		.execute();
+	return generatedMaps as CityEntity[];
 }
 
 export async function down(query: QueryBuilder<object>) {

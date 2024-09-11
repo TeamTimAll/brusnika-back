@@ -1,22 +1,22 @@
 import { QueryBuilder } from "typeorm";
 
-import { SectionEntity } from "../../modules/sections/sections.entity";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
+import { SectionEntity } from "../../modules/sections/sections.entity";
 
 function findBuildingId(buildings: BuildingEntity[], name: string) {
 	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
-export async function up(query: QueryBuilder<object>) {
-	const buildings = await query
-		.select(["c.id AS id", "c.name AS name"])
-		.from(BuildingEntity, "c")
-		.getRawMany<BuildingEntity>();
+type ISectionEntity = Omit<
+	SectionEntity,
+	"id" | "building" | "created_at" | "updated_at" | "is_active"
+>;
 
-	const sections: Omit<
-		SectionEntity,
-		"id" | "building" | "created_at" | "updated_at" | "is_active"
-	>[] = [
+export async function up(
+	query: QueryBuilder<object>,
+	buildings: BuildingEntity[],
+): Promise<SectionEntity[]> {
+	const sections: ISectionEntity[] = [
 		{
 			name: "Секция 1",
 			building_id: findBuildingId(buildings, "Москва Дом 1"),
@@ -57,7 +57,13 @@ export async function up(query: QueryBuilder<object>) {
 		},
 	];
 
-	await query.insert().into(SectionEntity).values(sections).execute();
+	const { generatedMaps } = await query
+		.insert()
+		.into(SectionEntity)
+		.values(sections)
+		.returning("*")
+		.execute();
+	return generatedMaps as SectionEntity[];
 }
 
 export async function down(query: QueryBuilder<object>) {

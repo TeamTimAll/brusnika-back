@@ -18,6 +18,8 @@ import { BaseDto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
 import { IsDifferent } from "../../../decorators";
 
+import { NewsDto } from "./news.dto";
+
 export class CreateNewsDto {
 	@IsString()
 	@IsNotEmpty()
@@ -59,7 +61,7 @@ export class CreateNewsDto {
 	@IsOptional()
 	@IsInt()
 	@Type(() => Number)
-	@IsDifferent("primary_category_id")
+	@IsDifferent<NewsDto>("primary_category_id")
 	@ApiProperty({
 		description: "The second category of the news",
 		example: 1,

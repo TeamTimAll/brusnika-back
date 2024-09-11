@@ -4,8 +4,8 @@ import {
 	ValidationArguments,
 } from "class-validator";
 
-export function IsDifferent(
-	property: string,
+export function IsDifferent<T extends object>(
+	property: keyof T,
 	validationOptions?: ValidationOptions,
 ) {
 	return function (object: object, propertyName: string) {
