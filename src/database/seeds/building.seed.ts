@@ -7,22 +7,22 @@ function findProjectId(buildings: ProjectEntity[], name: string) {
 	return buildings.find((e) => e.name === name)?.id ?? 0;
 }
 
-export async function up(query: QueryBuilder<object>) {
-	const projects = await query
-		.select(["c.id AS id", "c.name AS name"])
-		.from(ProjectEntity, "c")
-		.getRawMany<ProjectEntity>();
+type IBuildingEntity = Omit<
+	BuildingEntity,
+	| "id"
+	| "project"
+	| "total_apartment"
+	| "total_vacant_apartment"
+	| "created_at"
+	| "updated_at"
+	| "is_active"
+>;
 
-	const buildings: Omit<
-		BuildingEntity,
-		| "id"
-		| "project"
-		| "total_apartment"
-		| "total_vacant_apartment"
-		| "created_at"
-		| "updated_at"
-		| "is_active"
-	>[] = [
+export async function up(
+	query: QueryBuilder<object>,
+	projects: ProjectEntity[],
+): Promise<BuildingEntity[]> {
+	const buildings: IBuildingEntity[] = [
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
 			name: "Москва Дом 1",
@@ -367,7 +367,13 @@ export async function up(query: QueryBuilder<object>) {
 		},
 	];
 
-	await query.insert().into(BuildingEntity).values(buildings).execute();
+	const res = await query
+		.insert()
+		.into(BuildingEntity)
+		.values(buildings)
+		.returning("*")
+		.execute();
+	return res.generatedMaps as BuildingEntity[];
 }
 
 export async function down(query: QueryBuilder<object>) {
