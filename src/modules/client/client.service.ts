@@ -9,7 +9,7 @@ import { LeadsEntity } from "../leads/leads.entity";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
-import { ClientEntity, FixingType } from "./client.entity";
+import { ClientEntity } from "./client.entity";
 import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
 import { CreateClientDto } from "./dto/CreateClient.dto";
 import { DeleteClientDto } from "./dto/DeleteClient.dto";
@@ -203,7 +203,7 @@ export class ClientService {
 		}
 		if (dto.phone_number) {
 			queryBuilder = queryBuilder.andWhere(
-				"phone_number ilike :phone_number",
+				"c.phone_number ILIKE :phone_number",
 				{
 					phone_number: `%${dto.phone_number}%`,
 				},
@@ -249,20 +249,11 @@ export class ClientService {
 			);
 		}
 
+		const clientCount = await queryBuilder.getCount();
+
 		const pageSize = (dto.page - 1) * dto.limit;
 
 		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
-
-		const clientCount = await this.clientRepository.count({
-			where: [
-				{
-					agent_id: user.user_id,
-				},
-				{
-					fixing_type: FixingType.WEAK_FIXING,
-				},
-			],
-		});
 
 		const metaData = BaseDto.create<ClientEntity[]>();
 		metaData.setPagination(clientCount, dto.page, dto.limit);

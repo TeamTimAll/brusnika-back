@@ -2,6 +2,8 @@ import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
 import { RoleType } from "../../constants";
+import { chunkArray } from "../../lib/array";
+import { AgencyEntity } from "../../modules/agencies/agencies.entity";
 import { CityEntity } from "../../modules/cities/cities.entity";
 import {
 	UserEntity,
@@ -14,27 +16,56 @@ type IUserEntity = Omit<
 	| "id"
 	| "city"
 	| "agency"
+	| "fullName"
 	| "created_at"
 	| "updated_at"
 	| "is_active"
-	| "temporary_email"
-	| "email_verification_code_sent_date"
-	| "email_verification_code"
-	| "temporary_number"
-	| "verification_code_sent_date"
-	| "verification_code"
 	| "workStartDate"
+	| "temporary_email"
+	| "temporary_number"
+	| "verification_code"
+	| "email_verification_code"
+	| "verification_code_sent_date"
+	| "email_verification_code_sent_date"
 >;
+
+function createUser(
+	city_id: number,
+	role: RoleType,
+	agency_id?: number,
+): IUserEntity {
+	const user: IUserEntity = {
+		firstName: faker.person.firstName(),
+		lastName: faker.person.lastName(),
+		role: role,
+		username: null,
+		password: null,
+		phone: faker.number
+			.bigInt({
+				min: 70000000000,
+				max: 79999999999,
+			})
+			.toString(),
+		birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
+		avatar: "user_default_avatar.png",
+		register_status: UserRegisterStatus.FINISHED,
+		city_id: city_id,
+		agency_id: agency_id,
+		is_phone_verified: true,
+		status: UserStatus.ACTIVE,
+	};
+	return user;
+}
 
 export async function up(
 	query: QueryBuilder<object>,
 	cities: CityEntity[],
+	agencies: AgencyEntity[],
 ): Promise<UserEntity[]> {
 	const users: IUserEntity[] = [
 		{
 			firstName: "Jon",
 			lastName: "Doe",
-			fullName: "Jon Doe Admin",
 			role: RoleType.ADMIN,
 			email: "jondoeadmin@gmail.com",
 			username: "jonadmin",
@@ -51,7 +82,6 @@ export async function up(
 		{
 			firstName: "Jon",
 			lastName: "Doe",
-			fullName: "Jon Doe Agent",
 			role: RoleType.AGENT,
 			email: "jondoeagent@gmail.com",
 			username: "jonagent",
@@ -68,7 +98,6 @@ export async function up(
 		{
 			firstName: "Jon",
 			lastName: "Doe",
-			fullName: "Jon Doe Agent Blocked",
 			role: RoleType.AGENT,
 			email: "jondoeagentblocked@gmail.com",
 			username: "jonagentblocked",
@@ -85,7 +114,6 @@ export async function up(
 		{
 			firstName: "Jon",
 			lastName: "Doe",
-			fullName: "Jon Doe Manager",
 			role: RoleType.MANAGER,
 			email: "jondoemanager@gmail.com",
 			username: "jonmanager",
@@ -101,7 +129,6 @@ export async function up(
 		{
 			phone: "2222222222",
 			role: RoleType.ADMIN,
-			fullName: "Саша, Шура- Alexander (ADMIN)",
 			firstName: "Саша",
 			lastName: "Шура",
 			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
@@ -117,7 +144,6 @@ export async function up(
 		{
 			phone: "2222222223",
 			role: RoleType.AGENT,
-			fullName: "Саша, Шура- Alexander (AGENT)",
 			firstName: "Саша",
 			lastName: "Шура",
 			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
@@ -133,7 +159,6 @@ export async function up(
 		{
 			phone: "2222222224",
 			role: RoleType.MANAGER,
-			fullName: "Саша, Шура- Alexander (MANAGER)",
 			firstName: "Саша",
 			lastName: "Шура",
 			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
@@ -149,7 +174,6 @@ export async function up(
 		{
 			phone: "2222222226",
 			role: RoleType.NEW_MEMBER,
-			fullName: "Саша, Шура- Alexander (NEW_MEMBER)",
 			firstName: "Саша",
 			lastName: "Шура",
 			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
@@ -165,7 +189,6 @@ export async function up(
 		{
 			phone: "2222222227",
 			role: RoleType.HEAD_OF_AGENCY,
-			fullName: "Саша, Шура- Alexander (HEAD_OF_AGENCY)",
 			firstName: "Саша",
 			lastName: "Шура",
 			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
@@ -181,7 +204,6 @@ export async function up(
 		{
 			phone: "2222222228",
 			role: RoleType.OZK_MANAGER,
-			fullName: "Саша, Шура- Alexander (OZK_MANAGER)",
 			firstName: "Саша",
 			lastName: "Шура",
 			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
@@ -197,7 +219,6 @@ export async function up(
 		{
 			phone: "2222222229",
 			role: RoleType.AFFILIATE_MANAGER,
-			fullName: "Саша, Шура- Alexander",
 			firstName: "Саша (AFFILIATE_MANAGER)",
 			lastName: "Шура",
 			birthDate: faker.date.birthdate({ mode: "age", min: 18, max: 65 }),
@@ -212,13 +233,39 @@ export async function up(
 		},
 	];
 
-	const { generatedMaps } = await query
-		.insert()
-		.into(UserEntity)
-		.values(users)
-		.returning("*")
-		.execute();
-	return generatedMaps as UserEntity[];
+	cities.forEach((city) => {
+		agencies.forEach((agency) => {
+			users.push(createUser(city.id, RoleType.HEAD_OF_AGENCY, agency.id));
+
+			const len = faker.number.int({ min: 5, max: 10 });
+			for (let i = 0; i < len; i++) {
+				users.push(
+					createUser(
+						city.id,
+						faker.helpers.arrayElement([
+							RoleType.AGENT,
+							RoleType.MANAGER,
+						]),
+						agency.id,
+					),
+				);
+			}
+		});
+	});
+
+	const chunks = chunkArray(users, 100);
+
+	const res: UserEntity[][] = [];
+	for await (const chunk of chunks) {
+		const { generatedMaps } = await query
+			.insert()
+			.into(UserEntity)
+			.values(chunk)
+			.returning("*")
+			.execute();
+		res.push(generatedMaps as UserEntity[]);
+	}
+	return res.flat();
 }
 
 export async function down(query: QueryBuilder<object>) {

@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
+import { chunkArray } from "../../lib/array";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
 import {
 	CommercialStatus,
@@ -92,13 +93,19 @@ export async function up(
 		});
 	});
 
-	const { generatedMaps } = await query
-		.insert()
-		.into(PremiseEntity)
-		.values(premises)
-		.returning("*")
-		.execute();
-	return generatedMaps as PremiseEntity[];
+	const chunks = chunkArray(premises, 100);
+
+	const res: PremiseEntity[][] = [];
+	for await (const chunk of chunks) {
+		const { generatedMaps } = await query
+			.insert()
+			.into(PremiseEntity)
+			.values(chunk)
+			.returning("*")
+			.execute();
+		res.push(generatedMaps as PremiseEntity[]);
+	}
+	return res.flat();
 }
 
 export async function down(query: QueryBuilder<object>) {

@@ -1,34 +1,172 @@
+import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
-import { LeadOpStatus } from "../../modules/leads/lead_ops.entity";
+import { chunkArray } from "../../lib/array";
+import { BuildingEntity } from "../../modules/buildings/buildings.entity";
+import { ClientEntity } from "../../modules/client/client.entity";
+import {
+	LeadOpStatus,
+	LeadOpsEntity,
+} from "../../modules/leads/lead_ops.entity";
 import { LeadState, LeadsEntity } from "../../modules/leads/leads.entity";
+import { PremiseEntity } from "../../modules/premises/premises.entity";
 
-export async function up(query: QueryBuilder<object>) {
-	const leads: Omit<
-		LeadsEntity,
-		| "id"
-		| "client"
-		| "agent"
-		| "project"
-		| "premise"
-		| "created_at"
-		| "updated_at"
-		| "is_active"
-	>[] = [
-		{
-			client_id: 1,
-			agent_id: 1,
-			project_id: 1,
-			premise_id: 1,
-			current_status: LeadOpStatus.OPEN,
-			lead_number: 0,
-			state: LeadState.ACTIVE,
-		},
-	];
+type ILeadsEntity = Omit<
+	LeadsEntity,
+	| "id"
+	| "client"
+	| "agent"
+	| "project"
+	| "premise"
+	| "created_at"
+	| "updated_at"
+	| "is_active"
+>;
+type ILeadOpsEntity = Omit<
+	LeadOpsEntity,
+	"id" | "lead" | "created_at" | "updated_at" | "is_active"
+>;
 
-	await query.insert().into(LeadsEntity).values(leads).execute();
+const successLeads = [
+	LeadOpStatus.OPEN,
+	LeadOpStatus.INTEREST_IN_PURCHASING,
+	LeadOpStatus.PRESENTATION,
+	LeadOpStatus.BOOKED,
+	LeadOpStatus.REQUEST_FOR_CONTRACT,
+	LeadOpStatus.CONTRACT_IS_REGISTERED,
+	LeadOpStatus.WON,
+];
+
+const canceledLeads = [
+	LeadOpStatus.OPEN,
+	LeadOpStatus.INTEREST_IN_PURCHASING,
+	LeadOpStatus.PRESENTATION,
+	LeadOpStatus.BOOKED,
+	LeadOpStatus.BOOK_CANCELED,
+];
+
+const lostLeads = [
+	LeadOpStatus.OPEN,
+	LeadOpStatus.INTEREST_IN_PURCHASING,
+	LeadOpStatus.PRESENTATION,
+	LeadOpStatus.BOOKED,
+	LeadOpStatus.LOST_BOOK,
+];
+
+const pauseLeads = [
+	LeadOpStatus.OPEN,
+	LeadOpStatus.INTEREST_IN_PURCHASING,
+	LeadOpStatus.PRESENTATION,
+	LeadOpStatus.ON_PAUSE,
+];
+
+const checkLeads = [LeadOpStatus.OPEN, LeadOpStatus.CHECK_LEAD];
+
+const failedLeads = [
+	LeadOpStatus.OPEN,
+	LeadOpStatus.INTEREST_IN_PURCHASING,
+	LeadOpStatus.PRESENTATION,
+	LeadOpStatus.BOOKED,
+	LeadOpStatus.REQUEST_FOR_CONTRACT,
+	LeadOpStatus.FAILED,
+];
+
+const leadOpStatusMap = new Map([
+	[LeadOpStatus.WON, successLeads],
+	[LeadOpStatus.BOOK_CANCELED, canceledLeads],
+	[LeadOpStatus.LOST_BOOK, lostLeads],
+	[LeadOpStatus.ON_PAUSE, pauseLeads],
+	[LeadOpStatus.CHECK_LEAD, checkLeads],
+	[LeadOpStatus.FAILED, failedLeads],
+]);
+
+function createLead(
+	client_id: number,
+	agent_id: number,
+	project_id: number,
+	premise_id: number,
+): ILeadsEntity {
+	const lead: ILeadsEntity = {
+		client_id: client_id,
+		agent_id: agent_id,
+		project_id: project_id,
+		premise_id: premise_id,
+		current_status: faker.helpers.arrayElement([
+			LeadOpStatus.WON,
+			LeadOpStatus.BOOK_CANCELED,
+			LeadOpStatus.LOST_BOOK,
+			LeadOpStatus.ON_PAUSE,
+			LeadOpStatus.CHECK_LEAD,
+			LeadOpStatus.FAILED,
+		]),
+		lead_number: faker.number.int({ min: 1, max: 100 }),
+		state: LeadState.ACTIVE,
+	};
+	return lead;
+}
+
+export async function up(
+	query: QueryBuilder<object>,
+	clients: ClientEntity[],
+	buildings: BuildingEntity[],
+	premises: PremiseEntity[],
+): Promise<LeadsEntity[]> {
+	const leads: ILeadsEntity[] = [];
+	const leadOps: ILeadOpsEntity[] = [];
+
+	clients.forEach((client) => {
+		const premise = faker.helpers.arrayElement(premises);
+		const building = buildings.find(
+			(building) => building.id === premise.building_id,
+		);
+		if (building?.project_id) {
+			const lead = createLead(
+				client.id,
+				client.agent_id,
+				building.project_id,
+				premise.id,
+			);
+			leads.push(lead);
+		}
+	});
+
+	const leadChunks = chunkArray(leads, 100);
+
+	const res: LeadsEntity[][] = [];
+	for await (const chunk of leadChunks) {
+		const { generatedMaps } = await query
+			.insert()
+			.into(LeadsEntity)
+			.values(chunk)
+			.returning("*")
+			.execute();
+		res.push(generatedMaps as LeadsEntity[]);
+	}
+
+	const createdLeads = res.flat();
+
+	createdLeads.forEach((lead) => {
+		const leadOpStatuses = leadOpStatusMap.get(lead.current_status);
+
+		if (leadOpStatuses) {
+			leadOpStatuses.forEach((leadOpStatus) => {
+				leadOps.push({
+					lead_id: lead.id,
+					status: leadOpStatus,
+				});
+			});
+		}
+	});
+
+	const leadOpsChunks = chunkArray(leadOps, 100);
+	for await (const chunk of leadOpsChunks) {
+		await query.insert().into(LeadOpsEntity).values(chunk).execute();
+	}
+
+	return createdLeads;
 }
 
 export async function down(query: QueryBuilder<object>) {
+	await query.delete().from(LeadOpsEntity).execute();
 	await query.delete().from(LeadsEntity).execute();
 }
