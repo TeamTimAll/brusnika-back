@@ -57,7 +57,7 @@ export class CalendarService {
 				"e.city_id as city_id",
 				"e.is_banner as is_banner",
 				"(CASE WHEN create_by_id = :create_by_id THEN TRUE ELSE FALSE END) as is_owner",
-				"JSON_STRIP_NULLS(JSON_BUILD_OBJECT('id', iu.id, 'is_accepted', iu.is_accepted)) as user_invitation",
+				"CASE WHEN iu.id IS NOT NULL THEN JSON_BUILD_OBJECT('is_accepted',iu.is_accepted,'id',iu.id) ELSE '{}' END as user_invitation",
 			])
 			.leftJoin(
 				(qb: SelectQueryBuilder<EventInvitationEntity>) => {
