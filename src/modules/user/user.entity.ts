@@ -41,10 +41,10 @@ export class UserEntity extends BaseEntity {
 	email?: string | null;
 
 	@Column({ unique: true, nullable: true, type: "varchar" })
-	username!: string;
+	username!: string | null;
 
 	@Column({ nullable: true, type: "varchar" })
-	password!: string;
+	password!: string | null;
 
 	@Column({ nullable: true, type: "varchar", unique: true })
 	phone!: string | null;

@@ -1,5 +1,7 @@
+import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
+import { chunkArray } from "../../lib/array";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
 import {
 	CommercialStatus,
@@ -9,631 +11,101 @@ import {
 } from "../../modules/premises/premises.entity";
 import { SectionEntity } from "../../modules/sections/sections.entity";
 
-function findBuildingId(buildings: BuildingEntity[], name: string) {
-	return buildings.find((e) => e.name === name)?.id ?? 0;
-}
+type IPremiseEntity = Omit<
+	PremiseEntity,
+	| "id"
+	| "section"
+	| "building"
+	| "created_at"
+	| "updated_at"
+	| "season"
+	| "schema"
+	| "is_active"
+>;
 
-function findSectionId(
-	buildings: SectionEntity[],
+const typeRussianName = new Map([
+	[PremisesType.APARTMENT, "комнатная"],
+	[PremisesType.STOREROOM, "кладовка"],
+	[PremisesType.PARKING, "стоянка"],
+	[PremisesType.COMMERCIAL, "коммерческий"],
+]);
+
+function createPremise(
 	building_id: number,
-	name: string,
-) {
-	return buildings.find(
-		(e) => e.name === name && e.building_id === building_id,
-	)?.id;
+	section_id: number,
+	studio?: boolean,
+): IPremiseEntity {
+	const number = faker.number.int({ min: 1, max: 40 });
+	const size = faker.number.int({ min: 20, max: 40 });
+	const type = faker.helpers.arrayElement([
+		PremisesType.APARTMENT,
+		PremisesType.STOREROOM,
+		PremisesType.PARKING,
+		PremisesType.COMMERCIAL,
+	]);
+	const name =
+		number +
+		"-" +
+		(studio ? "студия" : typeRussianName.get(type)) +
+		" " +
+		size +
+		" м2";
+
+	const premise: IPremiseEntity = {
+		name: name,
+		building_id: building_id,
+		number: number,
+		type: type,
+		price: faker.number.bigInt({ min: 1000000, max: 5000000 }),
+		size: size,
+		status: CommercialStatus.FREE,
+		purchaseOption: PuchaseOptions.MORTAGE,
+		floor: faker.number.int({ min: 1, max: 9 }),
+		photo: "premise_apartment_default_image.jpg",
+		rooms: studio ? 0 : faker.number.int({ min: 1, max: 5 }),
+		photos: [
+			"premise_apartment_default_image.jpg",
+			"premise_apartment_default_image.jpg",
+		],
+		similiarApartmentCount: 0,
+		mortagePayment: faker.number.int({ min: 100, max: 900 }),
+		is_sold: false,
+		section_id: section_id,
+	};
+	return premise;
 }
 
-export async function up(query: QueryBuilder<object>) {
-	const buildings = await query
-		.select(["c.id AS id", "c.name AS name"])
-		.from(BuildingEntity, "c")
-		.getRawMany<BuildingEntity>();
+export async function up(
+	query: QueryBuilder<object>,
+	buildings: BuildingEntity[],
+	sections: SectionEntity[],
+): Promise<PremiseEntity[]> {
+	const premises: IPremiseEntity[] = [];
 
-	const sections = await query
-		.createQueryBuilder()
-		.select([
-			"s.id AS id",
-			"s.name AS name",
-			"s.building_id AS building_id",
-		])
-		.from(SectionEntity, "s")
-		.getRawMany<SectionEntity>();
+	buildings.forEach((building) => {
+		sections.forEach((section) => {
+			for (let i = 0; i < 10; i++) {
+				premises.push(createPremise(building.id, section.id));
+			}
+			for (let i = 0; i < 2; i++) {
+				premises.push(createPremise(building.id, section.id, true));
+			}
+		});
+	});
 
-	const premises: Omit<
-		PremiseEntity,
-		| "id"
-		| "section"
-		| "building"
-		| "created_at"
-		| "updated_at"
-		| "season"
-		| "schema"
-		| "is_active"
-	>[] = [
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Москва Дом 1"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Москва Дом 1"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Москва Дом 2"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Москва Дом 2"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Москва Дом 3"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Москва Дом 3"),
-				"Секция 1",
-			),
-		},
+	const chunks = chunkArray(premises, 100);
 
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Тюмень Дом 1"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Тюмень Дом 1"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Тюмень Дом 2"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Тюмень Дом 2"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Тюмень Дом 3"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Тюмень Дом 3"),
-				"Секция 1",
-			),
-		},
-
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Новосибирск Дом 1"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Новосибирск Дом 1"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Новосибирск Дом 2"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Новосибирск Дом 2"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Новосибирск Дом 3"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Новосибирск Дом 3"),
-				"Секция 1",
-			),
-		},
-
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Екатеринбург Дом 1"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Екатеринбург Дом 1"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Екатеринбург Дом 2"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Екатеринбург Дом 2"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Екатеринбург Дом 3"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Екатеринбург Дом 3"),
-				"Секция 1",
-			),
-		},
-
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Сургут Дом 1"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Сургут Дом 1"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Сургут Дом 2"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Сургут Дом 2"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Сургут Дом 3"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Сургут Дом 3"),
-				"Секция 1",
-			),
-		},
-
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Курган Дом 1"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Курган Дом 1"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Курган Дом 2"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Курган Дом 2"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Курган Дом 3"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Курган Дом 3"),
-				"Секция 1",
-			),
-		},
-
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Омск Дом 1"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Омск Дом 1"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Омск Дом 2"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Омск Дом 2"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-комнатная 30 м2",
-			building_id: findBuildingId(buildings, "Омск Дом 3"),
-			number: 1,
-			type: PremisesType.APARTMENT,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_apartment_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_apartment_default_image.jpg",
-				"premise_apartment_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Омск Дом 3"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-стоянка 30 м2",
-			building_id: findBuildingId(buildings, "Омск Дом 3"),
-			number: 1,
-			type: PremisesType.PARKING,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_parking_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_parking_default_image.jpg",
-				"premise_parking_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Омск Дом 3"),
-				"Секция 1",
-			),
-		},
-		{
-			name: "1-кладовка 30 м2",
-			building_id: findBuildingId(buildings, "Омск Дом 3"),
-			number: 1,
-			type: PremisesType.STOREROOM,
-			price: 20000n,
-			size: 30,
-			status: CommercialStatus.FREE,
-			purchaseOption: PuchaseOptions.MORTAGE,
-			floor: 1,
-			photo: "premise_storeroom_default_image.jpg",
-			rooms: 5,
-			photos: [
-				"premise_storeroom_default_image.jpg",
-				"premise_storeroom_default_image.jpg",
-			],
-			similiarApartmentCount: 0,
-			mortagePayment: 100,
-			is_sold: false,
-			section_id: findSectionId(
-				sections,
-				findBuildingId(buildings, "Омск Дом 3"),
-				"Секция 1",
-			),
-		},
-	];
-
-	await query.insert().into(PremiseEntity).values(premises).execute();
+	const res: PremiseEntity[][] = [];
+	for await (const chunk of chunks) {
+		const { generatedMaps } = await query
+			.insert()
+			.into(PremiseEntity)
+			.values(chunk)
+			.returning("*")
+			.execute();
+		res.push(generatedMaps as PremiseEntity[]);
+	}
+	return res.flat();
 }
 
 export async function down(query: QueryBuilder<object>) {
