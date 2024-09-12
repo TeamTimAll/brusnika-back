@@ -64,8 +64,7 @@ export class CalendarService {
 					return qb
 						.select()
 						.from(EventInvitationEntity, "ei")
-						.where("ei.user_id = :create_by_id")
-						.limit(1);
+						.where("ei.user_id = :create_by_id");
 				},
 				"iu",
 				"iu.event_id = e.id",
