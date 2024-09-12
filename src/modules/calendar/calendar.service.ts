@@ -55,9 +55,10 @@ export class CalendarService {
 				"e.type as type",
 				"e.city_id as city_id",
 				"e.is_banner as is_banner",
+				"(CASE WHEN create_by_id = :create_by_id THEN TRUE ELSE FALSE END) as is_owner",
 			])
 			.where(
-				"e.id IN (SELECT ei.event_id FROM event_invitation ei WHERE ei.user_id = :user_id)",
+				"e.id IN (SELECT ei.event_id FROM event_invitation ei WHERE ei.user_id = :user_id AND ei.is_accepted IS NOT FALSE)",
 				{
 					user_id: user.user_id,
 				},
