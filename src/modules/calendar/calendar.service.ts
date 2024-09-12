@@ -7,6 +7,7 @@ import { Weekdays, WeekdaysMap } from "../../common/enums/weekdays";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { VisitsEntity } from "../../modules/visits/visits.entity";
+import { EventInvitationEntity } from "../events/entities/event-invition.entity";
 import { EventsService } from "../events/events.service";
 import { VisitsService } from "../visits/visits.service";
 
@@ -56,7 +57,19 @@ export class CalendarService {
 				"e.city_id as city_id",
 				"e.is_banner as is_banner",
 				"(CASE WHEN create_by_id = :create_by_id THEN TRUE ELSE FALSE END) as is_owner",
+				"JSON_STRIP_NULLS(JSON_BUILD_OBJECT('id', iu.id, 'is_accepted', iu.is_accepted)) as user_invitation",
 			])
+			.leftJoin(
+				(qb: SelectQueryBuilder<EventInvitationEntity>) => {
+					return qb
+						.select()
+						.from(EventInvitationEntity, "ei")
+						.where("ei.user_id = :create_by_id")
+						.limit(1);
+				},
+				"iu",
+				"iu.event_id = e.id",
+			)
 			.where(
 				"e.id IN (SELECT ei.event_id FROM event_invitation ei WHERE ei.user_id = :user_id AND ei.is_accepted IS NOT FALSE)",
 				{
