@@ -2,6 +2,7 @@ import {
 	Body,
 	Controller,
 	Get,
+	Inject,
 	Param,
 	Post,
 	Put,
@@ -16,6 +17,7 @@ import { User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateNewsMetaDataDto } from "./dto/CreateNews.dto";
@@ -23,6 +25,7 @@ import { CreateNewsCategoriesMetaDataDto } from "./dto/CreateNewsCategories.dto"
 import { LikeNewsMetaDataDto } from "./dto/LikeNews.dto";
 import { UpdateNewsMetaDataDto } from "./dto/UpdateNews.dto";
 import { NewsService } from "./news.service";
+import { ReadAllNewsDto } from "./dto/read-all-news.dto";
 
 @ApiTags("News")
 @Controller("news")
@@ -30,12 +33,19 @@ import { NewsService } from "./news.service";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class NewsController {
-	constructor(private service: NewsService) {}
+	constructor(
+		private service: NewsService,
+		@Inject()
+		private readonly analyticsService: AnalyticsService,
+	) {}
 
 	@Get()
 	@ApiOperation({ summary: "Get all news" })
-	async getAllNews() {
-		return this.service.readAll();
+	async getAllNews(
+		@User() user: ICurrentUser,
+		@Query() query: ReadAllNewsDto,
+	) {
+		return this.service.readAll(user, query);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
@@ -45,7 +55,9 @@ export class NewsController {
 		@Body() dto: CreateNewsMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		return this.service.create(dto.data, user);
+		const res = this.service.create(dto.data, user);
+		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
+		return res;
 	}
 
 	@Post("toggle-like")
@@ -88,7 +100,7 @@ export class NewsController {
 
 	@Get(":id")
 	@ApiOperation({ summary: "Get news by id" })
-	async getNewsById(@Query("id") id: number, @User() user: ICurrentUser) {
+	async getNewsById(@Param("id") id: number, @User() user: ICurrentUser) {
 		return this.service.readOne(id, user);
 	}
 }

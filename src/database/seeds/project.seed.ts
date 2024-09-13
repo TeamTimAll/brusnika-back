@@ -7,16 +7,16 @@ function findCityId(cities: CityEntity[], name: string) {
 	return cities.find((e) => e.name === name)?.id;
 }
 
-export async function up(query: QueryBuilder<object>) {
-	const cities = await query
-		.select(["c.id AS id", "c.name AS name"])
-		.from(CityEntity, "c")
-		.getRawMany<CityEntity>();
+type IProjectEntity = Omit<
+	ProjectEntity,
+	"id" | "city" | "created_at" | "updated_at" | "is_active"
+>;
 
-	const projects: Omit<
-		ProjectEntity,
-		"id" | "city" | "created_at" | "updated_at" | "is_active"
-	>[] = [
+export async function up(
+	query: QueryBuilder<object>,
+	cities: CityEntity[],
+): Promise<ProjectEntity[]> {
+	const projects: IProjectEntity[] = [
 		{
 			city_id: findCityId(cities, "Москва"),
 			name: "Москва Проект",
@@ -124,7 +124,13 @@ export async function up(query: QueryBuilder<object>) {
 		},
 	];
 
-	await query.insert().into(ProjectEntity).values(projects).execute();
+	const { generatedMaps } = await query
+		.insert()
+		.into(ProjectEntity)
+		.values(projects)
+		.returning("*")
+		.execute();
+	return generatedMaps as ProjectEntity[];
 }
 
 export async function down(query: QueryBuilder<object>) {

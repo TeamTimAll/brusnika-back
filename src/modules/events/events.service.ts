@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, IsNull, Not, Repository } from "typeorm";
+import { CronJob } from "cron";
+import { Brackets, In, IsNull, Not, Repository } from "typeorm";
 
 import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 import { LikedResponseDto } from "common/dtos/likeResponse.dto";
@@ -31,6 +32,7 @@ import { CreateEventsDto } from "./dtos/CreateEvents.dto";
 import { FilterEventsDto, QueryType } from "./dtos/FilterEvents.dto";
 import { InviteUsersDto } from "./dtos/InviteUsers.dto";
 import { LeaveInvitionDto } from "./dtos/LeaveInvition.dto";
+import { RecommendedEventDto } from "./dtos/RecommendedEvent.dto";
 import { ToggleEventDto } from "./dtos/ToggleEvent.dto";
 import { type UpdateEventsDto } from "./dtos/UpdateEvents.dto";
 import { EventContactEntity } from "./entities/event-contact.entity";
@@ -65,7 +67,47 @@ export class EventsService {
 		@Inject()
 		private notificationService: NotificationService,
 		private logger: Logger,
-	) {}
+	) {
+		void (async () => {
+			const events = await eventRepository
+				.createQueryBuilder("e")
+				.select([
+					"e.id",
+					"e.date",
+					"e.start_time",
+					"e.title",
+					"e.city_id",
+				] as Array<`e.${keyof EventsEntity}`>)
+				.where("e.date >= CURRENT_DATE")
+				.getMany();
+			events.forEach((e) => {
+				try {
+					const eventDate = new Date(
+						`${e.date}T${e.start_time}.000Z`,
+					);
+					if (eventDate.getTime() > Date.now()) {
+						new CronJob(
+							eventDate,
+							() => this.sendWarning(e.id, e.title, e.city_id),
+							null,
+							true,
+						);
+						this.logger.log(
+							`Event id: ${e.id}, Event datetime: ${e.date}T${e.start_time}.000Z; Success`,
+							"CronJob",
+						);
+					}
+				} catch (error) {
+					if (error instanceof Error) {
+						this.logger.log(
+							`Event id: ${e.id}, Event datetime: ${e.date}T${e.start_time}.000Z; Error: ${error.message}`,
+							"CronJob",
+						);
+					}
+				}
+			});
+		})();
+	}
 
 	get repository() {
 		return this.eventRepository;
@@ -178,6 +220,34 @@ export class EventsService {
 			.orWhere("e.create_by_id = :create_by_id", {
 				create_by_id: user.user_id,
 			});
+		const today_date = new Date();
+		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
+			today_date: today_date,
+		});
+		if (dto.city_id) {
+			eventsQuery = eventsQuery.andWhere("e.city_id = :city_id", {
+				city_id: dto.city_id,
+			});
+		}
+		return eventsQuery.getMany();
+	}
+
+	async recommend(
+		dto: RecommendedEventDto,
+		user: ICurrentUser,
+	): Promise<EventsEntity[]> {
+		let eventsQuery = this.selectEventQuery(user)
+			.where("e.id != :id", { id: dto.event_id })
+			.andWhere(
+				new Brackets((qb) => {
+					qb.where("e.is_banner IS FALSE")
+						.andWhere("e.is_draft IS FALSE")
+						.orWhere("e.create_by_id = :create_by_id", {
+							create_by_id: user.user_id,
+						});
+				}),
+			)
+			.orderBy("e.date", "ASC");
 		const today_date = new Date();
 		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
 			today_date: today_date,
@@ -312,33 +382,113 @@ export class EventsService {
 					await this.notificationService.repository.save(
 						notifications,
 					);
-				const firebaseMessages: FirebaseMessage<NotificationEntity>[] =
-					[];
-				createdNotifications.forEach((n, i) => {
-					const token = userTokens[i].firebase_token;
-					if (token) {
-						firebaseMessages.push({
-							title: n.title,
-							message: n.description ?? "",
-							data: n,
-							token: token,
-						});
-					}
-				});
-				if (firebaseMessages.length) {
-					const response =
-						await FirebaseService.sendMessageBulk(firebaseMessages);
-					this.logger.log(
-						`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}`,
-					);
-					this.logger.log(
-						`${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
-					);
-				}
+
+				await this.sendToFirebase(
+					createdNotifications,
+					userTokens.map((e) => e.firebase_token),
+				);
 			}
+		}
+		const eventDate = new Date(
+			`${newEvent.date}T${newEvent.start_time}:00.000Z`,
+		);
+		if (eventDate.getTime() > Date.now()) {
+			new CronJob(
+				new Date(`${newEvent.date}T${newEvent.start_time}:00.000Z`), // Added :00 because time does not included
+				() =>
+					this.sendWarning(
+						newEvent.id,
+						newEvent.title,
+						newEvent.city_id,
+					),
+				null,
+				true,
+			);
+			this.logger.log(
+				`Event id: ${newEvent.id}, Event datetime: ${newEvent.date}T${newEvent.start_time}.000Z; Success`,
+				"CronJob",
+			);
 		}
 
 		return newEvent;
+	}
+
+	private async sendWarning(
+		event_id: number,
+		event_title: string,
+		event_city_id: number,
+	) {
+		const eventInvitations = (await this.eventInvitationRepository.find({
+			select: { user: { id: true, firebase_token: true } },
+			relations: { user: true },
+			where: {
+				event_id: event_id,
+				user: { firebase_token: Not(IsNull()) },
+			},
+		})) as {
+			["user"]: Pick<
+				Pick<EventInvitationEntity, "user">["user"],
+				"id" | "firebase_token"
+			>;
+		}[];
+		const userTokens = (await this.userService.repository.find({
+			select: { id: true, firebase_token: true },
+			where: {
+				role: In([RoleType.HEAD_OF_AGENCY, RoleType.AGENT]),
+				firebase_token: Not(IsNull()),
+				city_id: event_city_id,
+			},
+			take: 500, // Firebase limit is 500
+		})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
+		if (userTokens.length) {
+			const notifications: NotificationEntity[] = [];
+			eventInvitations.forEach((e) => {
+				notifications.push(
+					this.notificationService.repository.create({
+						title: "Мероприятие",
+						description: `Незадолго до начала мероприятия ${event_title}`,
+						type: NotificationType.WARNING_EVENT,
+						user_id: e.user.id,
+						object_id: event_id,
+					}),
+				);
+			});
+
+			const createdNotifications: NotificationEntity[] =
+				await this.notificationService.repository.save(notifications);
+			await this.sendToFirebase(
+				createdNotifications,
+				userTokens.map((e) => e.firebase_token),
+			);
+		}
+	}
+
+	private async sendToFirebase(
+		notifications: NotificationEntity[],
+		userTokens: Array<string | null | undefined>,
+	) {
+		const firebaseMessages: FirebaseMessage<NotificationEntity>[] = [];
+		notifications.forEach((n, i) => {
+			const token = userTokens[i];
+			if (token) {
+				firebaseMessages.push({
+					title: n.title,
+					message: n.description ?? "",
+					data: n,
+					token: token,
+				});
+			}
+		});
+		if (firebaseMessages.length) {
+			const response =
+				await FirebaseService.sendMessageBulk(firebaseMessages);
+			this.logger.log(
+				`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}`,
+			);
+			this.logger.log(
+				`${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
+			);
+		}
 	}
 
 	async update(id: number, dto: UpdateEventsDto) {
@@ -410,7 +560,7 @@ export class EventsService {
 
 	async toggleDraft(dto: ToggleEventDto): Promise<DraftResponseDto> {
 		const event = await this.eventRepository.findOne({
-			select: { id: true, is_draft: true },
+			select: { id: true, is_draft: true, title: true },
 			where: {
 				id: dto.event_id,
 			},
@@ -509,28 +659,8 @@ export class EventsService {
 			await this.eventInvitationRepository.save(invitations);
 		const createdNotifications: NotificationEntity[] =
 			await this.notificationService.repository.save(notifications);
-		const firebaseMessages: FirebaseMessage<NotificationEntity>[] = [];
-		createdNotifications.forEach((n, i) => {
-			const token = firebaseTokens[i];
-			if (token) {
-				firebaseMessages.push({
-					title: n.title,
-					message: n.description ?? "",
-					data: n,
-					token: token,
-				});
-			}
-		});
-		if (firebaseMessages.length) {
-			const response =
-				await FirebaseService.sendMessageBulk(firebaseMessages);
-			this.logger.log(
-				`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}`,
-			);
-			this.logger.log(
-				`${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
-			);
-		}
+
+		await this.sendToFirebase(createdNotifications, firebaseTokens);
 		return createdInvitations;
 	}
 

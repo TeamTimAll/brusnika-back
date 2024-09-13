@@ -36,7 +36,7 @@ export class PremiseDto
 	building_id!: number;
 
 	@ApiProperty()
-	price!: number;
+	price!: bigint;
 
 	@ApiProperty()
 	size!: number;
@@ -44,8 +44,8 @@ export class PremiseDto
 	@ApiProperty({ enum: CommercialStatus })
 	status!: CommercialStatus;
 
-	@ApiProperty({ enum: PuchaseOptions })
-	purchaseOption!: PuchaseOptions;
+	@ApiProperty({ enum: PuchaseOptions, isArray: true })
+	purchaseOption!: PuchaseOptions[];
 
 	@ApiProperty()
 	number!: number;

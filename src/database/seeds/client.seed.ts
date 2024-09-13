@@ -1,5 +1,7 @@
+import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
+import { chunkArray } from "../../lib/array";
 import {
 	ClientEntity,
 	ConfirmationType,
@@ -7,84 +9,72 @@ import {
 } from "../../modules/client/client.entity";
 import { UserEntity } from "../../modules/user/user.entity";
 
-export async function up(query: QueryBuilder<object>) {
-	const [agent] = await query
-		.select("id")
-		.from(UserEntity, "u")
-		.where("email = :email", {
-			email: "jondoeagent@gmail.com",
-		})
-		.getRawMany<UserEntity>();
+type IClientEntity = Omit<
+	ClientEntity,
+	| "id"
+	| "leads"
+	| "agent"
+	| "bookings"
+	| "visits"
+	| "created_at"
+	| "updated_at"
+	| "is_active"
+>;
 
-	const clients: Omit<
-		ClientEntity,
-		| "id"
-		| "leads"
-		| "agent"
-		| "bookings"
-		| "visits"
-		| "created_at"
-		| "updated_at"
-		| "is_active"
-	>[] = [
-		{
-			fullname: "Ivan Petrovich Ivanov",
-			phone_number: "71234567890",
-			actived_date: new Date(),
-			comment: "очень классно",
-			fixing_type: FixingType.LEAD_VERIFICATION,
-			expiration_date: new Date(),
-			node: "очень хороший клиент",
-			agent_id: agent.id,
-			confirmation_type: ConfirmationType.PHONE,
-		},
-		{
-			fullname: "Dmitry Sergeevich Smirnov",
-			phone_number: "71234567891",
-			actived_date: new Date(),
-			comment: "очень классно",
-			fixing_type: FixingType.LEAD_VERIFICATION,
-			expiration_date: new Date(),
-			node: "очень хороший клиент",
-			agent_id: agent.id,
-			confirmation_type: ConfirmationType.PHONE,
-		},
-		{
-			fullname: "Alexei Nikolaevich Sokolov",
-			phone_number: "71234567892",
-			actived_date: new Date(),
-			comment: "очень классно",
-			fixing_type: FixingType.LEAD_VERIFICATION,
-			expiration_date: new Date(),
-			node: "очень хороший клиент",
-			agent_id: agent.id,
-			confirmation_type: ConfirmationType.PHONE,
-		},
-		{
-			fullname: "Nikolai Andreevich Popov",
-			phone_number: "71234567893",
-			actived_date: new Date(),
-			comment: "очень классно",
-			fixing_type: FixingType.LEAD_VERIFICATION,
-			expiration_date: new Date(),
-			node: "очень хороший клиент",
-			agent_id: agent.id,
-			confirmation_type: ConfirmationType.PHONE,
-		},
-		{
-			fullname: "Sergey Vladimirovich Vasiliev",
-			phone_number: "71234567894",
-			actived_date: new Date(),
-			comment: "очень классно",
-			fixing_type: FixingType.LEAD_VERIFICATION,
-			expiration_date: new Date(),
-			node: "очень хороший клиент",
-			agent_id: agent.id,
-			confirmation_type: ConfirmationType.PHONE,
-		},
-	];
+function createClient(agent_id: number) {
+	const client: IClientEntity = {
+		fullname: faker.person.fullName(),
+		phone_number: faker.number
+			.bigInt({
+				min: 70000000000,
+				max: 79999999999,
+			})
+			.toString(),
+		actived_date: faker.date.recent(),
+		comment: faker.word.words({ count: { min: 5, max: 10 } }),
+		fixing_type: faker.helpers.arrayElement([
+			FixingType.LEAD_VERIFICATION,
+			FixingType.CENCEL_FIXING,
+			FixingType.STRONG_FIXING,
+			FixingType.WEAK_FIXING,
+		]),
+		expiration_date: faker.date.future(),
+		node: faker.word.words({ count: { min: 15, max: 30 } }),
+		agent_id: agent_id,
+		confirmation_type: faker.helpers.arrayElement([
+			ConfirmationType.PHONE,
+			ConfirmationType.SMS,
+		]),
+	};
+	return client;
+}
 
-	await query.insert().into(ClientEntity).values(clients).execute();
+export async function up(
+	query: QueryBuilder<object>,
+	agents: UserEntity[],
+): Promise<ClientEntity[]> {
+	const clients: IClientEntity[] = [];
+
+	agents.forEach((agent) => {
+		const len = faker.number.int({ min: 5, max: 20 });
+		for (let i = 0; i < len; i++) {
+			clients.push(createClient(agent.id));
+		}
+	});
+
+	const chunks = chunkArray(clients, 50);
+
+	const res: ClientEntity[][] = [];
+	for await (const chunk of chunks) {
+		const { generatedMaps } = await query
+			.insert()
+			.into(ClientEntity)
+			.values(chunk)
+			.returning("*")
+			.execute();
+		res.push(generatedMaps as ClientEntity[]);
+	}
+	return res.flat();
 }
 
 export async function down(query: QueryBuilder<object>) {

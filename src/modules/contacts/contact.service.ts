@@ -172,11 +172,13 @@ export class ContactService {
 				workSchedule.contact_id = c.id;
 				workSchedules.push(workSchedule);
 			});
-			const contactAddress = this.contactAddressRepository.create(
-				contacts[i].address,
-			);
-			contactAddress.contact_id = c.id;
-			createdContactAddresses.push(contactAddress);
+			const address = contacts[i].address;
+			if (address) {
+				const contactAddress =
+					this.contactAddressRepository.create(address);
+				contactAddress.contact_id = c.id;
+				createdContactAddresses.push(contactAddress);
+			}
 		});
 		const newWorkSchedules = await manager.save(
 			ContactWorkScheduleEntity,

@@ -1,6 +1,7 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
+import { AnalyticsModule } from "../analytics/analytics.module";
 import { CityModule } from "../cities/cities.module";
 import { UserModule } from "../user/user.module";
 
@@ -12,7 +13,8 @@ import { AgencyService } from "./agencies.service";
 	imports: [
 		TypeOrmModule.forFeature([AgencyEntity]),
 		CityModule,
-		UserModule,
+		forwardRef(() => UserModule),
+		forwardRef(() => AnalyticsModule),
 	],
 	providers: [AgencyService],
 	controllers: [AgencyController],

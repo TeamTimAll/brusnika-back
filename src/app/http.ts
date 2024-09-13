@@ -23,7 +23,7 @@ import {
 } from "../filters/query-failed.filter";
 import { LogColor, logColorize } from "../lib/log";
 
-import { AppLogger } from "./appLogger";
+// import { AppLogger } from "./appLogger";
 
 export type HttpApplication = NestExpressApplication;
 
@@ -31,11 +31,11 @@ export class Http {
 	public static app: HttpApplication;
 
 	static async init(): Promise<Http> {
-		const logger = AppLogger.init();
+		// const logger = AppLogger.init();
 		this.app = await NestFactory.create<NestExpressApplication>(
 			AppModule,
 			new ExpressAdapter(),
-			{ cors: true, logger: logger },
+			{ cors: true },
 		);
 		this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 		this.app.use(helmet());

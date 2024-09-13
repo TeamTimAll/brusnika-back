@@ -1,5 +1,5 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
 	ArrayMinSize,
 	IsArray,
@@ -59,16 +59,17 @@ export class CreateEventsDto {
 	@ApiProperty({ default: "00:00" })
 	@IsMilitaryTime()
 	@IsNotEmpty()
-	start_time!: Date;
+	start_time!: string;
 
 	@ApiProperty({ default: "00:00" })
 	@IsMilitaryTime()
 	@IsNotEmpty()
-	end_time!: Date;
+	end_time!: string;
 
 	@ApiProperty({ default: new Date() })
 	@IsDateString()
 	@IsNotEmpty()
+	@Transform(({ value }) => (value as string).split("T")[0])
 	date!: string;
 
 	@ApiProperty({})

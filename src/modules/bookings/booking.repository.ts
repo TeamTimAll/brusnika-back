@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {
-    DeepPartial,
-    FindManyOptions,
-    FindOneOptions,
-    Repository,
+	DeepPartial,
+	FindManyOptions,
+	FindOneOptions,
+	Repository,
 } from "typeorm";
 
 import { BookingsEntity } from "./bookings.entity";
@@ -47,7 +47,7 @@ export class BookingRepository {
 		return this.repository.merge(mergeIntoEntity, ...entityLikes);
 	}
 
-    delete(id: number) {
-        return this.repository.delete(id);
-    }
+	delete(id: number) {
+		return this.repository.delete(id);
+	}
 }

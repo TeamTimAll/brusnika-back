@@ -21,7 +21,7 @@ export class LeadsDto implements LeadsEntity {
 	agent!: UserEntity;
 
 	@ApiProperty()
-	agent_id?: number;
+	agent_id!: number;
 
 	@ApiProperty()
 	manager?: UserEntity;
@@ -39,7 +39,7 @@ export class LeadsDto implements LeadsEntity {
 	premise!: PremiseEntity;
 
 	@ApiProperty()
-	premise_id?: number;
+	premise_id!: number;
 
 	@ApiProperty()
 	fee?: number;

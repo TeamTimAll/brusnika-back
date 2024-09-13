@@ -10,7 +10,7 @@ import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 
 export enum LeadState {
 	ACTIVE = "Активные",
-	IN_PROGRESS = "На паузе",
+	IN_PROGRESS = "Брон",
 	FAILED = "Проиграна",
 	COMPLETE = "Выиграна",
 }
@@ -34,8 +34,8 @@ export class LeadsEntity extends BaseEntity {
 	@JoinColumn({ name: "agent_id" })
 	agent!: UserEntity;
 
-	@Column({ type: "integer", nullable: true })
-	agent_id?: number;
+	@Column({ type: "integer" })
+	agent_id!: number;
 
 	@ManyToOne(() => UserEntity, {
 		onDelete: "SET NULL",
@@ -64,8 +64,8 @@ export class LeadsEntity extends BaseEntity {
 	@JoinColumn({ name: "premise_id" })
 	premise!: PremiseEntity;
 
-	@Column({ type: "integer", nullable: true })
-	premise_id?: number;
+	@Column({ type: "integer" })
+	premise_id!: number;
 
 	@Column({ nullable: true, type: "integer" })
 	fee?: number;

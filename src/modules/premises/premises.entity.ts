@@ -56,17 +56,23 @@ export class PremiseEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	building_id?: number;
 
-	@Column({ nullable: true, type: "varchar" })
-	price!: number;
+	@Column({ nullable: true, type: "bigint" })
+	price!: bigint;
 
-	@Column({ nullable: true, type: "varchar" })
+	@Column({ nullable: true, type: "float", default: 0 })
 	size!: number;
 
 	@Column({ nullable: true })
 	status!: CommercialStatus;
 
-	@Column({ nullable: true, type: "varchar" })
-	purchaseOption!: PuchaseOptions;
+	@Column({
+		nullable: true,
+		type: "enum",
+		array: true,
+		enum: PuchaseOptions,
+		default: [PuchaseOptions.MORTAGE],
+	})
+	purchaseOption!: PuchaseOptions[];
 
 	@Column({ nullable: true, type: "varchar" })
 	number!: number;

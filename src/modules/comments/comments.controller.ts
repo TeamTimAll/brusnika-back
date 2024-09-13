@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
+	Inject,
 	Param,
 	Post,
 	Put,
@@ -12,10 +13,13 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
+import { ICurrentUser } from "interfaces/current-user.interface";
+
 import { RoleType } from "../../constants";
-import { ApiDtoResponse, ApiErrorResponse } from "../../decorators";
+import { ApiDtoResponse, ApiErrorResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CommentsService } from "./comments.service";
@@ -33,7 +37,11 @@ import { CommentNotFoundError } from "./errors/CommentNotFound.error";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class CommentsController {
-	constructor(private commentsService: CommentsService) {}
+	constructor(
+		private commentsService: CommentsService,
+		@Inject()
+		private readonly analyticsService: AnalyticsService,
+	) {}
 
 	@Get()
 	@ApiDtoResponse(CommentArrayMetaDataDto, HttpStatus.OK)
@@ -44,8 +52,13 @@ export class CommentsController {
 	@Roles([RoleType.ADMIN])
 	@Post()
 	@ApiDtoResponse(CommentMetaDataDto, HttpStatus.OK)
-	async create(@Body() dto: CreateCommentMetaDataDto) {
-		return this.commentsService.create(dto.data);
+	async create(
+		@Body() dto: CreateCommentMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		const res = this.commentsService.create(dto.data);
+		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
+		return res;
 	}
 
 	@Roles([RoleType.ADMIN])

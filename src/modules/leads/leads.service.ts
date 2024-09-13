@@ -82,7 +82,7 @@ export class LeadsService {
 
 	async readAll(dto: LeadReadByFilterDto): Promise<BaseDto<LeadsEntity[]>> {
 		const pageSize = (dto.page - 1) * dto.limit;
-		const leads = await this.leadRepository.find({
+		const [leads, leadsCount] = await this.leadRepository.findAndCount({
 			select: {
 				project: {
 					id: true,
@@ -141,16 +141,26 @@ export class LeadsService {
 			skip: pageSize,
 		});
 
-		const leadsCount = await this.leadRepository.count();
-
 		const metaData = BaseDto.create<LeadsEntity[]>();
 		metaData.data = leads;
-		metaData.setPagination(leadsCount, dto.page, dto.limit);
+		metaData.setPagination(leadsCount, dto.page, leads.length);
 		return metaData;
 	}
 
-	async changeStatus(leadId: number, toStatus: LeadOpStatus) {
+	async changeStatus(
+		leadId: number,
+		toStatus: LeadOpStatus,
+	): Promise<[LeadsEntity, number]> {
 		const foundLead = await this.leadRepository.findOne({
+			select: {
+				premise: {
+					price: true,
+					size: true,
+				},
+			},
+			relations: {
+				premise: true,
+			},
 			where: {
 				id: leadId,
 			},
@@ -175,17 +185,17 @@ export class LeadsService {
 				state: LeadState.COMPLETE,
 			});
 		}
-		await this.leadRepository.update(leadId, {
+		await this.leadRepository.update(foundLead.id, {
 			current_status: toStatus,
 		});
+		foundLead.current_status = toStatus;
 		let newLeadOP = this.leadOpsRepository.create();
 		newLeadOP.lead_id = leadId;
 		newLeadOP.status = toStatus;
 		newLeadOP = await this.leadOpsRepository.save(newLeadOP);
-		return this.leadRepository.findOne({
-			where: {
-				id: leadId,
-			},
+		const leadsCount = await this.leadRepository.countBy({
+			agent_id: foundLead.agent_id,
 		});
+		return [foundLead, leadsCount];
 	}
 }
