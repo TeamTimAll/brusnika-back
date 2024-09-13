@@ -86,21 +86,32 @@ function createLead(
 	project_id: number,
 	premise_id: number,
 ): ILeadsEntity {
+	const current_status = faker.helpers.arrayElement([
+		LeadOpStatus.WON,
+		LeadOpStatus.BOOK_CANCELED,
+		LeadOpStatus.LOST_BOOK,
+		LeadOpStatus.ON_PAUSE,
+		LeadOpStatus.CHECK_LEAD,
+		LeadOpStatus.FAILED,
+	]);
+	let state = LeadState.ACTIVE;
+	if (current_status === LeadOpStatus.FAILED) {
+		state = LeadState.FAILED;
+	}
+	if (current_status === LeadOpStatus.WON) {
+		state = LeadState.COMPLETE;
+	}
+	if (current_status === LeadOpStatus.ON_PAUSE) {
+		state = LeadState.IN_PROGRESS;
+	}
 	const lead: ILeadsEntity = {
 		client_id: client_id,
 		agent_id: agent_id,
 		project_id: project_id,
 		premise_id: premise_id,
-		current_status: faker.helpers.arrayElement([
-			LeadOpStatus.WON,
-			LeadOpStatus.BOOK_CANCELED,
-			LeadOpStatus.LOST_BOOK,
-			LeadOpStatus.ON_PAUSE,
-			LeadOpStatus.CHECK_LEAD,
-			LeadOpStatus.FAILED,
-		]),
+		current_status: current_status,
 		lead_number: faker.number.int({ min: 1, max: 100 }),
-		state: LeadState.ACTIVE,
+		state: state,
 	};
 	return lead;
 }
