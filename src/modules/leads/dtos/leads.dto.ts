@@ -39,7 +39,7 @@ export class LeadsDto implements LeadsEntity {
 	premise!: PremiseEntity;
 
 	@ApiProperty()
-	premise_id?: number;
+	premise_id!: number;
 
 	@ApiProperty()
 	fee?: number;
