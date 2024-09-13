@@ -130,7 +130,7 @@ export async function up(
 		}
 	});
 
-	const leadChunks = chunkArray(leads, 100);
+	const leadChunks = chunkArray(leads, 50);
 
 	const res: LeadsEntity[][] = [];
 	for await (const chunk of leadChunks) {
@@ -158,7 +158,7 @@ export async function up(
 		}
 	});
 
-	const leadOpsChunks = chunkArray(leadOps, 100);
+	const leadOpsChunks = chunkArray(leadOps, 50);
 	for await (const chunk of leadOpsChunks) {
 		await query.insert().into(LeadOpsEntity).values(chunk).execute();
 	}

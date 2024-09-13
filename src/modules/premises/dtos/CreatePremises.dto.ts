@@ -131,10 +131,15 @@ export class CreatePremisesDto {
 	@IsOptional()
 	section_id?: number;
 
-	@ApiProperty({ description: "Purchase option", required: false })
-	@IsEnum(PuchaseOptions)
+	@ApiProperty({
+		description: "Purchase option",
+		required: false,
+		enum: PuchaseOptions,
+		isArray: true,
+	})
+	@IsEnum(PuchaseOptions, { each: true })
 	@IsOptional()
-	purchaseOption?: PuchaseOptions;
+	purchaseOption?: PuchaseOptions[];
 
 	@ApiProperty({ type: PremiseSchemaDto })
 	@Type(() => PremiseSchemaDto)

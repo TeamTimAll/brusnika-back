@@ -560,7 +560,7 @@ export class EventsService {
 
 	async toggleDraft(dto: ToggleEventDto): Promise<DraftResponseDto> {
 		const event = await this.eventRepository.findOne({
-			select: { id: true, is_draft: true },
+			select: { id: true, is_draft: true, title: true },
 			where: {
 				id: dto.event_id,
 			},

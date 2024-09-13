@@ -404,3 +404,8 @@ Admin va Affiliate manager city bo'yicha va vaqt oralig'i bo'yicha quyidagi ma'l
 - Eng yaxshi 5 (qo'ng'iroqlar) o'quv modullari
 - Eng yaxshi 5 ta tadbir (yozuvlar) 
 - Status'dan status'ga o'tishlar soni.
+
+- [ ] agency nomini unique qilish.
+- [ ] global search paginationni yana qarab chiqish.
+
+truncate settings, comments, premises, leads, cities, agencies, users, projects, visits, clients, buildings, sections, premise_schemas, seasons, bookings, notification, news_views, news_categories, news_likes, contacts, contact_addresses, contact_work_schedules, premises_basket_meta, premises_basket, trainings_likes, trainings, trainings_views, trainings_categories, news, events, event_invitation, event_likes, event_views, event_contacts, lead_ops, analytics cascade RESTART IDENTITY;

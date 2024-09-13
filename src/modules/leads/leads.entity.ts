@@ -10,7 +10,7 @@ import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 
 export enum LeadState {
 	ACTIVE = "Активные",
-	IN_PROGRESS = "На паузе",
+	IN_PROGRESS = "Брон",
 	FAILED = "Проиграна",
 	COMPLETE = "Выиграна",
 }
