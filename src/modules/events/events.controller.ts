@@ -43,6 +43,7 @@ import { ToggleEventMetaDataDto } from "./dtos/ToggleEvent.dto";
 import { UpdateEventsMetaDataDto } from "./dtos/UpdateEvents.dto";
 import { EventInvitationNotFoundError } from "./errors/EventInvitionNotFound.error";
 import { EventsService } from "./events.service";
+import { RecommendedEventDto } from "./dtos/RecommendedEvent.dto";
 
 @ApiTags("events")
 @Controller("/events")
@@ -88,6 +89,16 @@ export class EventsController {
 	@ApiOkResponse({ type: EventsDto })
 	async banner(@User() user: ICurrentUser, @Query() dto: BannerFilterDto) {
 		return await this.eventsService.banner(dto, user);
+	}
+
+	@Get("recommend")
+	@HttpCode(HttpStatus.OK)
+	@ApiOkResponse({ type: EventsDto })
+	async recommend(
+		@User() user: ICurrentUser,
+		@Query() dto: RecommendedEventDto,
+	) {
+		return await this.eventsService.recommend(dto, user);
 	}
 
 	@Get(":id")

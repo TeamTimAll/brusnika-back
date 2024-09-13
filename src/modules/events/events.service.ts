@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CronJob } from "cron";
-import { In, IsNull, Not, Repository } from "typeorm";
+import { Brackets, In, IsNull, Not, Repository } from "typeorm";
 
 import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 import { LikedResponseDto } from "common/dtos/likeResponse.dto";
@@ -32,6 +32,7 @@ import { CreateEventsDto } from "./dtos/CreateEvents.dto";
 import { FilterEventsDto, QueryType } from "./dtos/FilterEvents.dto";
 import { InviteUsersDto } from "./dtos/InviteUsers.dto";
 import { LeaveInvitionDto } from "./dtos/LeaveInvition.dto";
+import { RecommendedEventDto } from "./dtos/RecommendedEvent.dto";
 import { ToggleEventDto } from "./dtos/ToggleEvent.dto";
 import { type UpdateEventsDto } from "./dtos/UpdateEvents.dto";
 import { EventContactEntity } from "./entities/event-contact.entity";
@@ -219,6 +220,34 @@ export class EventsService {
 			.orWhere("e.create_by_id = :create_by_id", {
 				create_by_id: user.user_id,
 			});
+		const today_date = new Date();
+		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
+			today_date: today_date,
+		});
+		if (dto.city_id) {
+			eventsQuery = eventsQuery.andWhere("e.city_id = :city_id", {
+				city_id: dto.city_id,
+			});
+		}
+		return eventsQuery.getMany();
+	}
+
+	async recommend(
+		dto: RecommendedEventDto,
+		user: ICurrentUser,
+	): Promise<EventsEntity[]> {
+		let eventsQuery = this.selectEventQuery(user)
+			.where("e.id != :id", { id: dto.event_id })
+			.andWhere(
+				new Brackets((qb) => {
+					qb.where("e.is_banner IS FALSE")
+						.andWhere("e.is_draft IS FALSE")
+						.orWhere("e.create_by_id = :create_by_id", {
+							create_by_id: user.user_id,
+						});
+				}),
+			)
+			.orderBy("e.date", "ASC");
 		const today_date = new Date();
 		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
 			today_date: today_date,
