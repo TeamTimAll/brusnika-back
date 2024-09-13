@@ -228,12 +228,11 @@ export class UserService {
 
 	async me(user_id: number) {
 		const foundUser = await this.readOne(user_id);
-		let userCreatedCount = await this.bookingRepository.count({
+		const userCreatedCount = await this.bookingRepository.count({
 			where: {
 				create_by_id: user_id,
 			},
 		});
-		userCreatedCount += 1; // One increased. Because created users count is 0
 		const settings = await this.settingsRepository.readOne();
 		if (!settings) {
 			throw new SettingsNotFoundError();
