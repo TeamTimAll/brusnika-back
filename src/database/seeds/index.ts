@@ -14,6 +14,7 @@ import * as settingsSeed from "./settings.seed";
 import * as userSeed from "./user.seed";
 import * as agencySeed from "./agency.seed";
 import * as leadSeed from "./lead.seed";
+// import { LeadOpStatus } from "modules/leads/lead_ops.entity";
 
 ConfigManager.init();
 export const dataSource = new DataSource(ConfigManager.databaseConfig);
@@ -30,8 +31,10 @@ async function up(dataSource: DataSource) {
 	const premises	= await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
 	const users		= await userSeed.up(dataSource.createQueryBuilder(), cities, agencies);
 	const clients	= await clientSeed.up(dataSource.createQueryBuilder(), users.filter(e => e.role === RoleType.AGENT));
-	await leadSeed.up(dataSource.createQueryBuilder(), clients, buildings, premises);
-	// await bookedSeed.up(dataSource.createQueryBuilder());
+	/*const leads		=*/ await leadSeed.up(dataSource.createQueryBuilder(), clients, buildings, premises);
+	// const bookedLeads = leads.filter(l => l.current_status === LeadOpStatus.BOOKED);
+	// const bookedClients = clients.filter(c => c.id === )
+	// await bookedSeed.up(dataSource.createQueryBuilder(), clients.filter(c => c.confirmation_type));
 }
 
 async function down(dataSource: DataSource) {
