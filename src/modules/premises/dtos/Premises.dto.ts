@@ -44,8 +44,8 @@ export class PremiseDto
 	@ApiProperty({ enum: CommercialStatus })
 	status!: CommercialStatus;
 
-	@ApiProperty({ enum: PuchaseOptions })
-	purchaseOption!: PuchaseOptions;
+	@ApiProperty({ enum: PuchaseOptions, isArray: true })
+	purchaseOption!: PuchaseOptions[];
 
 	@ApiProperty()
 	number!: number;

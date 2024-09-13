@@ -62,7 +62,7 @@ export async function up(
 		}
 	});
 
-	const chunks = chunkArray(clients, 100);
+	const chunks = chunkArray(clients, 50);
 
 	const res: ClientEntity[][] = [];
 	for await (const chunk of chunks) {
