@@ -59,7 +59,12 @@ function createPremise(
 		price: faker.number.bigInt({ min: 1000000, max: 5000000 }),
 		size: size,
 		status: CommercialStatus.FREE,
-		purchaseOption: PuchaseOptions.MORTAGE,
+		purchaseOption: faker.helpers.arrayElements([
+			PuchaseOptions.MORTAGE,
+			PuchaseOptions.INSTALLMENT,
+			PuchaseOptions.BILL,
+			PuchaseOptions.FULL_PAYMENT,
+		]),
 		floor: faker.number.int({ min: 1, max: 9 }),
 		photo: "premise_apartment_default_image.jpg",
 		rooms: studio ? 0 : faker.number.int({ min: 1, max: 5 }),
@@ -93,7 +98,7 @@ export async function up(
 		});
 	});
 
-	const chunks = chunkArray(premises, 100);
+	const chunks = chunkArray(premises, 50);
 
 	const res: PremiseEntity[][] = [];
 	for await (const chunk of chunks) {

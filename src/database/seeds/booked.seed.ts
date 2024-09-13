@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
 import {
@@ -6,101 +7,75 @@ import {
 	PuchaseOptions,
 } from "../../modules/bookings/bookings.entity";
 import { ClientEntity } from "../../modules/client/client.entity";
-import { PremiseEntity } from "../../modules/premises/premises.entity";
-import { UserEntity } from "../../modules/user/user.entity";
+import { LeadsEntity } from "../../modules/leads/leads.entity";
+import { chunkArray } from "../../lib/array";
 
-export async function up(query: QueryBuilder<object>) {
-	const [agent] = await query
-		.createQueryBuilder()
-		.select()
-		.from(UserEntity, "u")
-		.where("email = :email", { email: "jondoeagent@gmail.com" })
-		.getRawMany<UserEntity>();
-	const [client] = await query
-		.createQueryBuilder()
-		.select()
-		.from(ClientEntity, "c")
-		.where("phone_number = :phone_number", {
-			phone_number: "71234567890",
-		})
-		.getRawMany<UserEntity>();
-	const [premise] = await query
-		.createQueryBuilder()
-		.select()
-		.from(PremiseEntity, "p")
-		.where("name = :name", {
-			name: "1-комнатная 30 м2",
-		})
-		.getRawMany<UserEntity>();
+type IBookingsEntity = Omit<
+	BookingsEntity,
+	| "id"
+	| "premise"
+	| "client"
+	| "agent"
+	| "created_at"
+	| "updated_at"
+	| "create_by"
+	| "is_active"
+>;
 
-	const bookings: Omit<
-		BookingsEntity,
-		| "id"
-		| "premise"
-		| "client"
-		| "agent"
-		| "created_at"
-		| "updated_at"
-		| "create_by"
-		| "is_active"
-	>[] = [
-		{
-			agent_id: agent.id,
-			client_id: client.id,
-			premise_id: premise.id,
-			date: new Date(),
-			time: "10:00",
-			purchase_option: PuchaseOptions.MORTAGE,
-			status: BookingStatus.OPEN,
-		},
-		{
-			agent_id: agent.id,
-			client_id: client.id,
-			premise_id: premise.id,
-			date: new Date(),
-			time: "11:00",
-			purchase_option: PuchaseOptions.MORTAGE,
-			status: BookingStatus.OPEN,
-		},
-		{
-			agent_id: agent.id,
-			client_id: client.id,
-			premise_id: premise.id,
-			date: new Date(),
-			time: "12:30",
-			purchase_option: PuchaseOptions.MORTAGE,
-			status: BookingStatus.OPEN,
-		},
-		{
-			agent_id: agent.id,
-			client_id: client.id,
-			premise_id: premise.id,
-			date: new Date(),
-			time: "9:00",
-			purchase_option: PuchaseOptions.MORTAGE,
-			status: BookingStatus.OPEN,
-		},
-		{
-			agent_id: agent.id,
-			client_id: client.id,
-			premise_id: premise.id,
-			date: new Date(),
-			time: "10:30",
-			purchase_option: PuchaseOptions.MORTAGE,
-			status: BookingStatus.SUCCESS,
-		},
-		{
-			agent_id: agent.id,
-			client_id: client.id,
-			premise_id: premise.id,
-			date: new Date(),
-			time: "8:00",
-			purchase_option: PuchaseOptions.MORTAGE,
-			status: BookingStatus.FAIL,
-		},
-	];
+function createBooking(
+	agent_id: number,
+	client_id: number,
+	premise_id: number,
+): IBookingsEntity {
+	const booking: IBookingsEntity = {
+		agent_id: agent_id,
+		client_id: client_id,
+		premise_id: premise_id,
+		date: faker.date.future(),
+		time: faker.date.anytime().toISOString().split("T")[1].split(".")[0],
+		purchase_option: faker.helpers.arrayElement([
+			PuchaseOptions.MORTAGE,
+			PuchaseOptions.INSTALLMENT,
+			PuchaseOptions.BILL,
+			PuchaseOptions.FULL_PAYMENT,
+		]),
+		status: faker.helpers.arrayElement([
+			BookingStatus.OPEN,
+			BookingStatus.SUCCESS,
+			BookingStatus.FAIL,
+		]),
+	};
+	return booking;
+}
 
-	await query.insert().into(BookingsEntity).values(bookings).execute();
+export async function up(
+	query: QueryBuilder<object>,
+	bookedClients: ClientEntity[],
+	leads: LeadsEntity[],
+) {
+	const bookings: IBookingsEntity[] = [];
+	bookedClients.forEach((client) => {
+		const lead = leads.find((lead) => lead.client_id === client.id);
+		if (lead) {
+			bookings.push(
+				createBooking(client.agent_id, client.id, lead.premise_id),
+			);
+		}
+	});
+
+	const chunks = chunkArray(bookings, 50);
+
+	const res: BookingsEntity[][] = [];
+	for await (const chunk of chunks) {
+		const { generatedMaps } = await query
+			.insert()
+			.into(BookingsEntity)
+			.values(chunk)
+			.returning("*")
+			.execute();
+		res.push(generatedMaps as BookingsEntity[]);
+	}
+	return res.flat();
 }
 
 export async function down(query: QueryBuilder<object>) {
