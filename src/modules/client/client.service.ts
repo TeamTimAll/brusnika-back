@@ -145,7 +145,7 @@ export class ClientService {
 			])
 			.leftJoin(
 				(qb) => {
-					const query = qb
+					return qb
 						.select("l.*")
 						.addSelect(
 							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
@@ -156,16 +156,10 @@ export class ClientService {
 						.from(LeadsEntity, "l")
 						.leftJoin("projects", "p", "p.id = l.project_id")
 						.leftJoin("premises", "p2", "p2.id = l.premise_id")
-						.where("l.client_id = c.id")
 						.groupBy("l.id")
 						.addGroupBy("p.id")
 						.addGroupBy("p2.id")
-						.orderBy("l.id")
-						.limit(5)
-						.getQuery();
-
-					qb.getQuery = () => `LATERAL (${query})`;
-					return qb;
+						.orderBy("l.id");
 				},
 				"l",
 				"c.id = l.client_id",
