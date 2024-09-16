@@ -1,20 +1,23 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { LeadsService } from "../leads/leads.service";
+import { NewsService } from "../news/news.service";
 
 import { AnalyticsEntity } from "./analytics.entity";
 import { AnalyticsNotFoundError } from "./errors/AnalyticsNotFound.error";
+import { ManagerAnalyticsDto } from "./dtos";
 
 @Injectable()
 export class AnalyticsService {
 	constructor(
 		@InjectRepository(AnalyticsEntity)
 		private readonly analyticsRepository: Repository<AnalyticsEntity>,
-		// @Inject(forwardRef(() => LeadsService))
-		// private readonly leadsService: LeadsService,
-		// @Inject(forwardRef(() => NewsService))
-		// private readonly newsService: NewsService,
+		@Inject(forwardRef(() => LeadsService))
+		private readonly leadsService: LeadsService,
+		@Inject(forwardRef(() => NewsService))
+		private readonly newsService: NewsService,
 	) {}
 
 	async createOrFind(user_id: number): Promise<AnalyticsEntity> {
@@ -113,67 +116,67 @@ export class AnalyticsService {
 		return foundAnalytics;
 	}
 
-	// async managerStatisticsByCount({
-	// 	fromDate,
-	// 	limit,
-	// 	page,
-	// 	toDate,
-	// }: ManagerAnalyticsDto) {
-	// 	const count = await this.leadsService.completedLeadsCountByManagers(
-	// 		page,
-	// 		limit,
-	// 		fromDate,
-	// 		toDate,
-	// 	);
+	async managerStatisticsByCount({
+		fromDate,
+		limit,
+		page,
+		toDate,
+	}: ManagerAnalyticsDto) {
+		const count = await this.leadsService.completedLeadsCountByManagers(
+			page,
+			limit,
+			fromDate,
+			toDate,
+		);
 
-	// 	return count;
-	// }
+		return count;
+	}
 
-	// async managerStatisticsByPrice({
-	// 	fromDate,
-	// 	limit,
-	// 	page,
-	// 	toDate,
-	// }: ManagerAnalyticsDto) {
-	// 	const price = await this.leadsService.completedLeadsPriceByManagers(
-	// 		page,
-	// 		limit,
-	// 		fromDate,
-	// 		toDate,
-	// 	);
+	async managerStatisticsByPrice({
+		fromDate,
+		limit,
+		page,
+		toDate,
+	}: ManagerAnalyticsDto) {
+		const price = await this.leadsService.completedLeadsPriceByManagers(
+			page,
+			limit,
+			fromDate,
+			toDate,
+		);
 
-	// 	return price;
-	// }
+		return price;
+	}
 
-	// async managerStatisticsByTime({
-	// 	fromDate,
-	// 	limit,
-	// 	page,
-	// 	toDate,
-	// }: ManagerAnalyticsDto) {
-	// 	const data = await this.leadsService.completedLeadsTimeByManagers(
-	// 		page,
-	// 		limit,
-	// 		fromDate,
-	// 		toDate,
-	// 	);
+	async managerStatisticsByTime({
+		fromDate,
+		limit,
+		page,
+		toDate,
+	}: ManagerAnalyticsDto) {
+		const data = await this.leadsService.completedLeadsTimeByManagers(
+			page,
+			limit,
+			fromDate,
+			toDate,
+		);
 
-	// 	return data;
-	// }
+		return data;
+	}
 
-	// async getTopNewsByViews({
-	// 	fromDate,
-	// 	limit,
-	// 	page,
-	// 	toDate,
-	// }: ManagerAnalyticsDto) {
-	// 	const news = await this.newsService.getTopNewsByViews(
-	// 		fromDate,
-	// 		toDate,
-	// 		page,
-	// 		limit,
-	// 	);
+	async getTopNewsByViews({
+		fromDate,
+		limit,
+		page,
+		toDate,
+	}: ManagerAnalyticsDto) {
+		const news = await this.newsService.getTopNewsByViews(
+			fromDate,
+			toDate,
+			page,
+			limit,
+		);
 
-	// 	return news;
-	// }
+		return news;
+	}
 }
