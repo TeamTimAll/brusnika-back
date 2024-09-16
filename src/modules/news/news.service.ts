@@ -85,9 +85,6 @@ export class NewsService {
 		if (!primaryCategory || !secondaryCategory) {
 			throw new NewsCategoryNotFoundError();
 		}
-		console.log(
-			"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-",
-		);
 
 		await this.cityService.readOne(dto.city_id);
 
