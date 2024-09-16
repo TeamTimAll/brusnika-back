@@ -11,6 +11,7 @@ import {
 	IsNotEmpty,
 	IsOptional,
 	IsString,
+	Min,
 	ValidateNested,
 } from "class-validator";
 
@@ -26,7 +27,6 @@ export class CreateNewsDto {
 	@ApiProperty({
 		description: "The title of the news",
 		example: "The title of the news",
-		required: true,
 	})
 	title!: string;
 
@@ -35,7 +35,6 @@ export class CreateNewsDto {
 	@ApiProperty({
 		description: "The content of the news",
 		example: "111212.html",
-		required: true,
 	})
 	content!: string;
 
@@ -44,35 +43,33 @@ export class CreateNewsDto {
 	@ApiProperty({
 		description: "The cover image of the news",
 		example: "121212.png",
-		required: true,
 	})
 	cover_image!: string;
 
 	@IsOptional()
 	@IsInt()
 	@Type(() => Number)
-	@ApiProperty({
+	@Min(1)
+	@ApiPropertyOptional({
 		description: "The first category of the news",
-		example: 0,
-		required: false,
+		example: 2,
 	})
 	primary_category_id!: number;
 
 	@IsOptional()
 	@IsInt()
+	@Min(1)
 	@Type(() => Number)
 	@IsDifferent<NewsDto>("primary_category_id")
-	@ApiProperty({
+	@ApiPropertyOptional({
 		description: "The second category of the news",
 		example: 1,
-		required: false,
 	})
 	second_category_id!: number;
 
 	@IsBoolean()
 	@ApiProperty({
 		description: "Is like enabled",
-		required: true,
 	})
 	is_like_enabled!: boolean;
 
@@ -81,18 +78,16 @@ export class CreateNewsDto {
 	@IsOptional()
 	access?: RoleType;
 
-	@ApiProperty({
+	@ApiPropertyOptional({
 		required: false,
 		description: "Is banner",
-		default: false,
 	})
 	@IsBoolean()
 	is_banner!: boolean;
 
-	@ApiProperty({
+	@ApiPropertyOptional({
 		required: false,
 		description: "Is Draft",
-		default: false,
 	})
 	@IsBoolean()
 	is_draft!: boolean;
@@ -105,17 +100,15 @@ export class CreateNewsDto {
 
 	@IsBoolean()
 	@IsOptional()
-	@ApiProperty({
+	@ApiPropertyOptional({
 		description: "Is extra like enabled",
-		required: false,
 	})
 	is_extra_like_enabled!: boolean;
 
 	@IsString()
 	@IsOptional()
-	@ApiProperty({
+	@ApiPropertyOptional({
 		description: "The extra like icon",
-		required: false,
 		example: "121212.png",
 	})
 	extra_like_icon!: string;

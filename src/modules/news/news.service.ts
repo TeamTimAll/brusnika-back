@@ -5,6 +5,7 @@ import { Repository } from "typeorm";
 import { BaseDto } from "../../common/base/base_dto";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { RoleType } from "../../constants";
+import { CityService } from "../cities/cities.service";
 
 import { CreateNewsDto } from "./dto/CreateNews.dto";
 import { CreateNewsCategoriesDto } from "./dto/CreateNewsCategories.dto";
@@ -17,6 +18,7 @@ import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsEntity } from "./news.entity";
 import { ReadAllNewsDto } from "./dto/read-all-news.dto";
+import { NewsCategoryNotFoundError } from "./errors/NewsCategoryNotFound.error";
 
 interface NewsLikedResponse {
 	is_liked: boolean;
@@ -27,6 +29,7 @@ export class NewsService {
 	constructor(
 		@InjectRepository(NewsEntity)
 		private newsRepository: Repository<NewsEntity>,
+		private readonly cityService: CityService,
 	) {}
 
 	@InjectRepository(NewsLikeEntity)
@@ -71,12 +74,20 @@ export class NewsService {
 	}
 
 	async create(dto: CreateNewsDto, user: ICurrentUser) {
-		await this.newsCategoriyRepository.findOne({
+		const primaryCategory = await this.newsCategoriyRepository.findOne({
 			where: { id: dto.primary_category_id },
 		});
-		await this.newsCategoriyRepository.findOne({
+
+		const secondaryCategory = await this.newsCategoriyRepository.findOne({
 			where: { id: dto.second_category_id },
 		});
+
+		if (!primaryCategory || !secondaryCategory) {
+			throw new NewsCategoryNotFoundError();
+		}
+
+		await this.cityService.readOne(dto.city_id);
+
 		const news = this.newsRepository.create(dto);
 		news.user_id = user.user_id;
 		return await this.newsRepository.save(news);
