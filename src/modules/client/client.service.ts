@@ -154,7 +154,7 @@ export class ClientService {
 							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name) as premise",
 						)
 						.addSelect(
-							"JSON_BUILD_OBJECT('id', u.id, 'fullname', CONCAT(u.first_name, ' ', u.last_name)) as agent",
+							"JSON_BUILD_OBJECT('id', u.id, 'fullName', CONCAT(u.first_name, ' ', u.last_name)) as agent",
 						)
 						.from(LeadsEntity, "l")
 						.leftJoin("projects", "p", "p.id = l.project_id")
