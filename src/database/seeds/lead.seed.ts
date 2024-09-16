@@ -112,6 +112,7 @@ function createLead(
 		current_status: current_status,
 		lead_number: faker.number.int({ min: 1, max: 100 }),
 		state: state,
+		fee: faker.number.int({ min: 100000, max: 999999 }),
 	};
 	return lead;
 }

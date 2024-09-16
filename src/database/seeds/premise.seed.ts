@@ -3,6 +3,7 @@ import { QueryBuilder } from "typeorm";
 
 import { chunkArray } from "../../lib/array";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
+import { PremiseSchemaEntity } from "../../modules/premises/premise_schema.entity";
 import {
 	CommercialStatus,
 	PremiseEntity,
@@ -29,6 +30,19 @@ const typeRussianName = new Map([
 	[PremisesType.PARKING, "стоянка"],
 	[PremisesType.COMMERCIAL, "коммерческий"],
 ]);
+
+type IPremiseSchema = Omit<
+	PremiseSchemaEntity,
+	"id" | "premise" | "created_at" | "updated_at" | "is_active"
+>;
+
+function createPremiseSchema(premise_id: number): IPremiseSchema {
+	const schema: IPremiseSchema = {
+		schema_image: "premise_schema_default_image.png",
+		premise_id: premise_id,
+	};
+	return schema;
+}
 
 function createPremise(
 	building_id: number,
@@ -110,7 +124,46 @@ export async function up(
 			.execute();
 		res.push(generatedMaps as PremiseEntity[]);
 	}
-	return res.flat();
+
+	const premiseResult = res.flat();
+
+	const premiseSchemas: IPremiseSchema[] = [];
+
+	premiseResult.forEach((premise) => {
+		premiseSchemas.push(createPremiseSchema(premise.id));
+	});
+
+	const schemaChunks = chunkArray(premiseSchemas, 50);
+
+	const resPremiseSchema: PremiseSchemaEntity[][] = [];
+	for await (const chunk of schemaChunks) {
+		const { generatedMaps } = await query
+			.insert()
+			.into(PremiseSchemaEntity)
+			.values(chunk)
+			.returning("*")
+			.execute();
+		resPremiseSchema.push(generatedMaps as PremiseSchemaEntity[]);
+	}
+
+	const premiseWithSchema: Pick<PremiseEntity, "id" | "schema_id">[] = [];
+
+	resPremiseSchema.flat().forEach((schema) => {
+		premiseWithSchema.push({ id: schema.premise_id, schema_id: schema.id });
+	});
+
+	for await (const chunk of premiseWithSchema) {
+		await query
+			.update(PremiseEntity)
+			.set({ schema_id: chunk.schema_id })
+			.where("id = :id", {
+				id: chunk.id,
+			})
+			.returning("*")
+			.execute();
+	}
+
+	return premiseResult;
 }
 
 export async function down(query: QueryBuilder<object>) {

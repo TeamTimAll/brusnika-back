@@ -19,6 +19,6 @@ export class PremiseSchemaEntity extends BaseEntity {
 	@JoinColumn({ name: "premise_id" })
 	premise!: PremiseEntity;
 
-	@Column({ type: "integer", nullable: true })
-	premise_id?: number;
+	@Column({ type: "integer" })
+	premise_id!: number;
 }
