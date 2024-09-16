@@ -8,7 +8,12 @@ import { AnalyticsEntity } from "./analytics.entity";
 import { AnalyticsService } from "./analytics.service";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([AnalyticsEntity]), UserModule],
+	imports: [
+		TypeOrmModule.forFeature([AnalyticsEntity]),
+		UserModule,
+		// forwardRef(() => LeadsModule),
+		// forwardRef(() => NewsModule),
+	],
 	controllers: [AnalyticsController],
 	providers: [AnalyticsService],
 	exports: [AnalyticsService],

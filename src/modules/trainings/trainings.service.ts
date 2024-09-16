@@ -10,6 +10,7 @@ import { arraysEqual } from "../../lib/array";
 import { getDaysDiff } from "../../lib/date";
 import { SettingsService } from "../settings/settings.service";
 import { UserService } from "../user/user.service";
+import { BaseDto } from "../../common/base/base_dto";
 
 import {
 	BulkCreateCategoryDto,
@@ -600,5 +601,41 @@ export class TrainingsService {
 		}
 		await manager.delete(TrainingCategoryEntity, [...categoryIds]);
 		return foundCategoryIds;
+	}
+
+	async getTopTrainings(
+		fromDate: Date,
+		toDate: Date,
+		page: number,
+		limit: number,
+	): Promise<BaseDto<TrainingEntity[]>> {
+		const offset = (page - 1) * limit;
+
+		let query = this.trainingRepository
+			.createQueryBuilder("trainings")
+			.leftJoin("trainings_views", "views")
+			.leftJoinAndSelect("trainings_categories", "category")
+			.select([
+				"trainings.id",
+				"trainings.title",
+				"category.name as category_name",
+				"COUNT(views.id) AS total",
+			])
+			.where("trainings.published_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			})
+			.groupBy("trainings.id")
+			.orderBy("views_count", "DESC");
+
+		const count = await query.getCount();
+
+		query = query.limit(limit).offset(offset);
+
+		const metaData = BaseDto.create<TrainingEntity[]>();
+		metaData.setPagination(count, page, limit);
+		metaData.data = await query.getMany();
+
+		return metaData;
 	}
 }

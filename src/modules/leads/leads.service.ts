@@ -17,6 +17,7 @@ import { LeadReadByFilterDto } from "./dtos/LeadReadByFilter.dto";
 import { LeadNotFoundError } from "./errors/LeadNotFound.error";
 import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 import { LeadState, LeadsEntity } from "./leads.entity";
+import { ICompletedLeadsRatingResponse } from "./types";
 
 @Injectable()
 export class LeadsService {
@@ -197,5 +198,148 @@ export class LeadsService {
 			agent_id: foundLead.agent_id,
 		});
 		return [foundLead, leadsCount];
+	}
+
+	async completedLeadsCountByManagers(
+		page: number,
+		limit: number,
+		fromDate: Date,
+		toDate: Date,
+	): Promise<BaseDto<ICompletedLeadsRatingResponse[]>> {
+		const offset = (page - 1) * limit;
+
+		let query = this.leadRepository
+			.createQueryBuilder("leads")
+			.select([
+				"manager.first_name AS first_name",
+				"manager.last_name AS last_name",
+				"agency.title AS agency_name",
+				"COUNT(leads.id) AS total",
+			])
+			.leftJoin("leads.manager", "manager")
+			.leftJoin("manager.agent", "agent")
+			.leftJoin("agent.agency", "agency")
+			.where("leads.state = :state", { state: LeadState.COMPLETE })
+			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			})
+			.groupBy("manager.id")
+			.orderBy("total", "DESC")
+			.skip(offset)
+			.take(limit);
+
+		const count = await query.getCount();
+
+		query = query.limit(limit).offset(offset);
+
+		const metaData = BaseDto.create<ICompletedLeadsRatingResponse[]>();
+		metaData.setPagination(count, page, limit);
+		metaData.data =
+			(await query.getMany()) as unknown as ICompletedLeadsRatingResponse[];
+
+		return metaData;
+	}
+
+	async completedLeadsPriceByManagers(
+		page: number,
+		limit: number,
+		fromDate: Date,
+		toDate: Date,
+	): Promise<BaseDto<ICompletedLeadsRatingResponse[]>> {
+		const offset = (page - 1) * limit;
+
+		let query = this.leadRepository
+			.createQueryBuilder("leads")
+			.leftJoin("leads.manager", "manager")
+			.leftJoin("manager.agent", "agent")
+			.leftJoin("agent.agency", "agency")
+			.leftJoin("leads.premise", "premise")
+			.where("leads.state = :state", { state: LeadState.COMPLETE })
+			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			})
+			.select([
+				"agency.title AS agency_name",
+				"manager.first_name AS first_name",
+				"manager.last_name AS last_name",
+				"SUM(premise.price) AS total",
+			])
+			.groupBy("manager.id")
+			.orderBy("total", "DESC");
+
+		const count = await query.getCount();
+
+		query = query.limit(limit).offset(offset);
+
+		const metaData = BaseDto.create<ICompletedLeadsRatingResponse[]>();
+		metaData.setPagination(count, page, limit);
+		metaData.data =
+			(await query.getMany()) as unknown as ICompletedLeadsRatingResponse[];
+
+		return metaData;
+	}
+
+	async completedLeadsTimeByManagers(
+		page: number,
+		limit: number,
+		fromDate: Date,
+		toDate: Date,
+	): Promise<BaseDto<ICompletedLeadsRatingResponse[]>> {
+		const offset = (page - 1) * limit;
+
+		let query = this.leadRepository
+			.createQueryBuilder("leads")
+			.innerJoin("leads.manager", "manager")
+			.innerJoin("manager.agency", "agency")
+			.innerJoin("leads.lead_ops", "lo_won", "lo_won.status = :status", {
+				status: LeadOpStatus.WON,
+			})
+			.select([
+				"agency.title AS agency_name",
+				"manager.first_name AS first_name",
+				"manager.last_name AS last_name",
+				"MIN(DATE_PART('day', lo_won.updated_at - l.created_at)) AS total",
+			])
+			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			})
+			.orderBy("total", "ASC");
+
+		const count = await query.getCount();
+
+		query = query.limit(limit).offset(offset);
+
+		const metaData = BaseDto.create<ICompletedLeadsRatingResponse[]>();
+		metaData.setPagination(count, page, limit);
+		metaData.data =
+			(await query.getMany()) as unknown as ICompletedLeadsRatingResponse[];
+
+		return metaData;
+	}
+
+	async getCompletedLeadsCount(
+		fromDate: Date,
+		toDate: Date,
+		state?: LeadState,
+	): Promise<number> {
+		const query = this.leadRepository
+			.createQueryBuilder("leads")
+			.where("leads.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			})
+			.select("COUNT(leads.id)", "total_leads");
+
+		if (state) {
+			query.andWhere("leads.state = :state", { state });
+		}
+
+		const result: { total_leads: string } | undefined =
+			await query.getRawOne();
+
+		return result ? Number(result.total_leads) : 0;
 	}
 }

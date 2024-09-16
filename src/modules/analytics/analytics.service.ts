@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+
 import { AnalyticsEntity } from "./analytics.entity";
 import { AnalyticsNotFoundError } from "./errors/AnalyticsNotFound.error";
 
@@ -10,6 +11,10 @@ export class AnalyticsService {
 	constructor(
 		@InjectRepository(AnalyticsEntity)
 		private readonly analyticsRepository: Repository<AnalyticsEntity>,
+		// @Inject(forwardRef(() => LeadsService))
+		// private readonly leadsService: LeadsService,
+		// @Inject(forwardRef(() => NewsService))
+		// private readonly newsService: NewsService,
 	) {}
 
 	async createOrFind(user_id: number): Promise<AnalyticsEntity> {
@@ -107,4 +112,68 @@ export class AnalyticsService {
 		}
 		return foundAnalytics;
 	}
+
+	// async managerStatisticsByCount({
+	// 	fromDate,
+	// 	limit,
+	// 	page,
+	// 	toDate,
+	// }: ManagerAnalyticsDto) {
+	// 	const count = await this.leadsService.completedLeadsCountByManagers(
+	// 		page,
+	// 		limit,
+	// 		fromDate,
+	// 		toDate,
+	// 	);
+
+	// 	return count;
+	// }
+
+	// async managerStatisticsByPrice({
+	// 	fromDate,
+	// 	limit,
+	// 	page,
+	// 	toDate,
+	// }: ManagerAnalyticsDto) {
+	// 	const price = await this.leadsService.completedLeadsPriceByManagers(
+	// 		page,
+	// 		limit,
+	// 		fromDate,
+	// 		toDate,
+	// 	);
+
+	// 	return price;
+	// }
+
+	// async managerStatisticsByTime({
+	// 	fromDate,
+	// 	limit,
+	// 	page,
+	// 	toDate,
+	// }: ManagerAnalyticsDto) {
+	// 	const data = await this.leadsService.completedLeadsTimeByManagers(
+	// 		page,
+	// 		limit,
+	// 		fromDate,
+	// 		toDate,
+	// 	);
+
+	// 	return data;
+	// }
+
+	// async getTopNewsByViews({
+	// 	fromDate,
+	// 	limit,
+	// 	page,
+	// 	toDate,
+	// }: ManagerAnalyticsDto) {
+	// 	const news = await this.newsService.getTopNewsByViews(
+	// 		fromDate,
+	// 		toDate,
+	// 		page,
+	// 		limit,
+	// 	);
+
+	// 	return news;
+	// }
 }

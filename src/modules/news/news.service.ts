@@ -192,4 +192,69 @@ export class NewsService {
 		const mergedNews = this.newsRepository.merge(foundNews, dto);
 		return await this.newsRepository.save(mergedNews);
 	}
+
+	async getTopNewsByViews(
+		fromDate: Date,
+		toDate: Date,
+		page: number,
+		limit: number,
+	): Promise<BaseDto<NewsEntity[]>> {
+		const offset = (page - 1) * limit;
+
+		let query = this.newsRepository
+			.createQueryBuilder("news")
+			.leftJoinAndSelect("news_views", "views")
+			.select([
+				"news.id",
+				"news.title",
+				"news.content",
+				"news.cover_image",
+				"news.published_at",
+				"COUNT(views.id) AS views_count",
+			])
+			.where("news.published_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			})
+			.groupBy("news.id")
+			.orderBy("views_count", "DESC");
+
+		const count = await query.getCount();
+
+		query = query.limit(limit).offset(offset);
+
+		const metaData = BaseDto.create<NewsEntity[]>();
+		metaData.setPagination(count, page, limit);
+		metaData.data = await query.getMany();
+
+		return metaData;
+	}
+
+	async getTotalNewsViews(fromDate: Date, toDate: Date): Promise<number> {
+		const result: { totalViews: number } | undefined =
+			await this.newsViewRepository
+				.createQueryBuilder("news_views")
+				.where("news_views.created_at BETWEEN :fromDate AND :toDate", {
+					fromDate,
+					toDate,
+				})
+				.select("COUNT(news_views.id)", "totalViews")
+				.getRawOne();
+
+		return result ? Number(result.totalViews) : 0;
+	}
+
+	async getTotalNewsLikes(fromDate: Date, toDate: Date): Promise<number> {
+		const result: { totalLikes: number } | undefined =
+			await this.newsLikeRepository
+				.createQueryBuilder("news_likes")
+				.where("news_likes.created_at BETWEEN :fromDate AND :toDate", {
+					fromDate,
+					toDate,
+				})
+				.select("COUNT(news_likes.id)", "totalLikes")
+				.getRawOne();
+
+		return result ? Number(result.totalLikes) : 0;
+	}
 }

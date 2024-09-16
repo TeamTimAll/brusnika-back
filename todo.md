@@ -382,27 +382,28 @@ Analitika uchun raqamlar:
 - "выиграна" status'iga o'tgan lead'lar o'rtacha m2.
 
 Agent rating'ini ko'rinishi:
-- "выиграна" Lead'lar soni bo'yicha TOP-3 manager ism familiyasi va agency nomi.
-- "выиграна" Lead'lar summasi bo'yicha TOP-3 manager ism familiyasi va agency nomi.
-- Lead'lar yasalgan sanasidan "выиграна" status'iga o'tgan vaqtining, o'rtadagi sarflangan vaqtni eng kichiki bilan TOP-3 manager ism familiyasi va agency nomi.
+- [x] "выиграна" Lead'lar soni bo'yicha TOP-3 manager ism familiyasi va agency nomi.
+- [x] "выиграна" Lead'lar summasi bo'yicha TOP-3 manager ism familiyasi va agency nomi.
+- [x] Lead'lar yasalgan sanasidan "выиграна" status'iga o'tgan vaqtining, o'rtadagi sarflangan vaqtni eng kichiki bilan TOP-3 manager ism familiyasi va agency nomi.
 
 Agency boshlig'i agent rating'ni ko'radi.
 
 Admin va Affiliate manager city bo'yicha va vaqt oralig'i bo'yicha quyidagi ma'lumotlarni ko'radi:
-- Ro'yxatdan o'tgan foydalanuvchilar soni jami va rollar bo'yicha
+- [x] Ro'yxatdan o'tgan foydalanuvchilar soni jami va rollar bo'yicha
 - Faol foydalanuvchilar soni (platformaga kirishning mavjudligi) jami va rollar bo'yicha
-- Barcha yangiliklarni ko'rish soni jami
-- Barcha yangiliklarni yoqtirishlar soni jami
+- [x] Barcha yangiliklarni ko'rish soni jami
+- [x] Barcha yangiliklarni yoqtirishlar soni jami
 - Yangiliklar bo'yicha yoqtirishlar ro'yhati, sanasi, kim qo'ygan
 - Yaratilgan to'plamlar soni jami project'lar va builing'lar bo'yicha.
-- "выиграна" status'iga o'tgan lead'larning soni
+- [x] "выиграна" status'iga o'tgan lead'larning soni
+- [x] lead'larning soni
 - "выиграна" status'iga o'tgan lead'lar mukofotlar summasi. Lead'dagi fee'dan olinadi.
 - "выиграна" status'iga o'tgan lead'lar o'rtacha summasi. Premise price'dan olinadi va yig'indini ularni soniga bo'linadi.
 - "выиграна" status'iga o'tgan lead'lar o'rtacha mukofotlar summasi. Lead'dagi fee'dan olinadi va yig'indini ularni soniga bo'linadi.
 - "выиграна" status'iga o'tgan lead'lar o'rtacha m2.
-- Eng yaxshi 5 ta yangilik (Ko'rishlar)
-- Eng yaxshi 5 (qo'ng'iroqlar) o'quv modullari
-- Eng yaxshi 5 ta tadbir (yozuvlar) 
+- [x] Eng yaxshi 5 ta yangilik (Ko'rishlar)
+- [x] Eng yaxshi 5 (qo'ng'iroqlar) o'quv modullari
+- [x] Eng yaxshi 5 ta tadbir (yozuvlar) 
 - Status'dan status'ga o'tishlar soni.
 
 - [ ] agency nomini unique qilish.
