@@ -153,12 +153,13 @@ export class ClientService {
 						.addSelect(
 							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name) as premise",
 						)
+						.addSelect(
+							"JSON_BUILD_OBJECT('id', u.id, 'fullname', CONCAT(u.first_name, ' ', u.last_name)) as agent",
+						)
 						.from(LeadsEntity, "l")
 						.leftJoin("projects", "p", "p.id = l.project_id")
 						.leftJoin("premises", "p2", "p2.id = l.premise_id")
-						.groupBy("l.id")
-						.addGroupBy("p.id")
-						.addGroupBy("p2.id")
+						.leftJoin("users", "u", "u.id = l.agent_id")
 						.orderBy("l.id");
 				},
 				"l",
