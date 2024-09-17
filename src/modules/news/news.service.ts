@@ -141,7 +141,31 @@ export class NewsService {
 				"likes.user_id = :user_id",
 				{ user_id: user.user_id },
 			)
+			.select([
+				"news.is_liked",
+				"news.id",
+				"news.is_active",
+				"news.created_at",
+				"news.updated_at",
+				"news.user_id",
+				"news.title",
+				"news.content",
+				"news.cover_image",
+				"news.is_like_enabled",
+				"news.is_extra_like_enabled",
+				"news.extra_like_icon",
+				"news.published_at",
+				"news.access",
+				"news.is_banner",
+				"news.is_draft",
+				"news.primary_category_id",
+				"primary_category",
+				"secondary_category",
+				"news.second_category_id",
+				"news.city_id",
+			])
 			.where("news.id = :id", { id })
+			.setParameter("user_id", user.user_id)
 			.getOne();
 
 		if (!findOne) {
