@@ -1,7 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 
+import { BaseDto } from "../../common/base/base_dto";
 import { CityService } from "../cities/cities.service";
 import { PremiseEntity, PremisesType } from "../premises/premises.entity";
 
@@ -56,22 +57,34 @@ export class ProjectService {
 		return this.projectsRepository;
 	}
 
-	async search(dto: ProjectSearchDto) {
+	async search(dto: ProjectSearchDto): Promise<BaseDto<ProjectEntity[]>> {
 		const pageSize = (dto.page - 1) * dto.limit;
-		return await this.projectsRepository
+		const [projects, projectCount] = await this.projectsRepository
 			.createQueryBuilder("p")
 			.select(["p.id", "p.name"] as Array<`p.${keyof ProjectEntity}`>)
 			.where("p.is_active IS TRUE")
-			.andWhere("p.name ILIKE :text", { text: `%${dto.text}%` })
-			.orWhere("p.detailed_description ILIKE :text", {
-				text: `%${dto.text}%`,
-			})
-			.orWhere("p.brief_description ILIKE :text", {
-				text: `%${dto.text}%`,
-			})
+			.andWhere(
+				new Brackets((qb) =>
+					qb
+						.where("p.name ILIKE :text", {
+							text: `%${dto.text}%`,
+						})
+						.orWhere("p.detailed_description ILIKE :text", {
+							text: `%${dto.text}%`,
+						})
+						.orWhere("p.brief_description ILIKE :text", {
+							text: `%${dto.text}%`,
+						}),
+				),
+			)
 			.limit(dto.limit)
 			.offset(pageSize)
-			.getMany();
+			.getManyAndCount();
+
+		const metaData = BaseDto.create<ProjectEntity[]>();
+		metaData.setPagination(projectCount, dto.page, dto.limit);
+		metaData.data = projects;
+		return metaData;
 	}
 
 	async getAllProjects(city_id?: number): Promise<GetAllProjectRaw[]> {
