@@ -56,7 +56,7 @@ export class ClientController {
 		@User() user: ICurrentUser,
 		@Query() dto: ClientQuickSearchDto,
 	) {
-		return await this.clientService.quickSearch(dto, user);
+		return await this.clientService.search(dto, user);
 	}
 
 	@Roles([
