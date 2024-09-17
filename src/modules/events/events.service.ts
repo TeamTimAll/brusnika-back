@@ -29,6 +29,7 @@ import { UserEntity } from "../user/user.entity";
 import { AcceptInvitionDto } from "./dtos/AcceptInvition.dto";
 import { BannerFilterDto } from "./dtos/BannerFilter.dto";
 import { CreateEventsDto } from "./dtos/CreateEvents.dto";
+import { EventSearchDto } from "./dtos/EventSearch.dto";
 import { FilterEventsDto, QueryType } from "./dtos/FilterEvents.dto";
 import { InviteUsersDto } from "./dtos/InviteUsers.dto";
 import { LeaveInvitionDto } from "./dtos/LeaveInvition.dto";
@@ -111,6 +112,21 @@ export class EventsService {
 
 	get repository() {
 		return this.eventRepository;
+	}
+
+	async search(dto: EventSearchDto) {
+		const pageSize = (dto.page - 1) * dto.limit;
+		return await this.eventRepository
+			.createQueryBuilder("e")
+			.select(["e.id", "e.title"] as Array<`e.${keyof EventsEntity}`>)
+			.where("e.is_active IS TRUE")
+			.andWhere("e.title ILIKE :text", { text: `%${dto.text}%` })
+			.andWhere("e.description ILIKE :text", {
+				text: `%${dto.text}%`,
+			})
+			.limit(dto.limit)
+			.offset(pageSize)
+			.getMany();
 	}
 
 	async readOne(id: number, user: ICurrentUser) {

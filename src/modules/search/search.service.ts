@@ -1,48 +1,31 @@
 import { Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 
-import { BaseDto, Pagination } from "../../common/base/base_dto";
-import { BuildingEntity } from "../buildings/buildings.entity";
+import { RoleType } from "../../constants";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { ClientEntity } from "../client/client.entity";
 import { EventsEntity } from "../events/events.entity";
-import { LeadsEntity } from "../leads/leads.entity";
 import { NewsEntity } from "../news/news.entity";
 import { ProjectEntity } from "../projects/project.entity";
 
 import { SearchDto } from "./dto/Search.dto";
 
-interface BaseResponse {
-	count: number;
-	page: number;
-	limit: number;
-}
-
-interface ClientSearchData extends BaseResponse {
+interface ClientSearchData {
 	module_name: "client";
-	data: ClientEntity[];
+	data: Pick<ClientEntity, "id" | "fullname" | "phone_number">[];
 }
 
-interface ProjectSearchData extends BaseResponse {
-	module_name: "project";
+interface ProjectSearchData {
+	module_name: "projects";
 	data: ProjectEntity[];
 }
 
-interface BuildingSearchData extends BaseResponse {
-	module_name: "building";
-	data: BuildingEntity[];
-}
-
-interface LeadsSearchData extends BaseResponse {
-	module_name: "leads";
-	data: LeadsEntity[];
-}
-
-interface NewsSearchData extends BaseResponse {
+interface NewsSearchData {
 	module_name: "news";
 	data: NewsEntity[];
 }
 
-interface EventsSearchData extends BaseResponse {
+interface EventsSearchData {
 	module_name: "events";
 	data: EventsEntity[];
 }
@@ -50,18 +33,14 @@ interface EventsSearchData extends BaseResponse {
 export type SearchData =
 	| ClientSearchData
 	| ProjectSearchData
-	| BuildingSearchData
-	| LeadsSearchData
 	| NewsSearchData
 	| EventsSearchData;
-
-type SearchResponse = Omit<SearchData, "count" | "limit" | "page">;
 
 @Injectable()
 export class SearchService {
 	constructor(private dataSource: DataSource) {}
 
-	async search(dto: SearchDto): Promise<BaseDto<SearchResponse[]>> {
+	async search(dto: SearchDto, user: ICurrentUser): Promise<SearchData[]> {
 		const queryRunner = this.dataSource.createQueryRunner();
 		await queryRunner.connect();
 		await queryRunner.startTransaction();
@@ -69,9 +48,13 @@ export class SearchService {
 		try {
 			const pageSize = (dto.page - 1) * dto.limit;
 			const searchResponse: SearchData[] = [];
-			const paginations: Pagination[] = [];
-			const [clients, clientsCount] = await manager
+			const clients = await manager
 				.createQueryBuilder(ClientEntity, "c")
+				.select([
+					"c.id",
+					"c.fullname",
+					"c.phone_number",
+				] as Array<`c.${keyof ClientEntity}`>)
 				.where("c.is_active IS TRUE")
 				.andWhere("c.fullname ILIKE :text", { text: `%${dto.text}%` })
 				.orWhere("c.phone_number ILIKE :text", {
@@ -79,19 +62,17 @@ export class SearchService {
 				})
 				.limit(dto.limit)
 				.offset(pageSize)
-				.getManyAndCount();
+				.getMany();
 			if (clients.length) {
 				searchResponse.push({
 					module_name: "client",
 					data: clients,
-					count: clientsCount,
-					page: dto.page,
-					limit: dto.limit,
 				});
 			}
 
-			const [projects, projectsCount] = await manager
+			const projects = await manager
 				.createQueryBuilder(ProjectEntity, "p")
+				.select(["p.id", "p.name"] as Array<`p.${keyof ProjectEntity}`>)
 				.where("p.is_active IS TRUE")
 				.andWhere("p.name ILIKE :text", { text: `%${dto.text}%` })
 				.orWhere("p.detailed_description ILIKE :text", {
@@ -102,74 +83,47 @@ export class SearchService {
 				})
 				.limit(dto.limit)
 				.offset(pageSize)
-				.getManyAndCount();
+				.getMany();
 			if (projects.length) {
 				searchResponse.push({
-					module_name: "project",
+					module_name: "projects",
 					data: projects,
-					count: projectsCount,
-					page: dto.page,
-					limit: dto.limit,
 				});
 			}
 
-			const [buildings, buildingsCount] = await manager
-				.createQueryBuilder(BuildingEntity, "b")
-				.where("b.is_active IS TRUE")
-				.andWhere("b.name ILIKE :text", { text: `%${dto.text}%` })
-				.limit(dto.limit)
-				.offset(pageSize)
-				.getManyAndCount();
-			if (buildings.length) {
-				searchResponse.push({
-					module_name: "building",
-					data: buildings,
-					count: buildingsCount,
-					page: dto.page,
-					limit: dto.limit,
-				});
-			}
-
-			const [leads, leadsCount] = await manager
-				.createQueryBuilder(LeadsEntity, "l")
-				.where("l.is_active IS TRUE")
-				.andWhere("l.state ILIKE :text", { text: `%${dto.text}%` })
-				.orWhere("l.current_status ILIKE :text", {
-					text: `%${dto.text}%`,
-				})
-				.limit(dto.limit)
-				.offset(pageSize)
-				.getManyAndCount();
-			if (leads.length) {
-				searchResponse.push({
-					module_name: "leads",
-					data: leads,
-					count: leadsCount,
-					page: dto.page,
-					limit: dto.limit,
-				});
-			}
-
-			const [news, newsCount] = await manager
+			let newsQuery = manager
 				.createQueryBuilder(NewsEntity, "n")
+				.select(["n.id", "n.title"] as Array<`n.${keyof NewsEntity}`>)
 				.where("n.is_active IS TRUE")
 				.andWhere("n.title ILIKE :text", { text: `%${dto.text}%` })
-				.andWhere("n.content ILIKE :text", { text: `%${dto.text}%` })
 				.limit(dto.limit)
-				.offset(pageSize)
-				.getManyAndCount();
+				.offset(pageSize);
+
+			if (user.role !== RoleType.ADMIN) {
+				newsQuery = newsQuery.andWhere("n.is_draft IS FALSE");
+			}
+			if (user.role !== RoleType.ADMIN) {
+				newsQuery = newsQuery.andWhere("n.access = :role", {
+					role: user.role,
+				});
+			}
+
+			newsQuery = newsQuery.orWhere("n.content ILIKE :text", {
+				text: `%${dto.text}%`,
+			});
+
+			const news = await newsQuery.getMany();
+
 			if (news.length) {
 				searchResponse.push({
 					module_name: "news",
 					data: news,
-					count: newsCount,
-					page: dto.page,
-					limit: dto.limit,
 				});
 			}
 
-			const [events, eventsCount] = await manager
+			const events = await manager
 				.createQueryBuilder(EventsEntity, "e")
+				.select(["e.id", "e.title"] as Array<`e.${keyof EventsEntity}`>)
 				.where("e.is_active IS TRUE")
 				.andWhere("e.title ILIKE :text", { text: `%${dto.text}%` })
 				.andWhere("e.description ILIKE :text", {
@@ -177,35 +131,16 @@ export class SearchService {
 				})
 				.limit(dto.limit)
 				.offset(pageSize)
-				.getManyAndCount();
+				.getMany();
 			if (events.length) {
 				searchResponse.push({
 					module_name: "events",
 					data: events,
-					count: eventsCount,
-					page: dto.page,
-					limit: dto.limit,
 				});
 			}
 
 			await queryRunner.commitTransaction();
-
-			searchResponse.forEach((s) => {
-				paginations.push({
-					module_name: s.module_name,
-					count: s.count,
-					limit: s.limit,
-					page: s.page,
-				});
-			});
-
-			const metaData = BaseDto.create<SearchResponse[]>();
-			metaData.setPaginations(paginations);
-			metaData.data = searchResponse.map((e) => ({
-				module_name: e.module_name,
-				data: e.data,
-			}));
-			return metaData;
+			return searchResponse;
 		} catch (e) {
 			await queryRunner.rollbackTransaction();
 			throw e;

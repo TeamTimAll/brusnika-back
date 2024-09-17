@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from "class-validator";
 
 import { Limit, Page } from "../../../decorators";
 
-export class ClientQuickSearchDto {
+export class ProjectSearchDto {
 	@ApiProperty({ required: false })
 	@Page()
 	page: number = 1;

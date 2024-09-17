@@ -23,9 +23,10 @@ import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { CreateNewsMetaDataDto } from "./dto/CreateNews.dto";
 import { CreateNewsCategoriesMetaDataDto } from "./dto/CreateNewsCategories.dto";
 import { LikeNewsMetaDataDto } from "./dto/LikeNews.dto";
+import { NewsSearchDto } from "./dto/NewsSearch.dto";
 import { UpdateNewsMetaDataDto } from "./dto/UpdateNews.dto";
-import { NewsService } from "./news.service";
 import { ReadAllNewsDto } from "./dto/read-all-news.dto";
+import { NewsService } from "./news.service";
 
 @ApiTags("News")
 @Controller("news")
@@ -83,6 +84,12 @@ export class NewsController {
 	@ApiOperation({ summary: "Get all news categories" })
 	async getCategories() {
 		return await this.service.getCategories();
+	}
+
+	@Get("search")
+	@ApiOperation({ summary: "Get all news categories" })
+	async search(@Query() dto: NewsSearchDto, @User() user: ICurrentUser) {
+		return await this.service.search(dto, user);
 	}
 
 	@Get("banner")

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ILike, Repository } from "typeorm";
+import { Brackets, ILike, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -10,6 +10,7 @@ import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
 import { ClientEntity } from "./client.entity";
+import { ClientQuickSearchDto } from "./dto/ClientQuickSearch.dto";
 import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
 import { CreateClientDto } from "./dto/CreateClient.dto";
 import { DeleteClientDto } from "./dto/DeleteClient.dto";
@@ -62,32 +63,27 @@ export class ClientService {
 		}
 	}
 
-	async quickSearch(text: string = "", user: ICurrentUser) {
+	async quickSearch(dto: ClientQuickSearchDto, user: ICurrentUser) {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
 			.select([
 				"c.id",
 				"c.fullname",
 				"c.phone_number",
-			] as `c.${keyof ClientEntity}`[])
-			.limit(25)
-			.where(
-				"(c.fullname ILIKE :fullname OR c.phone_number ILIKE :phone_number)",
+			] as `c.${keyof ClientEntity}`[]);
+		if (user.role === RoleType.AGENT) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.agent_id = :client_agent_id",
 				{
-					fullname: `%${text}%`,
-					phone_number: `%${text}%`,
+					client_agent_id: user.user_id,
 				},
 			);
-		if (user.role === RoleType.AGENT) {
-			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
-				client_agent_id: user.user_id,
-			});
 		} else if (user.role === RoleType.HEAD_OF_AGENCY) {
 			const foundUser = await this.userService.repository.findOne({
 				select: { agency_id: true },
 				where: { id: user.user_id },
 			});
-			queryBuilder = queryBuilder.where(
+			queryBuilder = queryBuilder.andWhere(
 				(qb) =>
 					"c.agent_id IN (" +
 					qb
@@ -101,6 +97,19 @@ export class ClientService {
 					")",
 			);
 		}
+		queryBuilder = queryBuilder.andWhere(
+			new Brackets((qb) =>
+				qb
+					.where("c.fullname ILIKE :fullname", {
+						fullname: `%${dto.text}%`,
+					})
+					.orWhere("c.phone_number ILIKE :phone_number", {
+						phone_number: `%${dto.text}%`,
+					}),
+			),
+		);
+		const pageSize = (dto.page - 1) * dto.limit;
+		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
 		return queryBuilder.getMany();
 	}
 
