@@ -5,23 +5,24 @@ import { Repository } from "typeorm";
 import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 
 import { BaseDto } from "../../common/base/base_dto";
-import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { RoleType } from "../../constants";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { CityService } from "../cities/cities.service";
 
 import { CreateNewsDto } from "./dto/CreateNews.dto";
 import { CreateNewsCategoriesDto } from "./dto/CreateNewsCategories.dto";
 import { LikeNewsDto } from "./dto/LikeNews.dto";
+import { NewsSearchDto } from "./dto/NewsSearch.dto";
 import { UpdateNewsDto } from "./dto/UpdateNews.dto";
+import { ReadAllNewsDto } from "./dto/read-all-news.dto";
 import { NewsCategoryEntity } from "./entities/categories.entity";
 import { NewsLikeEntity } from "./entities/likes.entity";
 import { NewsViewEntity } from "./entities/views.entity";
+import { NewsCategoryNotFoundError } from "./errors/NewsCategoryNotFound.error";
 import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsEntity } from "./news.entity";
-import { ReadAllNewsDto } from "./dto/read-all-news.dto";
-import { NewsCategoryNotFoundError } from "./errors/NewsCategoryNotFound.error";
-import { ToggleNewsDto } from "./dto";
+import { ReadAllBannerNewsDto, ToggleNewsDto } from "./dto";
 import { UpdateNewsCategoryDto } from "./dto/update-news-category.dto";
 
 interface NewsLikedResponse {
@@ -164,6 +165,32 @@ export class NewsService {
 		return findOne;
 	}
 
+	async search(dto: NewsSearchDto, user: ICurrentUser) {
+		const pageSize = (dto.page - 1) * dto.limit;
+		let newsQuery = this.newsRepository
+			.createQueryBuilder("n")
+			.select(["n.id", "n.title"] as Array<`n.${keyof NewsEntity}`>)
+			.where("n.is_active IS TRUE")
+			.andWhere("n.title ILIKE :text", { text: `%${dto.text}%` })
+			.limit(dto.limit)
+			.offset(pageSize);
+
+		if (user.role !== RoleType.ADMIN) {
+			newsQuery = newsQuery.andWhere("n.is_draft IS FALSE");
+		}
+		if (user.role !== RoleType.ADMIN) {
+			newsQuery = newsQuery.andWhere("n.access = :role", {
+				role: user.role,
+			});
+		}
+
+		newsQuery = newsQuery.orWhere("n.content ILIKE :text", {
+			text: `%${dto.text}%`,
+		});
+
+		return await newsQuery.getMany();
+	}
+
 	async readAll(user: ICurrentUser, payload: ReadAllNewsDto) {
 		const pageSize = (payload.page - 1) * payload.limit;
 
@@ -198,26 +225,43 @@ export class NewsService {
 			])
 			.setParameter("user_id", user.user_id);
 
-		if (user.role !== RoleType.ADMIN) {
-			query = query
-				.where("news.access = :role OR news.access IS NULL", {
-					role: user.role,
-				})
-				.andWhere("news.city_id = :city OR news.city_id IS NULL", {
-					city: payload.city_id,
-				});
-		}
-
 		if (!(user.role === RoleType.ADMIN && payload.include_non_actives)) {
 			query = query.andWhere("news.is_active IS TRUE");
+		}
+
+		if (!payload.is_draft && user.role !== RoleType.ADMIN) {
+			query = query.andWhere("news.is_draft IS FALSE");
 		}
 
 		if (payload.is_banner) {
 			query = query.andWhere("news.is_banner IS TRUE");
 		}
 
-		if (!payload.is_draft && user.role !== RoleType.ADMIN) {
-			query = query.andWhere("news.is_draft IS FALSE");
+		if (payload.city_id) {
+			query = query.andWhere(
+				"news.city_id = :city OR news.city_id IS NULL",
+				{
+					city: payload.city_id,
+				},
+			);
+		}
+
+		if (user.role !== RoleType.ADMIN) {
+			query = query.andWhere(
+				"news.access = :role OR news.access IS NULL",
+				{
+					role: user.role,
+				},
+			);
+		}
+
+		if (payload.category_id) {
+			query = query.andWhere(
+				"news.primary_category_id = :category_id OR news.second_category_id = :category_id",
+				{
+					category_id: payload.category_id,
+				},
+			);
 		}
 
 		const newsCount = await query.getCount();
@@ -231,15 +275,49 @@ export class NewsService {
 		return metaData;
 	}
 
-	async banner() {
-		return this.newsRepository
+	async banner(user: ICurrentUser, payload: ReadAllBannerNewsDto) {
+		let query = this.newsRepository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
 			.loadRelationCountAndMap("news.likes_count", "news.likes")
 			.loadRelationCountAndMap("news.views_count", "news.views")
-			.where("news.is_banner IS TRUE")
-			.getMany();
+			.select([
+				"news.is_liked",
+				"news.id",
+				"news.is_active",
+				"news.created_at",
+				"news.updated_at",
+				"news.user_id",
+				"news.title",
+				"news.content",
+				"news.cover_image",
+				"news.is_like_enabled",
+				"news.is_extra_like_enabled",
+				"news.extra_like_icon",
+				"news.published_at",
+				"news.access",
+				"news.is_banner",
+				"news.is_draft",
+				"news.primary_category_id",
+				"primary_category",
+				"secondary_category",
+				"news.second_category_id",
+				"news.city_id",
+			])
+			.setParameter("user_id", user.user_id)
+			.where("news.is_banner IS TRUE");
+
+		if (payload.city_id) {
+			query = query.andWhere(
+				"news.city_id = :city OR news.city_id IS NULL",
+				{
+					city: payload.city_id,
+				},
+			);
+		}
+
+		return await query.getMany();
 	}
 
 	async update(id: number, dto: UpdateNewsDto) {

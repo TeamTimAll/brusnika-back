@@ -6,6 +6,7 @@ import { CityService } from "../cities/cities.service";
 import { PremiseEntity, PremisesType } from "../premises/premises.entity";
 
 import { CreateProjectDto } from "./dto/CreateProject.dto";
+import { ProjectSearchDto } from "./dto/ProjectSearch.dto";
 import { UpdateProjectDto } from "./dto/UpdateProject.dto";
 import { ProjectNotFoundError } from "./errors/ProjectNotFound.error";
 import { ProjectEntity } from "./project.entity";
@@ -53,6 +54,24 @@ export class ProjectService {
 
 	get repository(): Repository<ProjectEntity> {
 		return this.projectsRepository;
+	}
+
+	async search(dto: ProjectSearchDto) {
+		const pageSize = (dto.page - 1) * dto.limit;
+		return await this.projectsRepository
+			.createQueryBuilder("p")
+			.select(["p.id", "p.name"] as Array<`p.${keyof ProjectEntity}`>)
+			.where("p.is_active IS TRUE")
+			.andWhere("p.name ILIKE :text", { text: `%${dto.text}%` })
+			.orWhere("p.detailed_description ILIKE :text", {
+				text: `%${dto.text}%`,
+			})
+			.orWhere("p.brief_description ILIKE :text", {
+				text: `%${dto.text}%`,
+			})
+			.limit(dto.limit)
+			.offset(pageSize)
+			.getMany();
 	}
 
 	async getAllProjects(city_id?: number): Promise<GetAllProjectRaw[]> {

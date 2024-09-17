@@ -31,12 +31,13 @@ import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { CreateNewsMetaDataDto } from "./dto/CreateNews.dto";
 import { CreateNewsCategoriesMetaDataDto } from "./dto/CreateNewsCategories.dto";
 import { LikeNewsMetaDataDto } from "./dto/LikeNews.dto";
+import { NewsSearchDto } from "./dto/NewsSearch.dto";
 import { UpdateNewsMetaDataDto } from "./dto/UpdateNews.dto";
-import { NewsService } from "./news.service";
 import { ReadAllNewsDto } from "./dto/read-all-news.dto";
-import { ToggleNewsMetaDataDto } from "./dto";
+import { ReadAllBannerNewsDto, ToggleNewsMetaDataDto } from "./dto";
 import { NewsMetaDataDto } from "./dto/news.dto";
 import { UpdateNewsCategoryMetaDataDto } from "./dto/update-news-category.dto";
+import { NewsService } from "./news.service";
 
 @ApiTags("News")
 @Controller("news")
@@ -120,10 +121,19 @@ export class NewsController {
 		return await this.service.getCategories();
 	}
 
+	@Get("search")
+	@ApiOperation({ summary: "Get all news categories" })
+	async search(@Query() dto: NewsSearchDto, @User() user: ICurrentUser) {
+		return await this.service.search(dto, user);
+	}
+
 	@Get("banner")
 	@ApiOperation({ summary: "Get all news banner" })
-	async banner() {
-		return await this.service.banner();
+	async banner(
+		@User() user: ICurrentUser,
+		@Query() query: ReadAllBannerNewsDto,
+	) {
+		return await this.service.banner(user, query);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
