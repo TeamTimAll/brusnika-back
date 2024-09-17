@@ -251,4 +251,19 @@ export class NewsService {
 		const mergedNews = this.newsRepository.merge(foundNews, dto);
 		return await this.newsRepository.save(mergedNews);
 	}
+
+	async remove(id: number) {
+		const foundEvent = await this.newsRepository.findOne({
+			select: { id: true },
+			where: { id },
+		});
+
+		if (!foundEvent) {
+			throw new NewsNotFoundError(`id: ${id}`);
+		}
+
+		await this.newsRepository.delete(id);
+
+		return foundEvent;
+	}
 }

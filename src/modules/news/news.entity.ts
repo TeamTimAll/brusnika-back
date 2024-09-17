@@ -70,13 +70,13 @@ export class NewsEntity extends BaseEntity {
 
 	@OneToMany(() => NewsViewEntity, (NewsViews) => NewsViews.news, {
 		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onUpdate: "NO ACTION",
 	})
 	views?: NewsViewEntity[];
 
 	@OneToMany(() => NewsLikeEntity, (NewsLikes) => NewsLikes.news, {
 		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onUpdate: "NO ACTION",
 	})
 	likes?: NewsLikeEntity[];
 

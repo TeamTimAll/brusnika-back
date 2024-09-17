@@ -1,7 +1,10 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
+	HttpCode,
+	HttpStatus,
 	Inject,
 	Param,
 	Post,
@@ -10,7 +13,12 @@ import {
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+	ApiAcceptedResponse,
+	ApiBearerAuth,
+	ApiOperation,
+	ApiTags,
+} from "@nestjs/swagger";
 
 import { RoleType } from "../../constants";
 import { User } from "../../decorators";
@@ -110,5 +118,13 @@ export class NewsController {
 	@ApiOperation({ summary: "Get news by id" })
 	async getNewsById(@Param("id") id: number, @User() user: ICurrentUser) {
 		return this.service.readOne(id, user);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Delete(":id")
+	@HttpCode(HttpStatus.ACCEPTED)
+	@ApiAcceptedResponse()
+	async deleteNews(@Param("id") id: number) {
+		return await this.service.remove(id);
 	}
 }
