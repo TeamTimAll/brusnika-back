@@ -160,7 +160,7 @@ export class ClientService {
 							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
 						)
 						.addSelect(
-							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name) as premise",
+							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name, 'type', p2.type) as premise",
 						)
 						.addSelect(
 							"JSON_BUILD_OBJECT('id', u.id, 'fullName', CONCAT(u.first_name, ' ', u.last_name)) as agent",
