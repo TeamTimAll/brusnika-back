@@ -147,14 +147,38 @@ export class NewsService {
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
 			.loadRelationCountAndMap("news.likes_count", "news.likes")
-			.loadRelationCountAndMap("news.views_count", "news.views");
+			.loadRelationCountAndMap("news.views_count", "news.views")
+			.select([
+				"news.is_liked",
+				"news.id",
+				"news.is_active",
+				"news.created_at",
+				"news.updated_at",
+				"news.user_id",
+				"news.title",
+				"news.content",
+				"news.cover_image",
+				"news.is_like_enabled",
+				"news.is_extra_like_enabled",
+				"news.extra_like_icon",
+				"news.published_at",
+				"news.access",
+				"news.is_banner",
+				"news.is_draft",
+				"news.primary_category_id",
+				"primary_category",
+				"secondary_category",
+				"news.second_category_id",
+				"news.city_id",
+			])
+			.setParameter("user_id", user.user_id);
 
 		if (user.role !== RoleType.ADMIN) {
 			query = query
 				.where("news.access = :role OR news.access IS NULL", {
 					role: user.role,
 				})
-				.where("news.city_id = :city OR news.city_id IS NULL", {
+				.andWhere("news.city_id = :city OR news.city_id IS NULL", {
 					city: payload.city_id,
 				});
 		}
@@ -167,7 +191,7 @@ export class NewsService {
 			query = query.andWhere("news.is_banner IS TRUE");
 		}
 
-		if (!payload.is_draft || user.role !== RoleType.ADMIN) {
+		if (!payload.is_draft && user.role !== RoleType.ADMIN) {
 			query = query.andWhere("news.is_draft IS FALSE");
 		}
 

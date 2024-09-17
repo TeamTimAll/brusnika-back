@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	VirtualColumn,
+} from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { RoleType } from "../../constants";
@@ -82,4 +89,10 @@ export class NewsEntity extends BaseEntity {
 
 	@Column({ type: "integer", nullable: true })
 	city_id?: number;
+
+	@VirtualColumn({
+		query: () =>
+			"COALESCE((SELECT TRUE FROM news_likes nl WHERE nl.news_id = news.id AND nl.user_id = :user_id LIMIT 1), FALSE)",
+	})
+	is_liked?: boolean;
 }
