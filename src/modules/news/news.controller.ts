@@ -140,6 +140,19 @@ export class NewsController {
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Delete("categories/:id")
+	@ApiOperation({
+		summary: "Delete news categories",
+		description: `### News categoriyasini o'chirish
+		\n **param** ma'lumotlari:
+		\n - **id** - [required] news category id'si`,
+	})
+	@ApiDtoResponse(NewsMetaDataDto, HttpStatus.OK)
+	deleteCategory(@Param("id") id: number) {
+		return this.service.deleteCategory(id);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Delete(":id")
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()

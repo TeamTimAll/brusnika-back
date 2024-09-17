@@ -270,6 +270,20 @@ export class NewsService {
 		return await this.newsCategoriyRepository.save(mergedCategory);
 	}
 
+	async deleteCategory(id: number) {
+		const foundCategory = await this.newsCategoriyRepository.findOne({
+			where: { id: id },
+		});
+
+		if (!foundCategory) {
+			throw new NewsCategoryNotFoundError(`id: ${id}`);
+		}
+
+		await this.newsCategoriyRepository.delete(foundCategory.id);
+
+		return foundCategory;
+	}
+
 	async remove(id: number) {
 		const foundEvent = await this.newsRepository.findOne({
 			select: { id: true },
