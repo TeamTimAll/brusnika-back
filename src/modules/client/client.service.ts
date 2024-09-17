@@ -63,7 +63,10 @@ export class ClientService {
 		}
 	}
 
-	async quickSearch(dto: ClientQuickSearchDto, user: ICurrentUser) {
+	async search(
+		dto: ClientQuickSearchDto,
+		user: ICurrentUser,
+	): Promise<BaseDto<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
 			.select([
@@ -110,7 +113,12 @@ export class ClientService {
 		);
 		const pageSize = (dto.page - 1) * dto.limit;
 		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
-		return queryBuilder.getMany();
+		const [clients, clientCount] = await queryBuilder.getManyAndCount();
+
+		const metaData = BaseDto.create<ClientEntity[]>();
+		metaData.setPagination(clientCount, dto.page, dto.limit);
+		metaData.data = clients;
+		return metaData;
 	}
 
 	async searchFromBmpsoft(
