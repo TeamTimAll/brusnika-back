@@ -113,13 +113,20 @@ export class SearchService {
 				.createQueryBuilder(ProjectEntity, "p")
 				.select(["p.id", "p.name"] as Array<`p.${keyof ProjectEntity}`>)
 				.where("p.is_active IS TRUE")
-				.andWhere("p.name ILIKE :text", { text: `%${dto.text}%` })
-				.orWhere("p.detailed_description ILIKE :text", {
-					text: `%${dto.text}%`,
-				})
-				.orWhere("p.brief_description ILIKE :text", {
-					text: `%${dto.text}%`,
-				})
+				.andWhere(
+					new Brackets((qb) =>
+						qb
+							.where("p.name ILIKE :text", {
+								text: `%${dto.text}%`,
+							})
+							.orWhere("p.detailed_description ILIKE :text", {
+								text: `%${dto.text}%`,
+							})
+							.orWhere("p.brief_description ILIKE :text", {
+								text: `%${dto.text}%`,
+							}),
+					),
+				)
 				.limit(dto.limit)
 				.offset(pageSize)
 				.getMany();
@@ -164,10 +171,17 @@ export class SearchService {
 				.createQueryBuilder(EventsEntity, "e")
 				.select(["e.id", "e.title"] as Array<`e.${keyof EventsEntity}`>)
 				.where("e.is_active IS TRUE")
-				.andWhere("e.title ILIKE :text", { text: `%${dto.text}%` })
-				.andWhere("e.description ILIKE :text", {
-					text: `%${dto.text}%`,
-				})
+				.andWhere(
+					new Brackets((qb) =>
+						qb
+							.where("e.title ILIKE :text", {
+								text: `%${dto.text}%`,
+							})
+							.orWhere("e.description ILIKE :text", {
+								text: `%${dto.text}%`,
+							}),
+					),
+				)
 				.limit(dto.limit)
 				.offset(pageSize)
 				.getMany();
