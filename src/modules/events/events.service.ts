@@ -114,19 +114,31 @@ export class EventsService {
 		return this.eventRepository;
 	}
 
-	async search(dto: EventSearchDto) {
+	async search(dto: EventSearchDto): Promise<BaseDto<EventsEntity[]>> {
 		const pageSize = (dto.page - 1) * dto.limit;
-		return await this.eventRepository
+		const [events, eventCount] = await this.eventRepository
 			.createQueryBuilder("e")
 			.select(["e.id", "e.title"] as Array<`e.${keyof EventsEntity}`>)
 			.where("e.is_active IS TRUE")
-			.andWhere("e.title ILIKE :text", { text: `%${dto.text}%` })
-			.andWhere("e.description ILIKE :text", {
-				text: `%${dto.text}%`,
-			})
+			.andWhere(
+				new Brackets((qb) =>
+					qb
+						.where("e.title ILIKE :text", {
+							text: `%${dto.text}%`,
+						})
+						.orWhere("e.description ILIKE :text", {
+							text: `%${dto.text}%`,
+						}),
+				),
+			)
 			.limit(dto.limit)
 			.offset(pageSize)
-			.getMany();
+			.getManyAndCount();
+
+		const metaData = BaseDto.create<EventsEntity[]>();
+		metaData.setPagination(eventCount, dto.page, dto.limit);
+		metaData.data = events;
+		return metaData;
 	}
 
 	async readOne(id: number, user: ICurrentUser) {

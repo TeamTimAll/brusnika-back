@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 
 import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 
@@ -9,12 +9,14 @@ import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { CityService } from "../cities/cities.service";
 
+import { ReadAllBannerNewsDto, ToggleNewsDto } from "./dto";
 import { CreateNewsDto } from "./dto/CreateNews.dto";
 import { CreateNewsCategoriesDto } from "./dto/CreateNewsCategories.dto";
 import { LikeNewsDto } from "./dto/LikeNews.dto";
 import { NewsSearchDto } from "./dto/NewsSearch.dto";
 import { UpdateNewsDto } from "./dto/UpdateNews.dto";
 import { ReadAllNewsDto } from "./dto/read-all-news.dto";
+import { UpdateNewsCategoryDto } from "./dto/update-news-category.dto";
 import { NewsCategoryEntity } from "./entities/categories.entity";
 import { NewsLikeEntity } from "./entities/likes.entity";
 import { NewsViewEntity } from "./entities/views.entity";
@@ -22,8 +24,6 @@ import { NewsCategoryNotFoundError } from "./errors/NewsCategoryNotFound.error";
 import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsEntity } from "./news.entity";
-import { ReadAllBannerNewsDto, ToggleNewsDto } from "./dto";
-import { UpdateNewsCategoryDto } from "./dto/update-news-category.dto";
 
 interface NewsLikedResponse {
 	is_liked: boolean;
@@ -189,13 +189,15 @@ export class NewsService {
 		return findOne;
 	}
 
-	async search(dto: NewsSearchDto, user: ICurrentUser) {
+	async search(
+		dto: NewsSearchDto,
+		user: ICurrentUser,
+	): Promise<BaseDto<NewsEntity[]>> {
 		const pageSize = (dto.page - 1) * dto.limit;
 		let newsQuery = this.newsRepository
 			.createQueryBuilder("n")
 			.select(["n.id", "n.title"] as Array<`n.${keyof NewsEntity}`>)
 			.where("n.is_active IS TRUE")
-			.andWhere("n.title ILIKE :text", { text: `%${dto.text}%` })
 			.limit(dto.limit)
 			.offset(pageSize);
 
@@ -208,11 +210,22 @@ export class NewsService {
 			});
 		}
 
-		newsQuery = newsQuery.orWhere("n.content ILIKE :text", {
-			text: `%${dto.text}%`,
-		});
+		newsQuery = newsQuery.andWhere(
+			new Brackets((qb) =>
+				qb
+					.where("n.title ILIKE :text", { text: `%${dto.text}%` })
+					.orWhere("n.content ILIKE :text", {
+						text: `%${dto.text}%`,
+					}),
+			),
+		);
 
-		return await newsQuery.getMany();
+		const [news, newsCount] = await newsQuery.getManyAndCount();
+
+		const metaData = BaseDto.create<NewsEntity[]>();
+		metaData.setPagination(newsCount, dto.page, dto.limit);
+		metaData.data = news;
+		return metaData;
 	}
 
 	async readAll(user: ICurrentUser, payload: ReadAllNewsDto) {

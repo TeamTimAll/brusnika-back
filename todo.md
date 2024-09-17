@@ -412,3 +412,5 @@ Admin va Affiliate manager city bo'yicha va vaqt oralig'i bo'yicha quyidagi ma'l
 truncate settings, comments, premises, leads, cities, agencies, users, projects, visits, clients, buildings, sections, premise_schemas, seasons, bookings, notification, news_views, news_categories, news_likes, contacts, contact_addresses, contact_work_schedules, premises_basket_meta, premises_basket, trainings_likes, trainings, trainings_views, trainings_categories, news, events, event_invitation, event_likes, event_views, event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 
 - [ ] global search'da client search bilan muamo chiqishi mumkin. chunki client globalda hamma client'ni qidiryapti, client search'ni o'zida esa user role'iga munosib.
+
+- [ ] event banner false bo'lganlari chiqib ketyapti.
