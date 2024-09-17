@@ -26,6 +26,7 @@ import { LikeNewsMetaDataDto } from "./dto/LikeNews.dto";
 import { UpdateNewsMetaDataDto } from "./dto/UpdateNews.dto";
 import { NewsService } from "./news.service";
 import { ReadAllNewsDto } from "./dto/read-all-news.dto";
+import { ToggleNewsMetaDataDto } from "./dto";
 
 @ApiTags("News")
 @Controller("news")
@@ -67,6 +68,13 @@ export class NewsController {
 		@User() user: ICurrentUser,
 	) {
 		return this.service.toggleLike(dto.data, user);
+	}
+
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Post("toggle-draft")
+	@ApiOperation({ summary: "toggle draft events" })
+	async toggleDraft(@Body() dto: ToggleNewsMetaDataDto) {
+		return await this.service.toggleDraft(dto.data);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])

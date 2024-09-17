@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
+import { DraftResponseDto } from "common/dtos/draftResponse.dto";
+
 import { BaseDto } from "../../common/base/base_dto";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { RoleType } from "../../constants";
@@ -19,6 +21,7 @@ import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsEntity } from "./news.entity";
 import { ReadAllNewsDto } from "./dto/read-all-news.dto";
 import { NewsCategoryNotFoundError } from "./errors/NewsCategoryNotFound.error";
+import { ToggleNewsDto } from "./dto";
 
 interface NewsLikedResponse {
 	is_liked: boolean;
@@ -71,6 +74,27 @@ export class NewsService {
 			user_id: user.user_id,
 		});
 		return { is_liked: true };
+	}
+
+	async toggleDraft(dto: ToggleNewsDto): Promise<DraftResponseDto> {
+		const news = await this.newsRepository.findOne({
+			select: { id: true, is_draft: true, title: true },
+			where: {
+				id: dto.news_id,
+			},
+		});
+
+		if (!news) {
+			throw new NewsNotFoundError(`id: ${dto.news_id}`);
+		}
+
+		await this.newsRepository.update(news.id, {
+			is_draft: !news.is_draft,
+		});
+
+		return {
+			is_draft: !news.is_draft,
+		};
 	}
 
 	async create(dto: CreateNewsDto, user: ICurrentUser) {
