@@ -69,7 +69,9 @@ export class CreateEventsDto {
 	@ApiProperty({ default: new Date() })
 	@IsDateString()
 	@IsNotEmpty()
-	@Transform(({ value }) => (value as string).split("T")[0])
+	@Transform(({ value }) =>
+		typeof value === "string" ? value.split("T")[0] : "",
+	)
 	date!: string;
 
 	@ApiProperty({})
