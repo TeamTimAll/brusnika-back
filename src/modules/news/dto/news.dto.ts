@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
+import { BaseDto, Dto } from "../../../common/base/base_dto";
 import { RoleType } from "../../../constants";
 import { NewsEntity } from "../news.entity";
 
@@ -65,4 +66,11 @@ export class NewsDto implements INewsEntity {
 
 	@ApiProperty()
 	coverImage!: string;
+}
+
+export class NewsMetaDataDto extends BaseDto<NewsDto> implements Dto {
+	@ApiProperty({ type: NewsDto })
+	declare data: NewsDto;
+
+	desc = "### News ma'lumotlari";
 }

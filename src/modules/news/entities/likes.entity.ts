@@ -17,7 +17,10 @@ export class NewsLikeEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	news_id!: number;
 
-	@ManyToOne(() => NewsEntity)
+	@ManyToOne(() => NewsEntity, {
+		onDelete: "CASCADE",
+		onUpdate: "NO ACTION",
+	})
 	@JoinColumn({ name: "news_id" })
 	news!: NewsEntity;
 }
