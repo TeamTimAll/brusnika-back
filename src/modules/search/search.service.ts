@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { DataSource } from "typeorm";
+import { Brackets, DataSource } from "typeorm";
 
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
@@ -7,6 +7,7 @@ import { ClientEntity } from "../client/client.entity";
 import { EventsEntity } from "../events/events.entity";
 import { NewsEntity } from "../news/news.entity";
 import { ProjectEntity } from "../projects/project.entity";
+import { UserEntity } from "../user/user.entity";
 
 import { SearchDto } from "./dto/Search.dto";
 
@@ -48,7 +49,7 @@ export class SearchService {
 		try {
 			const pageSize = (dto.page - 1) * dto.limit;
 			const searchResponse: SearchData[] = [];
-			const clients = await manager
+			let clientsQuery = manager
 				.createQueryBuilder(ClientEntity, "c")
 				.select([
 					"c.id",
@@ -56,13 +57,51 @@ export class SearchService {
 					"c.phone_number",
 				] as Array<`c.${keyof ClientEntity}`>)
 				.where("c.is_active IS TRUE")
-				.andWhere("c.fullname ILIKE :text", { text: `%${dto.text}%` })
-				.orWhere("c.phone_number ILIKE :text", {
-					text: `%${dto.text}%`,
-				})
 				.limit(dto.limit)
-				.offset(pageSize)
-				.getMany();
+				.offset(pageSize);
+
+			if (user.role === RoleType.AGENT) {
+				clientsQuery = clientsQuery.andWhere(
+					"c.agent_id = :client_agent_id",
+					{
+						client_agent_id: user.user_id,
+					},
+				);
+			} else if (user.role === RoleType.HEAD_OF_AGENCY) {
+				const foundUser = await manager
+					.createQueryBuilder(UserEntity, "u")
+					.select(["u.agency_id"] as Array<`u.${keyof UserEntity}`>)
+					.where("u.id = :user_id", { user_id: user.user_id })
+					.getOne();
+				clientsQuery = clientsQuery.andWhere(
+					(qb) =>
+						"c.agent_id IN (" +
+						qb
+							.subQuery()
+							.from(UserEntity, "u")
+							.select("u.id")
+							.where("u.agency_id = :agency_id", {
+								agency_id: foundUser?.agency_id,
+							})
+							.getQuery() +
+						")",
+				);
+			}
+
+			clientsQuery = clientsQuery.andWhere(
+				new Brackets((qb) =>
+					qb
+						.where("c.fullname ILIKE :fullname", {
+							fullname: `%${dto.text}%`,
+						})
+						.orWhere("c.phone_number ILIKE :phone_number", {
+							phone_number: `%${dto.text}%`,
+						}),
+				),
+			);
+
+			const clients = await clientsQuery.getMany();
+
 			if (clients.length) {
 				searchResponse.push({
 					module_name: "client",
