@@ -95,7 +95,7 @@ export class CreateNewsDto {
 	@ApiProperty({ type: Number })
 	@IsInt()
 	@Type(() => Number)
-	@IsNotEmpty()
+	@IsOptional()
 	city_id!: number;
 
 	@IsBoolean()
