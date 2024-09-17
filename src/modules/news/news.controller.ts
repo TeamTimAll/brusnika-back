@@ -21,7 +21,7 @@ import {
 } from "@nestjs/swagger";
 
 import { RoleType } from "../../constants";
-import { User } from "../../decorators";
+import { ApiDtoResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
@@ -35,6 +35,8 @@ import { UpdateNewsMetaDataDto } from "./dto/UpdateNews.dto";
 import { NewsService } from "./news.service";
 import { ReadAllNewsDto } from "./dto/read-all-news.dto";
 import { ToggleNewsMetaDataDto } from "./dto";
+import { NewsMetaDataDto } from "./dto/news.dto";
+import { UpdateNewsCategoryMetaDataDto } from "./dto/update-news-category.dto";
 
 @ApiTags("News")
 @Controller("news")
@@ -95,6 +97,23 @@ export class NewsController {
 		return this.service.update(id, dto.data);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Put("categories/:id")
+	@ApiOperation({
+		summary: "Update news categories",
+		description: `### News categoriyasini yangilash
+		\n **param** ma'lumotlari:
+		\n - **id** - [required] news category id'si
+		\n **data** ma'lumotlari:
+		\n - **name** - [required] categoriya nomi`,
+	})
+	@ApiDtoResponse(NewsMetaDataDto, HttpStatus.OK)
+	updateCategory(
+		@Param("id") id: number,
+		@Body() dto: UpdateNewsCategoryMetaDataDto,
+	) {
+		return this.service.updateCategory(id, dto.data);
+	}
 	@Get("categories")
 	@ApiOperation({ summary: "Get all news categories" })
 	async getCategories() {

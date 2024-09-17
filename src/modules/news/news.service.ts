@@ -22,6 +22,7 @@ import { NewsEntity } from "./news.entity";
 import { ReadAllNewsDto } from "./dto/read-all-news.dto";
 import { NewsCategoryNotFoundError } from "./errors/NewsCategoryNotFound.error";
 import { ToggleNewsDto } from "./dto";
+import { UpdateNewsCategoryDto } from "./dto/update-news-category.dto";
 
 interface NewsLikedResponse {
 	is_liked: boolean;
@@ -250,6 +251,23 @@ export class NewsService {
 		}
 		const mergedNews = this.newsRepository.merge(foundNews, dto);
 		return await this.newsRepository.save(mergedNews);
+	}
+
+	async updateCategory(id: number, dto: UpdateNewsCategoryDto) {
+		const foundCategory = await this.newsCategoriyRepository.findOne({
+			where: { id: id },
+		});
+
+		if (!foundCategory) {
+			throw new NewsCategoryNotFoundError(`id: ${id}`);
+		}
+
+		const mergedCategory = this.newsCategoriyRepository.merge(
+			foundCategory,
+			dto,
+		);
+
+		return await this.newsCategoriyRepository.save(mergedCategory);
 	}
 
 	async remove(id: number) {

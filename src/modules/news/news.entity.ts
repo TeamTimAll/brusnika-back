@@ -60,11 +60,17 @@ export class NewsEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	second_category_id?: number;
 
-	@ManyToOne(() => NewsCategoryEntity)
+	@ManyToOne(() => NewsCategoryEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: NewsCategoryEntity;
 
-	@ManyToOne(() => NewsCategoryEntity)
+	@ManyToOne(() => NewsCategoryEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
 	@JoinColumn({ name: "second_category_id" })
 	secondary_category!: NewsCategoryEntity;
 
