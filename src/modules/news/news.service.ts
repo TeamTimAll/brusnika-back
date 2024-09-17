@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, Repository } from "typeorm";
+import { Repository } from "typeorm";
+
+import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -20,6 +22,8 @@ import { NewsCategoryNotFoundError } from "./errors/NewsCategoryNotFound.error";
 import { NewsLikeNotEnabledError } from "./errors/NewsLikeNotEnabled.error";
 import { NewsNotFoundError } from "./errors/NewsNotFound.error";
 import { NewsEntity } from "./news.entity";
+import { ReadAllBannerNewsDto, ToggleNewsDto } from "./dto";
+import { UpdateNewsCategoryDto } from "./dto/update-news-category.dto";
 
 interface NewsLikedResponse {
 	is_liked: boolean;
@@ -72,6 +76,27 @@ export class NewsService {
 			user_id: user.user_id,
 		});
 		return { is_liked: true };
+	}
+
+	async toggleDraft(dto: ToggleNewsDto): Promise<DraftResponseDto> {
+		const news = await this.newsRepository.findOne({
+			select: { id: true, is_draft: true, title: true },
+			where: {
+				id: dto.news_id,
+			},
+		});
+
+		if (!news) {
+			throw new NewsNotFoundError(`id: ${dto.news_id}`);
+		}
+
+		await this.newsRepository.update(news.id, {
+			is_draft: !news.is_draft,
+		});
+
+		return {
+			is_draft: !news.is_draft,
+		};
 	}
 
 	async create(dto: CreateNewsDto, user: ICurrentUser) {
@@ -174,34 +199,70 @@ export class NewsService {
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
 			.loadRelationCountAndMap("news.likes_count", "news.likes")
-			.loadRelationCountAndMap("news.views_count", "news.views");
+			.loadRelationCountAndMap("news.views_count", "news.views")
+			.select([
+				"news.is_liked",
+				"news.id",
+				"news.is_active",
+				"news.created_at",
+				"news.updated_at",
+				"news.user_id",
+				"news.title",
+				"news.content",
+				"news.cover_image",
+				"news.is_like_enabled",
+				"news.is_extra_like_enabled",
+				"news.extra_like_icon",
+				"news.published_at",
+				"news.access",
+				"news.is_banner",
+				"news.is_draft",
+				"news.primary_category_id",
+				"primary_category",
+				"secondary_category",
+				"news.second_category_id",
+				"news.city_id",
+			])
+			.setParameter("user_id", user.user_id);
 
 		if (!(user.role === RoleType.ADMIN && payload.include_non_actives)) {
 			query = query.andWhere("news.is_active IS TRUE");
 		}
-		if (!payload.is_draft || user.role !== RoleType.ADMIN) {
+
+		if (!payload.is_draft && user.role !== RoleType.ADMIN) {
 			query = query.andWhere("news.is_draft IS FALSE");
 		}
+
 		if (payload.is_banner) {
 			query = query.andWhere("news.is_banner IS TRUE");
 		}
+
 		if (payload.city_id) {
-			query = query.andWhere("news.city_id = :city", {
-				city: payload.city_id,
-			});
+			query = query.andWhere(
+				"news.city_id = :city OR news.city_id IS NULL",
+				{
+					city: payload.city_id,
+				},
+			);
 		}
+
 		if (user.role !== RoleType.ADMIN) {
-			query = query.andWhere("news.access = :role", {
-				role: user.role,
-			});
+			query = query.andWhere(
+				"news.access = :role OR news.access IS NULL",
+				{
+					role: user.role,
+				},
+			);
 		}
-		query = query.orWhere(
-			new Brackets((qb) => {
-				qb.where("news.city_id IS NULL").andWhere(
-					"news.access IS NULL",
-				);
-			}),
-		);
+
+		if (payload.category_id) {
+			query = query.andWhere(
+				"news.primary_category_id = :category_id OR news.second_category_id = :category_id",
+				{
+					category_id: payload.category_id,
+				},
+			);
+		}
 
 		const newsCount = await query.getCount();
 
@@ -214,15 +275,49 @@ export class NewsService {
 		return metaData;
 	}
 
-	async banner() {
-		return this.newsRepository
+	async banner(user: ICurrentUser, payload: ReadAllBannerNewsDto) {
+		let query = this.newsRepository
 			.createQueryBuilder("news")
 			.leftJoinAndSelect("news.primary_category", "primary_category")
 			.leftJoinAndSelect("news.secondary_category", "secondary_category")
 			.loadRelationCountAndMap("news.likes_count", "news.likes")
 			.loadRelationCountAndMap("news.views_count", "news.views")
-			.where("news.is_banner IS TRUE")
-			.getMany();
+			.select([
+				"news.is_liked",
+				"news.id",
+				"news.is_active",
+				"news.created_at",
+				"news.updated_at",
+				"news.user_id",
+				"news.title",
+				"news.content",
+				"news.cover_image",
+				"news.is_like_enabled",
+				"news.is_extra_like_enabled",
+				"news.extra_like_icon",
+				"news.published_at",
+				"news.access",
+				"news.is_banner",
+				"news.is_draft",
+				"news.primary_category_id",
+				"primary_category",
+				"secondary_category",
+				"news.second_category_id",
+				"news.city_id",
+			])
+			.setParameter("user_id", user.user_id)
+			.where("news.is_banner IS TRUE");
+
+		if (payload.city_id) {
+			query = query.andWhere(
+				"news.city_id = :city OR news.city_id IS NULL",
+				{
+					city: payload.city_id,
+				},
+			);
+		}
+
+		return await query.getMany();
 	}
 
 	async update(id: number, dto: UpdateNewsDto) {
@@ -234,5 +329,51 @@ export class NewsService {
 		}
 		const mergedNews = this.newsRepository.merge(foundNews, dto);
 		return await this.newsRepository.save(mergedNews);
+	}
+
+	async updateCategory(id: number, dto: UpdateNewsCategoryDto) {
+		const foundCategory = await this.newsCategoriyRepository.findOne({
+			where: { id: id },
+		});
+
+		if (!foundCategory) {
+			throw new NewsCategoryNotFoundError(`id: ${id}`);
+		}
+
+		const mergedCategory = this.newsCategoriyRepository.merge(
+			foundCategory,
+			dto,
+		);
+
+		return await this.newsCategoriyRepository.save(mergedCategory);
+	}
+
+	async deleteCategory(id: number) {
+		const foundCategory = await this.newsCategoriyRepository.findOne({
+			where: { id: id },
+		});
+
+		if (!foundCategory) {
+			throw new NewsCategoryNotFoundError(`id: ${id}`);
+		}
+
+		await this.newsCategoriyRepository.delete(foundCategory.id);
+
+		return foundCategory;
+	}
+
+	async remove(id: number) {
+		const foundEvent = await this.newsRepository.findOne({
+			select: { id: true },
+			where: { id },
+		});
+
+		if (!foundEvent) {
+			throw new NewsNotFoundError(`id: ${id}`);
+		}
+
+		await this.newsRepository.delete(id);
+
+		return foundEvent;
 	}
 }
