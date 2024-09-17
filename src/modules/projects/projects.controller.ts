@@ -29,6 +29,7 @@ import { CreateProjectMetaDataDto } from "./dto/CreateProject.dto";
 import { ProjectFilterDto } from "./dto/ProjectFilter.dto";
 import { UpdateProjectMetaDataDto } from "./dto/UpdateProject.dto";
 import { ProjectService } from "./projects.service";
+import { ProjectSearchDto } from "./dto/ProjectSearch.dto";
 
 @ApiTags("Projects")
 @Controller("projects")
@@ -50,6 +51,12 @@ export class ProjectsController {
 	@HttpCode(HttpStatus.OK)
 	async getUniqueEndDates() {
 		return await this.projectsService.getUniqueEndDates();
+	}
+
+	@Get("/search")
+	@HttpCode(HttpStatus.OK)
+	async search(@Query() dto: ProjectSearchDto) {
+		return await this.projectsService.search(dto);
 	}
 
 	@Roles([RoleType.AFFILIATE_MANAGER])

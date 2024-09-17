@@ -35,15 +35,16 @@ import { AcceptInvitionMetaDataDto } from "./dtos/AcceptInvition.dto";
 import { BannerFilterDto } from "./dtos/BannerFilter.dto";
 import { CreateEventsMetaDataDto } from "./dtos/CreateEvents.dto";
 import { DeleteUserInvitationMetaDataDto } from "./dtos/DeleteUserInvitation.dto";
+import { EventSearchDto } from "./dtos/EventSearch.dto";
 import { EventsDto, FilterEventsDto } from "./dtos/FilterEvents.dto";
 import { InviteUsersMetaDataDto } from "./dtos/InviteUsers.dto";
 import { JoinToEventMetaDataDto } from "./dtos/JoinToEvent.dto";
 import { LeaveInvitionMetaDataDto } from "./dtos/LeaveInvition.dto";
+import { RecommendedEventDto } from "./dtos/RecommendedEvent.dto";
 import { ToggleEventMetaDataDto } from "./dtos/ToggleEvent.dto";
 import { UpdateEventsMetaDataDto } from "./dtos/UpdateEvents.dto";
 import { EventInvitationNotFoundError } from "./errors/EventInvitionNotFound.error";
 import { EventsService } from "./events.service";
-import { RecommendedEventDto } from "./dtos/RecommendedEvent.dto";
 
 @ApiTags("events")
 @Controller("/events")
@@ -99,6 +100,13 @@ export class EventsController {
 		@Query() dto: RecommendedEventDto,
 	) {
 		return await this.eventsService.recommend(dto, user);
+	}
+
+	@Get("search")
+	@HttpCode(HttpStatus.OK)
+	@ApiOkResponse({ type: EventsDto })
+	async search(@Query() dto: EventSearchDto) {
+		return await this.eventsService.search(dto);
 	}
 
 	@Get(":id")
