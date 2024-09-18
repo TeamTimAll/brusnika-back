@@ -14,6 +14,10 @@ export class CityService {
 		private cityRepository: Repository<CityEntity>,
 	) {}
 
+	get repository(): Repository<CityEntity> {
+		return this.cityRepository;
+	}
+
 	async create(dto: CreateCitiesDto) {
 		const city = this.cityRepository.create(dto);
 		return await this.cityRepository.save(city);

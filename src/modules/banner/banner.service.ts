@@ -28,8 +28,17 @@ export class BannerService {
 	async readAll(dto: BannerFilterDto) {
 		const pageSize = (dto.page - 1) * dto.limit;
 		return await this.bannerRepository.find({
+			where: { city_id: dto.city_id },
 			take: dto.limit,
 			skip: pageSize,
+		});
+	}
+
+	async readAllForSettings() {
+		return await this.cityService.repository.find({
+			relations: {
+				banner: true,
+			},
 		});
 	}
 
