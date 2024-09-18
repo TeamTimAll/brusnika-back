@@ -33,7 +33,7 @@ export class VisitsService {
 			await this.projectService.readOne(dto.project_id);
 		}
 		if (typeof dto.client_id !== "undefined") {
-			await this.clientService.readOne(dto.client_id);
+			await this.clientService.checkExists(dto.client_id);
 		}
 		if (typeof dto.agent_id !== "undefined") {
 			await this.userService.readOne(dto.agent_id);
@@ -67,7 +67,7 @@ export class VisitsService {
 			await this.projectService.readOne(dto.project_id);
 		}
 		if (typeof dto.client_id !== "undefined") {
-			await this.clientService.readOne(dto.client_id);
+			await this.clientService.checkExists(dto.client_id);
 		}
 		if (typeof dto.agent_id !== "undefined") {
 			await this.userService.readOne(dto.agent_id);

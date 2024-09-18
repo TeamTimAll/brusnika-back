@@ -121,7 +121,7 @@ export class BookingsService {
 			}
 		}
 		if (typeof dto.client_id !== "undefined") {
-			await this.clientService.readOne(dto.client_id);
+			await this.clientService.checkExists(dto.client_id);
 		}
 		const mergedBooking = this.bookingRepository.merge(foundBooking, dto);
 		return await this.bookingRepository.save(mergedBooking);
