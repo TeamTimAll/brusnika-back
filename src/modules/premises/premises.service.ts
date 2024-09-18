@@ -148,7 +148,7 @@ export class PremisesService {
 				"section.id = premise.section_id",
 			)
 			.leftJoinAndMapOne(
-				"building.project",
+				"premise.project",
 				ProjectEntity,
 				"project",
 				"project.id = building.project_id",
