@@ -413,4 +413,5 @@ truncate settings, comments, premises, leads, cities, agencies, users, projects,
 
 - [x] global search'da client search bilan muamo chiqishi mumkin. chunki client globalda hamma client'ni qidiryapti, client search'ni o'zida esa user role'iga munosib.
 
-- [ ] event banner false bo'lganlari chiqib ketyapti.
+- [x] event banner false bo'lganlari chiqib ketyapti.
+- [x] Calendar'ga city bo'yicha filer.
