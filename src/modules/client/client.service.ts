@@ -17,6 +17,7 @@ import { DeleteClientDto } from "./dto/DeleteClient.dto";
 import { FilterClientDto } from "./dto/FilterClient.dto";
 import { ClientExistsError } from "./errors/ClientExists.error";
 import { ClientNotFoundError } from "./errors/ClientNotFound.error";
+import { ClientDto } from "./dto/Client.dto";
 
 @Injectable()
 export class ClientService {
@@ -42,18 +43,6 @@ export class ClientService {
 		}
 		const client = this.clientRepository.create(dto);
 		return this.clientRepository.save(client);
-	}
-
-	async readOne(id: number) {
-		const foundClient = await this.clientRepository.findOne({
-			where: {
-				id: id,
-			},
-		});
-		if (!foundClient) {
-			throw new ClientNotFoundError(`id: ${id}`);
-		}
-		return foundClient;
 	}
 
 	async checkExists(id: number): Promise<void> {
@@ -271,6 +260,53 @@ export class ClientService {
 		metaData.setPagination(clientCount, dto.page, dto.limit);
 		metaData.data = await queryBuilder.getRawMany();
 		return metaData;
+	}
+
+	async readOne(id: number) {
+		const result = await this.clientRepository
+			.createQueryBuilder("c")
+			.select([
+				"c.id as id",
+				"c.fullname as fullname",
+				"c.phone_number as phone_number",
+				"c.actived_date as actived_date",
+				"c.comment as comment",
+				"c.fixing_type as fixing_type",
+				"c.expiration_date as expiration_date",
+				"c.node as node",
+				"COALESCE(JSON_AGG(l) FILTER (WHERE l.id IS NOT NULL), '[]') as leads",
+			])
+			.leftJoin(
+				(qb) => {
+					return qb
+						.select("l.*")
+						.addSelect(
+							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
+						)
+						.addSelect(
+							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name, 'type', p2.type) as premise",
+						)
+						.addSelect(
+							"JSON_BUILD_OBJECT('id', u.id, 'fullName', CONCAT(u.first_name, ' ', u.last_name)) as agent",
+						)
+						.from(LeadsEntity, "l")
+						.leftJoin("projects", "p", "p.id = l.project_id")
+						.leftJoin("premises", "p2", "p2.id = l.premise_id")
+						.leftJoin("users", "u", "u.id = l.agent_id")
+						.orderBy("l.id");
+				},
+				"l",
+				"c.id = l.client_id",
+			)
+			.groupBy("c.id")
+			.where("c.id = :id", { id })
+			.getRawOne<ClientDto>();
+
+		if (!result) {
+			throw new ClientNotFoundError();
+		}
+
+		return result;
 	}
 
 	async delete(
