@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AnalyticsModule } from "../analytics/analytics.module";
+import { BannerModule } from "../banner/banner.module";
 import { UserModule } from "../user/user.module";
 
 import { SettingsController } from "./settings.controller";
@@ -14,6 +15,7 @@ import { SettingsService } from "./settings.service";
 		TypeOrmModule.forFeature([SettingsEntity]),
 		UserModule,
 		AnalyticsModule,
+		BannerModule,
 	],
 	controllers: [SettingsController],
 	providers: [SettingsService, SettingsRepository],
