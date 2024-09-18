@@ -276,28 +276,33 @@ export class NewsService {
 
 		if (payload.city_id) {
 			query = query.andWhere(
-				"news.city_id = :city OR news.city_id IS NULL",
-				{
-					city: payload.city_id,
-				},
+				new Brackets((qb) => {
+					qb.where("news.city_id = :city_id", {
+						city_id: payload.city_id,
+					}).orWhere("news.city_id IS NULL");
+				}),
 			);
 		}
 
 		if (user.role !== RoleType.ADMIN) {
 			query = query.andWhere(
-				"news.access = :role OR news.access IS NULL",
-				{
-					role: user.role,
-				},
+				new Brackets((qb) => {
+					qb.where("news.access = :role", {
+						role: user.role,
+					}).orWhere("news.access IS NULL");
+				}),
 			);
 		}
 
 		if (payload.category_id) {
 			query = query.andWhere(
-				"news.primary_category_id = :category_id OR news.second_category_id = :category_id",
-				{
-					category_id: payload.category_id,
-				},
+				new Brackets((qb) => {
+					qb.where("news.primary_category_id = :category_id", {
+						category_id: payload.category_id,
+					}).orWhere("news.second_category_id = :category_id", {
+						category_id: payload.category_id,
+					});
+				}),
 			);
 		}
 
