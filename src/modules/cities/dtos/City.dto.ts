@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
+import { BannerDto } from "../../banner/dto/Banner.dto";
 import { CityEntity } from "../cities.entity";
 
 type ICityDto = Omit<CityEntity, "users">;
@@ -25,4 +26,8 @@ export class CityDto implements ICityDto {
 
 	@ApiProperty()
 	is_active!: boolean;
+}
+export class CityWitBannerDto extends CityDto {
+	@ApiProperty({ type: BannerDto, isArray: true })
+	banner!: BannerDto[];
 }

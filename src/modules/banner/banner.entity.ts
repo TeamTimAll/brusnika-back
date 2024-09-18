@@ -17,7 +17,7 @@ export class BannerEntity extends BaseEntity {
 	@Column({ type: "boolean", default: false })
 	open_in_tab!: boolean;
 
-	@ManyToOne(() => CityEntity, {
+	@ManyToOne(() => CityEntity, (c) => c.banner, {
 		onDelete: "SET NULL",
 		onUpdate: "SET NULL",
 	})

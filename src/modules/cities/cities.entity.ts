@@ -1,7 +1,8 @@
 import { Column, Entity, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
-import { UserEntity } from "../../modules/user/user.entity";
+import { BannerEntity } from "../banner/banner.entity";
+import { UserEntity } from "../user/user.entity";
 
 @Entity({ name: "cities" })
 export class CityEntity extends BaseEntity {
@@ -18,4 +19,10 @@ export class CityEntity extends BaseEntity {
 
 	@Column({ nullable: false, type: "varchar", default: "0.00" })
 	lat!: string;
+
+	@OneToMany(() => BannerEntity, (b) => b.city, {
+		onDelete: "SET NULL",
+		onUpdate: "SET NULL",
+	})
+	banner?: BannerEntity;
 }

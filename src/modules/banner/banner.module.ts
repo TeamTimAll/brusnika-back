@@ -18,5 +18,6 @@ import { BannerService } from "./banner.service";
 	],
 	controllers: [BannerController],
 	providers: [BannerService],
+	exports: [BannerService],
 })
 export class BannerModule {}
