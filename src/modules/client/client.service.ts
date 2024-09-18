@@ -6,6 +6,8 @@ import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadsEntity } from "../leads/leads.entity";
+import { PremiseEntity } from "../premises/premises.entity";
+import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
@@ -17,7 +19,6 @@ import { DeleteClientDto } from "./dto/DeleteClient.dto";
 import { FilterClientDto } from "./dto/FilterClient.dto";
 import { ClientExistsError } from "./errors/ClientExists.error";
 import { ClientNotFoundError } from "./errors/ClientNotFound.error";
-import { ClientDto } from "./dto/Client.dto";
 
 @Injectable()
 export class ClientService {
@@ -138,40 +139,51 @@ export class ClientService {
 	): Promise<BaseDto<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
-			.select([
-				"c.id as id",
-				"c.fullname as fullname",
-				"c.phone_number as phone_number",
-				"c.actived_date as actived_date",
-				"c.comment as comment",
-				"c.fixing_type as fixing_type",
-				"c.expiration_date as expiration_date",
-				"c.node as node",
-				"COALESCE(JSON_AGG(l) FILTER (WHERE l.id IS NOT NULL), '[]') as leads",
-			])
-			.leftJoin(
-				(qb) => {
-					return qb
-						.select("l.*")
-						.addSelect(
-							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
-						)
-						.addSelect(
-							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name, 'type', p2.type) as premise",
-						)
-						.addSelect(
-							"JSON_BUILD_OBJECT('id', u.id, 'fullName', CONCAT(u.first_name, ' ', u.last_name)) as agent",
-						)
-						.from(LeadsEntity, "l")
-						.leftJoin("projects", "p", "p.id = l.project_id")
-						.leftJoin("premises", "p2", "p2.id = l.premise_id")
-						.leftJoin("users", "u", "u.id = l.agent_id")
-						.orderBy("l.id");
-				},
+			.leftJoinAndMapMany(
+				"c.leads",
+				LeadsEntity,
 				"l",
 				"c.id = l.client_id",
 			)
-			.groupBy("c.id");
+			.leftJoinAndMapOne(
+				"l.project",
+				ProjectEntity,
+				"p",
+				"p.id = l.project_id",
+			)
+			.leftJoinAndMapOne(
+				"l.premise",
+				PremiseEntity,
+				"p2",
+				"p2.id = l.premise_id",
+			)
+			.leftJoinAndMapOne("l.agent", UserEntity, "u", "u.id = l.agent_id")
+			.select([
+				"c.id",
+				"c.fullname",
+				"c.phone_number",
+				"c.actived_date",
+				"c.comment",
+				"c.fixing_type",
+				"c.expiration_date",
+				"c.node",
+			])
+			.addSelect([
+				"l.id",
+				"l.client_id",
+				"l.agent_id",
+				"l.manager_id",
+				"l.project_id",
+				"l.premise_id",
+				"l.fee",
+				"l.current_status",
+				"l.lead_number",
+				"l.state",
+			])
+			.addSelect(["p.id", "p.name"])
+			.addSelect(["p2.id", "p2.name", "p2.type"])
+			.addSelect(["u.id", "u.fullName"])
+			.orderBy("l.id");
 
 		if (user.role === RoleType.AGENT) {
 			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
@@ -250,57 +262,68 @@ export class ClientService {
 			);
 		}
 
-		const clientCount = await queryBuilder.getCount();
-
 		const pageSize = (dto.page - 1) * dto.limit;
 
 		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
 
+		const [clients, clientCount] = await queryBuilder.getManyAndCount();
+
 		const metaData = BaseDto.create<ClientEntity[]>();
 		metaData.setPagination(clientCount, dto.page, dto.limit);
-		metaData.data = await queryBuilder.getRawMany();
+		metaData.data = clients;
 		return metaData;
 	}
 
 	async readOne(id: number) {
 		const result = await this.clientRepository
 			.createQueryBuilder("c")
-			.select([
-				"c.id as id",
-				"c.fullname as fullname",
-				"c.phone_number as phone_number",
-				"c.actived_date as actived_date",
-				"c.comment as comment",
-				"c.fixing_type as fixing_type",
-				"c.expiration_date as expiration_date",
-				"c.node as node",
-				"COALESCE(JSON_AGG(l) FILTER (WHERE l.id IS NOT NULL), '[]') as leads",
-			])
-			.leftJoin(
-				(qb) => {
-					return qb
-						.select("l.*")
-						.addSelect(
-							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
-						)
-						.addSelect(
-							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name, 'type', p2.type) as premise",
-						)
-						.addSelect(
-							"JSON_BUILD_OBJECT('id', u.id, 'fullName', CONCAT(u.first_name, ' ', u.last_name)) as agent",
-						)
-						.from(LeadsEntity, "l")
-						.leftJoin("projects", "p", "p.id = l.project_id")
-						.leftJoin("premises", "p2", "p2.id = l.premise_id")
-						.leftJoin("users", "u", "u.id = l.agent_id")
-						.orderBy("l.id");
-				},
+			.leftJoinAndMapMany(
+				"c.leads",
+				LeadsEntity,
 				"l",
 				"c.id = l.client_id",
 			)
-			.groupBy("c.id")
+			.leftJoinAndMapOne(
+				"l.project",
+				ProjectEntity,
+				"p",
+				"p.id = l.project_id",
+			)
+			.leftJoinAndMapOne(
+				"l.premise",
+				PremiseEntity,
+				"p2",
+				"p2.id = l.premise_id",
+			)
+			.leftJoinAndMapOne("l.agent", UserEntity, "u", "u.id = l.agent_id")
+			.select([
+				"c.id",
+				"c.fullname",
+				"c.phone_number",
+				"c.actived_date",
+				"c.comment",
+				"c.fixing_type",
+				"c.expiration_date",
+				"c.node",
+			])
+			.addSelect([
+				"l.id",
+				"l.client_id",
+				"l.agent_id",
+				"l.manager_id",
+				"l.project_id",
+				"l.premise_id",
+				"l.fee",
+				"l.current_status",
+				"l.lead_number",
+				"l.state",
+			])
+			.addSelect(["p.id", "p.name"])
+			.addSelect(["p2.id", "p2.name", "p2.type"])
+			.addSelect(["u.id", "u.fullName"])
+			.orderBy("l.id")
 			.where("c.id = :id", { id })
-			.getRawOne<ClientDto>();
+			.getOne();
 
 		if (!result) {
 			throw new ClientNotFoundError();
