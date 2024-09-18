@@ -35,7 +35,7 @@ export class CreateBannerDto implements IBannerEntity {
 
 	@ApiProperty()
 	@IsBoolean()
-	@IsNotEmpty()
+	@IsOptional()
 	open_in_tab!: boolean;
 
 	@ApiProperty()
