@@ -244,10 +244,8 @@ export class EventsService {
 	): Promise<EventsEntity[]> {
 		let eventsQuery = this.selectEventQuery(user)
 			.andWhere("e.is_banner IS TRUE")
-			.andWhere("e.is_draft IS FALSE")
-			.orWhere("e.create_by_id = :create_by_id", {
-				create_by_id: user.user_id,
-			});
+			.andWhere("e.is_draft IS FALSE");
+
 		const today_date = new Date();
 		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
 			today_date: today_date,
