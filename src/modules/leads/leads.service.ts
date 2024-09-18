@@ -48,7 +48,7 @@ export class LeadsService {
 		const foundProject = await this.prjectService.readOne(
 			foundBuilding.project_id,
 		);
-		await this.clientService.readOne(lead.client_id);
+		await this.clientService.checkExists(lead.client_id);
 		const foundAgent = await this.userService.repository.findOne({
 			where: {
 				id: lead.agent_id ?? IsNull(),
