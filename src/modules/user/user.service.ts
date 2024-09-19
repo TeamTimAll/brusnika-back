@@ -119,14 +119,8 @@ export class UserService {
 								dto.registered_at,
 							) as unknown as Date)
 						: undefined,
-				},
-				{
 					fullName: dto.text ? ILike(`%${dto.text}%`) : undefined,
-				},
-				{
 					phone: dto.text ? ILike(`%${dto.text}%`) : undefined,
-				},
-				{
 					agency: {
 						legalName: dto.text
 							? ILike(`%${dto.text}%`)
