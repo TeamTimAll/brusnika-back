@@ -20,9 +20,9 @@ export class CreateNotificationDto {
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
-	documentation!: string;
+	description!: string;
 
-	@ApiProperty()
+	@ApiProperty({ enum: NotificationType })
 	@IsEnum(NotificationType)
 	@IsNotEmpty()
 	type!: NotificationType;
