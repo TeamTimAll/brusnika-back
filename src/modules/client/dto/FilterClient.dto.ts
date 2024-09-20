@@ -12,6 +12,14 @@ import { Limit, Page } from "../../../decorators/pagination";
 import { LeadOpStatus } from "../../leads/lead_ops.entity";
 import { LeadState } from "../../leads/leads.entity";
 import { FixingType } from "../client.entity";
+import { Order } from "../../../constants";
+
+export enum ClientSortBy {
+	FULLNAME = "fullname",
+	FIXING_TYPE = "fixing_type",
+	ACTIVED_DATE = "actived_date",
+	EXPIRATION_DATE = "expiration_date",
+}
 
 export class FilterClientDto {
 	@ApiProperty({ required: false })
@@ -63,4 +71,14 @@ export class FilterClientDto {
 	@IsEnum(FixingType)
 	@IsOptional()
 	fixing_type?: FixingType;
+
+	@ApiProperty({ enum: ClientSortBy, required: false })
+	@IsEnum(ClientSortBy)
+	@IsOptional()
+	sort_by?: ClientSortBy;
+
+	@ApiProperty({ enum: Order, required: false })
+	@IsEnum(Order)
+	@IsOptional()
+	order_by?: Order = Order.ASC;
 }
