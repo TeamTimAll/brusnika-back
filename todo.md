@@ -417,5 +417,5 @@ truncate settings, comments, premises, leads, cities, agencies, users, projects,
 - [x] Calendar'ga city bo'yicha filer.
 - [x] Clinets uchun sort.
 - [x] Inpateka bank calculator.
-- [ ] Banner'ni settings'dan alohida olib chiqish kerak.
+- [x] Banner'ni settings'dan alohida olib chiqish kerak.
 - [ ] Banner bulk.
