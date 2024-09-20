@@ -416,4 +416,6 @@ truncate settings, comments, premises, leads, cities, agencies, users, projects,
 - [x] event banner false bo'lganlari chiqib ketyapti.
 - [x] Calendar'ga city bo'yicha filer.
 - [x] Clinets uchun sort.
-- [ ] Inpateka bank calculator.
+- [x] Inpateka bank calculator.
+- [ ] Banner'ni settings'dan alohida olib chiqish kerak.
+- [ ] Banner bulk.
