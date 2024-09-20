@@ -182,8 +182,14 @@ export class ClientService {
 			])
 			.addSelect(["p.id", "p.name"])
 			.addSelect(["p2.id", "p2.name", "p2.type"])
-			.addSelect(["u.id", "u.fullName"])
-			.orderBy("l.id");
+			.addSelect(["u.id", "u.fullName"]);
+
+		if (dto.sort_by) {
+			queryBuilder = queryBuilder.orderBy(
+				"c." + dto.sort_by,
+				dto.order_by,
+			);
+		}
 
 		if (user.role === RoleType.AGENT) {
 			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
