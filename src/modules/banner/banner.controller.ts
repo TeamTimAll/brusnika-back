@@ -22,6 +22,7 @@ import { CityNotFoundError } from "../cities/errors/CityNotFound.error";
 import { BannerService } from "./banner.service";
 import { BannerArrayMetaDataDto, BannerMetaDataDto } from "./dto/Banner.dto";
 import { BannerFilterDto } from "./dto/BannerFilter.dto";
+import { BulkBannerMetaDataDto } from "./dto/BulkBanner.dto";
 import { CreateBannerMetaDataDto } from "./dto/CreateBanner.dto";
 import { UpdateBannerMetaDataDto } from "./dto/UpdateBanner.dto";
 import { BannerNotFoundError } from "./errors/BannerNotFound.error";
@@ -42,10 +43,18 @@ export class BannerController {
 		return this.bannerService.create(dto.data);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Post("bulk")
+	@ApiErrorResponse(CityNotFoundError, "id: 'id'")
+	@ApiResponse({ type: BannerMetaDataDto })
+	async bulk(@Body() dto: BulkBannerMetaDataDto) {
+		return this.bannerService.bulk(dto.data);
+	}
+
 	@Get()
 	@ApiResponse({ type: BannerArrayMetaDataDto })
 	async readAll(@Query() dto: BannerFilterDto) {
-		return this.bannerService.readAll(dto);
+		return this.bannerService.readAllWithCities(dto);
 	}
 
 	@Get(":id")
