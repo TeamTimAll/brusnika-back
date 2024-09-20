@@ -1,11 +1,12 @@
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ILike, MoreThanOrEqual, Repository } from "typeorm";
+import { Brackets, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { AgencyEntity } from "../agencies/agencies.entity";
 import { AgencyService } from "../agencies/agencies.service";
 import { AuthResponeWithTokenDto } from "../auth/dtos/AuthResponeWithToken.dto";
 import { UserLoginResendCodeDto } from "../auth/dtos/UserLoginResendCode.dto";
@@ -16,6 +17,7 @@ import { VerificationCodeIsNotCorrectError } from "../auth/errors/VerificationCo
 import { VerificationExistsError } from "../auth/errors/VerificationExists.error";
 import { BookingRepository } from "../bookings/booking.repository";
 import { IUserCreation } from "../bookings/bookings.service";
+import { CityEntity } from "../cities/cities.entity";
 import { CityService } from "../cities/cities.service";
 import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
 import { SettingsRepository } from "../settings/settings.repository";
@@ -72,80 +74,96 @@ export class UserService {
 			dto.agency_id = foundUser?.agency_id;
 		}
 		const pageSize = (dto.page - 1) * dto.limit;
-		const [users, usersCount] = await this.userRepository.findAndCount({
-			select: [
-				"id",
-				"created_at",
-				"updated_at",
-				"firstName",
-				"lastName",
-				"role",
-				"email",
-				"username",
-				"password",
-				"phone",
-				"birthDate",
-				"workStartDate",
-				"verification_code",
-				"verification_code_sent_date",
-				"email_verification_code",
-				"email_verification_code_sent_date",
-				"avatar",
-				"register_status",
-				"fullName",
-				"is_phone_verified",
-				"is_email_verified",
-				"temporary_number",
-				"temporary_email",
-				"temporary_role",
-				"is_verified",
-				"status",
-				"city",
-				"city_id",
-				"agency",
-				"agency_id",
-			],
-			relations: {
-				agency: true,
-				city: true,
-			},
-			where: [
-				{
-					city_id: dto.city_id,
-					role: dto.role,
-					agency_id: dto.agency_id,
-					created_at: dto.registered_at
-						? (MoreThanOrEqual(
-								dto.registered_at,
-							) as unknown as Date)
-						: undefined,
-				},
-				{
-					fullName: dto.text ? ILike(`%${dto.text}%`) : undefined,
-				},
-				{
-					phone: dto.text ? ILike(`%${dto.text}%`) : undefined,
-				},
-				{
-					agency: {
-						legalName: dto.text
-							? ILike(`%${dto.text}%`)
-							: undefined,
-					},
-				},
-			],
-			// prettier-ignore
-			order: {
-				fullName: dto.sort_by === UserSortBy.FULLNAME ? dto.order_by : undefined,
-				role: dto.sort_by === UserSortBy.ROLE ? dto.order_by : undefined,
-				status: dto.sort_by === UserSortBy.STATUS ? dto.order_by : undefined,
-				created_at: dto.sort_by === UserSortBy.REGISTERED_AT ? dto.order_by : undefined,
-				agency: { legalName: dto.sort_by === UserSortBy.AGENCY_NAME ? dto.order_by : undefined},
-				city: { name: dto.sort_by === UserSortBy.CITY_NAME ? dto.order_by : undefined},
-			},
-			take: dto.limit,
-			skip: pageSize,
-		});
+		let userQuery = this.userRepository
+			.createQueryBuilder("u")
+			.leftJoinAndMapOne(
+				"u.agency",
+				AgencyEntity,
+				"a",
+				"a.id = u.agency_id",
+			)
+			.leftJoinAndMapOne("u.city", CityEntity, "c", "c.id = u.city_id")
+			.select([
+				"u.id",
+				"u.created_at",
+				"u.updated_at",
+				"u.fullName",
+				"u.firstName",
+				"u.lastName",
+				"u.role",
+				"u.email",
+				"u.username",
+				"u.password",
+				"u.phone",
+				"u.birthDate",
+				"u.workStartDate",
+				"u.avatar",
+				"u.is_phone_verified",
+				"u.is_email_verified",
+				"u.temporary_role",
+				"u.is_verified",
+				"u.status",
+				"c.id",
+				"c.name",
+				"u.city_id",
+				"a.id",
+				"a.legalName",
+				"u.agency_id",
+			])
+			.limit(dto.limit)
+			.offset(pageSize);
+		if (dto.city_id) {
+			userQuery = userQuery.where("u.city_id = :city_id", {
+				city_id: dto.city_id,
+			});
+		}
+		if (dto.role) {
+			userQuery = userQuery.andWhere("u.role = :role", {
+				role: dto.role,
+			});
+		}
+		if (dto.agency_id) {
+			userQuery = userQuery.andWhere("u.agency_id = :agency_id", {
+				agency_id: dto.agency_id,
+			});
+		}
+		if (dto.registered_at) {
+			userQuery = userQuery.andWhere("u.created_at <= :created_at", {
+				created_at: dto.registered_at,
+			});
+		}
+		if (dto.text) {
+			userQuery = userQuery.andWhere(
+				new Brackets((qb) => {
+					qb.where("CONCAT(u.first_name, ' ', u.last_name) ILIKE :fullname", {
+						fullname: `%${dto.text}%`,
+					})
+						.orWhere("u.phone ILIKE :phone", { phone: `%${dto.text}%` })
+						.orWhere("a.legalName ILIKE :legalName", {
+							legalName: `%${dto.text}%`,
+						});
+				}),
+			);
+		}
+		if (dto.sort_by === UserSortBy.FULLNAME) {
+			userQuery = userQuery.orderBy("u.fullName", dto.order_by);
+		}
+		if (dto.sort_by === UserSortBy.ROLE) {
+			userQuery = userQuery.orderBy("u.role", dto.order_by);
+		}
+		if (dto.sort_by === UserSortBy.STATUS) {
+			userQuery = userQuery.orderBy("u.status", dto.order_by);
+		}
+		if (dto.sort_by === UserSortBy.REGISTERED_AT) {
+			userQuery = userQuery.orderBy("u.created_at", dto.order_by);
+		}
+		if (dto.sort_by === UserSortBy.AGENCY_NAME) {
+			userQuery = userQuery.orderBy("a.name", dto.order_by);
+		}
+		if (dto.sort_by === UserSortBy.CITY_NAME) {
+			userQuery = userQuery.orderBy("c.name", dto.order_by);
+		}
+		const [users, usersCount] = await userQuery.getManyAndCount();
 
 		let agency_id: number | undefined;
 		if (user.role === RoleType.HEAD_OF_AGENCY) {

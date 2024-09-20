@@ -92,6 +92,9 @@ export class PremiseDto
 	@ApiProperty()
 	schema_id!: number;
 
+	@ApiProperty()
+	is_booked!: boolean;
+
 	@ApiProperty({ type: PremiseSchemaDto })
 	schema!: PremiseSchemaDto;
 }

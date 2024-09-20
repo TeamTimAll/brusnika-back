@@ -114,6 +114,17 @@ export class CalendarService {
 			);
 		}
 
+		if (dto.city_id) {
+			eventsQueryBuilder = eventsQueryBuilder.andWhere(
+				"e.city_id = :city_id",
+				{ city_id: dto.city_id },
+			);
+			visitsQueryBuilder = visitsQueryBuilder.andWhere(
+				"p.city_id = :city_id",
+				{ city_id: dto.city_id },
+			);
+		}
+
 		const visits = await visitsQueryBuilder.getRawMany<VisitsEntity>();
 		const events = await eventsQueryBuilder.getRawMany<EventsEntity>();
 

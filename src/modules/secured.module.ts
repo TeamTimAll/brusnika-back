@@ -12,8 +12,10 @@ import { StaticFilesMiddleware } from "../middlewares/StaticFilesMiddleware";
 
 import { AnalyticsModule } from "./analytics/analytics.module";
 import { AuthModule } from "./auth/auth.module";
+import { BannerModule } from "./banner/banner.module";
 import { BookingsModule } from "./bookings/bookings.module";
 import { BuildingsModule } from "./buildings/buildings.module";
+import { CalculatorModule } from "./calculator/calculator.module";
 import { CalendarModule } from "./calendar/calendar.module";
 import { CityModule } from "./cities/cities.module";
 import { ClientModule } from "./client/client.module";
@@ -65,6 +67,8 @@ import { VisitsModule } from "./visits/visits.module";
 		ContactModule,
 		SearchModule,
 		AnalyticsModule,
+		BannerModule,
+		CalculatorModule,
 	],
 	exports: [],
 })

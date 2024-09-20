@@ -21,6 +21,14 @@ export class ReadAllNewsDto {
 	@IsOptional()
 	city_id?: number;
 
+	@ApiPropertyOptional({
+		description: "Category id",
+	})
+	@IsInt()
+	@Type(() => Number)
+	@IsOptional()
+	category_id?: number;
+
 	@ApiPropertyOptional()
 	@Transform(({ value }) => value === "true")
 	@IsBoolean()

@@ -4,12 +4,18 @@ import {
 	Delete,
 	Get,
 	Inject,
+	Param,
 	Post,
 	Query,
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import {
+	ApiBearerAuth,
+	ApiOkResponse,
+	ApiOperation,
+	ApiTags,
+} from "@nestjs/swagger";
 
 import { RoleType } from "../../constants";
 import { User } from "../../decorators";
@@ -56,7 +62,7 @@ export class ClientController {
 		@User() user: ICurrentUser,
 		@Query() dto: ClientQuickSearchDto,
 	) {
-		return await this.clientService.quickSearch(dto.text, user);
+		return await this.clientService.search(dto, user);
 	}
 
 	@Roles([
@@ -79,6 +85,12 @@ export class ClientController {
 		@Query() dto: ClientSearchFromBmpsoftDto,
 	) {
 		return await this.clientService.searchFromBmpsoft(dto, user);
+	}
+
+	@Get(":id")
+	@ApiOperation({ summary: "Get Client by id" })
+	async getClientById(@Param("id") id: number) {
+		return this.clientService.readOne(id);
 	}
 
 	@Delete()

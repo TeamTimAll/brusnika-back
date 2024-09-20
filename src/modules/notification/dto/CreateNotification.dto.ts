@@ -1,6 +1,12 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsEnum, IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import {
+	IsEnum,
+	IsInt,
+	IsNotEmpty,
+	IsString,
+	ValidateNested,
+} from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 import { NotificationType } from "../notification.entity";
@@ -14,15 +20,16 @@ export class CreateNotificationDto {
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
-	documentation!: string;
+	description!: string;
 
-	@ApiProperty()
+	@ApiProperty({ enum: NotificationType })
 	@IsEnum(NotificationType)
 	@IsNotEmpty()
 	type!: NotificationType;
 
 	@ApiProperty()
-	@IsString()
+	@IsInt()
+	@Type(() => Number)
 	@IsNotEmpty()
 	object_id!: number;
 }

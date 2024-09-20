@@ -12,3 +12,7 @@ export function chunkArray<T>(array: T[], size: number): T[][] {
 	}
 	return chunks;
 }
+
+export function toArrayEnum<T>(array: string): T[] {
+	return array.slice(1, -1).split(",") as T[];
+}

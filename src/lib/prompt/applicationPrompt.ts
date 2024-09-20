@@ -51,6 +51,7 @@ export enum ApplicationPromptID {
 	USER_ALREADY_EXISTS_ERROR = 439,
 	CLIENT_EXISTS_ERROR = 440,
 	ANALYTICS_NOT_FOUND_ERROR = 441,
+	BANNER_NOT_FOUND_ERROR = 442,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -611,6 +612,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Analytics not found error",
 			ru: "Ошибка «Аналитика не найдена»",
 			uz: "Analytics not found error",
+		},
+	},
+	[ApplicationPromptID.BANNER_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.BANNER_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "banner_not_found_error",
+		promptLabels: {
+			en: "Banner not found error",
+			ru: "Ошибка «Баннер не найден»",
+			uz: "Banner not found error",
 		},
 	},
 };
