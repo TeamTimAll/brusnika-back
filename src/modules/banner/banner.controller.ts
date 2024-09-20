@@ -54,6 +54,12 @@ export class BannerController {
 	@Get()
 	@ApiResponse({ type: BannerArrayMetaDataDto })
 	async readAll(@Query() dto: BannerFilterDto) {
+		return this.bannerService.readAll(dto);
+	}
+
+	@Get("city")
+	@ApiResponse({ type: BannerArrayMetaDataDto })
+	async readAllWithCities(@Query() dto: BannerFilterDto) {
 		return this.bannerService.readAllWithCities(dto);
 	}
 
