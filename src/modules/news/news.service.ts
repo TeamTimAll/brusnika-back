@@ -286,7 +286,7 @@ export class NewsService {
 			query = query.andWhere("news.is_active IS TRUE");
 		}
 
-		if (!payload.is_draft && user.role !== RoleType.ADMIN) {
+		if (!payload.is_draft || user.role !== RoleType.ADMIN) {
 			query = query.andWhere("news.is_draft IS FALSE");
 		}
 
