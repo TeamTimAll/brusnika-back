@@ -29,6 +29,11 @@ export class CreateExchangeRequestDto {
 	@IsNotEmpty()
 	client_id!: number;
 
+	@ApiProperty()
+	@IsInt()
+	@IsNotEmpty()
+	agent_id!: number;
+
 	@ApiProperty({ enum: AccommodationType })
 	@IsEnum(AccommodationType)
 	@IsNotEmpty()

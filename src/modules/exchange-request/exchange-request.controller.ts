@@ -5,7 +5,7 @@ import {
 	HttpStatus,
 	Param,
 	Post,
-	// Query,
+	Query,
 	UseGuards,
 	UseInterceptors,
 } from "@nestjs/common";
@@ -17,14 +17,15 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateExchangeRequestMetaDataDto } from "./dto/create-exchange-request.dto";
-// import { FilterExchangeRequestDto } from "./dto/filter-exchange-request.dto";
+import { FilterExchangeRequestDto } from "./dto/filter-exchange-request.dto";
 import {
 	ExchangeRequestArrayMetaDataDto,
 	ExchangeRequestMetaDataDto,
 } from "./dto/exchange-request.dto";
 import { ExchangeRequestService } from "./exchange-request.service";
+import { UpdateExchangeRequestStatusDto } from "./dto/update-exchange-request.dto";
 
-@ApiTags("EXchange Request")
+@ApiTags("Exchange Request")
 @Controller("exchange-request")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -35,9 +36,8 @@ export class ExchangeRequestController {
 	@Get()
 	@ApiOperation({ summary: "Get all exchange requests" })
 	@ApiDtoResponse(ExchangeRequestArrayMetaDataDto, HttpStatus.OK)
-	// async readAll(@Query() dto: FilterExchangeRequestDto) {
-	async readAll() {
-		return await this.service.readAll();
+	async readAll(@Query() dto: FilterExchangeRequestDto) {
+		return await this.service.readAll(dto);
 	}
 
 	@Post()
@@ -56,5 +56,13 @@ export class ExchangeRequestController {
 	@ApiDtoResponse(ExchangeRequestMetaDataDto, HttpStatus.OK)
 	async readOne(@Param("id") id: number) {
 		return this.service.readOne(id);
+	}
+
+	@Post("/change-status")
+	@ApiDtoResponse(ExchangeRequestMetaDataDto, HttpStatus.OK)
+	async changeStatus(@Query() dto: UpdateExchangeRequestStatusDto) {
+		const res = await this.service.changeStatus(dto.id, dto.state);
+
+		return res;
 	}
 }

@@ -6,12 +6,14 @@ import { BaseDto, Dto } from "../../../common/base/base_dto";
 import {
 	AccommodationType,
 	ExchangeRequestEntity,
+	ExchangeRequestState,
 	PremiseCondition,
 } from "../exchange-request.entity";
+import { UserEntity } from "../../user/user.entity";
 
-type ITrainingDto = ExchangeRequestEntity;
+type IExchangeRequestDto = ExchangeRequestEntity;
 
-export class ExchangeRequestDto implements ITrainingDto {
+export class ExchangeRequestDto implements IExchangeRequestDto {
 	@ApiProperty()
 	id!: number;
 
@@ -42,6 +44,12 @@ export class ExchangeRequestDto implements ITrainingDto {
 	@ApiProperty()
 	client_id!: number;
 
+	@ApiProperty({ type: UserEntity })
+	agent!: UserEntity;
+
+	@ApiProperty()
+	agent_id!: number;
+
 	@ApiProperty()
 	client_price!: number;
 
@@ -50,6 +58,9 @@ export class ExchangeRequestDto implements ITrainingDto {
 
 	@ApiProperty()
 	floor!: number;
+
+	@ApiProperty({ enum: ExchangeRequestState })
+	state!: ExchangeRequestState;
 
 	@ApiProperty()
 	has_encumbrances!: boolean;
@@ -101,5 +112,5 @@ export class ExchangeRequestArrayMetaDataDto extends BaseDto<
 	@ApiProperty({ type: ExchangeRequestDto, isArray: true })
 	declare data: ExchangeRequestDto[];
 
-	desc = "### EXchange Request ma'lumotlari";
+	desc = "### Exchange Request ma'lumotlari";
 }

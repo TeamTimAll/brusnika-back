@@ -1,8 +1,9 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 import { ClientEntity } from "../client/client.entity";
 import { PremisesType } from "../premises/premises.entity";
 import { BaseEntity } from "../../common/base/base.entity";
+import { UserEntity } from "../user/user.entity";
 
 export enum AccommodationType {
 	NO = "нет",
@@ -25,7 +26,7 @@ export enum ExchangeRequestState {
 	COMPLETE = "Выиграна",
 }
 
-@Entity({ name: "exchange_request" })
+@Entity({ name: "exchange_requests" })
 export class ExchangeRequestEntity extends BaseEntity {
 	@Column({ nullable: false })
 	city!: string;
@@ -33,8 +34,24 @@ export class ExchangeRequestEntity extends BaseEntity {
 	@Column({ nullable: false })
 	street!: string;
 
+	@Column({
+		default: ExchangeRequestState.NOT_PROCESSED,
+		enum: ExchangeRequestState,
+	})
+	state!: ExchangeRequestState;
+
 	@Column({ nullable: false })
 	house_number!: number;
+
+	@ManyToOne(() => UserEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
+	@JoinColumn({ name: "agent_id" })
+	agent!: UserEntity;
+
+	@Column({ type: "integer" })
+	agent_id!: number;
 
 	@Column({ nullable: false, type: "enum", enum: PremisesType })
 	premise_type!: PremisesType;
