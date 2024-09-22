@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, Repository } from "typeorm";
+import { Brackets, Not, Repository } from "typeorm";
 
 import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 
@@ -8,6 +8,10 @@ import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { CityService } from "../cities/cities.service";
+import { NotificationType } from "../notification/notification.entity";
+import { NotificationService } from "../notification/notification.service";
+import { UserEntity } from "../user/user.entity";
+import { UserService } from "../user/user.service";
 
 import { ReadAllBannerNewsDto, ToggleNewsDto } from "./dto";
 import { CreateNewsDto } from "./dto/CreateNews.dto";
@@ -35,6 +39,8 @@ export class NewsService {
 		@InjectRepository(NewsEntity)
 		private newsRepository: Repository<NewsEntity>,
 		private readonly cityService: CityService,
+		private readonly notificationService: NotificationService,
+		private readonly userService: UserService,
 	) {}
 
 	@InjectRepository(NewsLikeEntity)
@@ -116,7 +122,21 @@ export class NewsService {
 
 		const news = this.newsRepository.create(dto);
 		news.user_id = user.user_id;
-		return await this.newsRepository.save(news);
+		const createdNews = await this.newsRepository.save(news);
+
+		const userTokens = (await this.userService.repository.find({
+			select: { id: true, firebase_token: true },
+			where: { id: Not(user.user_id) },
+		})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
+
+		await this.notificationService.sendToUsers(userTokens, {
+			title: "Новости",
+			description: `Новые новости созданы ${news.title}`,
+			type: NotificationType.CREATED_NEWS,
+			object_id: news.id,
+		});
+
+		return createdNews;
 	}
 
 	async createNewsCategory(dto: CreateNewsCategoriesDto) {
@@ -266,7 +286,7 @@ export class NewsService {
 			query = query.andWhere("news.is_active IS TRUE");
 		}
 
-		if (!payload.is_draft && user.role !== RoleType.ADMIN) {
+		if (!payload.is_draft || user.role !== RoleType.ADMIN) {
 			query = query.andWhere("news.is_draft IS FALSE");
 		}
 

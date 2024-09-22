@@ -1,7 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { BannerService } from "../banner/banner.service";
-
 import { UpdateSettingsDto } from "./dto/UpdateSettings.dto";
 import { SettingsNotFoundError } from "./errors/SettingsNotFound.error";
 import { SettingsEntity } from "./settings.entity";
@@ -12,7 +10,6 @@ export class SettingsService {
 	constructor(
 		@Inject()
 		private readonly settingsRepository: SettingsRepository,
-		private readonly bannerService: BannerService,
 	) {}
 
 	async read(): Promise<SettingsEntity> {
@@ -20,8 +17,6 @@ export class SettingsService {
 		if (!settings) {
 			throw new SettingsNotFoundError();
 		}
-		const banner = await this.bannerService.readAllForSettings();
-		settings.banner = banner;
 		return settings;
 	}
 

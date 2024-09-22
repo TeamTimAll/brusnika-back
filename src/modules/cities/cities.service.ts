@@ -55,9 +55,12 @@ export class CityService {
 	}
 
 	async checkExsitsIds(ids: number[]): Promise<void> {
-		const city = await this.cityRepository.existsBy({ id: In(ids) });
-		if (!city) {
-			throw new CityNotFoundError(`'${ids.join(", ")}' city not found`);
+		const cities = await this.cityRepository.find({
+			select: { id: true },
+			where: { id: In(ids) },
+		});
+		if (ids.length !== cities.length) {
+			throw new CityNotFoundError(`ids: '${ids.join(", ")}'`);
 		}
 	}
 
