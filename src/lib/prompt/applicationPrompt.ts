@@ -53,6 +53,7 @@ export enum ApplicationPromptID {
 	ANALYTICS_NOT_FOUND_ERROR = 441,
 	BANNER_NOT_FOUND_ERROR = 442,
 	Exchange_Request_NOT_FOUND_ERROR = 443,
+	Call_Request_NOT_FOUND_ERROR = 444,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -635,6 +636,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Exchange Request not found error",
 			ru: "Ошибка заяфка на обмен не найден»",
 			uz: "Exchange Request not found error",
+		},
+	},
+	[ApplicationPromptID.Call_Request_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.Call_Request_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "call_request_not_found_error",
+		promptLabels: {
+			en: "Call Request not found error",
+			ru: "Ошибка Заявка на звонок не найден»",
+			uz: "Call Request not found error",
 		},
 	},
 };
