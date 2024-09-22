@@ -10,6 +10,10 @@ import {
 	PremiseCondition,
 } from "../exchange-request.entity";
 import { UserEntity } from "../../user/user.entity";
+import {
+	ExchangeRequestOpsEntity,
+	ExchangeRequestStatus,
+} from "../exchange-request-ops.entity";
 
 type IExchangeRequestDto = ExchangeRequestEntity;
 
@@ -94,6 +98,12 @@ export class ExchangeRequestDto implements IExchangeRequestDto {
 
 	@ApiProperty()
 	total_area!: number;
+
+	@ApiProperty()
+	current_status!: ExchangeRequestStatus;
+
+	@ApiProperty()
+	exchange_request_ops!: ExchangeRequestOpsEntity[];
 }
 
 export class ExchangeRequestMetaDataDto

@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsInt } from "class-validator";
 import { Transform } from "class-transformer";
 
-import { ExchangeRequestState } from "../exchange-request.entity";
+import { ExchangeRequestStatus } from "../exchange-request-ops.entity";
 
 import {
 	CreateExchangeRequestDto,
@@ -19,7 +19,7 @@ export class UpdateExchangeRequestStatusDto {
 	@IsInt()
 	id!: number;
 
-	@ApiProperty()
-	@IsEnum(ExchangeRequestState)
-	state!: ExchangeRequestState;
+	@ApiProperty({ enum: ExchangeRequestStatus })
+	@IsEnum(ExchangeRequestStatus)
+	status!: ExchangeRequestStatus;
 }

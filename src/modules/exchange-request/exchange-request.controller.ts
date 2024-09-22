@@ -61,7 +61,7 @@ export class ExchangeRequestController {
 	@Post("/change-status")
 	@ApiDtoResponse(ExchangeRequestMetaDataDto, HttpStatus.OK)
 	async changeStatus(@Query() dto: UpdateExchangeRequestStatusDto) {
-		const res = await this.service.changeStatus(dto.id, dto.state);
+		const res = await this.service.changeStatus(dto.id, dto.status);
 
 		return res;
 	}

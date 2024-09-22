@@ -1,9 +1,14 @@
-import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { ClientEntity } from "../client/client.entity";
 import { PremisesType } from "../premises/premises.entity";
 import { BaseEntity } from "../../common/base/base.entity";
 import { UserEntity } from "../user/user.entity";
+
+import {
+	ExchangeRequestOpsEntity,
+	ExchangeRequestStatus,
+} from "./exchange-request-ops.entity";
 
 export enum AccommodationType {
 	NO = "нет",
@@ -18,12 +23,8 @@ export enum PremiseCondition {
 }
 
 export enum ExchangeRequestState {
-	NOT_PROCESSED = "Не обработана",
-	NEW = "Новая",
-	GRADE = "Оценка",
-	CONTRACT = "Составление договора",
-	BILL = "Формирование векселя",
-	COMPLETE = "Выиграна",
+	ACTIVE = "Активные",
+	FAILED = "Проиграна",
 }
 
 @Entity({ name: "exchange_requests" })
@@ -35,7 +36,7 @@ export class ExchangeRequestEntity extends BaseEntity {
 	street!: string;
 
 	@Column({
-		default: ExchangeRequestState.NOT_PROCESSED,
+		default: ExchangeRequestState.ACTIVE,
 		enum: ExchangeRequestState,
 	})
 	state!: ExchangeRequestState;
@@ -106,4 +107,20 @@ export class ExchangeRequestEntity extends BaseEntity {
 
 	@Column({ nullable: true })
 	advertisement_link?: string;
+
+	@Column({
+		enum: ExchangeRequestStatus,
+		default: ExchangeRequestStatus.NOT_PROCESSED,
+	})
+	current_status!: ExchangeRequestStatus;
+
+	@OneToMany(
+		() => ExchangeRequestOpsEntity,
+		(type) => type.exchange_request,
+		{
+			onDelete: "SET NULL",
+			onUpdate: "NO ACTION",
+		},
+	)
+	exchange_request_ops!: ExchangeRequestOpsEntity[];
 }
