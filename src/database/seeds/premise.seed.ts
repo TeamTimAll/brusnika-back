@@ -73,7 +73,7 @@ function createPremise(
 		price: faker.number.bigInt({ min: 1000000, max: 5000000 }),
 		size: size,
 		status: CommercialStatus.FREE,
-		purchaseOption: faker.helpers.arrayElements([
+		purchase_option: faker.helpers.arrayElements([
 			PuchaseOptions.MORTAGE,
 			PuchaseOptions.INSTALLMENT,
 			PuchaseOptions.BILL,
