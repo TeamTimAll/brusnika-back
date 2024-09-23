@@ -1,9 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
+
+import { Limit, Page } from "../../../decorators";
 
 export class ClientQuickSearchDto {
 	@ApiProperty({ required: false })
+	@Page()
+	page: number = 1;
+
+	@ApiProperty({ required: false })
+	@Limit()
+	limit: number = 10;
+
+	@ApiProperty()
 	@IsString()
-	@IsOptional()
-	text?: string;
+	@IsNotEmpty()
+	text!: string;
 }

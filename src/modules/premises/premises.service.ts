@@ -135,22 +135,26 @@ export class PremisesService {
 	getPremiseQuery(filter: PremisesFilterDto) {
 		let query = this.premiseRepository
 			.createQueryBuilder("premise")
-			.leftJoin(
+			.leftJoinAndMapOne(
+				"premise.building",
 				BuildingEntity,
 				"building",
 				"building.id = premise.building_id",
 			)
-			.leftJoin(
+			.leftJoinAndMapOne(
+				"premise.section",
 				SectionEntity,
 				"section",
 				"section.id = premise.section_id",
 			)
-			.leftJoin(
+			.leftJoinAndMapOne(
+				"premise.project",
 				ProjectEntity,
 				"project",
 				"project.id = building.project_id",
 			)
-			.leftJoin(
+			.leftJoinAndMapOne(
+				"premise.premise_schema",
 				PremiseSchemaEntity,
 				"premise_schema",
 				"premise_schema.premise_id = premise.id",
@@ -290,103 +294,85 @@ export class PremisesService {
 		const pageSize = (filter.page - 1) * filter.limit;
 		let query = this.getPremiseQuery(filter);
 
-		const premiseCount = await query
-			.select("COUNT(premise.id)::int AS premise_count")
-			.getRawMany<Record<"premise_count", number>>();
-
 		query = query
-			.leftJoin(SeasonEntity, "season", "season.id = premise.season_id")
+			.leftJoinAndMapOne(
+				"premise.season",
+				SeasonEntity,
+				"season",
+				"season.id = premise.season_id",
+			)
 			.groupBy("premise.id")
 			.addGroupBy("building.id")
 			.addGroupBy("section.id")
 			.addGroupBy("project.id")
+			.addGroupBy("season.id")
+			.addGroupBy("premise_schema.id")
 			.orderBy("project.id", "ASC");
 
 		query = query
 			.select([
-				"premise.id as id",
-				"premise.name as name",
-				"premise.type as type",
-				"premise.building as building",
-				"premise.building_id as building_id",
-				"premise.price as price",
-				"premise.size as size",
-				"premise.status as status",
-				"premise.purchase_option as purchaseOption",
-				"premise.number as number",
-				"premise.floor as floor",
-				"premise.photo as photo",
-				"premise.rooms as rooms",
-				"premise.photos as photos",
-				"premise.similiar_apartment_count as similiarApartmentCount",
-				"premise.mortage_payment as mortagePayment",
-				"premise.section_id as section_id",
-				"premise.is_sold as is_sold",
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-				'id', 							building.id,
-				'name', 						building.name,
-				'total_storage', 				building.total_storage,
-				'total_vacant_storage', 		building.total_vacant_storage,
-				'total_parking_space', 			building.total_parking_space,
-				'total_vacant_parking_space', 	building.total_vacant_parking_space,
-				'total_commercial', 			building.total_commercial,
-				'total_vacant_commercial', 		building.total_vacant_commercial,
-				'address', 						building.address,
-				'number_of_floors', 			building.number_of_floors,
-				'photos', 						building.photos,
-				'project_id', 					building.project_id,
-				'created_at', 					building."created_at",
-				'updated_at', 					building."updated_at"
-			)) as building`,
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-				'id',			section.id,
-				'name',			section.name,
-				'building_id',	section.building_id
-			)) as section`,
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-				'id',			season.id,
-				'created_at',	season.created_at,
-				'updated_at',	season.created_at,
-				'season_name',	season.season_name,
-				'year',			season.year,
-				'date',			season.date
-			)) as season`,
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-				'id',					project.id,
-				'name',					project.name,
-				'detailed_description',	project.detailed_description,
-				'brief_description',	project.brief_description,
-				'photo',				project.photo,
-				'price',				project.price,
-				'location',				project.location,
-				'long',					project.long,
-				'lat',					project.lat,
-				'link',					project.link,
-				'end_date',				project.end_date,
-				'city_id',				project.city_id
-			)) as project`,
-				`JSON_STRIP_NULLS(JSON_BUILD_OBJECT(
-				'id',					premise_schema.id,
-				'sunrise_angle',		premise_schema.sunrise_angle,
-				'schema_image',			premise_schema.schema_image
-			)) as schema`,
+				"premise.id",
+				"premise.name",
+				"premise.type",
+				"premise.building",
+				"premise.building_id",
+				"premise.price",
+				"premise.size",
+				"premise.status",
+				"premise.purchase_option",
+				"premise.number",
+				"premise.floor",
+				"premise.photo",
+				"premise.rooms",
+				"premise.photos",
+				"premise.similiar_apartment_count",
+				"premise.mortage_payment",
+				"premise.section_id",
+				"premise.is_sold",
+				"premise.is_booked",
+				"building.id",
+				"building.name",
+				"building.total_storage",
+				"building.total_vacant_storage",
+				"building.total_parking_space",
+				"building.total_vacant_parking_space",
+				"building.total_commercial",
+				"building.total_vacant_commercial",
+				"building.address",
+				"building.number_of_floors",
+				"building.photos",
+				"building.project_id",
+				"section.id",
+				"section.name",
+				"section.building_id",
+				"season.id",
+				"season.created_at",
+				"season.created_at",
+				"season.season_name",
+				"season.year",
+				"season.date",
+				"project.id",
+				"project.name",
+				"project.detailed_description",
+				"project.brief_description",
+				"project.photo",
+				"project.price",
+				"project.location",
+				"project.long",
+				"project.lat",
+				"project.link",
+				"project.end_date",
+				"project.city_id",
+				"premise_schema.id",
+				"premise_schema.sunrise_angle",
+				"premise_schema.schema_image",
 			])
-			.addSelect(
-				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) AS is_booked",
-			)
-			.addGroupBy("season.id")
-			.addGroupBy("premise_schema.id")
 			.limit(filter.limit)
 			.offset(pageSize);
 
-		const premises = await query.getRawMany<PremiseEntity>();
-
+		const [premises, premiseCount] = await query.getManyAndCount();
 		const metaData = BaseDto.create<PremiseEntity[]>();
-		metaData.setPagination(
-			premiseCount.length ? premiseCount[0].premise_count : 0,
-			filter.page,
-			filter.limit,
-		);
+		metaData.setPagination(premiseCount, filter.page, filter.limit);
 		metaData.data = premises;
 		return metaData;
 	}

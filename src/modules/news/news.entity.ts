@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	VirtualColumn,
+} from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { RoleType } from "../../constants";
@@ -53,23 +60,29 @@ export class NewsEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	second_category_id?: number;
 
-	@ManyToOne(() => NewsCategoryEntity)
+	@ManyToOne(() => NewsCategoryEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
 	@JoinColumn({ name: "primary_category_id" })
 	primary_category?: NewsCategoryEntity;
 
-	@ManyToOne(() => NewsCategoryEntity)
+	@ManyToOne(() => NewsCategoryEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
 	@JoinColumn({ name: "second_category_id" })
 	secondary_category!: NewsCategoryEntity;
 
 	@OneToMany(() => NewsViewEntity, (NewsViews) => NewsViews.news, {
 		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onUpdate: "NO ACTION",
 	})
 	views?: NewsViewEntity[];
 
 	@OneToMany(() => NewsLikeEntity, (NewsLikes) => NewsLikes.news, {
 		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onUpdate: "NO ACTION",
 	})
 	likes?: NewsLikeEntity[];
 
@@ -82,4 +95,10 @@ export class NewsEntity extends BaseEntity {
 
 	@Column({ type: "integer", nullable: true })
 	city_id?: number;
+
+	@VirtualColumn({
+		query: () =>
+			"COALESCE((SELECT TRUE FROM news_likes nl WHERE nl.news_id = news.id AND nl.user_id = :user_id LIMIT 1), FALSE)",
+	})
+	is_liked?: boolean;
 }

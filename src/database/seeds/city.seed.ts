@@ -13,8 +13,8 @@ export async function up(query: QueryBuilder<object>): Promise<CityEntity[]> {
 		{ name: "Тюмень", long: "65.5619", lat: "57.1553" },
 		{ name: "Новосибирск", long: "82.8964", lat: "54.9833" },
 		{ name: "Екатеринбург", long: "60.6454", lat: "56.8431" },
-		{ name: "Сургут", long: "73.3962", lat: "61.2546" },
-		{ name: "Курган", long: "65.3493", lat: "55.4590" },
+		{ name: "Сургут", long: "73.393032", lat: "61.241778" },
+		{ name: "Курган", long: "65.341118", lat: "55.441004" },
 		{ name: "Омск", long: "73.3645", lat: "54.9914" },
 	];
 

@@ -2,6 +2,8 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AnalyticsModule } from "../analytics/analytics.module";
+import { CityModule } from "../cities/cities.module";
+import { NotificationModule } from "../notification/notification.module";
 import { UserModule } from "../user/user.module";
 
 import { NewsCategoryEntity } from "./entities/categories.entity";
@@ -21,6 +23,8 @@ import { NewsService } from "./news.service";
 		]),
 		UserModule,
 		AnalyticsModule,
+		CityModule,
+		NotificationModule,
 	],
 	controllers: [NewsController],
 	providers: [NewsService],

@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CronJob } from "cron";
-import { Brackets, In, IsNull, Not, Repository } from "typeorm";
+import { Brackets, In, Not, Repository } from "typeorm";
 
 import { DraftResponseDto } from "common/dtos/draftResponse.dto";
 import { LikedResponseDto } from "common/dtos/likeResponse.dto";
@@ -9,8 +9,6 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
-import { FirebaseMessage, FirebaseService } from "../../lib/firebase";
-import { LogColor, logColorize } from "../../lib/log";
 import { AgencyService } from "../../modules/agencies/agencies.service";
 import { AgencyNotFoundError } from "../../modules/agencies/errors/AgencyNotFound.error";
 import { CityService } from "../../modules/cities/cities.service";
@@ -19,16 +17,15 @@ import { UserService } from "../../modules/user/user.service";
 import { AgencyEntity } from "../agencies/agencies.entity";
 import { CityEntity } from "../cities/cities.entity";
 import { NotificationNotFoundError } from "../notification/errors/NotificationNotFound.error";
-import {
-	NotificationEntity,
-	NotificationType,
-} from "../notification/notification.entity";
+import { NotificationType } from "../notification/notification.entity";
 import { NotificationService } from "../notification/notification.service";
 import { UserEntity } from "../user/user.entity";
+import { NotificationUserEntity } from "../notification/notification_user.entity";
 
 import { AcceptInvitionDto } from "./dtos/AcceptInvition.dto";
 import { BannerFilterDto } from "./dtos/BannerFilter.dto";
 import { CreateEventsDto } from "./dtos/CreateEvents.dto";
+import { EventSearchDto } from "./dtos/EventSearch.dto";
 import { FilterEventsDto, QueryType } from "./dtos/FilterEvents.dto";
 import { InviteUsersDto } from "./dtos/InviteUsers.dto";
 import { LeaveInvitionDto } from "./dtos/LeaveInvition.dto";
@@ -88,7 +85,7 @@ export class EventsService {
 					if (eventDate.getTime() > Date.now()) {
 						new CronJob(
 							eventDate,
-							() => this.sendWarning(e.id, e.title, e.city_id),
+							() => this.sendWarning(e.id, e.title),
 							null,
 							true,
 						);
@@ -111,6 +108,33 @@ export class EventsService {
 
 	get repository() {
 		return this.eventRepository;
+	}
+
+	async search(dto: EventSearchDto): Promise<BaseDto<EventsEntity[]>> {
+		const pageSize = (dto.page - 1) * dto.limit;
+		const [events, eventCount] = await this.eventRepository
+			.createQueryBuilder("e")
+			.select(["e.id", "e.title"] as Array<`e.${keyof EventsEntity}`>)
+			.where("e.is_active IS TRUE")
+			.andWhere(
+				new Brackets((qb) =>
+					qb
+						.where("e.title ILIKE :text", {
+							text: `%${dto.text}%`,
+						})
+						.orWhere("e.description ILIKE :text", {
+							text: `%${dto.text}%`,
+						}),
+				),
+			)
+			.limit(dto.limit)
+			.offset(pageSize)
+			.getManyAndCount();
+
+		const metaData = BaseDto.create<EventsEntity[]>();
+		metaData.setPagination(eventCount, dto.page, dto.limit);
+		metaData.data = events;
+		return metaData;
 	}
 
 	async readOne(id: number, user: ICurrentUser) {
@@ -216,10 +240,8 @@ export class EventsService {
 	): Promise<EventsEntity[]> {
 		let eventsQuery = this.selectEventQuery(user)
 			.andWhere("e.is_banner IS TRUE")
-			.andWhere("e.is_draft IS FALSE")
-			.orWhere("e.create_by_id = :create_by_id", {
-				create_by_id: user.user_id,
-			});
+			.andWhere("e.is_draft IS FALSE");
+
 		const today_date = new Date();
 		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
 			today_date: today_date,
@@ -359,35 +381,17 @@ export class EventsService {
 				select: { id: true, firebase_token: true },
 				where: {
 					role: In([RoleType.HEAD_OF_AGENCY, RoleType.AGENT]),
-					firebase_token: Not(IsNull()),
 					city_id: newEvent.city_id,
+					id: Not(user.user_id),
 				},
-				take: 500, // Firebase limit is 500
 			})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
-			if (userTokens.length) {
-				const notifications: NotificationEntity[] = [];
-				userTokens.forEach((u) => {
-					notifications.push(
-						this.notificationService.repository.create({
-							title: "Мероприятие",
-							description: `Новое мероприятие создано ${newEvent.title}`,
-							type: NotificationType.CREATED_EVENT,
-							user_id: u.id,
-							object_id: newEvent.id,
-						}),
-					);
-				});
 
-				const createdNotifications: NotificationEntity[] =
-					await this.notificationService.repository.save(
-						notifications,
-					);
-
-				await this.sendToFirebase(
-					createdNotifications,
-					userTokens.map((e) => e.firebase_token),
-				);
-			}
+			await this.notificationService.sendToUsers(userTokens, {
+				title: "Мероприятие",
+				description: `Новое мероприятие создано ${newEvent.title}`,
+				type: NotificationType.CREATED_EVENT,
+				object_id: newEvent.id,
+			});
 		}
 		const eventDate = new Date(
 			`${newEvent.date}T${newEvent.start_time}:00.000Z`,
@@ -395,12 +399,7 @@ export class EventsService {
 		if (eventDate.getTime() > Date.now()) {
 			new CronJob(
 				new Date(`${newEvent.date}T${newEvent.start_time}:00.000Z`), // Added :00 because time does not included
-				() =>
-					this.sendWarning(
-						newEvent.id,
-						newEvent.title,
-						newEvent.city_id,
-					),
+				() => this.sendWarning(newEvent.id, newEvent.title),
 				null,
 				true,
 			);
@@ -413,17 +412,12 @@ export class EventsService {
 		return newEvent;
 	}
 
-	private async sendWarning(
-		event_id: number,
-		event_title: string,
-		event_city_id: number,
-	) {
+	private async sendWarning(event_id: number, event_title: string) {
 		const eventInvitations = (await this.eventInvitationRepository.find({
 			select: { user: { id: true, firebase_token: true } },
 			relations: { user: true },
 			where: {
 				event_id: event_id,
-				user: { firebase_token: Not(IsNull()) },
 			},
 		})) as {
 			["user"]: Pick<
@@ -431,64 +425,16 @@ export class EventsService {
 				"id" | "firebase_token"
 			>;
 		}[];
-		const userTokens = (await this.userService.repository.find({
-			select: { id: true, firebase_token: true },
-			where: {
-				role: In([RoleType.HEAD_OF_AGENCY, RoleType.AGENT]),
-				firebase_token: Not(IsNull()),
-				city_id: event_city_id,
+
+		await this.notificationService.sendToUsers(
+			eventInvitations.map((e) => e.user),
+			{
+				title: "Мероприятие",
+				description: `Незадолго до начала мероприятия ${event_title}`,
+				type: NotificationType.WARNING_EVENT,
+				object_id: event_id,
 			},
-			take: 500, // Firebase limit is 500
-		})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
-		if (userTokens.length) {
-			const notifications: NotificationEntity[] = [];
-			eventInvitations.forEach((e) => {
-				notifications.push(
-					this.notificationService.repository.create({
-						title: "Мероприятие",
-						description: `Незадолго до начала мероприятия ${event_title}`,
-						type: NotificationType.WARNING_EVENT,
-						user_id: e.user.id,
-						object_id: event_id,
-					}),
-				);
-			});
-
-			const createdNotifications: NotificationEntity[] =
-				await this.notificationService.repository.save(notifications);
-			await this.sendToFirebase(
-				createdNotifications,
-				userTokens.map((e) => e.firebase_token),
-			);
-		}
-	}
-
-	private async sendToFirebase(
-		notifications: NotificationEntity[],
-		userTokens: Array<string | null | undefined>,
-	) {
-		const firebaseMessages: FirebaseMessage<NotificationEntity>[] = [];
-		notifications.forEach((n, i) => {
-			const token = userTokens[i];
-			if (token) {
-				firebaseMessages.push({
-					title: n.title,
-					message: n.description ?? "",
-					data: n,
-					token: token,
-				});
-			}
-		});
-		if (firebaseMessages.length) {
-			const response =
-				await FirebaseService.sendMessageBulk(firebaseMessages);
-			this.logger.log(
-				`${logColorize(LogColor.GREEN_TEXT, "Success count:")} ${response.successCount}`,
-			);
-			this.logger.log(
-				`${logColorize(LogColor.RED_TEXT, "Failure count:")} ${response.failureCount}`,
-			);
-		}
+		);
 	}
 
 	async update(id: number, dto: UpdateEventsDto) {
@@ -629,8 +575,6 @@ export class EventsService {
 			);
 		}
 		const invitations: EventInvitationEntity[] = [];
-		const notifications: NotificationEntity[] = [];
-		const firebaseTokens: Array<string | null> = [];
 		users.forEach((u) => {
 			invitations.push(
 				this.eventInvitationRepository.create({
@@ -638,29 +582,18 @@ export class EventsService {
 					event_id: foundEvent.id,
 				}),
 			);
-
-			notifications.push(
-				this.notificationService.repository.create({
-					title: "Мероприятие",
-					description: `Вас пригласили на мероприятие ${foundEvent.title}`,
-					type: NotificationType.EVENT,
-					user_id: u.id,
-					object_id: foundEvent.id,
-				}),
-			);
-
-			firebaseTokens.push(
-				u.firebase_token && u.firebase_token.length
-					? u.firebase_token
-					: null,
-			);
 		});
+
+		await this.notificationService.sendToUsers(users, {
+			title: "Мероприятие",
+			description: `Вас пригласили на мероприятие ${foundEvent.title}`,
+			type: NotificationType.EVENT,
+			object_id: foundEvent.id,
+		});
+
 		const createdInvitations =
 			await this.eventInvitationRepository.save(invitations);
-		const createdNotifications: NotificationEntity[] =
-			await this.notificationService.repository.save(notifications);
 
-		await this.sendToFirebase(createdNotifications, firebaseTokens);
 		return createdInvitations;
 	}
 
@@ -726,14 +659,19 @@ export class EventsService {
 				`event_id: ${foundEvent.id}, user_id: ${user.user_id}`,
 			);
 		}
-		const foundNotification =
-			await this.notificationService.repository.findOne({
-				select: { id: true },
-				where: {
-					user_id: user.user_id,
-					object_id: foundEvent.id,
-				},
-			});
+		const foundNotification = await this.notificationService.repository
+			.createQueryBuilder("n")
+			.select("n.id")
+			.leftJoin(NotificationUserEntity, "nu", "nu.notification_id = n.id")
+			.limit(1)
+			.orderBy("n.id", "DESC")
+			.where("nu.user_id = :user_id", {
+				user_id: user.user_id,
+			})
+			.andWhere("n.object_id = :object_id", {
+				object_id: foundEvent.id,
+			})
+			.getOne();
 		if (!foundNotification) {
 			throw new NotificationNotFoundError(
 				`event_id: ${foundEvent.id}, user_id: ${user.user_id}`,

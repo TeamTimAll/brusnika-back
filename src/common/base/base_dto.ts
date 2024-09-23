@@ -32,12 +32,15 @@ export class MetaPrompt {
 	meta!: object;
 }
 
-export class MetaLink {
+export interface MetaLink {
+	totalPage: number;
+	currPage: number;
+	limit: number;
+	total: number;
+}
+
+export interface MetaLinkWithModule extends MetaLink {
 	module_name?: SearchData["module_name"];
-	totalPage!: number;
-	currPage!: number;
-	limit!: number;
-	total!: number;
 }
 
 export class MetaDto<T = object> {
@@ -45,7 +48,7 @@ export class MetaDto<T = object> {
 	type: ResponseStatusType = ResponseStatusType.SUCCESS;
 
 	@IsOptional()
-	links!: MetaLink | MetaLink[];
+	links!: MetaLink | MetaLinkWithModule[];
 
 	@IsOptional()
 	taskId!: string;
@@ -97,7 +100,7 @@ export class BaseDto<T = unknown> {
 		return this;
 	}
 
-	setLinks(links: MetaLink[]) {
+	setLinks(links: MetaLinkWithModule[]) {
 		this.meta.links = links;
 		return this;
 	}
@@ -117,8 +120,16 @@ export class BaseDto<T = unknown> {
 		});
 	}
 
+	getPagination(): MetaLink {
+		return this.meta.links as MetaLink;
+	}
+
+	getPaginations(): MetaLinkWithModule {
+		return this.meta.links as MetaLinkWithModule;
+	}
+
 	setPaginations(paginations: Pagination[]): void {
-		const links: MetaLink[] = [];
+		const links: MetaLinkWithModule[] = [];
 		paginations.forEach((p) => {
 			const maxPage = Math.ceil(p.count / p.limit);
 			links.push({

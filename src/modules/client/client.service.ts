@@ -1,15 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ILike, Repository } from "typeorm";
+import { Brackets, ILike, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadsEntity } from "../leads/leads.entity";
+import { PremiseEntity } from "../premises/premises.entity";
+import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
 import { ClientEntity } from "./client.entity";
+import { ClientQuickSearchDto } from "./dto/ClientQuickSearch.dto";
 import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
 import { CreateClientDto } from "./dto/CreateClient.dto";
 import { DeleteClientDto } from "./dto/DeleteClient.dto";
@@ -43,18 +46,6 @@ export class ClientService {
 		return this.clientRepository.save(client);
 	}
 
-	async readOne(id: number) {
-		const foundClient = await this.clientRepository.findOne({
-			where: {
-				id: id,
-			},
-		});
-		if (!foundClient) {
-			throw new ClientNotFoundError(`id: ${id}`);
-		}
-		return foundClient;
-	}
-
 	async checkExists(id: number): Promise<void> {
 		const foundClient = await this.clientRepository.existsBy({ id: id });
 		if (!foundClient) {
@@ -62,32 +53,30 @@ export class ClientService {
 		}
 	}
 
-	async quickSearch(text: string = "", user: ICurrentUser) {
+	async search(
+		dto: ClientQuickSearchDto,
+		user: ICurrentUser,
+	): Promise<BaseDto<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
 			.select([
 				"c.id",
 				"c.fullname",
 				"c.phone_number",
-			] as `c.${keyof ClientEntity}`[])
-			.limit(25)
-			.where(
-				"(c.fullname ILIKE :fullname OR c.phone_number ILIKE :phone_number)",
+			] as `c.${keyof ClientEntity}`[]);
+		if (user.role === RoleType.AGENT) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.agent_id = :client_agent_id",
 				{
-					fullname: `%${text}%`,
-					phone_number: `%${text}%`,
+					client_agent_id: user.user_id,
 				},
 			);
-		if (user.role === RoleType.AGENT) {
-			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
-				client_agent_id: user.user_id,
-			});
 		} else if (user.role === RoleType.HEAD_OF_AGENCY) {
 			const foundUser = await this.userService.repository.findOne({
 				select: { agency_id: true },
 				where: { id: user.user_id },
 			});
-			queryBuilder = queryBuilder.where(
+			queryBuilder = queryBuilder.andWhere(
 				(qb) =>
 					"c.agent_id IN (" +
 					qb
@@ -101,7 +90,25 @@ export class ClientService {
 					")",
 			);
 		}
-		return queryBuilder.getMany();
+		queryBuilder = queryBuilder.andWhere(
+			new Brackets((qb) =>
+				qb
+					.where("c.fullname ILIKE :fullname", {
+						fullname: `%${dto.text}%`,
+					})
+					.orWhere("c.phone_number ILIKE :phone_number", {
+						phone_number: `%${dto.text}%`,
+					}),
+			),
+		);
+		const pageSize = (dto.page - 1) * dto.limit;
+		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
+		const [clients, clientCount] = await queryBuilder.getManyAndCount();
+
+		const metaData = BaseDto.create<ClientEntity[]>();
+		metaData.setPagination(clientCount, dto.page, dto.limit);
+		metaData.data = clients;
+		return metaData;
 	}
 
 	async searchFromBmpsoft(
@@ -132,39 +139,57 @@ export class ClientService {
 	): Promise<BaseDto<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
-			.select([
-				"c.id as id",
-				"c.fullname as fullname",
-				"c.phone_number as phone_number",
-				"c.actived_date as actived_date",
-				"c.comment as comment",
-				"c.fixing_type as fixing_type",
-				"c.expiration_date as expiration_date",
-				"c.node as node",
-				"COALESCE(JSON_AGG(l) FILTER (WHERE l.id IS NOT NULL), '[]') as leads",
-			])
-			.leftJoin(
-				(qb) => {
-					return qb
-						.select("l.*")
-						.addSelect(
-							"JSON_BUILD_OBJECT('id', p.id, 'name', p.name) as project",
-						)
-						.addSelect(
-							"JSON_BUILD_OBJECT('id', p2.id, 'name', p2.name) as premise",
-						)
-						.from(LeadsEntity, "l")
-						.leftJoin("projects", "p", "p.id = l.project_id")
-						.leftJoin("premises", "p2", "p2.id = l.premise_id")
-						.groupBy("l.id")
-						.addGroupBy("p.id")
-						.addGroupBy("p2.id")
-						.orderBy("l.id");
-				},
+			.leftJoinAndMapMany(
+				"c.leads",
+				LeadsEntity,
 				"l",
 				"c.id = l.client_id",
 			)
-			.groupBy("c.id");
+			.leftJoinAndMapOne(
+				"l.project",
+				ProjectEntity,
+				"p",
+				"p.id = l.project_id",
+			)
+			.leftJoinAndMapOne(
+				"l.premise",
+				PremiseEntity,
+				"p2",
+				"p2.id = l.premise_id",
+			)
+			.leftJoinAndMapOne("l.agent", UserEntity, "u", "u.id = l.agent_id")
+			.select([
+				"c.id",
+				"c.fullname",
+				"c.phone_number",
+				"c.actived_date",
+				"c.comment",
+				"c.fixing_type",
+				"c.expiration_date",
+				"c.node",
+			])
+			.addSelect([
+				"l.id",
+				"l.client_id",
+				"l.agent_id",
+				"l.manager_id",
+				"l.project_id",
+				"l.premise_id",
+				"l.fee",
+				"l.current_status",
+				"l.lead_number",
+				"l.state",
+			])
+			.addSelect(["p.id", "p.name"])
+			.addSelect(["p2.id", "p2.name", "p2.type"])
+			.addSelect(["u.id", "u.fullName"]);
+
+		if (dto.sort_by) {
+			queryBuilder = queryBuilder.orderBy(
+				"c." + dto.sort_by,
+				dto.order_by,
+			);
+		}
 
 		if (user.role === RoleType.AGENT) {
 			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
@@ -243,16 +268,74 @@ export class ClientService {
 			);
 		}
 
-		const clientCount = await queryBuilder.getCount();
-
 		const pageSize = (dto.page - 1) * dto.limit;
 
 		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
 
+		const [clients, clientCount] = await queryBuilder.getManyAndCount();
+
 		const metaData = BaseDto.create<ClientEntity[]>();
 		metaData.setPagination(clientCount, dto.page, dto.limit);
-		metaData.data = await queryBuilder.getRawMany();
+		metaData.data = clients;
 		return metaData;
+	}
+
+	async readOne(id: number) {
+		const result = await this.clientRepository
+			.createQueryBuilder("c")
+			.leftJoinAndMapMany(
+				"c.leads",
+				LeadsEntity,
+				"l",
+				"c.id = l.client_id",
+			)
+			.leftJoinAndMapOne(
+				"l.project",
+				ProjectEntity,
+				"p",
+				"p.id = l.project_id",
+			)
+			.leftJoinAndMapOne(
+				"l.premise",
+				PremiseEntity,
+				"p2",
+				"p2.id = l.premise_id",
+			)
+			.leftJoinAndMapOne("l.agent", UserEntity, "u", "u.id = l.agent_id")
+			.select([
+				"c.id",
+				"c.fullname",
+				"c.phone_number",
+				"c.actived_date",
+				"c.comment",
+				"c.fixing_type",
+				"c.expiration_date",
+				"c.node",
+			])
+			.addSelect([
+				"l.id",
+				"l.client_id",
+				"l.agent_id",
+				"l.manager_id",
+				"l.project_id",
+				"l.premise_id",
+				"l.fee",
+				"l.current_status",
+				"l.lead_number",
+				"l.state",
+			])
+			.addSelect(["p.id", "p.name"])
+			.addSelect(["p2.id", "p2.name", "p2.type"])
+			.addSelect(["u.id", "u.fullName"])
+			.orderBy("l.id")
+			.where("c.id = :id", { id })
+			.getOne();
+
+		if (!result) {
+			throw new ClientNotFoundError();
+		}
+
+		return result;
 	}
 
 	async delete(

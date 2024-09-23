@@ -5,6 +5,7 @@ import {
 	ManyToOne,
 	OneToMany,
 	OneToOne,
+	VirtualColumn,
 } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
@@ -140,4 +141,10 @@ export class PremiseEntity extends BaseEntity {
 		onUpdate: "NO ACTION",
 	})
 	bookings?: BookingsEntity[];
+
+	@VirtualColumn({
+		query: (alias) =>
+			`COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = ${alias}.id LIMIT 1), FALSE)`,
+	})
+	is_booked?: boolean;
 }
