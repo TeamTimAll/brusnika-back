@@ -73,7 +73,7 @@ export class PremiseEntity extends BaseEntity {
 		enum: PuchaseOptions,
 		default: [PuchaseOptions.MORTAGE],
 	})
-	purchaseOption!: PuchaseOptions[];
+	purchase_option!: PuchaseOptions[];
 
 	@Column({ nullable: true, type: "varchar" })
 	number!: number;
