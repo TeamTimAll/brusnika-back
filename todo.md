@@ -421,6 +421,6 @@ truncate settings, comments, premises, leads, cities, agencies, users, projects,
 - [x] Banner bulk.
 
 - [ ] Premise meta-basket. Link gen qilish uchun request yuboriladi. Link heshlanib qaytarilib berilishi kerak. Padbor database'da saqlanmaydi. Gen qilingan link'ni ichidan olinadi. 
-- [ ] Visit'lar cencel qilinsa kalendar'ga chiqarmaslik.
+- [x] Visit'lar cencel qilinsa kalendar'ga chiqarmaslik.
 - [ ] Lead status'ga misol yozish kerak.
-- [ ] Bron limit agent va head of agency'ga ko'rinsin.
+- [x] Bron limit agent va head of agency'ga ko'rinsin.

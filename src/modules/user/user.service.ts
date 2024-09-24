@@ -135,10 +135,15 @@ export class UserService {
 		if (dto.text) {
 			userQuery = userQuery.andWhere(
 				new Brackets((qb) => {
-					qb.where("CONCAT(u.first_name, ' ', u.last_name) ILIKE :fullname", {
-						fullname: `%${dto.text}%`,
-					})
-						.orWhere("u.phone ILIKE :phone", { phone: `%${dto.text}%` })
+					qb.where(
+						"CONCAT(u.first_name, ' ', u.last_name) ILIKE :fullname",
+						{
+							fullname: `%${dto.text}%`,
+						},
+					)
+						.orWhere("u.phone ILIKE :phone", {
+							phone: `%${dto.text}%`,
+						})
 						.orWhere("a.legalName ILIKE :legalName", {
 							legalName: `%${dto.text}%`,
 						});
@@ -255,14 +260,22 @@ export class UserService {
 		if (!settings) {
 			throw new SettingsNotFoundError();
 		}
+
 		const metaData = BaseDto.create<UserEntity>();
 		metaData.data = foundUser;
 		metaData.meta.data = {
 			user_created_count: userCreatedCount,
-			max_user_creation_limit: settings.booking_limit,
 			remaining_user_creation_limit:
 				settings.booking_limit - userCreatedCount,
 		} as IUserCreation;
+
+		if (
+			foundUser.role === RoleType.HEAD_OF_AGENCY ||
+			foundUser.role === RoleType.AGENT
+		) {
+			(metaData.meta.data as IUserCreation).max_user_creation_limit =
+				settings.booking_limit;
+		}
 		return metaData;
 	}
 
