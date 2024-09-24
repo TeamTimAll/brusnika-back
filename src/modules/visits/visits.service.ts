@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
@@ -11,7 +11,7 @@ import { UserService } from "../user/user.service";
 import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
 import { UpdateVisitsDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
-import { VisitsEntity } from "./visits.entity";
+import { VisitsEntity, VisitStatus } from "./visits.entity";
 
 @Injectable()
 export class VisitsService {
@@ -44,7 +44,7 @@ export class VisitsService {
 
 	async readAll(user: ICurrentUser): Promise<VisitsEntity[]> {
 		return this.visitsRepository.find({
-			where: { agent_id: user.user_id },
+			where: { agent_id: user.user_id, status: Not(VisitStatus.FAIL) },
 		});
 	}
 
@@ -62,7 +62,7 @@ export class VisitsService {
 		id: number,
 		dto: Partial<UpdateVisitsDto>,
 	): Promise<VisitsEntity> {
-		const foundCity = await this.readOne(id);
+		let foundVisit = await this.readOne(id);
 		if (typeof dto.project_id !== "undefined") {
 			await this.projectService.readOne(dto.project_id);
 		}
@@ -72,13 +72,16 @@ export class VisitsService {
 		if (typeof dto.agent_id !== "undefined") {
 			await this.userService.readOne(dto.agent_id);
 		}
-		const mergedCity = this.visitsRepository.merge(foundCity, dto);
-		return await this.visitsRepository.save(mergedCity);
+
+		const mergedCity = this.visitsRepository.merge(foundVisit, dto);
+		foundVisit = await this.visitsRepository.save(mergedCity);
+
+		return foundVisit;
 	}
 
 	async delete(id: number): Promise<VisitsEntity> {
-		const foundCity = await this.readOne(id);
+		const foundVisit = await this.readOne(id);
 		await this.visitsRepository.delete(id);
-		return foundCity;
+		return foundVisit;
 	}
 }
