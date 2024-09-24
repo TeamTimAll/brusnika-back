@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsEnum, IsInt, IsOptional } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Transform, Type } from "class-transformer";
+import { IsBoolean, IsEnum, IsInt, IsOptional } from "class-validator";
 
 import { Order } from "../../../constants";
 import { Limit, Page } from "../../../decorators";
@@ -25,6 +25,12 @@ export class LeadReadByFilterDto {
 	@IsOptional()
 	@IsEnum(PremisesType)
 	premise_type?: PremisesType;
+
+	@ApiPropertyOptional()
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_finished?: boolean;
 
 	@ApiProperty({ required: false, enum: LeadOpStatus })
 	@IsOptional()
