@@ -2,17 +2,17 @@ import crypto from "crypto";
 
 import { ConfigManager } from "../config";
 
-interface IEncryptedText {
+export interface IEncryptedText {
 	key: string;
 	iv: string;
 	data: string;
 }
 
-export function encryptText(plainText: string): string {
+export function encrypt(data: string): IEncryptedText {
 	const aesKey = crypto.randomBytes(32);
 	const iv = crypto.randomBytes(16); // Initialization vector
 	const cipher = crypto.createCipheriv("aes-256-cbc", aesKey, iv);
-	let encryptedData = cipher.update(plainText, "utf8", "base64");
+	let encryptedData = cipher.update(data, "utf8", "base64");
 	encryptedData += cipher.final("base64");
 	const encryptedKey = crypto
 		.publicEncrypt(
@@ -25,19 +25,15 @@ export function encryptText(plainText: string): string {
 		)
 		.toString("base64");
 
-	return JSON.stringify({
+	return {
 		key: encryptedKey,
 		iv: iv.toString("base64"),
 		data: encryptedData,
-	});
+	};
 }
 
-export function decryptText(encryptedText: string): string {
-	const {
-		key: encryptedKey,
-		iv,
-		data,
-	} = JSON.parse(encryptedText) as IEncryptedText;
+export function decrypt(encryption: IEncryptedText): string {
+	const { key: encryptedKey, iv, data } = encryption;
 	const decryptedAesKey = crypto.privateDecrypt(
 		{
 			key: ConfigManager.config.PRIVATE_KEY,
