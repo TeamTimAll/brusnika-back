@@ -393,8 +393,8 @@ Admin va Affiliate manager city bo'yicha va vaqt oralig'i bo'yicha quyidagi ma'l
 - Faol foydalanuvchilar soni (platformaga kirishning mavjudligi) jami va rollar bo'yicha
 - [x] Barcha yangiliklarni ko'rish soni jami
 - [x] Barcha yangiliklarni yoqtirishlar soni jami
-- Yangiliklar bo'yicha yoqtirishlar ro'yhati, sanasi, kim qo'ygan
-- Yaratilgan to'plamlar soni jami project'lar va builing'lar bo'yicha.
+- [x] Yangiliklar bo'yicha yoqtirishlar ro'yhati, sanasi, kim qo'ygan
+- [x] Yaratilgan to'plamlar soni jami project'lar va builing'lar bo'yicha.
 - [x] "выиграна" status'iga o'tgan lead'larning soni
 - [x] lead'larning soni
 - "выиграна" status'iga o'tgan lead'lar mukofotlar summasi. Lead'dagi fee'dan olinadi.

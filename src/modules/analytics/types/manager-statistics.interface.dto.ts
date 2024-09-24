@@ -1,5 +1,5 @@
 export interface ICompletedLeadsRatingResponse {
-	total: number;
+	total: string;
 	agency_name: string;
 	last_name: string;
 	first_name: string;

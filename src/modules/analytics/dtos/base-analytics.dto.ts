@@ -3,7 +3,7 @@ import { IsDateString, IsNotEmpty } from "class-validator";
 
 import { Limit, Page } from "../../../decorators";
 
-export class ManagerAnalyticsDto {
+export class BaseAnalyticsDto {
 	@ApiProperty()
 	@IsDateString()
 	@IsNotEmpty()

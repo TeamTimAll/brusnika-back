@@ -724,40 +724,4 @@ export class EventsService {
 		await this.eventRepository.delete(id);
 		return foundEvent;
 	}
-
-	async getTopEventsByViews(
-		fromDate: Date,
-		toDate: Date,
-		page: number,
-		limit: number,
-	): Promise<BaseDto<EventsEntity[]>> {
-		const offset = (page - 1) * limit;
-
-		let query = this.eventRepository
-			.createQueryBuilder("events")
-			.leftJoinAndSelect("event_views", "views")
-			.select([
-				"events.id",
-				"events.title",
-				"events.photo",
-				"events.tags",
-				"COUNT(DISTINCT views.id) AS views_count",
-			])
-			.where("events.date BETWEEN :fromDate AND :toDate", {
-				fromDate,
-				toDate,
-			})
-			.groupBy("events.id")
-			.orderBy("views_count", "DESC");
-
-		const count = await query.getCount();
-
-		query = query.limit(limit).offset(offset);
-
-		const metaData = BaseDto.create<EventsEntity[]>();
-		metaData.setPagination(count, page, limit);
-		metaData.data = await query.getMany();
-
-		return metaData;
-	}
 }

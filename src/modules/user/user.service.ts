@@ -136,10 +136,15 @@ export class UserService {
 		if (dto.text) {
 			userQuery = userQuery.andWhere(
 				new Brackets((qb) => {
-					qb.where("CONCAT(u.first_name, ' ', u.last_name) ILIKE :fullname", {
-						fullname: `%${dto.text}%`,
-					})
-						.orWhere("u.phone ILIKE :phone", { phone: `%${dto.text}%` })
+					qb.where(
+						"CONCAT(u.first_name, ' ', u.last_name) ILIKE :fullname",
+						{
+							fullname: `%${dto.text}%`,
+						},
+					)
+						.orWhere("u.phone ILIKE :phone", {
+							phone: `%${dto.text}%`,
+						})
 						.orWhere("a.legalName ILIKE :legalName", {
 							legalName: `%${dto.text}%`,
 						});
@@ -551,35 +556,41 @@ export class UserService {
 	}
 
 	async getUserCountByDate(
-		role: RoleType,
-		fromDate: string,
-		toDate: string,
+		fromDate: Date,
+		toDate: Date,
+		role?: RoleType,
 	): Promise<IUserDailyStatistics[]> {
-		const query: IUserDailyStatistics[] = await this.userRepository
+		const query = this.userRepository
 			.createQueryBuilder("users")
 			.select("DATE(users.created_at)", "date")
 			.addSelect("COUNT(users.id)", "count")
 			.where("users.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
-			})
-			.andWhere("users.role = :role", { role })
-			.groupBy("DATE(users.created_at)")
-			.orderBy("DATE(users.created_at)", "ASC")
-			.getRawMany();
+			});
 
-		return query;
+		if (role) {
+			query.andWhere("users.role = :role", { role });
+		}
+
+		query
+			.groupBy("DATE(users.created_at)")
+			.orderBy("DATE(users.created_at)", "ASC");
+
+		const result: IUserDailyStatistics[] = await query.getRawMany();
+
+		return result;
 	}
 
 	async getUserCountByCity(
 		fromDate: Date,
 		toDate: Date,
-		role?: string,
+		role?: RoleType,
 	): Promise<IUserStatisticsByCity[]> {
 		const query = this.userRepository
-			.createQueryBuilder("users")
-			.select(["city.name AS city_name", "COUNT(user.id) AS count"])
-			.leftJoin("cities", "city")
+			.createQueryBuilder("user")
+			.leftJoin("user.city", "city")
+			.select(["city.name AS city_name", "COUNT(user.id)::INT AS count"])
 			.where("user.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
