@@ -18,6 +18,7 @@ import {
 } from "@nestjs/swagger";
 
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
+import { ConfigManager } from "../../config";
 
 import { CreatePremisesMetaDataDto } from "./dtos/CreatePremises.dto";
 import { PremiseDto } from "./dtos/Premises.dto";
@@ -65,18 +66,57 @@ export class PremisesController {
 		if (!dto.ids) {
 			return [];
 		}
-		/*
-			If the query id is single, the @Query decorator returns a string.
- 			We need to check if it is a string or not. Because getMultiplePremisesByIds
-			function accepts array of strings.
-		*/
+
 		if (typeof dto.ids === "number") {
 			dto.ids = [dto.ids];
 		}
+
 		return await this.service.getMultiplePremisesByIds(
 			dto.ids,
 			dto.limit,
 			dto.page,
+		);
+	}
+
+	@ApiResponse({ status: HttpStatus.OK, type: PremiseDto })
+	@Get("/link/:ids")
+	createLink(@Query() dto: PremisesIdsDto) {
+		const encryptionKey = ConfigManager.config.LINK_ENCRYPTION_KEY;
+
+		if (!dto.ids) {
+			dto.ids = [];
+		}
+
+		if (typeof dto.ids === "number") {
+			dto.ids = [dto.ids];
+		}
+
+		const encryptedLink = this.service.createEncryptedLink(
+			dto.ids,
+			encryptionKey,
+			dto.page,
+			dto.limit,
+		);
+
+		return encryptedLink;
+	}
+
+	@ApiResponse({ status: HttpStatus.OK, type: PremiseDto })
+	@Get("decrypt/:link")
+	async premisesByLink(@Param("link") link: string) {
+		const encryptionKey = ConfigManager.config.LINK_ENCRYPTION_KEY;
+
+		const data = JSON.parse(
+			this.service.decryptLink(
+				Buffer.from(link, "base64").toString(),
+				encryptionKey,
+			),
+		) as { ids: number[]; page: number; limit: number };
+
+		return await this.service.getMultiplePremisesByIds(
+			data.ids,
+			data.limit,
+			data.page,
 		);
 	}
 
