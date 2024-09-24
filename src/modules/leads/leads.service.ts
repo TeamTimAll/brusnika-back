@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { IsNull, Repository } from "typeorm";
+import { In, IsNull, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -82,6 +82,7 @@ export class LeadsService {
 
 	async readAll(dto: LeadReadByFilterDto): Promise<BaseDto<LeadsEntity[]>> {
 		const pageSize = (dto.page - 1) * dto.limit;
+
 		const [leads, leadsCount] = await this.leadRepository.findAndCount({
 			select: {
 				project: {
@@ -121,7 +122,9 @@ export class LeadsService {
 				client: {
 					id: dto.client_id,
 				},
-				current_status: dto.status,
+				current_status: dto.is_finished
+					? In([LeadOpStatus.FAILED, LeadOpStatus.WON])
+					: dto.status,
 			},
 			relations: {
 				lead_ops: true,

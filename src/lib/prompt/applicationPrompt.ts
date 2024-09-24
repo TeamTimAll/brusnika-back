@@ -54,6 +54,7 @@ export enum ApplicationPromptID {
 	BANNER_NOT_FOUND_ERROR = 442,
 	Exchange_Request_NOT_FOUND_ERROR = 443,
 	Call_Request_NOT_FOUND_ERROR = 444,
+	INVALID_LINK = 445,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -647,6 +648,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Call Request not found error",
 			ru: "Ошибка Заявка на звонок не найден»",
 			uz: "Call Request not found error",
+		},
+	},
+	[ApplicationPromptID.INVALID_LINK]: {
+		promptId: ApplicationPromptID.INVALID_LINK,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "invalid_link_error",
+		promptLabels: {
+			en: "invalid encrypted link",
+			ru: "недействительная зашифрованная ссылка",
+			uz: "invalid encrypted link",
 		},
 	},
 };

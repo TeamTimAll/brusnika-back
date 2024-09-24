@@ -1,3 +1,5 @@
+import * as crypto from "crypto";
+
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
@@ -130,6 +132,55 @@ export class PremisesService {
 
 	getMultiplePremisesByIds(ids: number[], limit: number, page: number) {
 		return this.getPremisesFiltered({ ids: ids, limit, page });
+	}
+
+	decryptLink(encryptedLink: string, encryptionKey: string): string {
+		const algorithm = "aes-256-cbc";
+		const [ivString, encryptedString] = encryptedLink.split(":");
+
+		const iv = Buffer.from(ivString, "hex");
+		const encryptedText = Buffer.from(encryptedString, "hex");
+
+		const decipher = crypto.createDecipheriv(
+			algorithm,
+			Buffer.from(encryptionKey, "hex"),
+			iv,
+		);
+
+		let decrypted = decipher.update(encryptedText);
+		decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+		return decrypted.toString();
+	}
+
+	encryptData(data: string, encryptionKey: string): string {
+		const algorithm = "aes-256-cbc";
+		const iv = crypto.randomBytes(16);
+		const cipher = crypto.createCipheriv(
+			algorithm,
+			Buffer.from(encryptionKey, "hex"),
+			iv,
+		);
+
+		let encrypted = cipher.update(data);
+		encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+		return iv.toString("hex") + ":" + encrypted.toString("hex");
+	}
+
+	createEncryptedLink(
+		ids: number[],
+		encryptionKey: string,
+		page: number,
+		limit: number,
+	): string {
+		const idsJson = JSON.stringify({ ids, page, limit });
+
+		const encryptedData = this.encryptData(idsJson, encryptionKey);
+
+		const encryptedLink = Buffer.from(encryptedData).toString("base64");
+
+		return encodeURIComponent(encryptedLink);
 	}
 
 	getPremiseQuery(filter: PremisesFilterDto) {
