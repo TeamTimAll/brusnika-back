@@ -11,6 +11,7 @@ import { TrainingEntity } from "../trainings/trainings.entity";
 import { EventsEntity } from "../events/events.entity";
 import { EventInvitationEntity } from "../events/entities/event-invition.entity";
 import { ClientEntity } from "../client/client.entity";
+import { PremiseBasketLinkEntity } from "../premises/entities";
 
 import { AnalyticsController } from "./analytics.controller";
 import { AnalyticsEntity } from "./analytics.entity";
@@ -29,6 +30,7 @@ import { AnalyticsService } from "./analytics.service";
 			EventsEntity,
 			EventInvitationEntity,
 			ClientEntity,
+			PremiseBasketLinkEntity,
 		]),
 		UserModule,
 	],

@@ -13,6 +13,7 @@ import { EventsEntity } from "../events/events.entity";
 import { UserService } from "../user/user.service";
 import { EventInvitationEntity } from "../events/entities/event-invition.entity";
 import { ClientEntity } from "../client/client.entity";
+import { PremiseBasketLinkEntity } from "../premises/entities";
 
 import { AnalyticsEntity } from "./analytics.entity";
 import { AnalyticsNotFoundError } from "./errors/AnalyticsNotFound.error";
@@ -45,6 +46,8 @@ export class AnalyticsService {
 		private readonly eventInvitationRepository: Repository<EventInvitationEntity>,
 		@InjectRepository(ClientEntity)
 		private readonly clientRepository: Repository<ClientEntity>,
+		@InjectRepository(PremiseBasketLinkEntity)
+		private readonly premiseBasketLinkRepository: Repository<PremiseBasketLinkEntity>,
 		private readonly usersService: UserService,
 	) {}
 
@@ -505,6 +508,19 @@ export class AnalyticsService {
 		return result;
 	}
 
+	async getPremiseBasketLinksCount(
+		fromDate: Date,
+		toDate: Date,
+	): Promise<number> {
+		const result = await this.premiseBasketLinkRepository.count({
+			where: {
+				created_at: Between(fromDate, toDate),
+			},
+		});
+
+		return result;
+	}
+
 	async getAveragePriceOfCompletedLeads(
 		fromDate: Date,
 		toDate: Date,
@@ -542,9 +558,10 @@ export class AnalyticsService {
 	}
 
 	async getMainAnalytics({ fromDate, toDate }: MainAnalyticsDto) {
-		const pastFromDate = this.getOneMonthBefore(fromDate);
-		const pastToDate = this.getOneMonthBefore(toDate);
-
+		const { pastFromDate, pastToDate } = this.createDateRange(
+			fromDate,
+			toDate,
+		);
 		const currentPastPairs = await Promise.all([
 			this.getDataPair(
 				() => this.getTotalNewsLikes(fromDate, toDate),
@@ -595,6 +612,10 @@ export class AnalyticsService {
 						pastToDate,
 					),
 			),
+			this.getDataPair(
+				() => this.getPremiseBasketLinksCount(fromDate, toDate),
+				() => this.getPremiseBasketLinksCount(pastFromDate, pastToDate),
+			),
 		]);
 
 		const [
@@ -607,6 +628,7 @@ export class AnalyticsService {
 			completedLeadsFeeAvg,
 			averagePriceOfCompletedLeads,
 			averageSizeOfCompletedLeads,
+			premiseBasketLinksCount,
 		] = currentPastPairs.map(([current, past]) =>
 			this.calculateDifference(current, past),
 		);
@@ -621,6 +643,7 @@ export class AnalyticsService {
 			complited_leads_fee_avg: completedLeadsFeeAvg,
 			complited_leads_avg_price: averagePriceOfCompletedLeads,
 			complited_leads_avg_size: averageSizeOfCompletedLeads,
+			premise_basket_links_count: premiseBasketLinksCount,
 		};
 	}
 
@@ -629,8 +652,10 @@ export class AnalyticsService {
 		toDate,
 		status,
 	}: LeadAnalyticsDto) {
-		const pastFromDate = this.getOneMonthBefore(fromDate);
-		const pastToDate = this.getOneMonthBefore(toDate);
+		const { pastFromDate, pastToDate } = this.createDateRange(
+			fromDate,
+			toDate,
+		);
 
 		const currentPastPairs = await Promise.all([
 			this.getDataPair(
@@ -654,10 +679,23 @@ export class AnalyticsService {
 		return [current, past];
 	}
 
-	getOneMonthBefore(date: Date): Date {
-		const result = new Date(date);
-		result.setMonth(result.getMonth() - 1);
-		return result;
+	createDateRange(
+		fromDate: Date,
+		toDate: Date,
+	): { pastToDate: Date; pastFromDate: Date } {
+		fromDate = new Date(fromDate);
+		toDate = new Date(toDate);
+
+		const adjustedFromDate = new Date(fromDate.getTime() - 86400000);
+
+		const diffInMs = toDate.getTime() - adjustedFromDate.getTime();
+
+		const shiftedDate = new Date(adjustedFromDate.getTime() - diffInMs);
+
+		return {
+			pastToDate: adjustedFromDate,
+			pastFromDate: shiftedDate,
+		};
 	}
 
 	calculateDifference(current: number, past: number) {
