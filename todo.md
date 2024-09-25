@@ -397,10 +397,10 @@ Admin va Affiliate manager city bo'yicha va vaqt oralig'i bo'yicha quyidagi ma'l
 - [x] Yaratilgan to'plamlar soni jami project'lar va builing'lar bo'yicha.
 - [x] "выиграна" status'iga o'tgan lead'larning soni
 - [x] lead'larning soni
-- "выиграна" status'iga o'tgan lead'lar mukofotlar summasi. Lead'dagi fee'dan olinadi.
-- "выиграна" status'iga o'tgan lead'lar o'rtacha summasi. Premise price'dan olinadi va yig'indini ularni soniga bo'linadi.
-- "выиграна" status'iga o'tgan lead'lar o'rtacha mukofotlar summasi. Lead'dagi fee'dan olinadi va yig'indini ularni soniga bo'linadi.
-- "выиграна" status'iga o'tgan lead'lar o'rtacha m2.
+- [x] "выиграна" status'iga o'tgan lead'lar mukofotlar summasi. Lead'dagi fee'dan olinadi.
+- [x] "выиграна" status'iga o'tgan lead'lar o'rtacha summasi. Premise price'dan olinadi va yig'indini ularni soniga bo'linadi.
+- [x] "выиграна" status'iga o'tgan lead'lar o'rtacha mukofotlar summasi. Lead'dagi fee'dan olinadi va yig'indini ularni soniga bo'linadi.
+- [x] "выиграна" status'iga o'tgan lead'lar o'rtacha m2.
 - [x] Eng yaxshi 5 ta yangilik (Ko'rishlar)
 - [x] Eng yaxshi 5 (qo'ng'iroqlar) o'quv modullari
 - [x] Eng yaxshi 5 ta tadbir (yozuvlar) 

@@ -157,8 +157,8 @@ export class AnalyticsService {
 
 		let query = this.leadRepository
 			.createQueryBuilder("leads")
-			.innerJoin("leads.manager", "manager")
-			.innerJoin("manager.agency", "agency")
+			.leftJoin("leads.manager", "manager")
+			.leftJoin("manager.agency", "agency")
 			.select([
 				"manager.first_name AS first_name",
 				"manager.last_name AS last_name",
@@ -209,9 +209,7 @@ export class AnalyticsService {
 				"manager.last_name AS last_name",
 				"SUM(premise.price) AS total",
 			])
-			.groupBy(
-				"manager.id, agency.title, manager.firstName, manager.lastName",
-			)
+			.groupBy("manager.id, agency.title")
 			.orderBy("total", "DESC");
 
 		const count = await query.getCount();
@@ -236,16 +234,16 @@ export class AnalyticsService {
 
 		let query = this.leadRepository
 			.createQueryBuilder("leads")
-			.innerJoin("leads.manager", "manager")
-			.innerJoin("manager.agency", "agency")
-			.innerJoin("leads.lead_ops", "lo_won", "lo_won.status = :status", {
+			.leftJoin("leads.manager", "manager")
+			.leftJoin("manager.agency", "agency")
+			.leftJoin("leads.lead_ops", "lo_won", "lo_won.status = :status", {
 				status: LeadOpStatus.WON,
 			})
 			.select([
 				"agency.title AS agency_name",
 				"manager.first_name AS first_name",
 				"manager.last_name AS last_name",
-				"MIN(DATE_PART('day', lo_won.updated_at - leads.created_at)) AS total",
+				"MIN(DATE_PART('day', lo_won.created_at - leads.created_at)) AS total",
 			])
 			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
