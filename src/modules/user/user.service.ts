@@ -669,16 +669,18 @@ export class UserService {
 
 	async verifyUser(dto: UserVerifyDto) {
 		const foundUser = await this.readOne(dto.user_id);
-		let userRole: RoleType = foundUser.role;
+		let userRole: RoleType = RoleType.AGENT;
 		if (dto.is_verified) {
 			if (foundUser.temporary_role) {
 				userRole = foundUser.temporary_role;
 			}
 		}
+
 		await this.userRepository.update(foundUser.id, {
 			role: userRole,
 			is_verified: dto.is_verified,
 		});
+
 		foundUser.is_verified = dto.is_verified;
 		foundUser.role = userRole;
 		return foundUser;
