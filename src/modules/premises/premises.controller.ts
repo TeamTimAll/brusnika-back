@@ -18,7 +18,6 @@ import {
 } from "@nestjs/swagger";
 
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
-import { ConfigManager } from "../../config";
 
 import { CreatePremisesMetaDataDto } from "./dtos/CreatePremises.dto";
 import { PremiseDto } from "./dtos/Premises.dto";
@@ -81,8 +80,6 @@ export class PremisesController {
 	@ApiResponse({ status: HttpStatus.OK, type: PremiseDto })
 	@Get("/link/:ids")
 	createLink(@Query() dto: PremisesIdsDto) {
-		const encryptionKey = ConfigManager.config.LINK_ENCRYPTION_KEY;
-
 		if (!dto.ids) {
 			dto.ids = [];
 		}
@@ -91,9 +88,8 @@ export class PremisesController {
 			dto.ids = [dto.ids];
 		}
 
-		const encryptedLink = this.service.createEncryptedLink(
+		const encryptedLink = this.service.createLink(
 			dto.ids,
-			encryptionKey,
 			dto.page,
 			dto.limit,
 		);
@@ -104,20 +100,7 @@ export class PremisesController {
 	@ApiResponse({ status: HttpStatus.OK, type: PremiseDto })
 	@Get("decrypt/:link")
 	async premisesByLink(@Param("link") link: string) {
-		const encryptionKey = ConfigManager.config.LINK_ENCRYPTION_KEY;
-
-		const data = JSON.parse(
-			this.service.decryptLink(
-				Buffer.from(link, "base64").toString(),
-				encryptionKey,
-			),
-		) as { ids: number[]; page: number; limit: number };
-
-		return await this.service.getMultiplePremisesByIds(
-			data.ids,
-			data.limit,
-			data.page,
-		);
+		return await this.service.premisesByLink(link);
 	}
 
 	@ApiOperation({ summary: "Update a premises by ID" })
