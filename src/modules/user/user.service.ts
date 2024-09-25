@@ -37,6 +37,7 @@ import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
 import { UserChangeRoleRule } from "./user.rule";
+import { NewUserFilterDto } from "./dtos";
 import { IUserDailyStatistics, IUserStatisticsByCity } from "./types";
 
 @Injectable()
@@ -199,6 +200,124 @@ export class UserService {
 			new_user_count: newUserCount,
 			total_user_count: totalUserCount,
 		};
+		return metaData;
+	}
+
+	async newUsers(dto: NewUserFilterDto, user: ICurrentUser) {
+		let agency_id: number | undefined;
+
+		if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const foundUser = await this.userRepository.findOne({
+				select: { agency_id: true },
+				where: { id: user.user_id },
+			});
+			agency_id = foundUser?.agency_id;
+		}
+
+		const pageSize = (dto.page - 1) * dto.limit;
+		let userQuery = this.userRepository
+			.createQueryBuilder("u")
+			.leftJoinAndMapOne(
+				"u.agency",
+				AgencyEntity,
+				"a",
+				"a.id = u.agency_id",
+			)
+			.leftJoinAndMapOne("u.city", CityEntity, "c", "c.id = u.city_id")
+			.select([
+				"u.id",
+				"u.created_at",
+				"u.updated_at",
+				"u.fullName",
+				"u.firstName",
+				"u.lastName",
+				"u.role",
+				"u.email",
+				"u.username",
+				"u.password",
+				"u.phone",
+				"u.birthDate",
+				"u.workStartDate",
+				"u.avatar",
+				"u.is_phone_verified",
+				"u.is_email_verified",
+				"u.temporary_role",
+				"u.is_verified",
+				"u.status",
+				"c.id",
+				"c.name",
+				"u.city_id",
+				"a.id",
+				"a.legalName",
+				"u.agency_id",
+			])
+			.where("u.role = :role", { role: RoleType.NEW_MEMBER })
+			.limit(dto.limit)
+			.offset(pageSize);
+
+		if (agency_id) {
+			userQuery.andWhere("u.agency_id = :agency_id", { agency_id });
+		}
+
+		if (dto.city_id) {
+			userQuery = userQuery.where("u.city_id = :city_id", {
+				city_id: dto.city_id,
+			});
+		}
+
+		if (dto.registered_at) {
+			userQuery = userQuery.andWhere("u.created_at <= :created_at", {
+				created_at: dto.registered_at,
+			});
+		}
+
+		if (dto.text) {
+			userQuery = userQuery.andWhere(
+				new Brackets((qb) => {
+					qb.where(
+						"CONCAT(u.first_name, ' ', u.last_name) ILIKE :fullname",
+						{
+							fullname: `%${dto.text}%`,
+						},
+					)
+						.orWhere("u.phone ILIKE :phone", {
+							phone: `%${dto.text}%`,
+						})
+						.orWhere("a.legalName ILIKE :legalName", {
+							legalName: `%${dto.text}%`,
+						});
+				}),
+			);
+		}
+
+		if (dto.sort_by === UserSortBy.FULLNAME) {
+			userQuery = userQuery.orderBy("u.fullName", dto.order_by);
+		}
+
+		if (dto.sort_by === UserSortBy.ROLE) {
+			userQuery = userQuery.orderBy("u.role", dto.order_by);
+		}
+
+		if (dto.sort_by === UserSortBy.STATUS) {
+			userQuery = userQuery.orderBy("u.status", dto.order_by);
+		}
+
+		if (dto.sort_by === UserSortBy.REGISTERED_AT) {
+			userQuery = userQuery.orderBy("u.created_at", dto.order_by);
+		}
+
+		if (dto.sort_by === UserSortBy.AGENCY_NAME) {
+			userQuery = userQuery.orderBy("a.name", dto.order_by);
+		}
+
+		if (dto.sort_by === UserSortBy.CITY_NAME) {
+			userQuery = userQuery.orderBy("c.name", dto.order_by);
+		}
+		const [users, usersCount] = await userQuery.getManyAndCount();
+
+		const metaData = BaseDto.create<UserEntity[]>();
+		metaData.setPagination(usersCount, dto.page, dto.limit);
+		metaData.data = users;
 		return metaData;
 	}
 
@@ -551,16 +670,18 @@ export class UserService {
 
 	async verifyUser(dto: UserVerifyDto) {
 		const foundUser = await this.readOne(dto.user_id);
-		let userRole: RoleType = foundUser.role;
+		let userRole: RoleType = RoleType.AGENT;
 		if (dto.is_verified) {
 			if (foundUser.temporary_role) {
 				userRole = foundUser.temporary_role;
 			}
 		}
+
 		await this.userRepository.update(foundUser.id, {
 			role: userRole,
 			is_verified: dto.is_verified,
 		});
+
 		foundUser.is_verified = dto.is_verified;
 		foundUser.role = userRole;
 		return foundUser;

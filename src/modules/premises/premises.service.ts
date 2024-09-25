@@ -1,4 +1,4 @@
-import * as crypto from "crypto";
+import { randomUUID } from "crypto";
 
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -18,6 +18,8 @@ import { PremiseNotFoundError } from "./errors/PremiseNotFound.error";
 import { PremiseSchemaEntity } from "./premise_schema.entity";
 import { PremiseEntity } from "./premises.entity";
 import { SeasonEntity } from "./season.entity";
+import { PremiseBasketLinkEntity } from "./entities";
+import { InvalidLinkError } from "./errors/invalid-link.error";
 
 @Injectable()
 export class PremisesService {
@@ -28,6 +30,8 @@ export class PremisesService {
 		private premiseSchemaRepository: Repository<PremiseSchemaEntity>,
 		@InjectRepository(SeasonEntity)
 		private seasonRepository: Repository<SeasonEntity>,
+		@InjectRepository(PremiseBasketLinkEntity)
+		private basketLinkRepository: Repository<PremiseBasketLinkEntity>,
 		@Inject()
 		private buildingService: BuildingsService,
 		@Inject()
@@ -57,6 +61,37 @@ export class PremisesService {
 			});
 		}
 		return createdPremise;
+	}
+
+	async createLink(ids: number[], page: number, limit: number) {
+		const link = randomUUID();
+
+		const result = this.basketLinkRepository.create({
+			link,
+			ids,
+			page,
+			limit,
+		});
+
+		await this.basketLinkRepository.save(result);
+
+		return link;
+	}
+
+	async premisesByLink(link: string) {
+		const data = await this.basketLinkRepository.findOne({
+			where: { link },
+		});
+
+		if (!data) {
+			throw new InvalidLinkError();
+		}
+
+		return await this.getMultiplePremisesByIds(
+			data.ids,
+			data.limit,
+			data.page,
+		);
 	}
 
 	async readOne(id: number): Promise<PremiseEntity> {
@@ -132,55 +167,6 @@ export class PremisesService {
 
 	getMultiplePremisesByIds(ids: number[], limit: number, page: number) {
 		return this.getPremisesFiltered({ ids: ids, limit, page });
-	}
-
-	decryptLink(encryptedLink: string, encryptionKey: string): string {
-		const algorithm = "aes-256-cbc";
-		const [ivString, encryptedString] = encryptedLink.split(":");
-
-		const iv = Buffer.from(ivString, "hex");
-		const encryptedText = Buffer.from(encryptedString, "hex");
-
-		const decipher = crypto.createDecipheriv(
-			algorithm,
-			Buffer.from(encryptionKey, "hex"),
-			iv,
-		);
-
-		let decrypted = decipher.update(encryptedText);
-		decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-		return decrypted.toString();
-	}
-
-	encryptData(data: string, encryptionKey: string): string {
-		const algorithm = "aes-256-cbc";
-		const iv = crypto.randomBytes(16);
-		const cipher = crypto.createCipheriv(
-			algorithm,
-			Buffer.from(encryptionKey, "hex"),
-			iv,
-		);
-
-		let encrypted = cipher.update(data);
-		encrypted = Buffer.concat([encrypted, cipher.final()]);
-
-		return iv.toString("hex") + ":" + encrypted.toString("hex");
-	}
-
-	createEncryptedLink(
-		ids: number[],
-		encryptionKey: string,
-		page: number,
-		limit: number,
-	): string {
-		const idsJson = JSON.stringify({ ids, page, limit });
-
-		const encryptedData = this.encryptData(idsJson, encryptionKey);
-
-		const encryptedLink = Buffer.from(encryptedData).toString("base64");
-
-		return encodeURIComponent(encryptedLink);
 	}
 
 	getPremiseQuery(filter: PremisesFilterDto) {

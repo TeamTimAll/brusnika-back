@@ -42,6 +42,7 @@ import { UserUpdateRoleMetaDataDto } from "./dtos/UserUpdateRole.dto";
 import { UserVerifyMetaDataDto } from "./dtos/UserVerify.dto";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
+import { NewUserFilterDto } from "./dtos";
 
 @ApiTags("users")
 @Controller("users")
@@ -67,6 +68,24 @@ export class UserController {
 	])
 	async readAll(@Query() dto: UserFilterDto, @User() user: ICurrentUser) {
 		return await this.userService.readAll(dto, user);
+	}
+
+	@Get("new-users")
+	@ApiOperation({
+		description: `### New Users list'ini olish.
+		\n Ruxsat etilgan foydalanuvchilar rollari:
+		\n - *${RoleType.ADMIN}*
+		\n - *${RoleType.AFFILIATE_MANAGER}*
+		\n - *${RoleType.HEAD_OF_AGENCY}*`,
+	})
+	@ApiDtoResponse(UserReadAllMetaDataDto, HttpStatus.OK)
+	@Roles([
+		RoleType.ADMIN,
+		RoleType.AFFILIATE_MANAGER,
+		RoleType.HEAD_OF_AGENCY,
+	])
+	async newUsers(@Query() dto: NewUserFilterDto, @User() user: ICurrentUser) {
+		return await this.userService.newUsers(dto, user);
 	}
 
 	@Get("/me")
