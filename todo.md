@@ -406,7 +406,7 @@ Admin va Affiliate manager city bo'yicha va vaqt oralig'i bo'yicha quyidagi ma'l
 - [x] Eng yaxshi 5 ta tadbir (yozuvlar) 
 - Status'dan status'ga o'tishlar soni.
 
-- [ ] agency nomini unique qilish.
+- [-] agency nomini unique qilish.
 - [x] global search paginationni yana qarab chiqish.
 - [x] premise'ga schema qo'shish.
 
@@ -419,4 +419,9 @@ truncate settings, comments, premises, leads, cities, agencies, users, projects,
 - [x] Clinets uchun sort.
 - [x] Inpateka bank calculator.
 - [x] Banner'ni settings'dan alohida olib chiqish kerak.
-- [ ] Banner bulk.
+- [x] Banner bulk.
+
+- [ ] Premise meta-basket. Link gen qilish uchun request yuboriladi. Link heshlanib qaytarilib berilishi kerak. Padbor database'da saqlanmaydi. Gen qilingan link'ni ichidan olinadi. 
+- [x] Visit'lar cencel qilinsa kalendar'ga chiqarmaslik.
+- [ ] Lead status'ga misol yozish kerak.
+- [x] Bron limit agent va head of agency'ga ko'rinsin.

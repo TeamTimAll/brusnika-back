@@ -36,6 +36,8 @@ import { SettingsModule } from "./settings/settings.module";
 import { TrainingModule } from "./trainings/trainings.module";
 import { UserModule } from "./user/user.module";
 import { VisitsModule } from "./visits/visits.module";
+import { ExchangeRequestModule } from "./exchange-request/exchange-request.module";
+import { CallRequestModule } from "./call-request/call-request.module";
 
 @Module({
 	imports: [
@@ -68,6 +70,8 @@ import { VisitsModule } from "./visits/visits.module";
 		SearchModule,
 		AnalyticsModule,
 		BannerModule,
+		ExchangeRequestModule,
+		CallRequestModule,
 		CalculatorModule,
 	],
 	exports: [],

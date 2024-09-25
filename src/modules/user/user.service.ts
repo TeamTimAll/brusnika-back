@@ -261,14 +261,22 @@ export class UserService {
 		if (!settings) {
 			throw new SettingsNotFoundError();
 		}
+
 		const metaData = BaseDto.create<UserEntity>();
 		metaData.data = foundUser;
 		metaData.meta.data = {
 			user_created_count: userCreatedCount,
-			max_user_creation_limit: settings.booking_limit,
 			remaining_user_creation_limit:
 				settings.booking_limit - userCreatedCount,
 		} as IUserCreation;
+
+		if (
+			foundUser.role === RoleType.HEAD_OF_AGENCY ||
+			foundUser.role === RoleType.AGENT
+		) {
+			(metaData.meta.data as IUserCreation).max_user_creation_limit =
+				settings.booking_limit;
+		}
 		return metaData;
 	}
 
@@ -512,11 +520,14 @@ export class UserService {
 		return { user_id: foundUser.id, message: "sms sent" };
 	}
 
-	async checkExists(id: number): Promise<void> {
-		const user = await this.userRepository.existsBy({ id });
+	async checkExists(id: number) {
+		const user = await this.userRepository.findOne({ where: { id } });
+
 		if (!user) {
 			throw new UserNotFoundError(`id: ${id}`);
 		}
+
+		return user;
 	}
 
 	async loginAsUser(

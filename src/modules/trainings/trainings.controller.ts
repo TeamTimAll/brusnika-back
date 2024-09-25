@@ -81,7 +81,7 @@ export class TrainingController {
 		@Body() dto: CreateTrainingsMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		const res = this.service.create(dto.data, user);
+		const res = await this.service.create(dto.data, user);
 		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
 		return res;
 	}
