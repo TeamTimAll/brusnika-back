@@ -38,6 +38,7 @@ import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { UserEntity } from "./user.entity";
 import { UserChangeRoleRule } from "./user.rule";
 import { NewUserFilterDto } from "./dtos";
+import { IUserDailyStatistics, IUserStatisticsByCity } from "./types";
 
 @Injectable()
 export class UserService {
@@ -684,5 +685,57 @@ export class UserService {
 		foundUser.is_verified = dto.is_verified;
 		foundUser.role = userRole;
 		return foundUser;
+	}
+
+	async getUserCountByDate(
+		fromDate: Date,
+		toDate: Date,
+		role?: RoleType,
+	): Promise<IUserDailyStatistics[]> {
+		const query = this.userRepository
+			.createQueryBuilder("users")
+			.select("DATE(users.created_at)", "date")
+			.addSelect("COUNT(users.id)", "count")
+			.where("users.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			});
+
+		if (role) {
+			query.andWhere("users.role = :role", { role });
+		}
+
+		query
+			.groupBy("DATE(users.created_at)")
+			.orderBy("DATE(users.created_at)", "ASC");
+
+		const result: IUserDailyStatistics[] = await query.getRawMany();
+
+		return result;
+	}
+
+	async getUserCountByCity(
+		fromDate: Date,
+		toDate: Date,
+		role?: RoleType,
+	): Promise<IUserStatisticsByCity[]> {
+		const query = this.userRepository
+			.createQueryBuilder("user")
+			.leftJoin("user.city", "city")
+			.select(["city.name AS city_name", "COUNT(user.id)::INT AS count"])
+			.where("user.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			});
+
+		if (role) {
+			query.andWhere("user.role = :role", { role });
+		}
+
+		query.groupBy("city.id").orderBy("city.name", "ASC");
+
+		const result: IUserStatisticsByCity[] = await query.getRawMany();
+
+		return result;
 	}
 }
