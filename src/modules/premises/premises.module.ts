@@ -9,6 +9,7 @@ import { PremisesController } from "./premises.controller";
 import { PremiseEntity } from "./premises.entity";
 import { PremisesService } from "./premises.service";
 import { SeasonEntity } from "./season.entity";
+import { PremiseBasketLinkEntity } from "./entities";
 
 @Module({
 	imports: [
@@ -16,6 +17,7 @@ import { SeasonEntity } from "./season.entity";
 			PremiseEntity,
 			PremiseSchemaEntity,
 			SeasonEntity,
+			PremiseBasketLinkEntity,
 		]),
 		BuildingsModule,
 		SectionsModule,
