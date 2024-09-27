@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Between, Repository } from "typeorm";
+import { Between, Brackets, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { LeadsEntity, LeadState } from "../leads/leads.entity";
@@ -14,6 +14,8 @@ import { UserService } from "../user/user.service";
 import { EventInvitationEntity } from "../events/entities/event-invition.entity";
 import { ClientEntity } from "../client/client.entity";
 import { PremiseBasketLinkEntity } from "../premises/entities";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { RoleType } from "../../constants";
 
 import { AnalyticsEntity } from "./analytics.entity";
 import { AnalyticsNotFoundError } from "./errors/AnalyticsNotFound.error";
@@ -21,6 +23,7 @@ import {
 	BaseAnalyticsDto,
 	LeadAnalyticsDto,
 	MainAnalyticsDto,
+	ManagerAnalyticsDto,
 	UsersAnalyticsDto,
 } from "./dtos";
 import { ICompletedLeadsRatingResponse } from "./types";
@@ -34,9 +37,9 @@ export class AnalyticsService {
 		private readonly leadRepository: Repository<LeadsEntity>,
 		@InjectRepository(NewsEntity)
 		private readonly newsRepository: Repository<NewsEntity>,
-		@InjectRepository(NewsEntity)
+		@InjectRepository(NewsLikeEntity)
 		private readonly newsLikeRepository: Repository<NewsLikeEntity>,
-		@InjectRepository(NewsEntity)
+		@InjectRepository(NewsViewEntity)
 		private readonly newsViewRepository: Repository<NewsViewEntity>,
 		@InjectRepository(TrainingEntity)
 		private readonly trainingRepository: Repository<TrainingEntity>,
@@ -150,13 +153,13 @@ export class AnalyticsService {
 		return foundAnalytics;
 	}
 
-	async managerStatisticsByCount({
-		fromDate,
-		limit,
-		page,
-		toDate,
-	}: BaseAnalyticsDto) {
+	async managerStatisticsByCount(
+		{ fromDate, limit, page, toDate }: ManagerAnalyticsDto,
+		user: ICurrentUser,
+	) {
 		const offset = (page - 1) * limit;
+
+		const userInfo = await this.usersService.me(user.user_id);
 
 		let query = this.leadRepository
 			.createQueryBuilder("leads")
@@ -166,12 +169,15 @@ export class AnalyticsService {
 				"manager.first_name AS first_name",
 				"manager.last_name AS last_name",
 				"agency.title AS agency_name",
-				"COUNT(leads.id) AS total",
+				"COUNT(leads.id)::INT AS total",
 			])
 			.where("leads.state = :state", { state: LeadState.COMPLETE })
 			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
+			})
+			.andWhere("agency.id = :agency_id", {
+				agency_id: userInfo.data.agency_id,
 			})
 			.groupBy("manager.id, agency.title")
 			.orderBy("total", "DESC");
@@ -188,13 +194,12 @@ export class AnalyticsService {
 		return metaData;
 	}
 
-	async managerStatisticsByPrice({
-		fromDate,
-		limit,
-		page,
-		toDate,
-	}: BaseAnalyticsDto) {
+	async managerStatisticsByPrice(
+		{ fromDate, limit, page, toDate }: ManagerAnalyticsDto,
+		user: ICurrentUser,
+	) {
 		const offset = (page - 1) * limit;
+		const userInfo = await this.usersService.me(user.user_id);
 
 		let query = this.leadRepository
 			.createQueryBuilder("leads")
@@ -205,6 +210,9 @@ export class AnalyticsService {
 			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
+			})
+			.andWhere("agency.id = :agency_id", {
+				agency_id: userInfo.data.agency_id,
 			})
 			.select([
 				"agency.title as agency_name",
@@ -227,12 +235,12 @@ export class AnalyticsService {
 		return metaData;
 	}
 
-	async managerStatisticsByTime({
-		fromDate,
-		toDate,
-		limit,
-		page,
-	}: BaseAnalyticsDto) {
+	async managerStatisticsByTime(
+		{ fromDate, toDate, limit, page }: ManagerAnalyticsDto,
+		user: ICurrentUser,
+	) {
+		const userInfo = await this.usersService.me(user.user_id);
+
 		const offset = (page - 1) * limit;
 
 		let query = this.leadRepository
@@ -248,9 +256,12 @@ export class AnalyticsService {
 				"manager.last_name AS last_name",
 				"MIN(DATE_PART('day', lo_won.created_at - leads.created_at)) AS total",
 			])
-			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
+			.where("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
+			})
+			.andWhere("agency.id = :agency_id", {
+				agency_id: userInfo.data.agency_id,
 			})
 			.groupBy("agency.title, manager.first_name, manager.last_name")
 			.orderBy("total", "ASC");
@@ -271,9 +282,14 @@ export class AnalyticsService {
 		fromDate: Date,
 		toDate: Date,
 		status?: LeadOpStatus,
+		city_id?: number,
+		user?: ICurrentUser,
+		agency_id?: number,
 	): Promise<number> {
 		const query = this.leadRepository
 			.createQueryBuilder("leads")
+			.innerJoinAndSelect("leads.project", "project")
+			.innerJoinAndSelect("leads.agent", "agent")
 			.where("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
@@ -284,6 +300,16 @@ export class AnalyticsService {
 			query.andWhere("leads.current_status = :status", { status });
 		}
 
+		if (city_id) {
+			query.andWhere("project.city_id = :city_id", { city_id });
+		}
+
+		if (user?.role === RoleType.AGENT) {
+			query.andWhere("leads.agent = :user_id", { user_id: user.user_id });
+		} else if (user?.role === RoleType.HEAD_OF_AGENCY) {
+			query.andWhere("agent.agency_id = :agency_id", { agency_id });
+		}
+
 		const result: { total_leads: string } | undefined =
 			await query.getRawOne();
 
@@ -291,11 +317,13 @@ export class AnalyticsService {
 	}
 
 	async getLeadsByCurrentStatus(
-		fromDate: Date,
-		toDate: Date,
+		payload: MainAnalyticsDto,
 	): Promise<{ status: LeadOpStatus; total: number }[]> {
+		const { fromDate, toDate, city_id } = payload;
+
 		const query = this.leadRepository
 			.createQueryBuilder("leads")
+			.innerJoinAndSelect("leads.project", "project")
 			.select("leads.current_status", "status")
 			.addSelect("COUNT(leads.id)::INT", "total")
 			.where("leads.created_at BETWEEN :fromDate AND :toDate", {
@@ -304,28 +332,50 @@ export class AnalyticsService {
 			})
 			.groupBy("leads.current_status");
 
+		if (city_id) {
+			query.andWhere("project.city_id = :city_id", { city_id });
+		}
+
 		const result: { status: LeadOpStatus; total: number }[] =
 			await query.getRawMany();
 
 		return result;
 	}
 
-	async getClientsCount(fromDate: Date, toDate: Date): Promise<number> {
+	async getClientsCount(
+		fromDate: Date,
+		toDate: Date,
+		user: ICurrentUser,
+		agency_id?: number,
+	): Promise<number> {
+		const filter: { agent_id?: number; agent?: { agency_id?: number } } =
+			{};
+
+		if (user.role === RoleType.AGENT) {
+			filter.agent_id = user.user_id;
+		} else if (user.role === RoleType.HEAD_OF_AGENCY) {
+			if (!filter.agent) {
+				filter.agent = {};
+			}
+			filter.agent.agency_id = agency_id;
+		}
+
 		const result = await this.clientRepository.count({
 			where: {
 				created_at: Between(fromDate, toDate),
+				...filter,
+			},
+			relations: {
+				agent: true,
 			},
 		});
 
 		return result;
 	}
 
-	async getTopNewsByViews({
-		fromDate,
-		limit,
-		page,
-		toDate,
-	}: BaseAnalyticsDto) {
+	async getTopNewsByViews(payload: BaseAnalyticsDto) {
+		const { fromDate, limit, page, toDate, city_id } = payload;
+
 		const offset = (page - 1) * limit;
 
 		let query = this.newsRepository
@@ -346,6 +396,16 @@ export class AnalyticsService {
 			.groupBy("news.id")
 			.orderBy("total", "DESC");
 
+		if (city_id) {
+			query = query.andWhere(
+				new Brackets((qb) => {
+					qb.where("news.city_id = :city_id", {
+						city_id,
+					}).orWhere("news.city_id IS NULL");
+				}),
+			);
+		}
+
 		const count = await query.getCount();
 
 		query = query.limit(limit).offset(offset);
@@ -357,40 +417,69 @@ export class AnalyticsService {
 		return metaData;
 	}
 
-	async getTotalNewsViews(fromDate: Date, toDate: Date): Promise<number> {
-		const result: { total: string } | undefined =
-			await this.newsViewRepository
-				.createQueryBuilder("news_views")
-				.where("news_views.created_at BETWEEN :fromDate AND :toDate", {
-					fromDate,
-					toDate,
-				})
-				.select("COUNT(news_views.id)", "total")
-				.getRawOne();
+	async getTotalNewsViews(
+		fromDate: Date,
+		toDate: Date,
+		city_id?: number,
+	): Promise<number> {
+		const query = this.newsViewRepository
+			.createQueryBuilder("news_views")
+			.innerJoinAndSelect("news_views.news", "news")
+			.where("news_views.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			})
+			.select("COUNT(news_views.id)", "total");
+
+		if (city_id) {
+			query.andWhere(
+				new Brackets((qb) => {
+					qb.where("news.city_id = :city_id", {
+						city_id,
+					}).orWhere("news.city_id IS NULL");
+				}),
+			);
+		}
+
+		const result: { total: number } | undefined = await query.getRawOne();
 
 		return result ? Number(result.total) : 0;
 	}
 
-	async getTotalNewsLikes(fromDate: Date, toDate: Date): Promise<number> {
-		const result: { total: string } | undefined =
-			await this.newsLikeRepository
-				.createQueryBuilder("news_likes")
-				.where("news_likes.created_at BETWEEN :fromDate AND :toDate", {
-					fromDate,
-					toDate,
-				})
-				.select("COUNT(news_likes.id)", "total")
-				.getRawOne();
+	async getTotalNewsLikes(
+		fromDate: Date,
+		toDate: Date,
+		city_id?: number,
+	): Promise<number> {
+		const query = this.newsLikeRepository
+			.createQueryBuilder("news_likes")
+			.innerJoinAndSelect("news_likes.news", "news")
+			.where("news_likes.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			})
+			.select("COUNT(news_likes.id)", "total");
+
+		if (city_id) {
+			query.andWhere(
+				new Brackets((qb) => {
+					qb.where("news.city_id = :city_id", {
+						city_id,
+					}).orWhere("news.city_id IS NULL");
+				}),
+			);
+		}
+
+		const result: { total: number } | undefined = await query.getRawOne();
 
 		return result ? Number(result.total) : 0;
 	}
 
-	async getTopTrainings({
-		fromDate,
-		limit,
-		page,
-		toDate,
-	}: BaseAnalyticsDto): Promise<BaseDto<TrainingEntity[]>> {
+	async getTopTrainings(
+		payload: BaseAnalyticsDto,
+	): Promise<BaseDto<TrainingEntity[]>> {
+		const { fromDate, limit, page, toDate, city_id } = payload;
+
 		const offset = (page - 1) * limit;
 
 		let query = this.trainingRepository
@@ -410,6 +499,16 @@ export class AnalyticsService {
 			.groupBy("trainings.id, category.name")
 			.orderBy("total", "DESC");
 
+		if (city_id) {
+			query = query.andWhere(
+				new Brackets((qb) => {
+					qb.where("news.city_id = :city_id", {
+						city_id,
+					}).orWhere("news.city_id IS NULL");
+				}),
+			);
+		}
+
 		const count = await query.getCount();
 
 		query = query.limit(limit).offset(offset);
@@ -421,12 +520,10 @@ export class AnalyticsService {
 		return metaData;
 	}
 
-	async getTopEventsByViews({
-		fromDate,
-		limit,
-		page,
-		toDate,
-	}: BaseAnalyticsDto): Promise<BaseDto<EventsEntity[]>> {
+	async getTopEventsByViews(
+		payload: BaseAnalyticsDto,
+	): Promise<BaseDto<EventsEntity[]>> {
+		const { fromDate, limit, page, toDate, city_id } = payload;
 		const offset = (page - 1) * limit;
 
 		let query = this.eventRepository
@@ -445,6 +542,16 @@ export class AnalyticsService {
 			})
 			.groupBy("events.id")
 			.orderBy("total", "DESC");
+
+		if (city_id) {
+			query = query.andWhere(
+				new Brackets((qb) => {
+					qb.where("news.city_id = :city_id", {
+						city_id,
+					}).orWhere("news.city_id IS NULL");
+				}),
+			);
+		}
 
 		const count = await query.getCount();
 
@@ -472,14 +579,22 @@ export class AnalyticsService {
 			payload.fromDate,
 			payload.toDate,
 			payload.role,
+			payload.city_id,
 		);
 
 		return data;
 	}
 
-	async getCompletedLeadsFee(fromDate: Date, toDate: Date, is_avg?: boolean) {
+	async getCompletedLeadsFee(
+		fromDate: Date,
+		toDate: Date,
+		is_avg?: boolean,
+		city_id?: number,
+	) {
 		const query = this.leadRepository
 			.createQueryBuilder("leads")
+			.innerJoinAndSelect("leads.agent", "agent")
+			.innerJoinAndSelect("leads.project", "project")
 			.where("leads.state = :state", { state: LeadState.COMPLETE })
 			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
@@ -493,15 +608,35 @@ export class AnalyticsService {
 			query.select("SUM(leads.fee)", "total");
 		}
 
+		if (city_id) {
+			query.andWhere("project.city_id = :city_id", { city_id });
+		}
+
 		const result: { total: number } | undefined = await query.getRawOne();
 
 		return result ? Number(result.total) : 0;
 	}
 
-	async getEventInvitations(fromDate: Date, toDate: Date): Promise<number> {
+	async getEventInvitations(
+		fromDate: Date,
+		toDate: Date,
+		city_id?: number,
+	): Promise<number> {
+		const filter: { event?: { city_id?: number } } = {};
+
+		if (city_id) {
+			if (!filter.event) {
+				filter.event = {};
+			}
+			filter.event.city_id = city_id;
+		}
+
 		const result = await this.eventInvitationRepository.count({
 			where: {
 				created_at: Between(fromDate, toDate),
+			},
+			relations: {
+				event: true,
 			},
 		});
 
@@ -524,17 +659,33 @@ export class AnalyticsService {
 	async getAveragePriceOfCompletedLeads(
 		fromDate: Date,
 		toDate: Date,
+		user: ICurrentUser,
+		agency_id?: number,
+		city_id?: number,
 	): Promise<number> {
-		const result: { total: string } | undefined = await this.leadRepository
+		const query = this.leadRepository
 			.createQueryBuilder("leads")
+			.innerJoinAndSelect("leads.agent", "agent")
 			.innerJoinAndSelect("leads.premise", "premise")
+			.innerJoinAndSelect("leads.project", "project")
 			.where("leads.state = :state", { state: LeadState.COMPLETE })
 			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
 			})
-			.select("AVG(premise.price)", "total")
-			.getRawOne();
+			.select("AVG(premise.price)", "total");
+
+		if (user?.role === RoleType.AGENT) {
+			query.andWhere("leads.agent = :user_id", { user_id: user.user_id });
+		} else if (user?.role === RoleType.HEAD_OF_AGENCY) {
+			query.andWhere("agent.agency_id = :agency_id", { agency_id });
+		}
+
+		if (city_id) {
+			query.andWhere("project.city_id = :city_id", { city_id });
+		}
+
+		const result: { total: string } | undefined = await query.getRawOne();
 
 		return result ? Number(result.total) : 0;
 	}
@@ -542,115 +693,300 @@ export class AnalyticsService {
 	async getAverageSizeOfCompletedLeads(
 		fromDate: Date,
 		toDate: Date,
+		user: ICurrentUser,
+		agency_id?: number,
+		city_id?: number,
 	): Promise<number> {
-		const result: { total: string } | undefined = await this.leadRepository
+		const query = this.leadRepository
 			.createQueryBuilder("leads")
+			.innerJoinAndSelect("leads.agent", "agent")
 			.innerJoinAndSelect("leads.premise", "premise")
+			.innerJoinAndSelect("leads.project", "project")
 			.where("leads.state = :state", { state: LeadState.COMPLETE })
 			.andWhere("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
 			})
-			.select("AVG(premise.size)", "total")
-			.getRawOne();
+			.select("AVG(premise.size)", "total");
+
+		if (user?.role === RoleType.AGENT) {
+			query.andWhere("leads.agent = :user_id", { user_id: user.user_id });
+		} else if (user?.role === RoleType.HEAD_OF_AGENCY) {
+			query.andWhere("agent.agency_id = :agency_id", { agency_id });
+		}
+
+		if (city_id) {
+			query.andWhere("project.city_id = :city_id", { city_id });
+		}
+
+		const result: { total: string } | undefined = await query.getRawOne();
 
 		return result ? Number(result.total) : 0;
 	}
 
-	async getMainAnalytics({ fromDate, toDate }: MainAnalyticsDto) {
+	async getMainAnalytics(payload: MainAnalyticsDto, user: ICurrentUser) {
+		const { fromDate, toDate, city_id } = payload;
+		const { role, user_id } = user;
+
+		const userInfo = await this.usersService.me(user_id);
 		const { pastFromDate, pastToDate } = this.createDateRange(
 			fromDate,
 			toDate,
 		);
-		const currentPastPairs = await Promise.all([
-			this.getDataPair(
-				() => this.getTotalNewsLikes(fromDate, toDate),
-				() => this.getTotalNewsLikes(pastFromDate, pastToDate),
-			),
-			this.getDataPair(
-				() => this.getTotalNewsViews(fromDate, toDate),
-				() => this.getTotalNewsViews(pastFromDate, pastToDate),
-			),
-			this.getDataPair(
-				() => this.getLeadsCount(fromDate, toDate, LeadOpStatus.WON),
-				() =>
-					this.getLeadsCount(
-						pastFromDate,
-						pastToDate,
-						LeadOpStatus.WON,
-					),
-			),
-			this.getDataPair(
-				() => this.getEventInvitations(fromDate, toDate),
-				() => this.getEventInvitations(pastFromDate, pastToDate),
-			),
-			this.getDataPair(
-				() => this.getClientsCount(fromDate, toDate),
-				() => this.getClientsCount(pastFromDate, pastToDate),
-			),
-			this.getDataPair(
-				() => this.getCompletedLeadsFee(fromDate, toDate),
-				() => this.getCompletedLeadsFee(pastFromDate, pastToDate),
-			),
-			this.getDataPair(
-				() => this.getCompletedLeadsFee(fromDate, toDate, true),
-				() => this.getCompletedLeadsFee(pastFromDate, pastToDate, true),
-			),
-			this.getDataPair(
-				() => this.getAveragePriceOfCompletedLeads(fromDate, toDate),
-				() =>
-					this.getAveragePriceOfCompletedLeads(
-						pastFromDate,
-						pastToDate,
-					),
-			),
-			this.getDataPair(
-				() => this.getAverageSizeOfCompletedLeads(fromDate, toDate),
-				() =>
-					this.getAverageSizeOfCompletedLeads(
-						pastFromDate,
-						pastToDate,
-					),
-			),
-			this.getDataPair(
-				() => this.getPremiseBasketLinksCount(fromDate, toDate),
-				() => this.getPremiseBasketLinksCount(pastFromDate, pastToDate),
-			),
-		]);
 
-		const [
-			newsLikes,
-			newsViews,
-			completedLeads,
-			eventInvitations,
-			clients,
-			completedLeadsFee,
-			completedLeadsFeeAvg,
-			averagePriceOfCompletedLeads,
-			averageSizeOfCompletedLeads,
-			premiseBasketLinksCount,
-		] = currentPastPairs.map(([current, past]) =>
-			this.calculateDifference(current, past),
-		);
+		let currentPastPairs: [number, number][];
 
-		return {
-			news_likes: newsLikes,
-			news_views: newsViews,
-			completed_leads: completedLeads,
-			event_invitations: eventInvitations,
-			clients,
-			complited_leads_fee: completedLeadsFee,
-			complited_leads_fee_avg: completedLeadsFeeAvg,
-			complited_leads_avg_price: averagePriceOfCompletedLeads,
-			complited_leads_avg_size: averageSizeOfCompletedLeads,
-			premise_basket_links_count: premiseBasketLinksCount,
-		};
+		if (role === RoleType.AGENT || role === RoleType.HEAD_OF_AGENCY) {
+			currentPastPairs = await Promise.all([
+				this.getDataPair(
+					() =>
+						this.getClientsCount(
+							fromDate,
+							toDate,
+							user,
+							userInfo.data.agency_id,
+						),
+					() =>
+						this.getClientsCount(
+							pastFromDate,
+							pastToDate,
+							user,
+							userInfo.data.agency_id,
+						),
+				),
+				this.getDataPair(
+					() =>
+						this.getLeadsCount(
+							fromDate,
+							toDate,
+							LeadOpStatus.WON,
+							city_id,
+							user,
+							userInfo.data.agency_id,
+						),
+					() =>
+						this.getLeadsCount(
+							pastFromDate,
+							pastToDate,
+							LeadOpStatus.WON,
+							city_id,
+							user,
+							userInfo.data.agency_id,
+						),
+				),
+				this.getDataPair(
+					() =>
+						this.getAveragePriceOfCompletedLeads(
+							fromDate,
+							toDate,
+							user,
+							userInfo.data.agency_id,
+							city_id,
+						),
+					() =>
+						this.getAveragePriceOfCompletedLeads(
+							pastFromDate,
+							pastToDate,
+							user,
+							userInfo.data.agency_id,
+							city_id,
+						),
+				),
+				this.getDataPair(
+					() =>
+						this.getAverageSizeOfCompletedLeads(
+							fromDate,
+							toDate,
+							user,
+							userInfo.data.agency_id,
+							city_id,
+						),
+					() =>
+						this.getAverageSizeOfCompletedLeads(
+							pastFromDate,
+							pastToDate,
+							user,
+							userInfo.data.agency_id,
+							city_id,
+						),
+				),
+			]);
+
+			const [
+				clients,
+				completedLeads,
+				averagePriceOfCompletedLeads,
+				averageSizeOfCompletedLeads,
+			] = currentPastPairs.map(([current, past]) =>
+				this.calculateDifference(current, past),
+			);
+
+			return {
+				clients,
+				completed_leads: completedLeads,
+				complited_leads_avg_price: averagePriceOfCompletedLeads,
+				complited_leads_avg_size: averageSizeOfCompletedLeads,
+			};
+		} else {
+			currentPastPairs = await Promise.all([
+				this.getDataPair(
+					() => this.getTotalNewsLikes(fromDate, toDate, city_id),
+					() =>
+						this.getTotalNewsLikes(
+							pastFromDate,
+							pastToDate,
+							city_id,
+						),
+				),
+				this.getDataPair(
+					() => this.getTotalNewsViews(fromDate, toDate, city_id),
+					() =>
+						this.getTotalNewsViews(
+							pastFromDate,
+							pastToDate,
+							city_id,
+						),
+				),
+				this.getDataPair(
+					() =>
+						this.getLeadsCount(
+							fromDate,
+							toDate,
+							LeadOpStatus.WON,
+							city_id,
+							user,
+							userInfo.data.agency_id,
+						),
+					() =>
+						this.getLeadsCount(
+							pastFromDate,
+							pastToDate,
+							LeadOpStatus.WON,
+							city_id,
+							user,
+							userInfo.data.agency_id,
+						),
+				),
+				this.getDataPair(
+					() => this.getEventInvitations(fromDate, toDate, city_id),
+					() =>
+						this.getEventInvitations(
+							pastFromDate,
+							pastToDate,
+							city_id,
+						),
+				),
+				this.getDataPair(
+					() =>
+						this.getCompletedLeadsFee(
+							fromDate,
+							toDate,
+							false,
+							city_id,
+						),
+					() =>
+						this.getCompletedLeadsFee(
+							pastFromDate,
+							pastToDate,
+							false,
+							city_id,
+						),
+				),
+				this.getDataPair(
+					() =>
+						this.getCompletedLeadsFee(
+							fromDate,
+							toDate,
+							true,
+							city_id,
+						),
+					() =>
+						this.getCompletedLeadsFee(
+							pastFromDate,
+							pastToDate,
+							true,
+							city_id,
+						),
+				),
+				this.getDataPair(
+					() =>
+						this.getAveragePriceOfCompletedLeads(
+							fromDate,
+							toDate,
+							user,
+							userInfo.data.agency_id,
+							city_id,
+						),
+					() =>
+						this.getAveragePriceOfCompletedLeads(
+							pastFromDate,
+							pastToDate,
+							user,
+							userInfo.data.agency_id,
+							city_id,
+						),
+				),
+				this.getDataPair(
+					() =>
+						this.getAverageSizeOfCompletedLeads(
+							fromDate,
+							toDate,
+							user,
+							userInfo.data.agency_id,
+							city_id,
+						),
+					() =>
+						this.getAverageSizeOfCompletedLeads(
+							pastFromDate,
+							pastToDate,
+							user,
+							userInfo.data.agency_id,
+							city_id,
+						),
+				),
+				this.getDataPair(
+					() => this.getPremiseBasketLinksCount(fromDate, toDate),
+					() =>
+						this.getPremiseBasketLinksCount(
+							pastFromDate,
+							pastToDate,
+						),
+				),
+			]);
+
+			const [
+				newsLikes,
+				newsViews,
+				completedLeads,
+				eventInvitations,
+				completedLeadsFee,
+				completedLeadsFeeAvg,
+				averagePriceOfCompletedLeads,
+				averageSizeOfCompletedLeads,
+				premiseBasketLinksCount,
+			] = currentPastPairs.map(([current, past]) =>
+				this.calculateDifference(current, past),
+			);
+
+			return {
+				news_likes: newsLikes,
+				news_views: newsViews,
+				completed_leads: completedLeads,
+				event_invitations: eventInvitations,
+				complited_leads_fee: completedLeadsFee,
+				complited_leads_fee_avg: completedLeadsFeeAvg,
+				complited_leads_avg_price: averagePriceOfCompletedLeads,
+				complited_leads_avg_size: averageSizeOfCompletedLeads,
+				premise_basket_links_count: premiseBasketLinksCount,
+			};
+		}
 	}
 
 	async getLeadsCountByStatus({
 		fromDate,
 		toDate,
 		status,
+		city_id,
 	}: LeadAnalyticsDto) {
 		const { pastFromDate, pastToDate } = this.createDateRange(
 			fromDate,
@@ -659,8 +995,14 @@ export class AnalyticsService {
 
 		const currentPastPairs = await Promise.all([
 			this.getDataPair(
-				() => this.getLeadsCount(fromDate, toDate, status),
-				() => this.getLeadsCount(pastFromDate, pastToDate, status),
+				() => this.getLeadsCount(fromDate, toDate, status, city_id),
+				() =>
+					this.getLeadsCount(
+						pastFromDate,
+						pastToDate,
+						status,
+						city_id,
+					),
 			),
 		]);
 
