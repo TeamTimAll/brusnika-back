@@ -6,7 +6,7 @@ import { EventsEntity } from "modules/events/events.entity";
 import { Weekdays, WeekdaysMap } from "../../common/enums/weekdays";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { VisitsEntity } from "../../modules/visits/visits.entity";
+import { VisitsEntity, VisitStatus } from "../../modules/visits/visits.entity";
 import { EventInvitationEntity } from "../events/entities/event-invition.entity";
 import { EventsService } from "../events/events.service";
 import { VisitsService } from "../visits/visits.service";
@@ -37,6 +37,7 @@ export class CalendarService {
 			.where("v.agent_id = :agent_id", {
 				agent_id: user.user_id,
 			})
+			.andWhere("v.status != :status", { status: VisitStatus.FAIL })
 			.orderBy("v.date", "ASC");
 		let eventsQueryBuilder = this.eventsService.repository
 			.createQueryBuilder("e")
