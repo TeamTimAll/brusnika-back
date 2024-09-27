@@ -25,10 +25,10 @@ export class GetAllBanksDto {
 	@IsNotEmpty()
 	ipoteka_time!: number;
 
-	@ApiProperty()
-	@IsNumber()
+	@ApiProperty({ default: "0" })
+	@IsString()
 	@IsNotEmpty()
-	initial_payment!: number;
+	initial_payment!: bigint;
 }
 
 export class GetAllBanksMetaDataDto extends BaseDto<GetAllBanksDto> {

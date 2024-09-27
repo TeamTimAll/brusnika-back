@@ -19,7 +19,7 @@ import { MaxCreatableBookingCountReachedError } from "./errors/MaxCreatableBooki
 
 export interface IUserCreation {
 	user_created_count: number;
-	max_user_creation_limit: number;
+	max_user_creation_limit?: number;
 	remaining_user_creation_limit: number;
 }
 

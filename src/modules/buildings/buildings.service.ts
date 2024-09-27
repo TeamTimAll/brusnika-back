@@ -2,10 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
-import { CreateBuildingDto } from "./dtos/CreateBuilding.dto";
-import { UpdateBuildingDto } from "./dtos/UpdateBuilding.dto";
 import { ProjectService } from "../projects/projects.service";
 
+import { CreateBuildingDto } from "./dtos/CreateBuilding.dto";
+import { UpdateBuildingDto } from "./dtos/UpdateBuilding.dto";
 import { BuildingEntity } from "./buildings.entity";
 import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
 

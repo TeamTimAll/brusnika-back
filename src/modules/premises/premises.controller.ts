@@ -65,19 +65,42 @@ export class PremisesController {
 		if (!dto.ids) {
 			return [];
 		}
-		/*
-			If the query id is single, the @Query decorator returns a string.
- 			We need to check if it is a string or not. Because getMultiplePremisesByIds
-			function accepts array of strings.
-		*/
+
 		if (typeof dto.ids === "number") {
 			dto.ids = [dto.ids];
 		}
+
 		return await this.service.getMultiplePremisesByIds(
 			dto.ids,
 			dto.limit,
 			dto.page,
 		);
+	}
+
+	@ApiResponse({ status: HttpStatus.OK, type: PremiseDto })
+	@Get("/link/:ids")
+	createLink(@Query() dto: PremisesIdsDto) {
+		if (!dto.ids) {
+			dto.ids = [];
+		}
+
+		if (typeof dto.ids === "number") {
+			dto.ids = [dto.ids];
+		}
+
+		const encryptedLink = this.service.createLink(
+			dto.ids,
+			dto.page,
+			dto.limit,
+		);
+
+		return encryptedLink;
+	}
+
+	@ApiResponse({ status: HttpStatus.OK, type: PremiseDto })
+	@Get("decrypt/:link")
+	async premisesByLink(@Param("link") link: string) {
+		return await this.service.premisesByLink(link);
 	}
 
 	@ApiOperation({ summary: "Update a premises by ID" })

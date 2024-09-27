@@ -1,3 +1,5 @@
+import { randomUUID } from "crypto";
+
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { In, Repository } from "typeorm";
@@ -16,6 +18,8 @@ import { PremiseNotFoundError } from "./errors/PremiseNotFound.error";
 import { PremiseSchemaEntity } from "./premise_schema.entity";
 import { PremiseEntity } from "./premises.entity";
 import { SeasonEntity } from "./season.entity";
+import { PremiseBasketLinkEntity } from "./entities";
+import { InvalidLinkError } from "./errors/invalid-link.error";
 
 @Injectable()
 export class PremisesService {
@@ -26,6 +30,8 @@ export class PremisesService {
 		private premiseSchemaRepository: Repository<PremiseSchemaEntity>,
 		@InjectRepository(SeasonEntity)
 		private seasonRepository: Repository<SeasonEntity>,
+		@InjectRepository(PremiseBasketLinkEntity)
+		private basketLinkRepository: Repository<PremiseBasketLinkEntity>,
 		@Inject()
 		private buildingService: BuildingsService,
 		@Inject()
@@ -55,6 +61,37 @@ export class PremisesService {
 			});
 		}
 		return createdPremise;
+	}
+
+	async createLink(ids: number[], page: number, limit: number) {
+		const link = randomUUID();
+
+		const result = this.basketLinkRepository.create({
+			link,
+			ids,
+			page,
+			limit,
+		});
+
+		await this.basketLinkRepository.save(result);
+
+		return link;
+	}
+
+	async premisesByLink(link: string) {
+		const data = await this.basketLinkRepository.findOne({
+			where: { link },
+		});
+
+		if (!data) {
+			throw new InvalidLinkError();
+		}
+
+		return await this.getMultiplePremisesByIds(
+			data.ids,
+			data.limit,
+			data.page,
+		);
 	}
 
 	async readOne(id: number): Promise<PremiseEntity> {
