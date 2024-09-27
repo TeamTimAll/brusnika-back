@@ -38,6 +38,7 @@ import { UserModule } from "./user/user.module";
 import { VisitsModule } from "./visits/visits.module";
 import { ExchangeRequestModule } from "./exchange-request/exchange-request.module";
 import { CallRequestModule } from "./call-request/call-request.module";
+import { MortgageRequestModule } from "./mortgage-request/mortgage-request.module";
 
 @Module({
 	imports: [
@@ -73,6 +74,7 @@ import { CallRequestModule } from "./call-request/call-request.module";
 		ExchangeRequestModule,
 		CallRequestModule,
 		CalculatorModule,
+		MortgageRequestModule,
 	],
 	exports: [],
 })
