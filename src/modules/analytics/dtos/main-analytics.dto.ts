@@ -1,5 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsNotEmpty } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsDateString, IsInt, IsNotEmpty, IsOptional } from "class-validator";
 
 export class MainAnalyticsDto {
 	@ApiProperty()
@@ -11,4 +12,10 @@ export class MainAnalyticsDto {
 	@IsDateString()
 	@IsNotEmpty()
 	fromDate!: Date;
+
+	@ApiPropertyOptional({ default: 1, description: "The id of the city" })
+	@IsInt()
+	@Type(() => Number)
+	@IsOptional()
+	city_id?: number;
 }

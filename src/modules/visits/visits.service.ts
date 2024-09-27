@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Not, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
@@ -11,7 +11,7 @@ import { UserService } from "../user/user.service";
 import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
 import { UpdateVisitsDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
-import { VisitsEntity, VisitStatus } from "./visits.entity";
+import { VisitsEntity } from "./visits.entity";
 
 @Injectable()
 export class VisitsService {
@@ -44,7 +44,7 @@ export class VisitsService {
 
 	async readAll(user: ICurrentUser): Promise<VisitsEntity[]> {
 		return this.visitsRepository.find({
-			where: { agent_id: user.user_id, status: Not(VisitStatus.FAIL) },
+			where: { agent_id: user.user_id },
 		});
 	}
 

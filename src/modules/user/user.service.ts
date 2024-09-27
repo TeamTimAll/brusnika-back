@@ -670,10 +670,12 @@ export class UserService {
 
 	async verifyUser(dto: UserVerifyDto) {
 		const foundUser = await this.readOne(dto.user_id);
-		let userRole: RoleType = RoleType.AGENT;
+		let userRole: RoleType = foundUser.role;
 		if (dto.is_verified) {
 			if (foundUser.temporary_role) {
 				userRole = foundUser.temporary_role;
+			} else {
+				userRole = RoleType.AGENT;
 			}
 		}
 
@@ -691,11 +693,12 @@ export class UserService {
 		fromDate: Date,
 		toDate: Date,
 		role?: RoleType,
+		city_id?: number,
 	): Promise<IUserDailyStatistics[]> {
 		const query = this.userRepository
 			.createQueryBuilder("users")
 			.select("DATE(users.created_at)", "date")
-			.addSelect("COUNT(users.id)", "count")
+			.addSelect("COUNT(users.id)::INT", "count")
 			.where("users.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
@@ -703,6 +706,10 @@ export class UserService {
 
 		if (role) {
 			query.andWhere("users.role = :role", { role });
+		}
+
+		if (city_id) {
+			query.andWhere("users.city_id = :city_id", { city_id });
 		}
 
 		query
