@@ -54,6 +54,7 @@ export class JwtAuthGuard implements CanActivate {
 					id: payload.user_id,
 				},
 			});
+
 			if (!user) {
 				throw new UnauthorizedError();
 			}
@@ -62,6 +63,8 @@ export class JwtAuthGuard implements CanActivate {
 			await this.analyticsService.update(analytics, {
 				active_at: new Date(),
 			});
+
+			await this.userService.createOrFindActivity(user.id, new Date());
 
 			request.user = {
 				user_id: user.id,

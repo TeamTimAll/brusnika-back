@@ -1,7 +1,7 @@
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, Repository } from "typeorm";
+import { Between, Brackets, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -39,12 +39,15 @@ import { UserEntity } from "./user.entity";
 import { UserChangeRoleRule } from "./user.rule";
 import { NewUserFilterDto } from "./dtos";
 import { IUserDailyStatistics, IUserStatisticsByCity } from "./types";
+import { UserActivityEntity } from "./entities/user-activity.entity";
 
 @Injectable()
 export class UserService {
 	constructor(
 		@InjectRepository(UserEntity)
 		private userRepository: Repository<UserEntity>,
+		@InjectRepository(UserActivityEntity)
+		private userActivityRepository: Repository<UserActivityEntity>,
 		@Inject(forwardRef(() => AgencyService))
 		private agencyService: AgencyService,
 		private jwtService: JwtService,
@@ -721,6 +724,39 @@ export class UserService {
 		return result;
 	}
 
+	async getUserCountByActivity(
+		fromDate: Date,
+		toDate: Date,
+		role?: RoleType,
+		city_id?: number,
+	): Promise<IUserDailyStatistics[]> {
+		const query = this.userActivityRepository
+			.createQueryBuilder("ua")
+			.leftJoinAndSelect("ua.user", "user")
+			.select("DATE(ua.created_at)", "date")
+			.addSelect("COUNT(ua.id)::INT", "count")
+			.where("ua.created_at BETWEEN :fromDate AND :toDate", {
+				fromDate,
+				toDate,
+			});
+
+		if (role) {
+			query.andWhere("user.role = :role", { role });
+		}
+
+		if (city_id) {
+			query.andWhere("user.city_id = :city_id", { city_id });
+		}
+
+		query
+			.groupBy("DATE(ua.created_at)")
+			.orderBy("DATE(ua.created_at)", "ASC");
+
+		const result: IUserDailyStatistics[] = await query.getRawMany();
+
+		return result;
+	}
+
 	async getUserCountByCity(
 		fromDate: Date,
 		toDate: Date,
@@ -744,5 +780,30 @@ export class UserService {
 		const result: IUserStatisticsByCity[] = await query.getRawMany();
 
 		return result;
+	}
+
+	async createOrFindActivity(
+		user_id: number,
+		created_at: Date,
+	): Promise<UserActivityEntity> {
+		const startOfDay = new Date(created_at.setHours(0, 0, 0, 0));
+		const endOfDay = new Date(created_at.setHours(23, 59, 59, 999));
+
+		const existingActivity = await this.userActivityRepository.findOne({
+			where: {
+				user_id,
+				created_at: Between(startOfDay, endOfDay),
+			},
+		});
+
+		if (existingActivity) {
+			return existingActivity;
+		}
+
+		const newActivity = this.userActivityRepository.create({
+			user_id,
+		});
+
+		return await this.userActivityRepository.save(newActivity);
 	}
 }

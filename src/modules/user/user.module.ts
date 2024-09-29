@@ -12,10 +12,16 @@ import { SettingsRepository } from "../settings/settings.repository";
 import { UserController } from "./user.controller";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
+import { UserActivityEntity } from "./entities/user-activity.entity";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([UserEntity, BookingsEntity, SettingsEntity]),
+		TypeOrmModule.forFeature([
+			UserEntity,
+			BookingsEntity,
+			SettingsEntity,
+			UserActivityEntity,
+		]),
 		forwardRef(() => AgenciesModule),
 		forwardRef(() => CityModule),
 		forwardRef(() => AnalyticsModule),
