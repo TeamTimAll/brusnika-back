@@ -36,7 +36,6 @@ export class NotificationService {
 		const query = this.notificationRepository
 			.createQueryBuilder("n")
 			.leftJoin(NotificationUserEntity, "nu", "nu.notification_id = n.id")
-			.addSelect("nu.is_read AS n_is_read")
 			.offset(pageSize)
 			.limit(dto.limit)
 			.orderBy("n.id", "DESC")
@@ -63,10 +62,9 @@ export class NotificationService {
 			"n.description AS description",
 			"n.type AS type",
 			"n.object_id AS object_id",
-			"n.is_read AS is_read",
+			"nu.is_read AS is_read",
 			"n.is_active AS is_active",
 			"e.photo AS photo",
-			"nu.user_id AS user_id",
 		]);
 
 		const results = await query.getRawMany();
