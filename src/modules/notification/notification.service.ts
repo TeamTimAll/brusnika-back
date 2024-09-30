@@ -13,7 +13,7 @@ import { CreateNotificationDto } from "./dto/CreateNotification.dto";
 import { NotificationFilterDto } from "./dto/NotificationFilter.dto";
 import { UpdateNotificationDto } from "./dto/UpdateNotification.dto";
 import { NotificationNotFoundError } from "./errors/NotificationNotFound.error";
-import { NotificationEntity } from "./notification.entity";
+import { NotificationEntity, NotificationType } from "./notification.entity";
 import { NotificationUserEntity } from "./notification_user.entity";
 
 @Injectable()
@@ -30,21 +30,48 @@ export class NotificationService {
 		return this.notificationRepository;
 	}
 
-	readAll(
-		dto: NotificationFilterDto,
-		user: ICurrentUser,
-	): Promise<NotificationEntity[]> {
+	async readAll(dto: NotificationFilterDto, user: ICurrentUser) {
 		const pageSize = (dto.page - 1) * dto.limit;
-		return this.notificationRepository
+
+		const query = this.notificationRepository
 			.createQueryBuilder("n")
 			.leftJoin(NotificationUserEntity, "nu", "nu.notification_id = n.id")
 			.offset(pageSize)
 			.limit(dto.limit)
 			.orderBy("n.id", "DESC")
-			.where("nu.user_id = :user_id", {
-				user_id: user.user_id,
-			})
-			.getMany();
+			.where("nu.user_id = :user_id", { user_id: user.user_id });
+
+		query.leftJoinAndSelect(
+			"events",
+			"e",
+			"e.id = n.object_id AND n.type IN (:...types)",
+			{
+				types: [
+					NotificationType.EVENT,
+					NotificationType.CREATED_EVENT,
+					NotificationType.WARNING_EVENT,
+				],
+			},
+		);
+
+		query.select([
+			"n.id AS id",
+			"n.created_at AS created_at",
+			"n.updated_at AS updated_at",
+			"n.title AS title",
+			"n.description AS description",
+			"n.type AS type",
+			"n.object_id AS object_id",
+			"n.is_read AS is_read",
+			"n.is_active AS is_active",
+			"e.photo AS photo",
+			"nu.user_id AS user_id",
+		]);
+
+		const results = await query.getRawMany();
+
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+		return results;
 	}
 
 	async readOne(id: number): Promise<NotificationEntity> {
