@@ -1,34 +1,24 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import {
-	IsNotEmpty,
-	IsNumber,
-	IsString,
-	ValidateNested,
-} from "class-validator";
+import { IsNotEmpty, IsNumber, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
 export class GetAllBanksDto {
-	@ApiProperty({ default: "0" })
-	@IsString()
-	@IsNotEmpty()
-	premise_price!: bigint;
-
-	@ApiProperty()
+	@ApiProperty({ default: 0 })
 	@IsNumber()
 	@IsNotEmpty()
-	precent!: number;
+	premise_price!: number;
 
 	@ApiProperty()
 	@IsNumber()
 	@IsNotEmpty()
 	ipoteka_time!: number;
 
-	@ApiProperty({ default: "0" })
-	@IsString()
+	@ApiProperty({ default: 0 })
+	@IsNumber()
 	@IsNotEmpty()
-	initial_payment!: bigint;
+	initial_payment!: number;
 }
 
 export class GetAllBanksMetaDataDto extends BaseDto<GetAllBanksDto> {

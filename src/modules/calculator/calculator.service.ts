@@ -1,8 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { pmtBigint } from "../../lib/number";
-
-import { GetAllBanksDto } from "./dto/GetAllBanks.dto";
+import { GetAllBanksDto } from "./dto";
 
 interface BanksResponse {
 	name: string;
@@ -12,147 +10,99 @@ interface BanksResponse {
 interface Bank {
 	name: string;
 	max_precent: number;
-	max_sum: bigint;
+	max_sum: number;
 	max_term: number;
-	precent: number;
 }
 
 const banks: Bank[] = [
 	{
 		name: "Дом РФ (Семейная программа)",
 		max_precent: 20,
-		max_sum: 12000000n,
+		max_sum: 12000000,
 		max_term: 360,
-		precent: 6,
 	},
 	{
 		name: "Дом РФ (IT-ипотека)",
 		max_precent: 20,
-		max_sum: 9000000n,
+		max_sum: 9000000,
 		max_term: 360,
-		precent: 6,
 	},
 	{
 		name: "Совкомбанк (Ипотека 11,5% на 4 года)",
 		max_precent: 20,
-		max_sum: 30000000n,
+		max_sum: 30000000,
 		max_term: 360,
-		precent: 11.5,
 	},
 	{
 		name: "ВТБ (До сдачи дома)",
 		max_precent: 15,
-		max_sum: 30000000n,
+		max_sum: 30000000,
 		max_term: 360,
-		precent: 11.5,
 	},
 	{
 		name: "ВТБ (Ипотека 8% на 2 года)",
 		max_precent: 30,
-		max_sum: 30000000n,
+		max_sum: 30000000,
 		max_term: 360,
-		precent: 8.0,
 	},
 	{
 		name: "Альфа-банк (Ипотека 2,98% на 3 года)",
 		max_precent: 20,
-		max_sum: 30000000n,
+		max_sum: 30000000,
 		max_term: 360,
-		precent: 2.98,
 	},
 	{
 		name: "Промсвязьбанк (Базовая программа)",
 		max_precent: 20,
-		max_sum: 50000000n,
+		max_sum: 50000000,
 		max_term: 360,
-		precent: 19.4,
 	},
 	{
 		name: "Сбербанк (Базовая программа)",
 		max_precent: 15,
-		max_sum: 100000000n,
+		max_sum: 100000000,
 		max_term: 360,
-		precent: 20.0,
 	},
-] as const;
+];
 
 @Injectable()
 export class CalculatorService {
+	private calcLoan(
+		loanAmount: number,
+		interestRate: number,
+		loanTermMonths: number,
+	): number {
+		const monthlyRate = interestRate / 12 / 100;
+
+		const numerator =
+			monthlyRate * Math.pow(1 + monthlyRate, loanTermMonths);
+		const denominator = Math.pow(1 + monthlyRate, loanTermMonths) - 1;
+
+		const monthlyPayment = (loanAmount * numerator) / denominator;
+
+		return monthlyPayment;
+	}
+
 	getAllBanks(dto: GetAllBanksDto): BanksResponse[] {
-		const amount = dto.premise_price - dto.initial_payment;
+		const loanAmount = dto.premise_price - dto.initial_payment;
 
-		const filteredBanks = banks.filter(
-			(b) =>
-				b.max_precent >= dto.precent &&
-				b.max_sum >= amount &&
-				b.max_term >= dto.ipoteka_time,
-		);
-		filteredBanks;
+		const filteredBanks = banks.filter((bank) => {
+			const isLoanAmountSupported = bank.max_sum >= loanAmount;
+			const isTermSupported = bank.max_term >= dto.ipoteka_time;
 
-		pmtBigint(dto.precent / 100 / 12, dto.ipoteka_time, amount);
+			return isLoanAmountSupported && isTermSupported;
+		});
 
-		return [];
-		// return [
-		// 	{
-		// 		name: "Sberbank (SBER)",
-		// 		monthly_installment: this.calcLoan(
-		// 			faker.number.int({
-		// 				min: 500000,
-		// 				max: 1000000,
-		// 			}),
-		// 			dto.initial_payment,
-		// 			dto.ipoteka_time,
-		// 			dto.precent,
-		// 		),
-		// 	},
-		// 	{
-		// 		name: "VTB (VTBR)",
-		// 		monthly_installment: this.calcLoan(
-		// 			faker.number.int({
-		// 				min: 500000,
-		// 				max: 1000000,
-		// 			}),
-		// 			dto.initial_payment,
-		// 			dto.ipoteka_time,
-		// 			dto.precent,
-		// 		),
-		// 	},
-		// 	{
-		// 		name: "Gazprombank (GAZP)",
-		// 		monthly_installment: this.calcLoan(
-		// 			faker.number.int({
-		// 				min: 500000,
-		// 				max: 1000000,
-		// 			}),
-		// 			dto.initial_payment,
-		// 			dto.ipoteka_time,
-		// 			dto.precent,
-		// 		),
-		// 	},
-		// 	{
-		// 		name: "Promsvyazbank.",
-		// 		monthly_installment: this.calcLoan(
-		// 			faker.number.int({
-		// 				min: 500000,
-		// 				max: 1000000,
-		// 			}),
-		// 			dto.initial_payment,
-		// 			dto.ipoteka_time,
-		// 			dto.precent,
-		// 		),
-		// 	},
-		// 	{
-		// 		name: "Russian Agricultural Bank.",
-		// 		monthly_installment: this.calcLoan(
-		// 			faker.number.int({
-		// 				min: 500000,
-		// 				max: 1000000,
-		// 			}),
-		// 			dto.initial_payment,
-		// 			dto.ipoteka_time,
-		// 			dto.precent,
-		// 		),
-		// 	},
-		// ];
+		return filteredBanks.map((bank) => {
+			const monthlyPayment = this.calcLoan(
+				loanAmount,
+				bank.max_precent,
+				dto.ipoteka_time,
+			);
+			return {
+				name: bank.name,
+				monthly_installment: Math.round(monthlyPayment),
+			};
+		});
 	}
 }

@@ -1,10 +1,13 @@
 import { Body, Controller, Post, UseInterceptors } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 
 import { CalculatorService } from "./calculator.service";
-import { GetAllBanksMetaDataDto } from "./dto/GetAllBanks.dto";
+import {
+	CalculatorResponseArrayMetaDataDto,
+	GetAllBanksMetaDataDto,
+} from "./dto";
 
 @ApiTags("Calculator")
 @Controller("calculator")
@@ -12,6 +15,7 @@ import { GetAllBanksMetaDataDto } from "./dto/GetAllBanks.dto";
 export class CalculatorController {
 	constructor(private readonly calculatorService: CalculatorService) {}
 
+	@ApiOkResponse({ type: CalculatorResponseArrayMetaDataDto })
 	@Post()
 	getAllBanks(@Body() dto: GetAllBanksMetaDataDto) {
 		return this.calculatorService.getAllBanks(dto.data);

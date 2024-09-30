@@ -64,19 +64,17 @@ export class ClientService {
 				"c.fullname",
 				"c.phone_number",
 			] as `c.${keyof ClientEntity}`[]);
+
 		if (user.role === RoleType.AGENT) {
-			queryBuilder = queryBuilder.andWhere(
-				"c.agent_id = :client_agent_id",
-				{
-					client_agent_id: user.user_id,
-				},
-			);
+			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
+				client_agent_id: user.user_id,
+			});
 		} else if (user.role === RoleType.HEAD_OF_AGENCY) {
 			const foundUser = await this.userService.repository.findOne({
 				select: { agency_id: true },
 				where: { id: user.user_id },
 			});
-			queryBuilder = queryBuilder.andWhere(
+			queryBuilder = queryBuilder.where(
 				(qb) =>
 					"c.agent_id IN (" +
 					qb
@@ -90,6 +88,7 @@ export class ClientService {
 					")",
 			);
 		}
+
 		queryBuilder = queryBuilder.andWhere(
 			new Brackets((qb) =>
 				qb
