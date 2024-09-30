@@ -21,8 +21,6 @@ export interface IConfig {
 	API_VERSION: string;
 	PUBLIC_KEY: string;
 	PRIVATE_KEY: string;
-	WEBSOCKET_URL: string;
-	WEBSOCKET_KEY: string;
 }
 
 export class ConfigManager {
@@ -42,8 +40,6 @@ export class ConfigManager {
 		API_VERSION: process.env.API_VERSION as string,
 		PUBLIC_KEY: process.env.PUBLIC_KEY?.replace(/\\n/g, "\n") as string,
 		PRIVATE_KEY: process.env.PRIVATE_KEY?.replace(/\\n/g, "\n") as string,
-		WEBSOCKET_URL: process.env.WEBSOCKET_URL as string,
-		WEBSOCKET_KEY: process.env.WEBSOCKET_KEY as string,
 	};
 
 	public static get databaseConfig(): DatabaseConfig {
@@ -67,9 +63,6 @@ export class ConfigManager {
 		API_VERSION: Joi.string().optional(),
 		PUBLIC_KEY: Joi.string().required(),
 		PRIVATE_KEY: Joi.string().required(),
-
-		WEBSOCKET_URL: Joi.string().required(),
-		WEBSOCKET_KEY: Joi.string().required(),
 	});
 
 	static init() {
