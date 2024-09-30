@@ -12,7 +12,7 @@ import {
 	Query,
 	UseInterceptors,
 } from "@nestjs/common";
-import { ApiQuery, ApiTags } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
@@ -21,8 +21,11 @@ import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { AnalyticsService } from "../analytics/analytics.service";
 
 import { BuildingsService } from "./buildings.service";
-import { CreateBuildingMetaDto } from "./dtos/CreateBuilding.dto";
-import { UpdateBuildingMetaDataDto } from "./dtos/UpdateBuilding.dto";
+import {
+	FilterBuildingDto,
+	CreateBuildingMetaDto,
+	UpdateBuildingMetaDataDto,
+} from "./dtos";
 
 @ApiTags("Buildings")
 @Controller("buildings")
@@ -36,12 +39,8 @@ export class BuildingsController {
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	@ApiQuery({
-		name: "project_id",
-		required: false,
-	})
-	async readAll(@Query("project_id") project_id?: number) {
-		return await this.buildingsService.readAll(project_id);
+	async readAll(@Query() query: FilterBuildingDto) {
+		return await this.buildingsService.readAll(query);
 	}
 
 	@Post()
