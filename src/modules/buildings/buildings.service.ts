@@ -30,7 +30,7 @@ export class BuildingsService {
 			whereConditions.project_id = project_id;
 		}
 
-		if (city_id && project_id) {
+		if (city_id) {
 			whereConditions.project = { city_id: city_id };
 		}
 
