@@ -55,8 +55,8 @@ export class NotificationController {
 	@ApiOperation({ description: "### Notification id bo'yicha olish." })
 	@ApiDtoResponse(NotificationMetaDataDto, HttpStatus.OK)
 	@ApiErrorResponse(NotificationNotFoundError, "id: 'id'")
-	readOne(@Param("id") id: number) {
-		return this.notificationService.readOne(id);
+	readOne(@Param("id") id: number, @User() user: ICurrentUser) {
+		return this.notificationService.readNotification(id, user);
 	}
 
 	@Post()
