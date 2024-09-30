@@ -62,10 +62,9 @@ export class NotificationService {
 			"n.description AS description",
 			"n.type AS type",
 			"n.object_id AS object_id",
-			"n.is_read AS is_read",
+			"nu.is_read AS is_read",
 			"n.is_active AS is_active",
 			"e.photo AS photo",
-			"nu.user_id AS user_id",
 		]);
 
 		const results = await query.getRawMany();
@@ -81,7 +80,22 @@ export class NotificationService {
 		if (!foundNotification) {
 			throw new NotificationNotFoundError(`id: ${id}`);
 		}
-		await this.notificationRepository.update(foundNotification.id, {
+		return foundNotification;
+	}
+
+	async readNotification(notification_id: number, user: ICurrentUser) {
+		const foundNotification = await this.notificationUserRepository.findOne(
+			{
+				where: {
+					notification_id: notification_id,
+					user_id: user.user_id,
+				},
+			},
+		);
+		if (!foundNotification) {
+			throw new NotificationNotFoundError(`id: ${notification_id}`);
+		}
+		await this.notificationUserRepository.update(foundNotification.id, {
 			is_read: true,
 		});
 		foundNotification.is_read = true;
