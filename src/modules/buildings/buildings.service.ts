@@ -4,10 +4,14 @@ import { Repository } from "typeorm";
 
 import { ProjectService } from "../projects/projects.service";
 
-import { CreateBuildingDto } from "./dtos/CreateBuilding.dto";
-import { UpdateBuildingDto } from "./dtos/UpdateBuilding.dto";
 import { BuildingEntity } from "./buildings.entity";
 import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
+import {
+	FilterBuildingDto,
+	CreateBuildingDto,
+	UpdateBuildingDto,
+} from "./dtos";
+import { IReadAllFilter } from "./types";
 
 @Injectable()
 export class BuildingsService {
@@ -17,13 +21,24 @@ export class BuildingsService {
 		private projectService: ProjectService,
 	) {}
 
-	async readAll(project_id?: number) {
+	async readAll(payload: FilterBuildingDto) {
+		const { city_id, project_id } = payload;
+
+		const whereConditions: IReadAllFilter = {};
+
+		if (project_id) {
+			whereConditions.project_id = project_id;
+		}
+
+		if (city_id) {
+			whereConditions.project = { city_id: city_id };
+		}
+
 		const buildings = await this.buildingRepository.find({
 			relations: { project: true },
-			where: {
-				project_id: project_id ? project_id : undefined,
-			},
+			where: whereConditions,
 		});
+
 		return buildings;
 	}
 
