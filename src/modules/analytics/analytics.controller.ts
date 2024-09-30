@@ -106,6 +106,13 @@ export class AnalyticsController {
 		return this.analyticsService.getUsersByDate(payload);
 	}
 
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Get("users/active")
+	@ApiOperation({ description: "Get users by date analytics" })
+	getUsersByActive(@Query() payload: UsersAnalyticsDto) {
+		return this.analyticsService.getUsersByActivity(payload);
+	}
+
 	@Roles([
 		RoleType.AGENT,
 		RoleType.ADMIN,

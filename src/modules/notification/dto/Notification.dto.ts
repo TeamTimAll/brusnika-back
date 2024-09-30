@@ -34,6 +34,9 @@ export class NotificationDto implements INotificationDto {
 	user_id?: number;
 
 	@ApiProperty()
+	photo?: string;
+
+	@ApiProperty()
 	is_active!: boolean;
 }
 

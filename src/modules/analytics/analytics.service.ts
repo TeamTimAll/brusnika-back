@@ -585,6 +585,17 @@ export class AnalyticsService {
 		return data;
 	}
 
+	async getUsersByActivity(payload: UsersAnalyticsDto) {
+		const data = await this.usersService.getUserCountByActivity(
+			payload.fromDate,
+			payload.toDate,
+			payload.role,
+			payload.city_id,
+		);
+
+		return data;
+	}
+
 	async getCompletedLeadsFee(
 		fromDate: Date,
 		toDate: Date,
