@@ -36,6 +36,7 @@ export class NotificationService {
 		const query = this.notificationRepository
 			.createQueryBuilder("n")
 			.leftJoin(NotificationUserEntity, "nu", "nu.notification_id = n.id")
+			.addSelect("nu.is_read AS n_is_read")
 			.offset(pageSize)
 			.limit(dto.limit)
 			.orderBy("n.id", "DESC")
@@ -81,7 +82,22 @@ export class NotificationService {
 		if (!foundNotification) {
 			throw new NotificationNotFoundError(`id: ${id}`);
 		}
-		await this.notificationRepository.update(foundNotification.id, {
+		return foundNotification;
+	}
+
+	async readNotification(notification_id: number, user: ICurrentUser) {
+		const foundNotification = await this.notificationUserRepository.findOne(
+			{
+				where: {
+					notification_id: notification_id,
+					user_id: user.user_id,
+				},
+			},
+		);
+		if (!foundNotification) {
+			throw new NotificationNotFoundError(`id: ${notification_id}`);
+		}
+		await this.notificationUserRepository.update(foundNotification.id, {
 			is_read: true,
 		});
 		foundNotification.is_read = true;
