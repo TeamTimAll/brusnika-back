@@ -17,13 +17,16 @@ import { BookingsModule } from "./bookings/bookings.module";
 import { BuildingsModule } from "./buildings/buildings.module";
 import { CalculatorModule } from "./calculator/calculator.module";
 import { CalendarModule } from "./calendar/calendar.module";
+import { CallRequestModule } from "./call-request/call-request.module";
 import { CityModule } from "./cities/cities.module";
 import { ClientModule } from "./client/client.module";
 import { CommentsModule } from "./comments/comments.module";
 import { ContactModule } from "./contacts/contact.module";
 import { EventsModule } from "./events/events.module";
+import { ExchangeRequestModule } from "./exchange-request/exchange-request.module";
 import { FileUploadModule } from "./file-upload/file-upload.module";
 import { LeadsModule } from "./leads/leads.module";
+import { MortgageRequestModule } from "./mortgage-request/mortgage-request.module";
 import { NewsModule } from "./news/news.module";
 import { NotificationModule } from "./notification/notification.module";
 import { PremisesModule } from "./premises/premises.module";
@@ -36,9 +39,6 @@ import { SettingsModule } from "./settings/settings.module";
 import { TrainingModule } from "./trainings/trainings.module";
 import { UserModule } from "./user/user.module";
 import { VisitsModule } from "./visits/visits.module";
-import { ExchangeRequestModule } from "./exchange-request/exchange-request.module";
-import { CallRequestModule } from "./call-request/call-request.module";
-import { MortgageRequestModule } from "./mortgage-request/mortgage-request.module";
 
 @Module({
 	imports: [

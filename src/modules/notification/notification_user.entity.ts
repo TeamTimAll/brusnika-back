@@ -26,4 +26,7 @@ export class NotificationUserEntity extends BaseEntity {
 
 	@Column({ type: "integer", nullable: true })
 	user_id?: number;
+
+	@Column({ type: "boolean", default: false })
+	is_read!: boolean;
 }

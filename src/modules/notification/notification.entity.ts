@@ -1,4 +1,4 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, VirtualColumn } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 
@@ -23,6 +23,6 @@ export class NotificationEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	object_id!: number;
 
-	@Column({ type: "boolean", default: false })
+	@VirtualColumn({ query: () => "" })
 	is_read!: boolean;
 }

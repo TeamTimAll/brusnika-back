@@ -472,6 +472,11 @@ Agent rating'ini ko'rinishi:
 -   [x] "выиграна" Lead'lar summasi bo'yicha TOP-3 manager ism familiyasi va agency
     nomi.
 -   [x] Lead'lar yasalgan sanasidan "выиграна" status'iga o'tgan vaqtining,
+-   "выиграна" Lead'lar soni bo'yicha TOP-3 manager ism familiyasi va agency
+    nomi.
+-   "выиграна" Lead'lar summasi bo'yicha TOP-3 manager ism familiyasi va agency
+    nomi.
+-   Lead'lar yasalgan sanasidan "выиграна" status'iga o'tgan vaqtining,
     o'rtadagi sarflangan vaqtni eng kichiki bilan TOP-3 manager ism familiyasi
     va agency nomi.
 
@@ -499,6 +504,24 @@ ma'lumotlarni ko'radi:
 -   [x] Eng yaxshi 5 ta yangilik (Ko'rishlar)
 -   [x] Eng yaxshi 5 (qo'ng'iroqlar) o'quv modullari
 -   [x] Eng yaxshi 5 ta tadbir (yozuvlar)
+-   Ro'yxatdan o'tgan foydalanuvchilar soni jami va rollar bo'yicha
+-   Faol foydalanuvchilar soni (platformaga kirishning mavjudligi) jami va
+    rollar bo'yicha
+-   Barcha yangiliklarni ko'rish soni jami
+-   Barcha yangiliklarni yoqtirishlar soni jami
+-   Yangiliklar bo'yicha yoqtirishlar ro'yhati, sanasi, kim qo'ygan
+-   Yaratilgan to'plamlar soni jami project'lar va builing'lar bo'yicha.
+-   "выиграна" status'iga o'tgan lead'larning soni
+-   "выиграна" status'iga o'tgan lead'lar mukofotlar summasi. Lead'dagi fee'dan
+    olinadi.
+-   "выиграна" status'iga o'tgan lead'lar o'rtacha summasi. Premise price'dan
+    olinadi va yig'indini ularni soniga bo'linadi.
+-   "выиграна" status'iga o'tgan lead'lar o'rtacha mukofotlar summasi. Lead'dagi
+    fee'dan olinadi va yig'indini ularni soniga bo'linadi.
+-   "выиграна" status'iga o'tgan lead'lar o'rtacha m2.
+-   Eng yaxshi 5 ta yangilik (Ko'rishlar)
+-   Eng yaxshi 5 (qo'ng'iroqlar) o'quv modullari
+-   Eng yaxshi 5 ta tadbir (yozuvlar)
 -   Status'dan status'ga o'tishlar soni.
 
 -   [-] agency nomini unique qilish.
@@ -559,3 +582,160 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 -   [ ] analytikani hamma entityni yasalishi vaqt va userga nisbatan
 -   [ ] Podborni saqlash logikasini saqlash
 -   [ ] analitika uchun chiqarish kerak
+-   [ ] Premise meta-basket. Link gen qilish uchun request yuboriladi. Link
+        heshlanib qaytarilib berilishi kerak. Padbor database'da saqlanmaydi.
+        Gen qilingan link'ni ichidan olinadi.
+-   [x] Visit'lar cencel qilinsa kalendar'ga chiqarmaslik.
+-   [ ] Lead status'ga misol yozish kerak.
+-   [x] Bron limit agent va head of agency'ga ko'rinsin.
+
+## Kounter server
+
+### Brusnika API'dan olish kerak bo'lgan ma'lumotlar:
+
+<br>Ikkala server orasida ma'lumot almashinish uchun JSON ko'rinishi `data` va
+`error` dan tashkil topgan. <br>Ma'lumotda uning turi `type` va `data`'ni ichida
+`type`'ga nisbattan ma'lumot shakli beriladi. <br>Brusnikadan kelgan ma'lumotlar
+log shaklida yoziladi. Har bir o'zgarish `update_id` sequence oraqli saqlanadi.
+<br>`data`'ni ichidagi `update_id` Sequence bildiradi. <br>`data`'ni ichidagi
+`ext_id` (external id) ikkala server orasidagi ma'lumotni tanish uchun
+ishlatiladigan id. Bu id unique. ext_id orqali "create to update" funksiyanali
+ishlaydi.
+
+<br>`Project` - faqat kounter'dan asosiy backend'ga ma'lumot yuboriladi.
+<br>Event nomi: `events`. <br>Ma'lumot ko'rinishi:
+
+```json
+{
+	"data": {
+		"type": "project",
+		"data": {
+			"update_id": 1,
+			"ext_id": "string",
+			"name": "string",
+			"detailed_description": "string",
+			"brief_description": "string",
+			"photo": "string",
+			"price": "number",
+			"location": "string",
+			"long": "string",
+			"lat": "string",
+			"link": "string",
+			"end_date": "Date",
+			"city_id": "number"
+		}
+	},
+	"error": null
+}
+```
+
+<br>Building - faqat kounter'dan asosiy backend'ga ma'lumot yuboriladi.
+<br>Event nomi: `events`. <br>Ma'lumot ko'rinishi:
+
+```json
+{
+	"data": {
+		"type": "building",
+		"data": {
+			"update_id": 1,
+			"ext_id": "string",
+			"name": "string",
+			"total_storage": "number",
+			"total_vacant_storage": "number",
+			"total_parking_space": "number",
+			"total_vacant_parking_space": "number",
+			"total_commercial": "number",
+			"total_vacant_commercial": "number",
+			"address": "string",
+			"number_of_floors": "number",
+			"project_ext_id": "string"
+		}
+	},
+	"error": null
+}
+```
+
+<br>Section - faqat kounter'dan asosiy backend'ga ma'lumot yuboriladi. <br>
+Event nomi: `events`. <br> Ma'lumot ko'rinishi:
+
+```json
+{
+	"data": {
+		"type": "section",
+		"data": {
+			"update_id": 1,
+			"ext_id": "string",
+			"name": "string",
+			"building_ext_id": "string"
+		}
+	},
+	"error": null
+}
+```
+
+<br> Premise - faqat kounter'dan asosiy backend'ga ma'lumot yuboriladi. <br>
+Event nomi: `events`. <br> Ma'lumot ko'rinishi:
+
+```ts
+enum PremisesType {
+  APARTMENT = "apartment",
+  STOREROOM = "storeroom",
+  PARKING = "parking",
+  COMMERCIAL = "commercial",
+}
+
+enum CommercialStatus {
+  FREE = "free",
+  TAKEN = "taken",
+}
+
+enum PuchaseOptions {
+  MORTAGE = "mortage",
+  INSTALLMENT = "installment",
+  BILL = "bill",
+  FULL_PAYMENT = "full_payment",
+}
+```
+
+```json
+{
+	"data": {
+		"type": "premise",
+		"data": {
+			"update_id": 1,
+			"ext_id": "string",
+			"name": "string",
+			"type": "PremisesType",
+			"building_ext_id": "string",
+			"price": "bigint",
+			"size": "number",
+			"status": "CommercialStatus",
+			"purchaseOption": "PuchaseOptions",
+			"number": "number",
+			"floor": "number",
+			"photo": "string",
+			"rooms": "number",
+			"photos": "string[]",
+			"similiarApartmentCount": "number",
+			"schema_ext_id": "string",
+			"link": "string",
+			"season_ext_id": "string",
+			"mortagePayment": "number",
+			"section_ext_id": "string",
+			"is_sold": "boolean"
+		}
+	},
+	"error": null
+}
+```
+
+-   Lead
+    -   Lead Task:
+-   Task
+-   Time Slots
+-   User
+    -   Register
+    -   Create
+-   Client
+-   Bron
+-   Agency
