@@ -15,6 +15,7 @@ import { UpdateNotificationDto } from "./dto/UpdateNotification.dto";
 import { NotificationNotFoundError } from "./errors/NotificationNotFound.error";
 import { NotificationEntity, NotificationType } from "./notification.entity";
 import { NotificationUserEntity } from "./notification_user.entity";
+import { INotification } from "./types";
 
 @Injectable()
 export class NotificationService {
@@ -36,23 +37,27 @@ export class NotificationService {
 		const query = this.notificationRepository
 			.createQueryBuilder("n")
 			.leftJoin(NotificationUserEntity, "nu", "nu.notification_id = n.id")
+			.leftJoin(
+				"news",
+				"news",
+				"n.type = 'created_news' AND news.id = n.object_id",
+			)
+			.leftJoin(
+				"events",
+				"events",
+				"n.type IN ('event', 'created_event', 'warning_event') AND events.id = n.object_id",
+			)
 			.offset(pageSize)
 			.limit(dto.limit)
 			.orderBy("n.id", "DESC")
 			.where("nu.user_id = :user_id", { user_id: user.user_id });
 
-		query.leftJoinAndSelect(
-			"events",
-			"e",
-			"e.id = n.object_id AND n.type IN (:...types)",
-			{
-				types: [
-					NotificationType.EVENT,
-					NotificationType.CREATED_EVENT,
-					NotificationType.WARNING_EVENT,
-				],
-			},
-		);
+		const caseStatement = `
+			CASE 
+					WHEN n.type = :created_news THEN JSON_BUILD_OBJECT('id', news.id)
+					ELSE JSON_BUILD_OBJECT('id', events.id, 'photo', events.photo)
+			END AS object
+		`;
 
 		query.select([
 			"n.id AS id",
@@ -64,12 +69,15 @@ export class NotificationService {
 			"n.object_id AS object_id",
 			"nu.is_read AS is_read",
 			"n.is_active AS is_active",
-			"e.photo AS photo",
+			caseStatement,
 		]);
 
-		const results = await query.getRawMany();
+		query.setParameters({
+			created_news: NotificationType.CREATED_NEWS,
+		});
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+		const results = await query.getRawMany<INotification[]>();
+
 		return results;
 	}
 
