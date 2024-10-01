@@ -45,7 +45,7 @@ export class NotificationService {
 			.leftJoin(
 				"events",
 				"events",
-				"n.type = 'event' AND events.id = n.object_id",
+				"n.type IN ('event', 'created_event', 'warning_event') AND events.id = n.object_id",
 			)
 			.offset(pageSize)
 			.limit(dto.limit)
