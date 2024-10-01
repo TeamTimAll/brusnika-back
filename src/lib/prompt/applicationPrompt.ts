@@ -55,6 +55,7 @@ export enum ApplicationPromptID {
 	Exchange_Request_NOT_FOUND_ERROR = 443,
 	Call_Request_NOT_FOUND_ERROR = 444,
 	INVALID_LINK = 445,
+	TASK_NOT_FOUND_ERROR = 446,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -659,6 +660,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "invalid encrypted link",
 			ru: "недействительная зашифрованная ссылка",
 			uz: "invalid encrypted link",
+		},
+	},
+	[ApplicationPromptID.TASK_NOT_FOUND_ERROR]: {
+		promptId: ApplicationPromptID.TASK_NOT_FOUND_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "invalid_link_error",
+		promptLabels: {
+			en: "Задача не найдена",
+			ru: "недействительная зашифрованная ссылка",
+			uz: "Topshiriq Topilmadi",
 		},
 	},
 };
