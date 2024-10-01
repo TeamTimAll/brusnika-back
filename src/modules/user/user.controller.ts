@@ -58,6 +58,7 @@ export class UserController {
 		\n Ruxsat etilgan foydalanuvchilar rollari:
 		\n - *${RoleType.ADMIN}*
 		\n - *${RoleType.AFFILIATE_MANAGER}*
+		\n - *${RoleType.MANAGER}*
 		\n - *${RoleType.HEAD_OF_AGENCY}*`,
 	})
 	@ApiDtoResponse(UserReadAllMetaDataDto, HttpStatus.OK)
@@ -65,6 +66,7 @@ export class UserController {
 		RoleType.ADMIN,
 		RoleType.AFFILIATE_MANAGER,
 		RoleType.HEAD_OF_AGENCY,
+		RoleType.MANAGER,
 	])
 	async readAll(@Query() dto: UserFilterDto, @User() user: ICurrentUser) {
 		return await this.userService.readAll(dto, user);
