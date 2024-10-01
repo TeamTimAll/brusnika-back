@@ -5,6 +5,14 @@ import { NotificationEntity, NotificationType } from "../notification.entity";
 
 export type INotificationDto = Omit<NotificationEntity, "user">;
 
+class ObjectType {
+	@ApiProperty()
+	id!: number;
+
+	@ApiProperty()
+	photo?: string;
+}
+
 export class NotificationDto implements INotificationDto {
 	@ApiProperty()
 	id!: number;
@@ -38,6 +46,9 @@ export class NotificationDto implements INotificationDto {
 
 	@ApiProperty()
 	is_active!: boolean;
+
+	@ApiProperty()
+	object!: ObjectType;
 }
 
 export class NotificationMetaDataDto
