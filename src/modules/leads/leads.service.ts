@@ -153,6 +153,16 @@ export class LeadsService {
 		return metaData;
 	}
 
+	async readOne(id: number) {
+		const lead = await this.leadRepository.findOneBy({ id });
+
+		if (!lead) {
+			throw new LeadNotFoundError(`id: ${id}`);
+		}
+
+		return lead;
+	}
+
 	async changeStatus(
 		leadId: number,
 		toStatus: LeadOpStatus,

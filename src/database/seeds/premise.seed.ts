@@ -7,6 +7,7 @@ import { PremiseSchemaEntity } from "../../modules/premises/premise_schema.entit
 import {
 	CommercialStatus,
 	PremiseEntity,
+	PremiseFeature,
 	PremisesType,
 	PuchaseOptions,
 } from "../../modules/premises/premises.entity";
@@ -65,6 +66,12 @@ function createPremise(
 		size +
 		" м2";
 
+	const features: Set<PremiseFeature> = new Set();
+
+	for (let i = 0; i < faker.number.int({ min: 1, max: 8 }); i++) {
+		features.add(faker.helpers.enumValue(PremiseFeature));
+	}
+
 	const premise: IPremiseEntity = {
 		name: name,
 		building_id: building_id,
@@ -90,6 +97,7 @@ function createPremise(
 		mortagePayment: faker.number.int({ min: 100, max: 900 }),
 		is_sold: false,
 		section_id: section_id,
+		feature: [...features],
 	};
 	return premise;
 }

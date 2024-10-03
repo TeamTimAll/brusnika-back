@@ -34,18 +34,24 @@ export class NotificationService {
 	async readAll(dto: NotificationFilterDto, user: ICurrentUser) {
 		const pageSize = (dto.page - 1) * dto.limit;
 
+		const eventTypes = [
+			NotificationType.EVENT,
+			NotificationType.CREATED_EVENT,
+			NotificationType.WARNING_EVENT,
+		];
+
 		const query = this.notificationRepository
 			.createQueryBuilder("n")
 			.leftJoin(NotificationUserEntity, "nu", "nu.notification_id = n.id")
 			.leftJoin(
 				"news",
 				"news",
-				"n.type = 'created_news' AND news.id = n.object_id",
+				"n.type = :created_news AND news.id = n.object_id",
 			)
 			.leftJoin(
 				"events",
 				"events",
-				"n.type IN ('event', 'created_event', 'warning_event') AND events.id = n.object_id",
+				"n.type IN (:...eventTypes) AND events.id = n.object_id",
 			)
 			.offset(pageSize)
 			.limit(dto.limit)
@@ -74,6 +80,7 @@ export class NotificationService {
 
 		query.setParameters({
 			created_news: NotificationType.CREATED_NEWS,
+			eventTypes: eventTypes,
 		});
 
 		const results = await query.getRawMany<INotification[]>();
@@ -129,6 +136,18 @@ export class NotificationService {
 			});
 		}
 		return notification;
+	}
+
+	async getUnreadNotificationsCount(user_id: number): Promise<number> {
+		const notificationsCount = await this.notificationRepository.count();
+
+		const readCount = await this.notificationUserRepository.count({
+			where: { user_id },
+		});
+
+		const result = notificationsCount - readCount;
+
+		return result;
 	}
 
 	async update(id: number, dto: UpdateNotificationDto) {
