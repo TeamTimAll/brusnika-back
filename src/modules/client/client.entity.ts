@@ -29,6 +29,9 @@ export class ClientEntity extends BaseEntity {
 	@Column({ type: "timestamp", nullable: true })
 	actived_date?: Date;
 
+	@Column({ type: "timestamp", nullable: true })
+	fixing_type_updated_at?: Date;
+
 	@Column({ type: "text", nullable: true })
 	comment?: string;
 

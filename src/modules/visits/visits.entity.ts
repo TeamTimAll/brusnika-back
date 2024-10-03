@@ -68,6 +68,12 @@ export class VisitsEntity extends BaseEntity {
 	@Column({ type: "time" })
 	time!: Date;
 
+	@Column({ type: "date", nullable: true })
+	request_date!: Date | null;
+
+	@Column({ type: "time", nullable: true })
+	request_time!: Date | null;
+
 	@Column({ nullable: true, type: "text" })
 	note?: string;
 

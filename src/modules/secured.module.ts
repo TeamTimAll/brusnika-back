@@ -39,6 +39,7 @@ import { SettingsModule } from "./settings/settings.module";
 import { TrainingModule } from "./trainings/trainings.module";
 import { UserModule } from "./user/user.module";
 import { VisitsModule } from "./visits/visits.module";
+import { TasksModule } from "./tasks/tasks.module";
 
 @Module({
 	imports: [
@@ -75,6 +76,7 @@ import { VisitsModule } from "./visits/visits.module";
 		CallRequestModule,
 		CalculatorModule,
 		MortgageRequestModule,
+		TasksModule,
 	],
 	exports: [],
 })

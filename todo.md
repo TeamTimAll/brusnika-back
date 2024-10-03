@@ -468,9 +468,9 @@ Analitika uchun raqamlar:
 Agent rating'ini ko'rinishi:
 
 -   [x] "выиграна" Lead'lar soni bo'yicha TOP-3 manager ism familiyasi va agency
-    nomi.
--   [x] "выиграна" Lead'lar summasi bo'yicha TOP-3 manager ism familiyasi va agency
-    nomi.
+        nomi.
+-   [x] "выиграна" Lead'lar summasi bo'yicha TOP-3 manager ism familiyasi va
+        agency nomi.
 -   [x] Lead'lar yasalgan sanasidan "выиграна" status'iga o'tgan vaqtining,
 -   "выиграна" Lead'lar soni bo'yicha TOP-3 manager ism familiyasi va agency
     nomi.
@@ -494,12 +494,12 @@ ma'lumotlarni ko'radi:
 -   [x] Yaratilgan to'plamlar soni jami project'lar va builing'lar bo'yicha.
 -   [x] "выиграна" status'iga o'tgan lead'larning soni
 -   [x] lead'larning soni
-- [x] "выиграна" status'iga o'tgan lead'lar mukofotlar summasi. Lead'dagi fee'dan
-    olinadi.
--   [x] "выиграна" status'iga o'tgan lead'lar o'rtacha summasi. Premise price'dan
-    olinadi va yig'indini ularni soniga bo'linadi.
--   [x] "выиграна" status'iga o'tgan lead'lar o'rtacha mukofotlar summasi. Lead'dagi
-    fee'dan olinadi va yig'indini ularni soniga bo'linadi.
+-   [x] "выиграна" status'iga o'tgan lead'lar mukofotlar summasi. Lead'dagi
+        fee'dan olinadi.
+-   [x] "выиграна" status'iga o'tgan lead'lar o'rtacha summasi. Premise
+        price'dan olinadi va yig'indini ularni soniga bo'linadi.
+-   [x] "выиграна" status'iga o'tgan lead'lar o'rtacha mukofotlar summasi.
+        Lead'dagi fee'dan olinadi va yig'indini ularni soniga bo'linadi.
 -   [x] "выиграна" status'iga o'tgan lead'lar o'rtacha m2.
 -   [x] Eng yaxshi 5 ta yangilik (Ko'rishlar)
 -   [x] Eng yaxshi 5 (qo'ng'iroqlar) o'quv modullari
@@ -571,171 +571,27 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 -   [ ] building uchun integration logic
 -   [ ] section uchun integration logic
 -   [ ] premise uchun integration logic
--   [ ] zadacha (task) logikasi
--   [ ] ipateka uchun zayafka tashash logikasi
+-   [x] zadacha (task) logikasi
+-   [x] ipateka uchun zayafka tashash logikasi
 -   [ ] chat logikasi
 -   [ ] calculator uchun integration logic (nima bilan integratsiya qilish
         ma'lum emas)
--   [ ] call request va exchange request qilingan (logikasini yaxshi tushunib
+-   [x] calculator logic
+-   [x] call request va exchange request qilingan (logikasini yaxshi tushunib
         olish kk) BD va Dizaynda bori qilingan
 -   [ ] exchange request integration ?
 -   [ ] analytikani hamma entityni yasalishi vaqt va userga nisbatan
--   [ ] Podborni saqlash logikasini saqlash
--   [ ] analitika uchun chiqarish kerak
--   [ ] Premise meta-basket. Link gen qilish uchun request yuboriladi. Link
-        heshlanib qaytarilib berilishi kerak. Padbor database'da saqlanmaydi.
-        Gen qilingan link'ni ichidan olinadi.
+-   [x] Podborni saqlash logikasini saqlash
+-   [x] analitika uchun API chiqarish kerak
+-   [-] Premise meta-basket. Link gen qilish uchun request yuboriladi. Link
+    heshlanib qaytarilib berilishi kerak. Padbor database'da saqlanmaydi. Gen
+    qilingan link'ni ichidan olinadi.
 -   [x] Visit'lar cencel qilinsa kalendar'ga chiqarmaslik.
--   [ ] Lead status'ga misol yozish kerak.
+-   [-] Lead status'ga misol yozish kerak.
 -   [x] Bron limit agent va head of agency'ga ko'rinsin.
-
-## Kounter server
-
-### Brusnika API'dan olish kerak bo'lgan ma'lumotlar:
-
-<br>Ikkala server orasida ma'lumot almashinish uchun JSON ko'rinishi `data` va
-`error` dan tashkil topgan. <br>Ma'lumotda uning turi `type` va `data`'ni ichida
-`type`'ga nisbattan ma'lumot shakli beriladi. <br>Brusnikadan kelgan ma'lumotlar
-log shaklida yoziladi. Har bir o'zgarish `update_id` sequence oraqli saqlanadi.
-<br>`data`'ni ichidagi `update_id` Sequence bildiradi. <br>`data`'ni ichidagi
-`ext_id` (external id) ikkala server orasidagi ma'lumotni tanish uchun
-ishlatiladigan id. Bu id unique. ext_id orqali "create to update" funksiyanali
-ishlaydi.
-
-<br>`Project` - faqat kounter'dan asosiy backend'ga ma'lumot yuboriladi.
-<br>Event nomi: `events`. <br>Ma'lumot ko'rinishi:
-
-```json
-{
-	"data": {
-		"type": "project",
-		"data": {
-			"update_id": 1,
-			"ext_id": "string",
-			"name": "string",
-			"detailed_description": "string",
-			"brief_description": "string",
-			"photo": "string",
-			"price": "number",
-			"location": "string",
-			"long": "string",
-			"lat": "string",
-			"link": "string",
-			"end_date": "Date",
-			"city_id": "number"
-		}
-	},
-	"error": null
-}
-```
-
-<br>Building - faqat kounter'dan asosiy backend'ga ma'lumot yuboriladi.
-<br>Event nomi: `events`. <br>Ma'lumot ko'rinishi:
-
-```json
-{
-	"data": {
-		"type": "building",
-		"data": {
-			"update_id": 1,
-			"ext_id": "string",
-			"name": "string",
-			"total_storage": "number",
-			"total_vacant_storage": "number",
-			"total_parking_space": "number",
-			"total_vacant_parking_space": "number",
-			"total_commercial": "number",
-			"total_vacant_commercial": "number",
-			"address": "string",
-			"number_of_floors": "number",
-			"project_ext_id": "string"
-		}
-	},
-	"error": null
-}
-```
-
-<br>Section - faqat kounter'dan asosiy backend'ga ma'lumot yuboriladi. <br>
-Event nomi: `events`. <br> Ma'lumot ko'rinishi:
-
-```json
-{
-	"data": {
-		"type": "section",
-		"data": {
-			"update_id": 1,
-			"ext_id": "string",
-			"name": "string",
-			"building_ext_id": "string"
-		}
-	},
-	"error": null
-}
-```
-
-<br> Premise - faqat kounter'dan asosiy backend'ga ma'lumot yuboriladi. <br>
-Event nomi: `events`. <br> Ma'lumot ko'rinishi:
-
-```ts
-enum PremisesType {
-  APARTMENT = "apartment",
-  STOREROOM = "storeroom",
-  PARKING = "parking",
-  COMMERCIAL = "commercial",
-}
-
-enum CommercialStatus {
-  FREE = "free",
-  TAKEN = "taken",
-}
-
-enum PuchaseOptions {
-  MORTAGE = "mortage",
-  INSTALLMENT = "installment",
-  BILL = "bill",
-  FULL_PAYMENT = "full_payment",
-}
-```
-
-```json
-{
-	"data": {
-		"type": "premise",
-		"data": {
-			"update_id": 1,
-			"ext_id": "string",
-			"name": "string",
-			"type": "PremisesType",
-			"building_ext_id": "string",
-			"price": "bigint",
-			"size": "number",
-			"status": "CommercialStatus",
-			"purchaseOption": "PuchaseOptions",
-			"number": "number",
-			"floor": "number",
-			"photo": "string",
-			"rooms": "number",
-			"photos": "string[]",
-			"similiarApartmentCount": "number",
-			"schema_ext_id": "string",
-			"link": "string",
-			"season_ext_id": "string",
-			"mortagePayment": "number",
-			"section_ext_id": "string",
-			"is_sold": "boolean"
-		}
-	},
-	"error": null
-}
-```
-
--   Lead
-    -   Lead Task:
--   Task
--   Time Slots
--   User
-    -   Register
-    -   Create
--   Client
--   Bron
--   Agency
+-   [ ] Client fixing type'i update bo'lsa `fixing_type_updated_at`ning vaqtini
+        yangilab qo'yish
+-   [ ] Visit uchun ariza logikasini ko'rib chiqish: `request_date` va
+        `request_time` field
+-   [ ] NPS uchun o'qildi yoki yo'q API kerak, Notification o'qildi bo'ladi
+-   [ ] notificationlarni o'qilmaganlar soni uchun API
