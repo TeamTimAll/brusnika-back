@@ -51,6 +51,19 @@ export class NotificationController {
 		return this.notificationService.readAll(dto, user);
 	}
 
+	@Get("unread/count")
+	@ApiOperation({
+		description: "### O'qilmagan notificationlarni sonini olish.",
+	})
+	async getUnreadNotificationsCount(@User() user: ICurrentUser) {
+		const count =
+			await this.notificationService.getUnreadNotificationsCount(
+				user.user_id,
+			);
+
+		return { count };
+	}
+
 	@Get(":id")
 	@ApiOperation({ description: "### Notification id bo'yicha olish." })
 	@ApiDtoResponse(NotificationMetaDataDto, HttpStatus.OK)

@@ -138,6 +138,18 @@ export class NotificationService {
 		return notification;
 	}
 
+	async getUnreadNotificationsCount(user_id: number): Promise<number> {
+		const notificationsCount = await this.notificationRepository.count();
+
+		const readCount = await this.notificationUserRepository.count({
+			where: { user_id },
+		});
+
+		const result = notificationsCount - readCount;
+
+		return result;
+	}
+
 	async update(id: number, dto: UpdateNotificationDto) {
 		const foundNotification = await this.readOne(id);
 		const mergedNotification = this.notificationRepository.merge(
