@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { Sign } from "../../../common/enums/sign";
 import { ClientEntity } from "../../client/client.entity";
 import { PremiseEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
@@ -43,7 +42,7 @@ export class LeadsDto implements LeadsEntity {
 	premise_id!: number;
 
 	@ApiProperty()
-	sign_nps_passed!: Sign;
+	sign_nps_passed!: boolean;
 
 	@ApiProperty()
 	comment!: string;
