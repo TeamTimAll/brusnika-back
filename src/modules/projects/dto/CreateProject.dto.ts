@@ -23,6 +23,14 @@ export class CreateProjectDto {
 
 	@ApiProperty({
 		required: true,
+		example: "Description about the project",
+	})
+	@IsOptional()
+	@IsString()
+	description!: string;
+
+	@ApiProperty({
+		required: true,
 		example: "Something deatiled about the project",
 	})
 	@IsNotEmpty()

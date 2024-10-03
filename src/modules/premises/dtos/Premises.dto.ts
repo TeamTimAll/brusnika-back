@@ -4,6 +4,7 @@ import { SectionEntity } from "../../sections/sections.entity";
 import {
 	CommercialStatus,
 	PremiseEntity,
+	PremiseFeature,
 	PremisesType,
 	PuchaseOptions,
 } from "../premises.entity";
@@ -97,4 +98,7 @@ export class PremiseDto
 
 	@ApiProperty({ type: PremiseSchemaDto })
 	schema!: PremiseSchemaDto;
+
+	@ApiProperty({ enum: PremiseFeature, isArray: true })
+	feature!: PremiseFeature[];
 }
