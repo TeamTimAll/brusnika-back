@@ -67,11 +67,21 @@ export class LeadsEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	premise_id!: number;
 
+	@Column({ type: "text", nullable: true })
+	comment!: string;
+
 	@Column({ nullable: true, type: "integer" })
 	fee?: number;
 
 	@Column({ enum: LeadOpStatus, default: LeadOpStatus.OPEN })
 	current_status!: LeadOpStatus;
+
+	@Column({
+		type: "boolean",
+		nullable: true,
+		comment: "признак “пройден NPS”",
+	})
+	sign_nps_passed!: boolean;
 
 	@Column({ default: 0, type: "integer" })
 	lead_number!: number;

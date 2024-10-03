@@ -113,6 +113,8 @@ function createLead(
 		lead_number: faker.number.int({ min: 1, max: 100 }),
 		state: state,
 		fee: faker.number.int({ min: 100000, max: 999999 }),
+		comment: faker.word.words({ count: { min: 5, max: 10 } }),
+		sign_nps_passed: false,
 	};
 	return lead;
 }

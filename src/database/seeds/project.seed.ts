@@ -20,107 +20,100 @@ export async function up(
 		{
 			city_id: findCityId(cities, "Москва"),
 			name: "Москва Проект",
-			detailed_description:
-				"хороший проект. В нем может находиться несколько человек",
-			brief_description:
-				"хороший проект. В нем может находиться несколько человек",
+			detailed_description: "хороший проект. В нем может находиться несколько человек",
+			brief_description: "хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
-			price: 100_000,
+			price: 100000,
 			location: "Пресненская набережная, Москва",
 			long: "37.6173",
 			lat: "55.7558",
 			link: "",
 			end_date: new Date(),
+			description: ""
 		},
 		{
 			city_id: findCityId(cities, "Тюмень"),
 			name: "Тюмень Проект",
-			detailed_description:
-				"хороший проект. В нем может находиться несколько человек",
-			brief_description:
-				"хороший проект. В нем может находиться несколько человек",
+			detailed_description: "хороший проект. В нем может находиться несколько человек",
+			brief_description: "хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
-			price: 200_000,
+			price: 200000,
 			location: "Тюмень, Тюменская область",
 			long: "65.5619",
 			lat: "57.1553",
 			link: "",
 			end_date: new Date(),
+			description: ""
 		},
 		{
 			city_id: findCityId(cities, "Новосибирск"),
 			name: "Новосибирск Проект",
-			detailed_description:
-				"хороший проект. В нем может находиться несколько человек",
-			brief_description:
-				"хороший проект. В нем может находиться несколько человек",
+			detailed_description: "хороший проект. В нем может находиться несколько человек",
+			brief_description: "хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
-			price: 150_000,
+			price: 150000,
 			location: "Пресненская набережная, Новосибирск",
 			long: "82.8964",
 			lat: "54.9833",
 			link: "",
 			end_date: new Date(),
+			description: ""
 		},
 		{
 			city_id: findCityId(cities, "Екатеринбург"),
 			name: "Екатеринбург Проект",
-			detailed_description:
-				"хороший проект. В нем может находиться несколько человек",
-			brief_description:
-				"хороший проект. В нем может находиться несколько человек",
+			detailed_description: "хороший проект. В нем может находиться несколько человек",
+			brief_description: "хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
-			price: 120_000,
+			price: 120000,
 			location: "Пресненская набережная, Екатеринбург",
 			long: "60.6454",
 			lat: "56.8431",
 			link: "",
 			end_date: new Date(),
+			description: ""
 		},
 		{
 			city_id: findCityId(cities, "Сургут"),
 			name: "Сургут Проект",
-			detailed_description:
-				"хороший проект. В нем может находиться несколько человек",
-			brief_description:
-				"хороший проект. В нем может находиться несколько человек",
+			detailed_description: "хороший проект. В нем может находиться несколько человек",
+			brief_description: "хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
-			price: 100_000,
+			price: 100000,
 			location: "Пресненская набережная, Сургут",
 			long: "73.393032",
 			lat: "61.241778",
 			link: "",
 			end_date: new Date(),
+			description: ""
 		},
 		{
 			city_id: findCityId(cities, "Курган"),
 			name: "Курган Проект",
-			detailed_description:
-				"хороший проект. В нем может находиться несколько человек",
-			brief_description:
-				"хороший проект. В нем может находиться несколько человек",
+			detailed_description: "хороший проект. В нем может находиться несколько человек",
+			brief_description: "хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
-			price: 90_000,
+			price: 90000,
 			location: "Пресненская набережная, Курган",
 			long: "65.341118",
 			lat: "55.441004",
 			link: "",
 			end_date: new Date(),
+			description: ""
 		},
 		{
 			city_id: findCityId(cities, "Омск"),
 			name: "Омск Проект",
-			detailed_description:
-				"хороший проект. В нем может находиться несколько человек",
-			brief_description:
-				"хороший проект. В нем может находиться несколько человек",
+			detailed_description: "хороший проект. В нем может находиться несколько человек",
+			brief_description: "хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
-			price: 400_000,
+			price: 400000,
 			location: "Пресненская набережная, Омск",
 			long: "73.3645",
 			lat: "54.9914",
 			link: "",
 			end_date: new Date(),
+			description: ""
 		},
 	];
 

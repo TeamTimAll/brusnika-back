@@ -11,6 +11,9 @@ export class ProjectEntity extends BaseEntity {
 	name!: string;
 
 	@Column({ nullable: true })
+	description!: string;
+
+	@Column({ nullable: true })
 	detailed_description!: string;
 
 	@Column({ nullable: true })
