@@ -1,8 +1,9 @@
-import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
 import { AgencyEntity } from "../../modules/agencies/agencies.entity";
 import { CityEntity } from "../../modules/cities/cities.entity";
+
+import { faker } from "./faker";
 
 type IAgencyEntity = Omit<
 	AgencyEntity,

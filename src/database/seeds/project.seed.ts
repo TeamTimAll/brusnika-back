@@ -9,7 +9,7 @@ function findCityId(cities: CityEntity[], name: string) {
 
 type IProjectEntity = Omit<
 	ProjectEntity,
-	"id" | "city" | "created_at" | "updated_at" | "is_active"
+	"id" | "ext_id" | "city" | "created_at" | "updated_at" | "is_active"
 >;
 
 export async function up(
@@ -20,8 +20,10 @@ export async function up(
 		{
 			city_id: findCityId(cities, "Москва"),
 			name: "Москва Проект",
-			detailed_description: "хороший проект. В нем может находиться несколько человек",
-			brief_description: "хороший проект. В нем может находиться несколько человек",
+			detailed_description:
+				"хороший проект. В нем может находиться несколько человек",
+			brief_description:
+				"хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
 			price: 100000,
 			location: "Пресненская набережная, Москва",
@@ -29,13 +31,15 @@ export async function up(
 			lat: "55.7558",
 			link: "",
 			end_date: new Date(),
-			description: ""
+			description: "",
 		},
 		{
 			city_id: findCityId(cities, "Тюмень"),
 			name: "Тюмень Проект",
-			detailed_description: "хороший проект. В нем может находиться несколько человек",
-			brief_description: "хороший проект. В нем может находиться несколько человек",
+			detailed_description:
+				"хороший проект. В нем может находиться несколько человек",
+			brief_description:
+				"хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
 			price: 200000,
 			location: "Тюмень, Тюменская область",
@@ -43,13 +47,15 @@ export async function up(
 			lat: "57.1553",
 			link: "",
 			end_date: new Date(),
-			description: ""
+			description: "",
 		},
 		{
 			city_id: findCityId(cities, "Новосибирск"),
 			name: "Новосибирск Проект",
-			detailed_description: "хороший проект. В нем может находиться несколько человек",
-			brief_description: "хороший проект. В нем может находиться несколько человек",
+			detailed_description:
+				"хороший проект. В нем может находиться несколько человек",
+			brief_description:
+				"хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
 			price: 150000,
 			location: "Пресненская набережная, Новосибирск",
@@ -57,13 +63,15 @@ export async function up(
 			lat: "54.9833",
 			link: "",
 			end_date: new Date(),
-			description: ""
+			description: "",
 		},
 		{
 			city_id: findCityId(cities, "Екатеринбург"),
 			name: "Екатеринбург Проект",
-			detailed_description: "хороший проект. В нем может находиться несколько человек",
-			brief_description: "хороший проект. В нем может находиться несколько человек",
+			detailed_description:
+				"хороший проект. В нем может находиться несколько человек",
+			brief_description:
+				"хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
 			price: 120000,
 			location: "Пресненская набережная, Екатеринбург",
@@ -71,13 +79,15 @@ export async function up(
 			lat: "56.8431",
 			link: "",
 			end_date: new Date(),
-			description: ""
+			description: "",
 		},
 		{
 			city_id: findCityId(cities, "Сургут"),
 			name: "Сургут Проект",
-			detailed_description: "хороший проект. В нем может находиться несколько человек",
-			brief_description: "хороший проект. В нем может находиться несколько человек",
+			detailed_description:
+				"хороший проект. В нем может находиться несколько человек",
+			brief_description:
+				"хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
 			price: 100000,
 			location: "Пресненская набережная, Сургут",
@@ -85,13 +95,15 @@ export async function up(
 			lat: "61.241778",
 			link: "",
 			end_date: new Date(),
-			description: ""
+			description: "",
 		},
 		{
 			city_id: findCityId(cities, "Курган"),
 			name: "Курган Проект",
-			detailed_description: "хороший проект. В нем может находиться несколько человек",
-			brief_description: "хороший проект. В нем может находиться несколько человек",
+			detailed_description:
+				"хороший проект. В нем может находиться несколько человек",
+			brief_description:
+				"хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
 			price: 90000,
 			location: "Пресненская набережная, Курган",
@@ -99,13 +111,15 @@ export async function up(
 			lat: "55.441004",
 			link: "",
 			end_date: new Date(),
-			description: ""
+			description: "",
 		},
 		{
 			city_id: findCityId(cities, "Омск"),
 			name: "Омск Проект",
-			detailed_description: "хороший проект. В нем может находиться несколько человек",
-			brief_description: "хороший проект. В нем может находиться несколько человек",
+			detailed_description:
+				"хороший проект. В нем может находиться несколько человек",
+			brief_description:
+				"хороший проект. В нем может находиться несколько человек",
 			photo: "project_default_image.jpg",
 			price: 400000,
 			location: "Пресненская набережная, Омск",
@@ -113,7 +127,7 @@ export async function up(
 			lat: "54.9914",
 			link: "",
 			end_date: new Date(),
-			description: ""
+			description: "",
 		},
 	];
 

@@ -10,9 +10,8 @@ function findProjectId(buildings: ProjectEntity[], name: string) {
 type IBuildingEntity = Omit<
 	BuildingEntity,
 	| "id"
+	| "ext_id"
 	| "project"
-	| "total_apartment"
-	| "total_vacant_apartment"
 	| "created_at"
 	| "updated_at"
 	| "is_active"
@@ -38,6 +37,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
@@ -54,6 +55,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
@@ -70,6 +73,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 
 		{
@@ -87,6 +92,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Тюмень Проект"),
@@ -103,6 +110,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Тюмень Проект"),
@@ -119,6 +128,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 
 		{
@@ -136,6 +147,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Новосибирск Проект"),
@@ -152,6 +165,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Новосибирск Проект"),
@@ -168,6 +183,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 
 		{
@@ -185,6 +202,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Екатеринбург Проект"),
@@ -201,6 +220,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Екатеринбург Проект"),
@@ -217,6 +238,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 
 		{
@@ -234,6 +257,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Сургут Проект"),
@@ -250,6 +275,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Сургут Проект"),
@@ -266,6 +293,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 
 		{
@@ -283,6 +312,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Курган Проект"),
@@ -299,6 +330,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Курган Проект"),
@@ -315,6 +348,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 
 		{
@@ -332,6 +367,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Омск Проект"),
@@ -348,6 +385,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 		{
 			project_id: findProjectId(projects, "Омск Проект"),
@@ -364,6 +403,8 @@ export async function up(
 			total_vacant_parking_space: 23,
 			total_commercial: 3,
 			total_vacant_commercial: 12,
+			total_apartment: 0,
+			total_vacant_apartment: 0
 		},
 	];
 

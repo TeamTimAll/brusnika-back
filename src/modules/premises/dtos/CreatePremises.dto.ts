@@ -23,7 +23,13 @@ import {
 
 type IPremiseSchemaDto = Omit<
 	PremiseSchemaEntity,
-	"id" | "is_active" | "created_at" | "updated_at" | "premise" | "premise_id"
+	| "id"
+	| "ext_id"
+	| "is_active"
+	| "created_at"
+	| "updated_at"
+	| "premise"
+	| "premise_id"
 >;
 
 export class PremiseSchemaDto implements IPremiseSchemaDto {

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOptionsSelect, Repository } from "typeorm";
 
 import { ProjectService } from "../projects/projects.service";
 
@@ -20,6 +20,10 @@ export class BuildingsService {
 		private buildingRepository: Repository<BuildingEntity>,
 		private projectService: ProjectService,
 	) {}
+
+	get repository(): Repository<BuildingEntity> {
+		return this.buildingRepository;
+	}
 
 	async readAll(payload: FilterBuildingDto) {
 		const { city_id, project_id } = payload;
@@ -55,7 +59,7 @@ export class BuildingsService {
 	}
 
 	async create(dto: CreateBuildingDto) {
-		await this.projectService.readOne(dto.project_id);
+		await this.projectService.checkExists(dto.project_id);
 		return await this.buildingRepository.save(dto);
 	}
 
@@ -72,5 +76,19 @@ export class BuildingsService {
 		const building = await this.readOne(id);
 		await this.buildingRepository.delete(building.id);
 		return building;
+	}
+
+	async readOneByExtId(
+		ext_id: string,
+		select?: FindOptionsSelect<BuildingEntity>,
+	) {
+		const client = await this.buildingRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new BuildingNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

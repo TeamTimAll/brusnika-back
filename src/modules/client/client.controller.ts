@@ -90,7 +90,7 @@ export class ClientController {
 	@Get(":id")
 	@ApiOperation({ summary: "Get Client by id" })
 	async getClientById(@Param("id") id: number) {
-		return this.clientService.readOne(id);
+		return this.clientService.readOneWithRelation(id);
 	}
 
 	@Delete()

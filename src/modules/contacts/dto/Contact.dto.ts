@@ -8,7 +8,10 @@ import { ContactEntity } from "../contact.entity";
 import { ContactAddressDto } from "./ContactAddress.dto";
 import { ContactWorkScheduleDto } from "./ContactWorkSchedule.dto";
 
-type IContact = Omit<ContactEntity, "city" | "work_schedule" | "address">;
+type IContact = Omit<
+	ContactEntity,
+	"ext_id" | "city" | "work_schedule" | "address"
+>;
 
 export class ContactDto implements IContact {
 	@ApiProperty()

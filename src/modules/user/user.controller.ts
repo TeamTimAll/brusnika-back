@@ -211,7 +211,7 @@ export class UserController {
 		RoleType.HEAD_OF_AGENCY,
 	])
 	async readOne(@Param("id") id: number, @User() _user: ICurrentUser) {
-		return await this.userService.readOne(id);
+		return await this.userService.readOneWithRelation(id);
 	}
 
 	@Roles([RoleType.ADMIN])

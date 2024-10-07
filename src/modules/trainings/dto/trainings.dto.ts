@@ -5,7 +5,7 @@ import { TrainingAccess, TrainingEntity } from "../trainings.entity";
 
 type ITrainingDto = Omit<
 	TrainingEntity,
-	"user" | "category" | "views" | "likes" | "access_user"
+	"ext_id" | "user" | "category" | "views" | "likes" | "access_user"
 >;
 
 export class TrainingDto implements ITrainingDto {
