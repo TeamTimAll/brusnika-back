@@ -4,7 +4,7 @@ import { SettingsEntity } from "../../modules/settings/settings.entity";
 
 type ISettingsEntity = Omit<
 	SettingsEntity,
-	"id" | "created_at" | "updated_at" | "is_active"
+	"id" | "ext_id" | "created_at" | "updated_at" | "is_active"
 >;
 
 export async function up(query: QueryBuilder<object>) {

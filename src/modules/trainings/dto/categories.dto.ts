@@ -12,7 +12,9 @@ import {
 import { BaseDto } from "../../../common/base/base_dto";
 import { TrainingCategoryEntity } from "../entities/categories.entity";
 
-export class TrainingCategoryDto implements TrainingCategoryEntity {
+export class TrainingCategoryDto
+	implements Omit<TrainingCategoryEntity, "ext_id">
+{
 	@ApiProperty()
 	id!: number;
 

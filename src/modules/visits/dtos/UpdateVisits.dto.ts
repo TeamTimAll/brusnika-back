@@ -44,7 +44,7 @@ export class UpdateVisitsDto {
 	})
 	@IsMilitaryTime()
 	@IsOptional()
-	time!: Date;
+	time!: string;
 
 	@ApiProperty()
 	@IsOptional()

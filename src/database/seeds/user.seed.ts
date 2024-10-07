@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
 import { RoleType } from "../../constants";
@@ -11,9 +10,12 @@ import {
 	UserStatus,
 } from "../../modules/user/user.entity";
 
+import { faker } from "./faker";
+
 type IUserEntity = Omit<
 	UserEntity,
 	| "id"
+	| "ext_id"
 	| "city"
 	| "agency"
 	| "fullName"

@@ -12,6 +12,9 @@ export abstract class BaseEntity {
 	@Column({ type: "boolean", default: true })
 	is_active!: boolean;
 
+	@Column({ type: "text", nullable: true, unique: true })
+	ext_id!: string | null;
+
 	@CreateDateColumn({ type: "timestamptz" })
 	created_at!: Date;
 

@@ -65,6 +65,9 @@ export enum ApplicationPromptID {
 	VERIFICATION_CODE_IS_NOT_CORRECT_ERROR = 315,
 	NO_VERIFICATION_CODE_SENT_ERROR = 316,
 	USER_PHONE_NOT_VERIFIED_ERROR = 317,
+
+	// Message queue errors
+	MQ_INVALID_MESSAGE_ERROR = 600,
 }
 
 export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
@@ -671,6 +674,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Задача не найдена",
 			ru: "недействительная зашифрованная ссылка",
 			uz: "Topshiriq Topilmadi",
+		},
+	},
+	[ApplicationPromptID.MQ_INVALID_MESSAGE_ERROR]: {
+		promptId: ApplicationPromptID.MQ_INVALID_MESSAGE_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "MQ_INVALID_MESSAGE_ERROR",
+		promptLabels: {
+			en: "Mq invalid message error",
+			ru: "Mq invalid message error",
+			uz: "Mq invalid message error",
 		},
 	},
 };

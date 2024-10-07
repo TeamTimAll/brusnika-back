@@ -558,13 +558,14 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 
 ## Plan
 
--   [ ] auth uchun integration logic
+-   [ ] auth uchun integration logic (?)
+        SAVOL: keycloak bilan integration qadamlari qanaqa bo'ladi. 
 -   [ ] sms service integration
 -   [ ] email service integration
 -   [ ] client uchun integration logic
--   [ ] bron bilan lead'ni ulash logikasi
+-   [-] bron bilan lead'ni ulash logikasi
 -   [ ] bron uchun integration logic
--   [ ] visit bilan lead'ni ulash logikasi
+-   [-] visit bilan lead'ni ulash logikasi
 -   [ ] visit uchun integration logic
 -   [ ] city uchun integration logic
 -   [ ] project uchun integration logic
@@ -595,3 +596,4 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
         `request_time` field
 -   [ ] NPS uchun o'qildi yoki yo'q API kerak, Notification o'qildi bo'ladi
 -   [ ] notificationlarni o'qilmaganlar soni uchun API
+-   [ ] Lead'ga `start_date` va `status_updated_at` fieldlar qo'shish kerak.

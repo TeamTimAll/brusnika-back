@@ -6,6 +6,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 
 import { ClientService } from "../client/client.service";
 import { ProjectService } from "../projects/projects.service";
+import { VisitQueueService } from "../queues/visit_queue/visit_queue.service";
 import { UserService } from "../user/user.service";
 
 import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
@@ -22,6 +23,7 @@ export class VisitsService {
 		@Inject() private projectService: ProjectService,
 		@Inject() private clientService: ClientService,
 		@Inject() private userService: UserService,
+		@Inject() private visitQueueService: VisitQueueService,
 	) {}
 
 	get repository(): Repository<VisitsEntity> {
@@ -30,16 +32,22 @@ export class VisitsService {
 
 	async create(dto: CreateVisitsDto) {
 		if (typeof dto.project_id !== "undefined") {
-			await this.projectService.readOne(dto.project_id);
+			await this.projectService.checkExists(dto.project_id);
 		}
 		if (typeof dto.client_id !== "undefined") {
 			await this.clientService.checkExists(dto.client_id);
 		}
 		if (typeof dto.agent_id !== "undefined") {
-			await this.userService.readOne(dto.agent_id);
+			await this.userService.checkExists(dto.agent_id);
 		}
-		const visit = this.visitsRepository.create(dto);
-		return await this.visitsRepository.save(visit);
+		let visit = this.visitsRepository.create(dto);
+		visit = await this.visitsRepository.save(visit);
+
+		this.visitQueueService.makeRequest(
+			await this.visitQueueService.createFormEntity(visit),
+		);
+
+		return visit;
 	}
 
 	async readAll(user: ICurrentUser): Promise<VisitsEntity[]> {
@@ -64,13 +72,13 @@ export class VisitsService {
 	): Promise<VisitsEntity> {
 		let foundVisit = await this.readOne(id);
 		if (typeof dto.project_id !== "undefined") {
-			await this.projectService.readOne(dto.project_id);
+			await this.projectService.checkExists(dto.project_id);
 		}
 		if (typeof dto.client_id !== "undefined") {
 			await this.clientService.checkExists(dto.client_id);
 		}
 		if (typeof dto.agent_id !== "undefined") {
-			await this.userService.readOne(dto.agent_id);
+			await this.userService.checkExists(dto.agent_id);
 		}
 
 		const mergedCity = this.visitsRepository.merge(foundVisit, dto);

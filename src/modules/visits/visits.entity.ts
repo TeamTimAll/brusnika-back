@@ -6,9 +6,9 @@ import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
 
 export enum VisitStatus {
-	OPEN = "открыто",
-	SUCCESS = "успешно",
-	FAIL = "неуспешно",
+	OPEN = "open",
+	SUCCESS = "success",
+	FAIL = "fail",
 }
 
 export enum PuchaseOptions {
@@ -66,7 +66,7 @@ export class VisitsEntity extends BaseEntity {
 	date!: Date;
 
 	@Column({ type: "time" })
-	time!: Date;
+	time!: string;
 
 	@Column({ type: "date", nullable: true })
 	request_date!: Date | null;

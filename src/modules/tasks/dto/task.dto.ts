@@ -8,7 +8,7 @@ import { PremiseEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
 import { UserEntity } from "../../user/user.entity";
 
-type ITasksEntity = TasksEntity;
+type ITasksEntity = Omit<TasksEntity, "ext_id">;
 
 export class TasksDto implements ITasksEntity {
 	@ApiProperty()

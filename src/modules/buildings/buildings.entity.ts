@@ -41,7 +41,10 @@ export class BuildingEntity extends BaseEntity {
 	number_of_floors!: number;
 
 	// TODO: change this columns
+	@Column({ nullable: true })
 	total_apartment!: number;
+
+	@Column({ nullable: true })
 	total_vacant_apartment!: number;
 
 	@Column({ type: "text", array: true, nullable: true })

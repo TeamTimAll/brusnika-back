@@ -9,6 +9,9 @@ export class BannerDto implements Required<BannerEntity> {
 	id!: number;
 
 	@ApiProperty()
+	ext_id!: string;
+
+	@ApiProperty()
 	is_active!: boolean;
 
 	@ApiProperty()

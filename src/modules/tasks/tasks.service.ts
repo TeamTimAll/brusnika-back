@@ -28,7 +28,7 @@ export class TasksService {
 	async create(payload: CreateTaskDto) {
 		await this.userService.checkExists(payload.user_id);
 		await this.clientService.checkExists(payload.client_id);
-		await this.projectService.readOne(payload.project_id);
+		await this.projectService.checkExists(payload.project_id);
 		await this.premiseService.checkExists(payload.premise_id);
 		await this.leadService.readOne(payload.lead_id);
 

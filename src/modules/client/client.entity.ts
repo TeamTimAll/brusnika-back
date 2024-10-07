@@ -27,7 +27,7 @@ export class ClientEntity extends BaseEntity {
 	phone_number!: string;
 
 	@Column({ type: "timestamp", nullable: true })
-	actived_date?: Date;
+	actived_date?: Date | null;
 
 	@Column({ type: "timestamp", nullable: true })
 	fixing_type_updated_at?: Date;

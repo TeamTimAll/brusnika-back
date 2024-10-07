@@ -110,7 +110,7 @@ export class ExchangeRequestEntity extends BaseEntity {
 
 	@Column({
 		enum: ExchangeRequestStatus,
-		default: ExchangeRequestStatus.NOT_PROCESSED,
+		// default: ExchangeRequestStatus.NOT_PROCESSED,
 	})
 	current_status!: ExchangeRequestStatus;
 

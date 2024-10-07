@@ -40,7 +40,7 @@ export class CreateVisitsDto {
 		description: "Time of booking",
 	})
 	@IsMilitaryTime()
-	time!: Date;
+	time!: string;
 
 	@ApiProperty()
 	@IsOptional()
