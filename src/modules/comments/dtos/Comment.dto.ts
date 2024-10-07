@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BaseDto, Dto } from "../../../common/base/base_dto";
 import { CommentEntity } from "../comment.entity";
 
-export class CommentDto implements CommentEntity {
+export class CommentDto implements Omit<CommentEntity, "ext_id"> {
 	@ApiProperty()
 	id!: number;
 

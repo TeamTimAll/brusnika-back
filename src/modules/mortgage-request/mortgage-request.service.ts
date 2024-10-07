@@ -35,7 +35,7 @@ export class MortgageRequestService {
 			premise_id,
 		} = payload;
 
-		const foundPremises = await this.premisesService.readOne(premise_id);
+		const foundPremises = await this.premisesService.readOneWithRelation(premise_id);
 		if (!foundPremises.id) {
 			throw new PremiseNotFoundError(`premise_id: ${premise_id}`);
 		}

@@ -6,7 +6,12 @@ import { NewsEntity } from "../news.entity";
 
 type INewsEntity = Omit<
 	NewsEntity,
-	"views" | "likes" | "city" | "secondary_category" | "primary_category"
+	| "ext_id"
+	| "views"
+	| "likes"
+	| "city"
+	| "secondary_category"
+	| "primary_category"
 >;
 
 export class NewsDto implements INewsEntity {

@@ -8,7 +8,7 @@ export type UserDtoOptions = Partial<{ isActive: boolean }>;
 
 export type IUserDto = Omit<
 	UserEntity,
-	"comments" | "city" | "agency" | "bookings" | "visits"
+	"ext_id" | "comments" | "city" | "agency" | "bookings" | "visits"
 >;
 
 export class UserDto implements IUserDto {

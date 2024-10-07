@@ -10,7 +10,7 @@ import { IUserCreation } from "../bookings.service";
 
 type IBookingDto = Omit<
 	BookingEntity,
-	"premise" | "client" | "agent" | "create_by"
+	"ext_id" | "premise" | "client" | "agent" | "create_by"
 >;
 
 export class UserCreationDto implements IUserCreation {

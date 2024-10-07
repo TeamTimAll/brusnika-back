@@ -9,7 +9,7 @@ function findBuildingId(buildings: BuildingEntity[], name: string) {
 
 type ISectionEntity = Omit<
 	SectionEntity,
-	"id" | "building" | "created_at" | "updated_at" | "is_active"
+	"id" | "ext_id" | "building" | "created_at" | "updated_at" | "is_active"
 >;
 
 export async function up(

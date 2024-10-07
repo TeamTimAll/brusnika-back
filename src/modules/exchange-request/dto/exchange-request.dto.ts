@@ -1,21 +1,21 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-import { PremisesType } from "../../premises/premises.entity";
-import { ClientEntity } from "../../client/client.entity";
 import { BaseDto, Dto } from "../../../common/base/base_dto";
+import { ClientEntity } from "../../client/client.entity";
+import { PremisesType } from "../../premises/premises.entity";
+import { UserEntity } from "../../user/user.entity";
+import {
+	ExchangeRequestOpsEntity,
+	ExchangeRequestStatus,
+} from "../exchange-request-ops.entity";
 import {
 	AccommodationType,
 	ExchangeRequestEntity,
 	ExchangeRequestState,
 	PremiseCondition,
 } from "../exchange-request.entity";
-import { UserEntity } from "../../user/user.entity";
-import {
-	ExchangeRequestOpsEntity,
-	ExchangeRequestStatus,
-} from "../exchange-request-ops.entity";
 
-type IExchangeRequestDto = ExchangeRequestEntity;
+type IExchangeRequestDto = Omit<ExchangeRequestEntity, "ext_id">;
 
 export class ExchangeRequestDto implements IExchangeRequestDto {
 	@ApiProperty()

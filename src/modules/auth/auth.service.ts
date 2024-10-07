@@ -74,7 +74,7 @@ export class AuthService {
 	}
 
 	async agentFillData(dto: UserFillDataDto): Promise<AuthResponeWithData> {
-		const user = await this.userService.readOne(dto.id);
+		const user = await this.userService.readOneWithRelation(dto.id);
 
 		const foundUser = await this.userService.repository.findOneBy({
 			email: dto.email,
@@ -101,7 +101,7 @@ export class AuthService {
 	async agentChooseAgency(
 		body: AgentChooseAgencyDto,
 	): Promise<AuthResponeWithTokenDto> {
-		const user = await this.userService.readOne(body.user_id);
+		const user = await this.userService.readOneWithRelation(body.user_id);
 		await this.agenciesService.readOne(body.agency_id);
 		await this.userService.repository.update(user.id, {
 			register_status: UserRegisterStatus.FINISHED,
@@ -120,7 +120,7 @@ export class AuthService {
 	async agentRegisterAgency(
 		dto: AgentRegisterAgencyDto,
 	): Promise<AuthResponeWithTokenDto> {
-		const user = await this.userService.readOne(dto.user_id);
+		const user = await this.userService.readOneWithRelation(dto.user_id);
 		let temporary_role = RoleType.AGENT;
 		if (dto.isOwner) {
 			temporary_role = RoleType.HEAD_OF_AGENCY;
@@ -153,7 +153,7 @@ export class AuthService {
 	async agentRequestAgency(
 		body: AgentRequestAgencyDto,
 	): Promise<AuthResponeWithTokenDto> {
-		const user = await this.userService.readOne(body.user_id);
+		const user = await this.userService.readOneWithRelation(body.user_id);
 
 		const newAgency = await this.agenciesService.create(
 			{
@@ -208,7 +208,7 @@ export class AuthService {
 	async verifySmsCode(
 		dto: UserLoginVerifyCodeDto,
 	): Promise<AuthResponeWithData | AuthResponeWithTokenDto> {
-		const user = await this.userService.readOne(dto.user_id);
+		const user = await this.userService.readOneWithRelation(dto.user_id);
 
 		if (!user.verification_code_sent_date) {
 			throw new NoVerificationCodeSentError();

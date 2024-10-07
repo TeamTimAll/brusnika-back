@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, IsNull, Repository } from "typeorm";
+import { FindOptionsSelect, In, IsNull, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -36,7 +36,7 @@ export class LeadsService {
 	) {}
 
 	async create(lead: CreateLeadDto): Promise<LeadsEntity> {
-		const foundPremises = await this.premisesService.readOne(
+		const foundPremises = await this.premisesService.readOneWithRelation(
 			lead.premise_id,
 		);
 		if (!foundPremises.id) {
@@ -213,5 +213,19 @@ export class LeadsService {
 			agent_id: foundLead.agent_id,
 		});
 		return [foundLead, leadsCount];
+	}
+
+	async readOneByExtId(
+		ext_id: string,
+		select?: FindOptionsSelect<LeadsEntity>,
+	) {
+		const client = await this.leadRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new LeadNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

@@ -56,7 +56,7 @@ export class PremisesController {
 	@ApiOperation({ summary: "Get a single city by ID" })
 	@Get(":id")
 	async getSinglePremises(@Param("id") id: number) {
-		return await this.service.readOne(id);
+		return await this.service.readOneWithRelation(id);
 	}
 
 	@ApiResponse({ status: HttpStatus.OK, type: PremiseDto })

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ILike, Repository } from "typeorm";
+import { FindOptionsSelect, ILike, Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 
@@ -126,5 +126,19 @@ export class AgencyService {
 				.returning("*")
 				.execute()
 		).generatedMaps;
+	}
+
+	async readOneByExtId(
+		ext_id: string,
+		select?: FindOptionsSelect<AgencyEntity>,
+	) {
+		const client = await this.agencyRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new AgencyNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

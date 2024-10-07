@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { ClientEntity } from "../../client/client.entity";
 import { BaseDto, Dto } from "../../../common/base/base_dto";
+import { ClientEntity } from "../../client/client.entity";
+import { PremiseEntity } from "../../premises/premises.entity";
 import { UserEntity } from "../../user/user.entity";
 import { CallRequestEntity } from "../call-request.entity";
-import { PremiseEntity } from "../../premises/premises.entity";
 
-type ICallRequestDto = CallRequestEntity;
+type ICallRequestDto = Omit<CallRequestEntity, "ext_id">;
 
 export class CallRequestDto implements ICallRequestDto {
 	@ApiProperty()

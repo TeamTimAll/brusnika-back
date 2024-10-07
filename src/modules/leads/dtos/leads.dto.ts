@@ -7,7 +7,7 @@ import { UserEntity } from "../../user/user.entity";
 import { LeadOpStatus, LeadOpsEntity } from "../lead_ops.entity";
 import { LeadState, LeadsEntity } from "../leads.entity";
 
-export class LeadsDto implements LeadsEntity {
+export class LeadsDto implements Omit<LeadsEntity, "ext_id"> {
 	@ApiProperty({ default: 1 })
 	id!: number;
 

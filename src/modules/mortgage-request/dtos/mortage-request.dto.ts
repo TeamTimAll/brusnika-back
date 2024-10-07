@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-import { ClientEntity } from "../../client/client.entity";
 import { BaseDto, Dto } from "../../../common/base/base_dto";
-import { MortgageRequestEntity } from "../mortgage-request.entity";
 import { BuildingEntity } from "../../buildings/buildings.entity";
+import { ClientEntity } from "../../client/client.entity";
 import { PremiseEntity } from "../../premises/premises.entity";
+import { MortgageRequestEntity } from "../mortgage-request.entity";
 
-type IMortgageRequestDto = MortgageRequestEntity;
+type IMortgageRequestDto = Omit<MortgageRequestEntity, "ext_id">;
 
 export class MortgageRequestDto implements IMortgageRequestDto {
 	@ApiProperty()

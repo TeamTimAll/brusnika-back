@@ -5,7 +5,7 @@ import { CityEntity } from "../../cities/cities.entity";
 import { CityWitBannerDto } from "../../cities/dtos/City.dto";
 import { SettingsEntity } from "../settings.entity";
 
-export class SettingsDto implements SettingsEntity {
+export class SettingsDto implements Omit<SettingsEntity, "ext_id"> {
 	@ApiProperty()
 	id!: number;
 

@@ -7,6 +7,7 @@ import { ClientService } from "../client/client.service";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesService } from "../premises/premises.service";
+import { BookingQueueService } from "../queues/booking_queue/booking_queue.service";
 import { SettingsService } from "../settings/settings.service";
 
 import { BookingRepository } from "./booking.repository";
@@ -31,6 +32,7 @@ export class BookingsService {
 		@Inject() private premiseService: PremisesService,
 		@Inject() private clientService: ClientService,
 		@Inject() private settingsService: SettingsService,
+		private bookingQueueService: BookingQueueService,
 	) {}
 
 	get repository(): BookingRepository {
@@ -59,6 +61,11 @@ export class BookingsService {
 		const booking = this.bookingRepository.create(dto);
 		booking.agent_id = user.user_id;
 		booking.create_by_id = user.user_id;
+
+		this.bookingQueueService.makeRequest(
+			await this.bookingQueueService.createFormEntity(booking),
+		);
+
 		const metaData = BaseDto.create<BookingEntity>();
 		metaData.data = await this.bookingRepository.save(booking);
 		metaData.meta.data = {
@@ -113,7 +120,7 @@ export class BookingsService {
 	async update(id: number, dto: UpdateBookingsDto): Promise<BookingEntity> {
 		const foundBooking = await this.readOne(id);
 		if (typeof dto.premise_id !== "undefined") {
-			const foundPremise = await this.premiseService.readOne(
+			const foundPremise = await this.premiseService.readOneWithRelation(
 				dto.premise_id,
 			);
 			if (!foundPremise) {
