@@ -12,13 +12,13 @@ export class RabbitMQServer {
 	static async init(logger: Logger) {
 		this.logger = logger;
 		if (
-			!ConfigManager.config.RMQ_USER ||
-			!ConfigManager.config.RMQ_PASS ||
-			!ConfigManager.config.RMQ_HOST ||
-			!ConfigManager.config.RMQ_PORT
+			!ConfigManager.config.RMQ_SERVER_USER ||
+			!ConfigManager.config.RMQ_SERVER_PASS ||
+			!ConfigManager.config.RMQ_SERVER_HOST ||
+			!ConfigManager.config.RMQ_SERVER_PORT
 		) {
 			logger.warn(
-				"Rabbit-MQ Server not created. Please fill .env with RMQ_USER, RMQ_PASS, RMQ_HOST, RMQ_PORT",
+				"Rabbit-MQ Server not created. Please fill .env with RMQ_SERVER_USER, RMQ_SERVER_PASS, RMQ_SERVER_HOST, RMQ_SERVER_PORT",
 			);
 			return;
 		}
@@ -29,7 +29,7 @@ export class RabbitMQServer {
 				transport: Transport.RMQ,
 				options: {
 					urls: [
-						`amqp://${ConfigManager.config.RMQ_USER}:${ConfigManager.config.RMQ_PASS}@${ConfigManager.config.RMQ_HOST}:${ConfigManager.config.RMQ_PORT}`,
+						`amqp://${ConfigManager.config.RMQ_SERVER_USER}:${ConfigManager.config.RMQ_SERVER_PASS}@${ConfigManager.config.RMQ_SERVER_HOST}:${ConfigManager.config.RMQ_SERVER_PORT}`,
 					],
 					queueOptions: {
 						durable: false,

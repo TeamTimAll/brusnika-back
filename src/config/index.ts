@@ -7,24 +7,35 @@ import { DatabaseConfig, DatabaseConfigManager } from "./database";
 export type NodeEnv = "development" | "production" | "test";
 
 export interface IConfig {
+	// Server
 	NODE_ENV: NodeEnv;
 	SERVER_PORT: number;
+	API_VERSION: string;
+	// DB
 	DB_TYPE: string;
 	DB_HOST: string;
 	DB_PORT: number;
 	DB_USERNAME: string;
 	DB_PASSWORD: string;
 	DB_DATABASE: string;
+	// JWT Auth
 	JWT_PRIVATE_KEY: string;
 	JWT_PUBLIC_KEY: string;
 	JWT_EXPIRATION_TIME: number;
-	API_VERSION: string;
+	// public_key.pem
 	PUBLIC_KEY: string;
+	// private_key.pem
 	PRIVATE_KEY: string;
-	RMQ_USER: string | undefined;
-	RMQ_PASS: string | undefined;
-	RMQ_HOST: string | undefined;
-	RMQ_PORT: number | undefined;
+	// Message queue server
+	RMQ_SERVER_USER: string | undefined;
+	RMQ_SERVER_PASS: string | undefined;
+	RMQ_SERVER_HOST: string | undefined;
+	RMQ_SERVER_PORT: number | undefined;
+	// Message queue client
+	RMQ_CLIENT_USER: string | undefined;
+	RMQ_CLIENT_PASS: string | undefined;
+	RMQ_CLIENT_HOST: string | undefined;
+	RMQ_CLIENT_PORT: number | undefined;
 }
 
 export class ConfigManager {
@@ -44,10 +55,16 @@ export class ConfigManager {
 		API_VERSION: process.env.API_VERSION as string,
 		PUBLIC_KEY: process.env.PUBLIC_KEY?.replace(/\\n/g, "\n") as string,
 		PRIVATE_KEY: process.env.PRIVATE_KEY?.replace(/\\n/g, "\n") as string,
-		RMQ_USER: process.env.RMQ_USER,
-		RMQ_PASS: process.env.RMQ_PASS,
-		RMQ_HOST: process.env.RMQ_HOST,
-		RMQ_PORT: (process.env.RMQ_PORT as number | undefined) ?? 5672,
+		RMQ_SERVER_USER: process.env.RMQ_SERVER_USER,
+		RMQ_SERVER_PASS: process.env.RMQ_SERVER_PASS,
+		RMQ_SERVER_HOST: process.env.RMQ_SERVER_HOST,
+		RMQ_SERVER_PORT:
+			(process.env.RMQ_SERVER_PORT as number | undefined) ?? 5672,
+		RMQ_CLIENT_USER: process.env.RMQ_CLIENT_USER,
+		RMQ_CLIENT_PASS: process.env.RMQ_CLIENT_PASS,
+		RMQ_CLIENT_HOST: process.env.RMQ_CLIENT_HOST,
+		RMQ_CLIENT_PORT:
+			(process.env.RMQ_CLIENT_PORT as number | undefined) ?? 5672,
 	};
 
 	public static get databaseConfig(): DatabaseConfig {
@@ -59,6 +76,7 @@ export class ConfigManager {
 		NODE_ENV: Joi.string()
 			.valid(...(["development", "production", "test"] as NodeEnv[]))
 			.required(),
+		API_VERSION: Joi.string().optional(),
 		DB_TYPE: Joi.string().required(),
 		DB_HOST: Joi.string().required(),
 		DB_PORT: Joi.number().required(),
@@ -68,13 +86,16 @@ export class ConfigManager {
 		JWT_PRIVATE_KEY: Joi.string().required(),
 		JWT_PUBLIC_KEY: Joi.string().required(),
 		JWT_EXPIRATION_TIME: Joi.number().required(),
-		API_VERSION: Joi.string().optional(),
 		PUBLIC_KEY: Joi.string().required(),
 		PRIVATE_KEY: Joi.string().required(),
-		RMQ_USER: Joi.string().optional(),
-		RMQ_PASS: Joi.string().optional(),
-		RMQ_HOST: Joi.string().optional(),
-		RMQ_PORT: Joi.number().optional(),
+		RMQ_SERVER_USER: Joi.string().optional(),
+		RMQ_SERVER_PASS: Joi.string().optional(),
+		RMQ_SERVER_HOST: Joi.string().optional(),
+		RMQ_SERVER_PORT: Joi.number().optional(),
+		RMQ_CLIENT_USER: Joi.string().optional(),
+		RMQ_CLIENT_PASS: Joi.string().optional(),
+		RMQ_CLIENT_HOST: Joi.string().optional(),
+		RMQ_CLIENT_PORT: Joi.number().optional(),
 	});
 
 	static init() {

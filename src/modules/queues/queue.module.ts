@@ -13,7 +13,7 @@ import { QueueService } from "./queue.service";
 				transport: Transport.RMQ,
 				options: {
 					urls: [
-						`amqp://${ConfigManager.config.RMQ_USER}:${ConfigManager.config.RMQ_PASS}@${ConfigManager.config.RMQ_HOST}:${ConfigManager.config.RMQ_PORT}`,
+						`amqp://${ConfigManager.config.RMQ_CLIENT_USER}:${ConfigManager.config.RMQ_CLIENT_PASS}@${ConfigManager.config.RMQ_CLIENT_HOST}:${ConfigManager.config.RMQ_CLIENT_PORT}`,
 					],
 					queueOptions: {
 						durable: false,
