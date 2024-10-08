@@ -12,6 +12,7 @@ import { UserService } from "../../user/user.service";
 import { QueueService } from "../queue.service";
 
 import { BookingQueueDto } from "./dto/BookingQueue.dto";
+import { BookingStatusChangeDto } from "./dto/BookingStatusChange.dto";
 
 @Injectable()
 export class BookingQueueService {
@@ -27,6 +28,13 @@ export class BookingQueueService {
 			data: booking,
 		};
 		this.queueService.send("request_booking", data);
+	}
+
+	requestStatusChange(dto: BookingStatusChangeDto) {
+		const data: Pick<BaseDto<BookingStatusChangeDto>, "data"> = {
+			data: dto,
+		};
+		this.queueService.send("request_booking_status_change", data);
 	}
 
 	async createFormEntity(booking: BookingsEntity): Promise<BookingQueueDto> {

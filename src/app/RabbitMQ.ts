@@ -5,20 +5,20 @@ import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 import { AppModule } from "../app.module";
 import { ConfigManager } from "../config";
 
-export class RabbitMQServer {
+export class RabbitMQClient {
 	private static app?: INestMicroservice;
 	private static logger: Logger;
 
 	static async init(logger: Logger) {
 		this.logger = logger;
 		if (
-			!ConfigManager.config.RMQ_USER ||
-			!ConfigManager.config.RMQ_PASS ||
-			!ConfigManager.config.RMQ_HOST ||
-			!ConfigManager.config.RMQ_PORT
+			!ConfigManager.config.RMQ_CLIENT_USER ||
+			!ConfigManager.config.RMQ_CLIENT_PASS ||
+			!ConfigManager.config.RMQ_CLIENT_HOST ||
+			!ConfigManager.config.RMQ_CLIENT_PORT
 		) {
 			logger.warn(
-				"Rabbit-MQ Server not created. Please fill .env with RMQ_USER, RMQ_PASS, RMQ_HOST, RMQ_PORT",
+				"Rabbit-MQ Server not created. Please fill .env with RMQ_CLIENT_USER, RMQ_CLIENT_PASS, RMQ_CLIENT_HOST, RMQ_CLIENT_PORT",
 			);
 			return;
 		}
@@ -29,7 +29,7 @@ export class RabbitMQServer {
 				transport: Transport.RMQ,
 				options: {
 					urls: [
-						`amqp://${ConfigManager.config.RMQ_USER}:${ConfigManager.config.RMQ_PASS}@${ConfigManager.config.RMQ_HOST}:${ConfigManager.config.RMQ_PORT}`,
+						`amqp://${ConfigManager.config.RMQ_CLIENT_USER}:${ConfigManager.config.RMQ_CLIENT_PASS}@${ConfigManager.config.RMQ_CLIENT_HOST}:${ConfigManager.config.RMQ_CLIENT_PORT}`,
 					],
 					queueOptions: {
 						durable: false,
