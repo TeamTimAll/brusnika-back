@@ -60,9 +60,11 @@ export class ClientService {
 		}
 		let client = this.clientRepository.create(dto);
 		client = await this.clientRepository.save(client);
+
 		this.clinetQueueService.send(
 			await this.clinetQueueService.createFromEntity(client),
 		);
+
 		return client;
 	}
 
