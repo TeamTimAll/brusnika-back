@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
 import { chunkArray } from "../../lib/array";
@@ -9,9 +8,12 @@ import {
 } from "../../modules/client/client.entity";
 import { UserEntity } from "../../modules/user/user.entity";
 
+import { faker } from "./faker";
+
 type IClientEntity = Omit<
 	ClientEntity,
 	| "id"
+	| "ext_id"
 	| "leads"
 	| "agent"
 	| "bookings"
@@ -31,7 +33,7 @@ function createClient(agent_id: number) {
 			})
 			.toString(),
 		actived_date: faker.date.recent(),
-		comment: faker.word.words({ count: { min: 5, max: 10 } }),
+		comment: faker.lorem.words({ min: 5, max: 10 }),
 		fixing_type: faker.helpers.arrayElement([
 			FixingType.LEAD_VERIFICATION,
 			FixingType.CENCEL_FIXING,
@@ -39,7 +41,7 @@ function createClient(agent_id: number) {
 			FixingType.WEAK_FIXING,
 		]),
 		expiration_date: faker.date.future(),
-		node: faker.word.words({ count: { min: 15, max: 30 } }),
+		node: faker.lorem.words({ min: 15, max: 30 }),
 		agent_id: agent_id,
 		confirmation_type: faker.helpers.arrayElement([
 			ConfirmationType.PHONE,

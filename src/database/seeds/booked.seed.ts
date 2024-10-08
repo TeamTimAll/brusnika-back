@@ -1,6 +1,6 @@
-import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
+import { chunkArray } from "../../lib/array";
 import {
 	BookingStatus,
 	BookingsEntity,
@@ -8,11 +8,13 @@ import {
 } from "../../modules/bookings/bookings.entity";
 import { ClientEntity } from "../../modules/client/client.entity";
 import { LeadsEntity } from "../../modules/leads/leads.entity";
-import { chunkArray } from "../../lib/array";
+
+import { faker } from "./faker";
 
 type IBookingsEntity = Omit<
 	BookingsEntity,
 	| "id"
+	| "ext_id"
 	| "premise"
 	| "client"
 	| "agent"

@@ -6,6 +6,7 @@ import { AnalyticsModule } from "../analytics/analytics.module";
 import { ClientModule } from "../client/client.module";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesModule } from "../premises/premises.module";
+import { BookingQueueModule } from "../queues/booking_queue/booking_queue.module";
 import { SettingsModule } from "../settings/settings.module";
 
 import { BookingRepository } from "./booking.repository";
@@ -21,6 +22,7 @@ import { BookingsService } from "./bookings.service";
 		PremisesModule,
 		SettingsModule,
 		AnalyticsModule,
+		BookingQueueModule,
 	],
 	providers: [BookingsService, BookingRepository],
 	controllers: [BookingsController],

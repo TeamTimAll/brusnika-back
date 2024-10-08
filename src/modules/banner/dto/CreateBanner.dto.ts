@@ -14,7 +14,7 @@ import { BannerEntity } from "../banner.entity";
 
 type IBannerEntity = Omit<
 	BannerEntity,
-	"id" | "is_active" | "created_at" | "updated_at" | "city"
+	"id" | "ext_id" | "is_active" | "created_at" | "updated_at" | "city"
 >;
 
 export class CreateBannerDto implements IBannerEntity {

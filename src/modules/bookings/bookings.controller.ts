@@ -57,7 +57,7 @@ export class BookingsController {
 		@User() user: ICurrentUser,
 		@Body() dto: CreateBookingsMetaDataDto,
 	) {
-		const res = this.service.create(dto.data, user);
+		const res = await this.service.create(dto.data, user);
 		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
 		return res;
 	}

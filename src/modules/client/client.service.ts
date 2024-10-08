@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, ILike, Repository } from "typeorm";
+import { Brackets, FindOptionsSelect, ILike, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -8,6 +8,7 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadsEntity } from "../leads/leads.entity";
 import { PremiseEntity } from "../premises/premises.entity";
 import { ProjectEntity } from "../projects/project.entity";
+import { ClinetQueueService } from "../queues/clients_queue/client_queue.service";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
@@ -26,10 +27,25 @@ export class ClientService {
 		@InjectRepository(ClientEntity)
 		private clientRepository: Repository<ClientEntity>,
 		private userService: UserService,
+		private clinetQueueService: ClinetQueueService,
 	) {}
 
 	get repository(): Repository<ClientEntity> {
 		return this.clientRepository;
+	}
+
+	async readOneByExtId(
+		ext_id: string,
+		select?: FindOptionsSelect<ClientEntity>,
+	) {
+		const client = await this.clientRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new ClientNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 
 	async create(dto: CreateClientDto) {
@@ -42,8 +58,12 @@ export class ClientService {
 				`phone_number: ${dto.phone_number}; agent_id: ${dto.agent_id}`,
 			);
 		}
-		const client = this.clientRepository.create(dto);
-		return this.clientRepository.save(client);
+		let client = this.clientRepository.create(dto);
+		client = await this.clientRepository.save(client);
+		this.clinetQueueService.send(
+			await this.clinetQueueService.createFromEntity(client),
+		);
+		return client;
 	}
 
 	async checkExists(id: number): Promise<void> {
@@ -279,7 +299,20 @@ export class ClientService {
 		return metaData;
 	}
 
-	async readOne(id: number) {
+	async readOne(id: number, select?: FindOptionsSelect<ClientEntity>) {
+		const foundClient = await this.clientRepository.findOne({
+			select: select ? { id: true, ...select } : undefined, // NOTE: If id is not provided it returns null
+			where: {
+				id: id,
+			},
+		});
+		if (!foundClient) {
+			throw new ClientNotFoundError(`id: ${id}`);
+		}
+		return foundClient;
+	}
+
+	async readOneWithRelation(id: number) {
 		const result = await this.clientRepository
 			.createQueryBuilder("c")
 			.leftJoinAndMapMany(

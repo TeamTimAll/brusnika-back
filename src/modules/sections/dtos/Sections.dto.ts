@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BaseDto, Dto } from "../../../common/base/base_dto";
 import { SectionEntity } from "../sections.entity";
 
-type ISectionDto = Omit<SectionEntity, "building" | "premises">;
+type ISectionDto = Omit<SectionEntity, "ext_id" | "building" | "premises">;
 
 export class SectionDto implements ISectionDto {
 	@ApiProperty()

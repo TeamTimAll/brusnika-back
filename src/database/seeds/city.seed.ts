@@ -4,7 +4,7 @@ import { CityEntity } from "../../modules/cities/cities.entity";
 
 type ICityEntity = Omit<
 	CityEntity,
-	"id" | "created_at" | "updated_at" | "is_active"
+	"id" | "ext_id" | "created_at" | "updated_at" | "is_active"
 >;
 
 export async function up(query: QueryBuilder<object>): Promise<CityEntity[]> {

@@ -21,6 +21,10 @@ export interface IConfig {
 	API_VERSION: string;
 	PUBLIC_KEY: string;
 	PRIVATE_KEY: string;
+	RMQ_USER: string | undefined;
+	RMQ_PASS: string | undefined;
+	RMQ_HOST: string | undefined;
+	RMQ_PORT: number | undefined;
 }
 
 export class ConfigManager {
@@ -40,6 +44,10 @@ export class ConfigManager {
 		API_VERSION: process.env.API_VERSION as string,
 		PUBLIC_KEY: process.env.PUBLIC_KEY?.replace(/\\n/g, "\n") as string,
 		PRIVATE_KEY: process.env.PRIVATE_KEY?.replace(/\\n/g, "\n") as string,
+		RMQ_USER: process.env.RMQ_USER,
+		RMQ_PASS: process.env.RMQ_PASS,
+		RMQ_HOST: process.env.RMQ_HOST,
+		RMQ_PORT: (process.env.RMQ_PORT as number | undefined) ?? 5672,
 	};
 
 	public static get databaseConfig(): DatabaseConfig {
@@ -63,6 +71,10 @@ export class ConfigManager {
 		API_VERSION: Joi.string().optional(),
 		PUBLIC_KEY: Joi.string().required(),
 		PRIVATE_KEY: Joi.string().required(),
+		RMQ_USER: Joi.string().optional(),
+		RMQ_PASS: Joi.string().optional(),
+		RMQ_HOST: Joi.string().optional(),
+		RMQ_PORT: Joi.number().optional(),
 	});
 
 	static init() {

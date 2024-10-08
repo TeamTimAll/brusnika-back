@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOptionsSelect, Repository } from "typeorm";
 
 import { BuildingsService } from "../buildings/buildings.service";
 
@@ -65,5 +65,19 @@ export class SectionsService {
 		const foundSection = await this.readOne(id);
 		await this.sectionsRepository.delete(foundSection.id);
 		return foundSection;
+	}
+
+	async readOneByExtId(
+		ext_id: string,
+		select?: FindOptionsSelect<SectionEntity>,
+	) {
+		const client = await this.sectionsRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new SectionNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

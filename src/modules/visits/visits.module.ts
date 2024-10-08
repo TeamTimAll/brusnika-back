@@ -5,6 +5,7 @@ import { UserModule } from "../../modules/user/user.module";
 import { AnalyticsModule } from "../analytics/analytics.module";
 import { ClientModule } from "../client/client.module";
 import { ProjectsModule } from "../projects/projects.module";
+import { VisitQueueModule } from "../queues/visit_queue/visit_queue.module";
 
 import { VisitsController } from "./visits.controller";
 import { VisitsEntity } from "./visits.entity";
@@ -17,6 +18,7 @@ import { VisitsService } from "./visits.service";
 		ProjectsModule,
 		ClientModule,
 		AnalyticsModule,
+		VisitQueueModule,
 	],
 	providers: [VisitsService],
 	controllers: [VisitsController],

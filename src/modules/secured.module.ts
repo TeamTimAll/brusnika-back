@@ -33,13 +33,14 @@ import { PremisesModule } from "./premises/premises.module";
 import { PremisesBasketModule } from "./premises_basket/premises_basket.module";
 import { PremisesBasketMetaModule } from "./premises_basket_meta/premises_basket_meta.module";
 import { ProjectsModule } from "./projects/projects.module";
+import { QueueSecuredModule } from "./queues/queue_secured.module";
 import { SearchModule } from "./search/search.module";
 import { SectionsModule } from "./sections/sections.module";
 import { SettingsModule } from "./settings/settings.module";
+import { TasksModule } from "./tasks/tasks.module";
 import { TrainingModule } from "./trainings/trainings.module";
 import { UserModule } from "./user/user.module";
 import { VisitsModule } from "./visits/visits.module";
-import { TasksModule } from "./tasks/tasks.module";
 
 @Module({
 	imports: [
@@ -77,6 +78,7 @@ import { TasksModule } from "./tasks/tasks.module";
 		CalculatorModule,
 		MortgageRequestModule,
 		TasksModule,
+		QueueSecuredModule,
 	],
 	exports: [],
 })
