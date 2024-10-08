@@ -18,10 +18,9 @@ import { RoleType } from "../../constants";
 
 import { AnalyticsService } from "./analytics.service";
 import {
-	BaseAnalyticsDto,
 	LeadAnalyticsDto,
 	MainAnalyticsDto,
-	ManagerAnalyticsDto,
+	TopAnalyticsDto,
 	UsersAnalyticsDto,
 } from "./dtos";
 
@@ -45,21 +44,21 @@ export class AnalyticsController {
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Get("top-news")
 	@ApiOperation({ description: "Get news analytics" })
-	getTopNews(@Query() payload: BaseAnalyticsDto) {
+	getTopNews(@Query() payload: TopAnalyticsDto) {
 		return this.analyticsService.getTopNewsByViews(payload);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Get("top-trainings")
 	@ApiOperation({ description: "Get trainings analytics" })
-	getTopTrainings(@Query() payload: BaseAnalyticsDto) {
+	getTopTrainings(@Query() payload: TopAnalyticsDto) {
 		return this.analyticsService.getTopTrainings(payload);
 	}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Get("top-events")
 	@ApiOperation({ description: "Get events analytics" })
-	getTopEvents(@Query() payload: BaseAnalyticsDto) {
+	getTopEvents(@Query() payload: TopAnalyticsDto) {
 		return this.analyticsService.getTopEventsByViews(payload);
 	}
 
@@ -67,7 +66,7 @@ export class AnalyticsController {
 	@Get("manager/time")
 	@ApiOperation({ description: "Get manager time analytics" })
 	getTopManagersByTime(
-		@Query() payload: ManagerAnalyticsDto,
+		@Query() payload: TopAnalyticsDto,
 		@User() user: ICurrentUser,
 	) {
 		return this.analyticsService.managerStatisticsByTime(payload, user);
@@ -76,7 +75,7 @@ export class AnalyticsController {
 	@Get("manager/price")
 	@ApiOperation({ description: "Get manager price analytics" })
 	getTopManagersByPrice(
-		@Query() payload: ManagerAnalyticsDto,
+		@Query() payload: TopAnalyticsDto,
 		@User() user: ICurrentUser,
 	) {
 		return this.analyticsService.managerStatisticsByPrice(payload, user);
@@ -86,7 +85,7 @@ export class AnalyticsController {
 	@Get("manager/count")
 	@ApiOperation({ description: "Get manager count analytics" })
 	getTopManagersByCount(
-		@Query() payload: ManagerAnalyticsDto,
+		@Query() payload: TopAnalyticsDto,
 		@User() user: ICurrentUser,
 	) {
 		return this.analyticsService.managerStatisticsByCount(payload, user);
