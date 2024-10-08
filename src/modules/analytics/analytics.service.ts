@@ -546,9 +546,9 @@ export class AnalyticsService {
 		if (city_id) {
 			query = query.andWhere(
 				new Brackets((qb) => {
-					qb.where("news.city_id = :city_id", {
+					qb.where("events.city_id = :city_id", {
 						city_id,
-					}).orWhere("news.city_id IS NULL");
+					}).orWhere("events.city_id IS NULL");
 				}),
 			);
 		}
