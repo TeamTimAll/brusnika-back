@@ -20,10 +20,9 @@ import { RoleType } from "../../constants";
 import { AnalyticsEntity } from "./analytics.entity";
 import { AnalyticsNotFoundError } from "./errors/AnalyticsNotFound.error";
 import {
-	BaseAnalyticsDto,
 	LeadAnalyticsDto,
 	MainAnalyticsDto,
-	ManagerAnalyticsDto,
+	TopAnalyticsDto,
 	UsersAnalyticsDto,
 } from "./dtos";
 import { ICompletedLeadsRatingResponse } from "./types";
@@ -154,7 +153,7 @@ export class AnalyticsService {
 	}
 
 	async managerStatisticsByCount(
-		{ fromDate, limit, page, toDate }: ManagerAnalyticsDto,
+		{ fromDate, limit, page, toDate }: TopAnalyticsDto,
 		user: ICurrentUser,
 	) {
 		const offset = (page - 1) * limit;
@@ -195,7 +194,7 @@ export class AnalyticsService {
 	}
 
 	async managerStatisticsByPrice(
-		{ fromDate, limit, page, toDate }: ManagerAnalyticsDto,
+		{ fromDate, limit, page, toDate }: TopAnalyticsDto,
 		user: ICurrentUser,
 	) {
 		const offset = (page - 1) * limit;
@@ -236,7 +235,7 @@ export class AnalyticsService {
 	}
 
 	async managerStatisticsByTime(
-		{ fromDate, toDate, limit, page }: ManagerAnalyticsDto,
+		{ fromDate, toDate, limit, page }: TopAnalyticsDto,
 		user: ICurrentUser,
 	) {
 		const userInfo = await this.usersService.me(user.user_id);
@@ -373,8 +372,8 @@ export class AnalyticsService {
 		return result;
 	}
 
-	async getTopNewsByViews(payload: BaseAnalyticsDto) {
-		const { fromDate, limit, page, toDate, city_id } = payload;
+	async getTopNewsByViews(payload: TopAnalyticsDto) {
+		const { fromDate, limit, page, toDate } = payload;
 
 		const offset = (page - 1) * limit;
 
@@ -395,16 +394,6 @@ export class AnalyticsService {
 			})
 			.groupBy("news.id")
 			.orderBy("total", "DESC");
-
-		if (city_id) {
-			query = query.andWhere(
-				new Brackets((qb) => {
-					qb.where("news.city_id = :city_id", {
-						city_id,
-					}).orWhere("news.city_id IS NULL");
-				}),
-			);
-		}
 
 		const count = await query.getCount();
 
@@ -476,9 +465,9 @@ export class AnalyticsService {
 	}
 
 	async getTopTrainings(
-		payload: BaseAnalyticsDto,
+		payload: TopAnalyticsDto,
 	): Promise<BaseDto<TrainingEntity[]>> {
-		const { fromDate, limit, page, toDate, city_id } = payload;
+		const { fromDate, limit, page, toDate } = payload;
 
 		const offset = (page - 1) * limit;
 
@@ -499,16 +488,6 @@ export class AnalyticsService {
 			.groupBy("trainings.id, category.name")
 			.orderBy("total", "DESC");
 
-		if (city_id) {
-			query = query.andWhere(
-				new Brackets((qb) => {
-					qb.where("news.city_id = :city_id", {
-						city_id,
-					}).orWhere("news.city_id IS NULL");
-				}),
-			);
-		}
-
 		const count = await query.getCount();
 
 		query = query.limit(limit).offset(offset);
@@ -521,9 +500,9 @@ export class AnalyticsService {
 	}
 
 	async getTopEventsByViews(
-		payload: BaseAnalyticsDto,
+		payload: TopAnalyticsDto,
 	): Promise<BaseDto<EventsEntity[]>> {
-		const { fromDate, limit, page, toDate, city_id } = payload;
+		const { fromDate, limit, page, toDate } = payload;
 		const offset = (page - 1) * limit;
 
 		let query = this.eventRepository
@@ -542,16 +521,6 @@ export class AnalyticsService {
 			})
 			.groupBy("events.id")
 			.orderBy("total", "DESC");
-
-		if (city_id) {
-			query = query.andWhere(
-				new Brackets((qb) => {
-					qb.where("events.city_id = :city_id", {
-						city_id,
-					}).orWhere("events.city_id IS NULL");
-				}),
-			);
-		}
 
 		const count = await query.getCount();
 

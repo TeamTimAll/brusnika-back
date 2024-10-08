@@ -12,6 +12,7 @@ import { VisitsEntity } from "../../visits/visits.entity";
 import { QueueService } from "../queue.service";
 
 import { VisitQueueDto } from "./dto/VisitQueue.dto";
+import { VisitStatusChangeDto } from "./dto/VisitStatusChange.dto";
 
 @Injectable()
 export class VisitQueueService {
@@ -27,6 +28,13 @@ export class VisitQueueService {
 			data: visit,
 		};
 		this.queueService.send("request_visit", data);
+	}
+
+	requestStatusChange(dto: VisitStatusChangeDto) {
+		const data: Pick<BaseDto<VisitStatusChangeDto>, "data"> = {
+			data: dto,
+		};
+		this.queueService.send("request_visit_status_change", data);
 	}
 
 	async createFormEntity(visit: VisitsEntity): Promise<VisitQueueDto> {

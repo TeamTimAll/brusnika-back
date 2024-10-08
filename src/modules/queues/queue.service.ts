@@ -18,13 +18,13 @@ export class QueueService {
 		data: T,
 	) {
 		if (
-			!ConfigManager.config.RMQ_USER ||
-			!ConfigManager.config.RMQ_PASS ||
-			!ConfigManager.config.RMQ_HOST ||
-			!ConfigManager.config.RMQ_PORT
+			!ConfigManager.config.RMQ_CLIENT_USER ||
+			!ConfigManager.config.RMQ_CLIENT_PASS ||
+			!ConfigManager.config.RMQ_CLIENT_HOST ||
+			!ConfigManager.config.RMQ_CLIENT_PORT
 		) {
 			this.logger.warn(
-				"Rabbit-MQ Server not created. Please fill .env with RMQ_USER, RMQ_PASS, RMQ_HOST, RMQ_PORT",
+				"Rabbit-MQ Server not created. Please fill .env with RMQ_CLIENT_USER, RMQ_CLIENT_PASS, RMQ_CLIENT_HOST, RMQ_CLIENT_PORT",
 			);
 			return;
 		}
