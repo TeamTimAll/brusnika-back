@@ -4,6 +4,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsSelect, In, Repository } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { BaseDto } from "../../common/base/base_dto";
 import { BuildingEntity } from "../buildings/buildings.entity";
 import { BuildingsService } from "../buildings/buildings.service";
@@ -427,10 +429,10 @@ export class PremisesService {
 		return metaData;
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<PremiseEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<PremiseEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<PremiseEntity, T>> {
 		const client = await this.premiseRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },

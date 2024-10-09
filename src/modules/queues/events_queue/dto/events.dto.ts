@@ -3,6 +3,7 @@ import { IsEnum, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../../common/base/base_dto";
 
+import { BookingQueueDto } from "./BookingQueue.dto";
 import { BuildingQueueDto } from "./BuildingQueue.dto";
 import { CityQueueDto } from "./CityQueue.dto";
 import { ClientFixingQueueDto } from "./ClientFixingQueue.dto";
@@ -14,6 +15,7 @@ import { ProjectQueueDto } from "./ProjectQueue.dto";
 import { SectionQueueDto } from "./SectionQueue.dto";
 import { TimeSlotsQueueDto } from "./TimeSlotsQueue.dto";
 import { UserQueueDto } from "./UserQueue.dto";
+import { VisitQueueDto } from "./VisitQueue.dto";
 
 export enum EventType {
 	CITY = "city",
@@ -27,6 +29,8 @@ export enum EventType {
 	USER = "user",
 	CLIENT = "client",
 	CLIENT_FIXING = "client_fixing",
+	BOOKING = "booking",
+	VISIT = "VISIT",
 }
 
 export class EventsQueue {
@@ -58,6 +62,10 @@ export class EventsQueue {
 					return ClientQueueDto;
 				case EventType.CLIENT_FIXING:
 					return ClientFixingQueueDto;
+				case EventType.BOOKING:
+					return BookingQueueDto;
+				case EventType.VISIT:
+					return VisitQueueDto;
 			}
 		}
 		return PremiseQueueDto;
@@ -74,7 +82,9 @@ export class EventsQueue {
 		| TimeSlotsQueueDto
 		| UserQueueDto
 		| ClientQueueDto
-		| ClientFixingQueueDto;
+		| ClientFixingQueueDto
+		| BookingQueueDto
+		| VisitQueueDto;
 }
 
 export class EventsQueueMessageMetaDataDto extends BaseDto<EventsQueue> {

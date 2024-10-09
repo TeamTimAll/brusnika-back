@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsSelect, In, IsNull, Repository } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { BuildingsService } from "../buildings/buildings.service";
@@ -215,10 +217,10 @@ export class LeadsService {
 		return [foundLead, leadsCount];
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<LeadsEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<LeadsEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<LeadsEntity, T>> {
 		const client = await this.leadRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },

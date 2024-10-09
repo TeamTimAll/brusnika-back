@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { AgencyEntity } from "../../agencies/agencies.entity";
 import { AgencyService } from "../../agencies/agencies.service";
+import { BookingsService } from "../../bookings/bookings.service";
 import { BuildingEntity } from "../../buildings/buildings.entity";
 import { BuildingsService } from "../../buildings/buildings.service";
 import { CityEntity } from "../../cities/cities.entity";
@@ -14,7 +15,9 @@ import { SectionEntity } from "../../sections/sections.entity";
 import { SectionsService } from "../../sections/sections.service";
 import { UserEntity } from "../../user/user.entity";
 import { UserService } from "../../user/user.service";
+import { VisitsService } from "../../visits/visits.service";
 
+import { BookingQueueDto } from "./dto/BookingQueue.dto";
 import { BuildingQueueDto } from "./dto/BuildingQueue.dto";
 import { CityQueueDto } from "./dto/CityQueue.dto";
 import { ClientFixingQueueDto } from "./dto/ClientFixingQueue.dto";
@@ -26,6 +29,7 @@ import { ProjectQueueDto } from "./dto/ProjectQueue.dto";
 import { SectionQueueDto } from "./dto/SectionQueue.dto";
 import { TimeSlotsQueueDto } from "./dto/TimeSlotsQueue.dto";
 import { UserQueueDto } from "./dto/UserQueue.dto";
+import { VisitQueueDto } from "./dto/VisitQueue.dto";
 import { EventType, EventsQueue } from "./dto/events.dto";
 
 @Injectable()
@@ -40,6 +44,8 @@ export class EventsQueueService {
 		private readonly cityService: CityService,
 		private readonly leadService: LeadsService,
 		private readonly agencyService: AgencyService,
+		private readonly bookingService: BookingsService,
+		private readonly visitService: VisitsService,
 	) {}
 
 	getAll(data: EventsQueue) {
@@ -72,17 +78,23 @@ export class EventsQueueService {
 				return this.createOrUpdateClientFixing(
 					data.data as ClientFixingQueueDto,
 				);
+			case EventType.BOOKING:
+				return this.createOrUpdateBooking(data.data as BookingQueueDto);
+			case EventType.VISIT:
+				return this.createOrUpdateVisit(data.data as VisitQueueDto);
 		}
 	}
 
 	async createOrUpdatePremise(premise: PremiseQueueDto) {
 		const building = await this.buildingService.readOneByExtId(
 			premise.building_ext_id,
+			{ id: true },
 		);
-		let section: SectionEntity | undefined;
+		let section: Pick<SectionEntity, "id"> | undefined;
 		if (premise.section_ext_id) {
 			section = await this.sectionService.readOneByExtId(
 				premise.section_ext_id,
+				{ id: true },
 			);
 		}
 		return this.premiseService.repository
@@ -144,7 +156,10 @@ export class EventsQueueService {
 	}
 
 	async createOrUpdateProject(project: ProjectQueueDto) {
-		const city = await this.cityService.readOneByExtId(project.city_ext_id);
+		const city = await this.cityService.readOneByExtId(
+			project.city_ext_id,
+			{ id: true },
+		);
 		return this.projectService.repository
 			.createQueryBuilder()
 			.insert()
@@ -186,6 +201,7 @@ export class EventsQueueService {
 	async createOrUpdateBuilding(building: BuildingQueueDto) {
 		const project = await this.cityService.readOneByExtId(
 			building.project_ext_id,
+			{ id: true },
 		);
 		return this.buildingService.repository
 			.createQueryBuilder()
@@ -228,10 +244,11 @@ export class EventsQueueService {
 	}
 
 	async createOrUpdateSection(section: SectionQueueDto) {
-		let building: BuildingEntity | undefined;
+		let building: Pick<BuildingEntity, "id"> | undefined;
 		if (section.building_ext_id) {
 			building = await this.buildingService.readOneByExtId(
 				section.building_ext_id,
+				{ id: true },
 			);
 		}
 		return this.sectionService.repostory
@@ -251,17 +268,20 @@ export class EventsQueueService {
 			lead.client_ext_id,
 		);
 		const agent = await this.userService.readOneByExtId(lead.agent_ext_id);
-		let manager: UserEntity | undefined;
+		let manager: Pick<UserEntity, "id"> | undefined;
 		if (lead.manager_ext_id) {
 			manager = await this.userService.readOneByExtId(
 				lead.manager_ext_id,
+				{ id: true },
 			);
 		}
 		const project = await this.projectService.readOneByExtId(
 			lead.project_ext_id,
+			{ id: true },
 		);
 		const premise = await this.premiseService.readOneByExtId(
 			lead.premise_ext_id,
+			{ id: true },
 		);
 
 		return this.leadService.leadRepository
@@ -299,7 +319,10 @@ export class EventsQueueService {
 	}
 
 	async createOrUpdateLeadOp(lead_op: LeadOpQueueDto) {
-		const lead = await this.leadService.readOneByExtId(lead_op.lead_ext_id);
+		const lead = await this.leadService.readOneByExtId(
+			lead_op.lead_ext_id,
+			{ id: true },
+		);
 
 		await this.leadService.changeStatus(lead.id, lead_op.status);
 
@@ -320,14 +343,17 @@ export class EventsQueueService {
 	}
 
 	async createOrUpdateUser(user: UserQueueDto) {
-		let city: CityEntity | undefined;
+		let city: Pick<CityEntity, "id"> | undefined;
 		if (user.city_ext_id) {
-			city = await this.cityService.readOneByExtId(user.city_ext_id);
+			city = await this.cityService.readOneByExtId(user.city_ext_id, {
+				id: true,
+			});
 		}
-		let agency: AgencyEntity | undefined;
+		let agency: Pick<AgencyEntity, "id"> | undefined;
 		if (user.agency_ext_id) {
 			agency = await this.agencyService.readOneByExtId(
 				user.agency_ext_id,
+				{ id: true },
 			);
 		}
 		return this.userService.repository
@@ -377,9 +403,11 @@ export class EventsQueueService {
 	}
 
 	async createOrUpdateClient(client: ClientQueueDto) {
-		let agent: UserEntity | undefined;
+		let agent: Pick<UserEntity, "id"> | undefined;
 		if (client.agent_ext_id) {
-			agent = await this.userService.readOneByExtId(client.agent_ext_id);
+			agent = await this.userService.readOneByExtId(client.agent_ext_id, {
+				id: true,
+			});
 		}
 		return this.clientService.repository
 			.createQueryBuilder()
@@ -417,10 +445,31 @@ export class EventsQueueService {
 	async createOrUpdateClientFixing(clientFixing: ClientFixingQueueDto) {
 		const client = await this.clientService.readOneByExtId(
 			clientFixing.client_ext_id,
+			{ id: true },
 		);
 		return this.clientService.repository.update(client.id, {
 			fixing_type: clientFixing.fixing_type,
 			fixing_type_updated_at: new Date(),
+		});
+	}
+
+	async createOrUpdateBooking(booking: BookingQueueDto) {
+		const foundBooking = await this.bookingService.readOneByExtId(
+			booking.booking_ext_id,
+			{ id: true, agent: { id: true } },
+		);
+		return this.bookingService.update(foundBooking.id, {
+			status: booking.status,
+		});
+	}
+
+	async createOrUpdateVisit(visit: VisitQueueDto) {
+		const foundVisit = await this.visitService.readOneByExtId(
+			visit.visit_ext_id,
+			{ id: true },
+		);
+		return this.visitService.update(foundVisit.id, {
+			status: visit.status,
 		});
 	}
 }
