@@ -594,6 +594,6 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
         yangilab qo'yish
 -   [ ] Visit uchun ariza logikasini ko'rib chiqish: `request_date` va
         `request_time` field
--   [ ] NPS uchun o'qildi yoki yo'q API kerak, Notification o'qildi bo'ladi
--   [ ] notificationlarni o'qilmaganlar soni uchun API
--   [ ] Lead'ga `start_date` va `status_updated_at` fieldlar qo'shish kerak.
+-   [x] NPS uchun o'qildi yoki yo'q API kerak, Notification o'qildi bo'ladi
+-   [x] notificationlarni o'qilmaganlar soni uchun API
+-   [x] Lead'ga `start_date` va `status_updated_at` fieldlar qo'shish kerak.

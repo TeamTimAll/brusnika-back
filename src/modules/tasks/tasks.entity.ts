@@ -22,14 +22,14 @@ export enum TaskStatus {
 @Entity({ name: "tasks" })
 export class TasksEntity extends BaseEntity {
 	@Column({ type: "integer" })
-	user_id!: number;
+	manager_id!: number;
 
 	@ManyToOne(() => UserEntity, {
 		onDelete: "SET NULL",
 		onUpdate: "NO ACTION",
 	})
-	@JoinColumn({ name: "user_id" })
-	user!: UserEntity;
+	@JoinColumn({ name: "manager_id" })
+	manager!: UserEntity;
 
 	@Column({ nullable: false, type: "varchar" })
 	comment!: string;
@@ -84,14 +84,14 @@ export class TasksEntity extends BaseEntity {
 		type: "timestamp without time zone",
 		nullable: false,
 	})
-	deadline!: Date;
+	end_date!: Date;
 
 	@Column({
 		type: "timestamp without time zone",
 		nullable: true,
 		default: () => "CURRENT_TIMESTAMP",
 	})
-	started_at!: Date;
+	start_date!: Date;
 
 	@Column({ type: "varchar", enum: TaskStatus, default: TaskStatus.PENDING })
 	status!: TaskStatus;

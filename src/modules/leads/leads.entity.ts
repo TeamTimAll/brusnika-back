@@ -94,4 +94,17 @@ export class LeadsEntity extends BaseEntity {
 		onUpdate: "SET NULL",
 	})
 	lead_ops?: LeadOpsEntity[];
+
+	@Column({
+		type: "timestamp without time zone",
+		nullable: true,
+		default: () => "CURRENT_TIMESTAMP",
+	})
+	start_date!: Date;
+
+	@Column({
+		type: "timestamp without time zone",
+		nullable: true,
+	})
+	status_updated_at!: Date;
 }

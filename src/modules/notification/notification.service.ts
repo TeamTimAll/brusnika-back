@@ -53,6 +53,11 @@ export class NotificationService {
 				"events",
 				"n.type IN (:...eventTypes) AND events.id = n.object_id",
 			)
+			.leftJoin(
+				"leads",
+				"leads",
+				"n.type = :end_lead AND leads.id = n.object_id",
+			)
 			.offset(pageSize)
 			.limit(dto.limit)
 			.orderBy("n.id", "DESC")
@@ -61,9 +66,9 @@ export class NotificationService {
 		const caseStatement = `
 			CASE 
 					WHEN n.type = :created_news THEN JSON_BUILD_OBJECT('id', news.id)
+					WHEN n.type = :end_lead THEN JSON_BUILD_OBJECT('id', leads.id) 
 					ELSE JSON_BUILD_OBJECT('id', events.id, 'photo', events.photo)
-			END AS object
-		`;
+			END AS object`;
 
 		query.select([
 			"n.id AS id",
@@ -81,6 +86,7 @@ export class NotificationService {
 		query.setParameters({
 			created_news: NotificationType.CREATED_NEWS,
 			eventTypes: eventTypes,
+			end_lead: NotificationType.END_LEAD,
 		});
 
 		const results = await query.getRawMany<INotification[]>();
@@ -91,6 +97,19 @@ export class NotificationService {
 	async readOne(id: number): Promise<NotificationEntity> {
 		const foundNotification = await this.notificationRepository.findOne({
 			where: { id: id },
+		});
+		if (!foundNotification) {
+			throw new NotificationNotFoundError(`id: ${id}`);
+		}
+		return foundNotification;
+	}
+
+	async readOneByObjectIdAndType(
+		id: number,
+		type: NotificationType,
+	): Promise<NotificationEntity> {
+		const foundNotification = await this.notificationRepository.findOne({
+			where: { id, type },
 		});
 		if (!foundNotification) {
 			throw new NotificationNotFoundError(`id: ${id}`);
@@ -139,10 +158,15 @@ export class NotificationService {
 	}
 
 	async getUnreadNotificationsCount(user_id: number): Promise<number> {
-		const notificationsCount = await this.notificationRepository.count();
+		const notificationsCount = await this.notificationUserRepository.count({
+			where: { user_id, notification: { is_active: true } },
+			relations: {
+				notification: true,
+			},
+		});
 
 		const readCount = await this.notificationUserRepository.count({
-			where: { user_id },
+			where: { user_id, is_read: true },
 		});
 
 		const result = notificationsCount - readCount;

@@ -1,4 +1,4 @@
-import { Column, Entity, VirtualColumn } from "typeorm";
+import { Column, Entity } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 
@@ -7,6 +7,7 @@ export enum NotificationType {
 	CREATED_EVENT = "created_event",
 	WARNING_EVENT = "warning_event",
 	CREATED_NEWS = "created_news",
+	END_LEAD = "end_lead",
 }
 
 @Entity("notification")
@@ -23,6 +24,6 @@ export class NotificationEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	object_id!: number;
 
-	@VirtualColumn({ query: () => "" })
-	is_read!: boolean;
+	// @VirtualColumn({ query: () => "" })
+	// is_read!: boolean;
 }
