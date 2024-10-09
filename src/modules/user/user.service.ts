@@ -3,6 +3,8 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Between, Brackets, FindOptionsSelect, Repository } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
@@ -820,10 +822,10 @@ export class UserService {
 		return await this.userActivityRepository.save(newActivity);
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<UserEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<UserEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<UserEntity, T>> {
 		const client = await this.userRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },

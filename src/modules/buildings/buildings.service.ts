@@ -2,15 +2,17 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsSelect, Repository } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { ProjectService } from "../projects/projects.service";
 
 import { BuildingEntity } from "./buildings.entity";
-import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
 import {
-	FilterBuildingDto,
 	CreateBuildingDto,
+	FilterBuildingDto,
 	UpdateBuildingDto,
 } from "./dtos";
+import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
 import { IReadAllFilter } from "./types";
 
 @Injectable()
@@ -78,10 +80,10 @@ export class BuildingsService {
 		return building;
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<BuildingEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<BuildingEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<BuildingEntity, T>> {
 		const client = await this.buildingRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },

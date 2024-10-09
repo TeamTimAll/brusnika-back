@@ -2,6 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsSelect, Repository } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { BuildingsService } from "../buildings/buildings.service";
 
 import { CreateSectionsDto } from "./dtos/CreateSections.dto";
@@ -67,10 +69,10 @@ export class SectionsService {
 		return foundSection;
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<SectionEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<SectionEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<SectionEntity, T>> {
 		const client = await this.sectionsRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },

@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, FindOptionsSelect, ILike, Repository } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
@@ -34,10 +36,10 @@ export class ClientService {
 		return this.clientRepository;
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<ClientEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<ClientEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<ClientEntity, T>> {
 		const client = await this.clientRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },
