@@ -3,6 +3,7 @@ import {
 	Controller,
 	Get,
 	Inject,
+	Param,
 	Post,
 	Query,
 	UseGuards,
@@ -77,5 +78,10 @@ export class LeadsController {
 	// @ApiOkResponse({ type: LeadReadAll })
 	async readAll(@Query() dto: LeadReadByFilterDto) {
 		return await this.dealsService.readAll(dto);
+	}
+
+	@Get("view-nps/:id")
+	async viewNPS(@Param("id") id: number, @User() user: ICurrentUser) {
+		return await this.dealsService.viewNPS(id, user);
 	}
 }
