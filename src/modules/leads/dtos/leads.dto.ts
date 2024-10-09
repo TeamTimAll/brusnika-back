@@ -69,5 +69,11 @@ export class LeadsDto implements Omit<LeadsEntity, "ext_id"> {
 	updated_at!: Date;
 
 	@ApiProperty()
+	start_date!: Date;
+
+	@ApiProperty()
+	status_updated_at!: Date;
+
+	@ApiProperty()
 	is_active!: boolean;
 }

@@ -23,6 +23,8 @@ type ILeadsEntity = Omit<
 	| "created_at"
 	| "updated_at"
 	| "is_active"
+	| "start_date"
+	| "status_updated_at"
 >;
 type ILeadOpsEntity = Omit<
 	LeadOpsEntity,

@@ -64,9 +64,9 @@ export class NotificationService {
 			.where("nu.user_id = :user_id", { user_id: user.user_id });
 
 		const caseStatement = `
-			CASE 
+			CASE
 					WHEN n.type = :created_news THEN JSON_BUILD_OBJECT('id', news.id)
-					WHEN n.type = :end_lead THEN JSON_BUILD_OBJECT('id', leads.id) 
+					WHEN n.type = :end_lead THEN JSON_BUILD_OBJECT('id', leads.id)
 					ELSE JSON_BUILD_OBJECT('id', events.id, 'photo', events.photo)
 			END AS object`;
 

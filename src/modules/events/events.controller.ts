@@ -189,6 +189,6 @@ export class EventsController {
 	@HttpCode(HttpStatus.ACCEPTED)
 	@ApiAcceptedResponse()
 	async deleteEvents(@Param("id") id: number) {
-		return await this.eventsService.remove(id);
+		return await this.eventsService.delete(id);
 	}
 }
