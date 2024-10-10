@@ -376,29 +376,18 @@ Fixing type o'zgarishi:
 
 ### Task
 
-- [x] Ikkita service'da Message queue bilan ma'lumot almashishni o'rnatish.
-- [x] Brusnikadan olish kerak bo'lgan ma'lumotlarni asosiy server'dan qabul qilivchi queue ochish.
-- [ ] Brusnikaga berish kerak bo'lgan ma'lumotlarni kontur server'dan qabul qilivchi queue'lar ochish.
-	- [ ] User auth integration logic'ni ko'rib chiqish kerak.
-	- [x] Client create qilganida Brusnika'ga ma'lumot jo'natish kerak.
-	- [x] Visit'ga o'tkazish uchun so'rov.
-	- [ ] Visit status o'zgarishi haqida habar beruvchi queue.
-	- [x] Bron'ga o'tkazish uchun so'rov.
-	- [ ] Bron status o'zgarishi haqida habar beruvchi queue.
-- [ ] Kontur brusnikadan oladigan ma'lumot mapping'ni data validation bilan qabul qilish.
-- [ ] Kontur'da Mapping logikasini qilish.
-- [ ] Kontur'da database shaklini to'g'irlash.
-
-1. URL is not working: https://ekaterinburg.brusnika.ru/feed/pantry/rieltory-kladovye-ekaterinburg/
-2. City ma'lumotlarni alohida API' qilib berilishi kerak.
-3. Project ma'lumotlarni alohida API' qilib berilishi kerak. City bilan bog'liqligi uchun id bilan ishlatilishi kerak.
-4. Building (объект) ma'lumotlari yo'q va alohida API'da berishi kerak. id'si orqali bizning kontur tanib oladi. Project bilan bog'liqligi uchun id bilan ishlatilishi kerak.
-5. Section ma'lumotlarni alohida API' qilib berilishi kerak. Building bilan bog'liqligi uchun id bilan ishlatilishi kerak.
-6. Premise bilan Section va Building bog'liqligi uchun id bilan ishlatilishi kerak.
-
-1. URL не работает: https://ekaterinburg.brusnika.ru/feed/pantry/rieltory-kladovye-ekaterinburg/
-2. Данные по городу должны быть предоставлены отдельным API.
-3. Данные по проекту должны быть предоставлены отдельным API и использоваться через id, так как они связаны с городом.
-4. Данные по объекту (зданию) отсутствуют и должны быть предоставлены через отдельный API. Наш контур распознает их по id. Для связи с проектом необходимо использовать id.
-5. Данные по секции должны быть предоставлены отдельным API и использоваться через id, так как они связаны с объектом.
-6. Для связи помещения с секцией и объектом необходимо использовать id.
+-   [x] Ikkita service'da Message queue bilan ma'lumot almashishni o'rnatish.
+-   [x] Brusnikadan olish kerak bo'lgan ma'lumotlarni asosiy server'dan qabul
+        qilivchi queue ochish.
+-   [ ] Brusnikaga berish kerak bo'lgan ma'lumotlarni kontur server'dan qabul
+        qilivchi queue'lar ochish.
+    -   [ ] User auth integration logic'ni ko'rib chiqish kerak.
+    -   [x] Client create qilganida Brusnika'ga ma'lumot jo'natish kerak.
+    -   [x] Visit'ga o'tkazish uchun so'rov.
+    -   [x] Visit status o'zgarishi haqida habar beruvchi queue.
+    -   [x] Bron'ga o'tkazish uchun so'rov.
+    -   [x] Bron status o'zgarishi haqida habar beruvchi queue.
+-   [ ] Kontur brusnikadan oladigan ma'lumot mapping'ni data validation bilan
+        qabul qilish.
+-   [ ] Kontur'da Mapping logikasini qilish.
+-   [ ] Kontur'da database shaklini to'g'irlash.
