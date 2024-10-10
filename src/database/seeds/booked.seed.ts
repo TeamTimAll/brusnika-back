@@ -33,8 +33,8 @@ function createBooking(
 		agent_id: agent_id,
 		client_id: client_id,
 		premise_id: premise_id,
-		date: faker.date.future(),
-		time: faker.date.anytime().toISOString().split("T")[1].split(".")[0],
+		// date: faker.date.future(),
+		// time: faker.date.anytime().toISOString().split("T")[1].split(".")[0],
 		purchase_option: faker.helpers.arrayElement([
 			PuchaseOptions.MORTAGE,
 			PuchaseOptions.INSTALLMENT,
