@@ -170,7 +170,7 @@ export class UserService {
 			userQuery = userQuery.orderBy("u.created_at", dto.order_by);
 		}
 		if (dto.sort_by === UserSortBy.AGENCY_NAME) {
-			userQuery = userQuery.orderBy("a.name", dto.order_by);
+			userQuery = userQuery.orderBy("a.legalName", dto.order_by);
 		}
 		if (dto.sort_by === UserSortBy.CITY_NAME) {
 			userQuery = userQuery.orderBy("c.name", dto.order_by);
