@@ -1,13 +1,6 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import {
-	IsDateString,
-	IsEnum,
-	IsInt,
-	IsMilitaryTime,
-	IsOptional,
-	ValidateNested,
-} from "class-validator";
+import { IsEnum, IsInt, IsOptional, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 import { PuchaseOptions } from "../../premises/premises.entity";
@@ -30,21 +23,21 @@ export class CreateBookingsDto {
 	// @Type(() => Number)
 	// agent_id?: number;
 
-	@ApiProperty({
-		required: true,
-		description: "Date of booking",
-		default: new Date(),
-	})
-	@IsDateString()
-	date!: string;
+	// @ApiProperty({
+	// 	required: true,
+	// 	description: "Date of booking",
+	// 	default: new Date(),
+	// })
+	// @IsDateString()
+	// date!: string;
 
-	@ApiProperty({
-		required: true,
-		description: "Time of booking",
-		default: "00:00",
-	})
-	@IsMilitaryTime()
-	time!: string;
+	// @ApiProperty({
+	// 	required: true,
+	// 	description: "Time of booking",
+	// 	default: "00:00",
+	// })
+	// @IsMilitaryTime()
+	// time!: string;
 
 	@IsEnum(PuchaseOptions)
 	@ApiProperty({

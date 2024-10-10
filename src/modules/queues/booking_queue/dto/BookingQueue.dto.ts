@@ -1,9 +1,4 @@
-import {
-	IsDateString,
-	IsEnum,
-	IsMilitaryTime,
-	IsString,
-} from "class-validator";
+import { IsEnum, IsString } from "class-validator";
 
 import {
 	BookingStatus,
@@ -23,11 +18,11 @@ export class BookingQueueDto {
 	@IsString()
 	agent_ext_id?: string | null;
 
-	@IsDateString()
-	date!: Date;
+	// @IsDateString()
+	// date!: Date;
 
-	@IsMilitaryTime()
-	time!: string;
+	// @IsMilitaryTime()
+	// time!: string;
 
 	@IsEnum(PuchaseOptions)
 	purchase_option!: PuchaseOptions;
