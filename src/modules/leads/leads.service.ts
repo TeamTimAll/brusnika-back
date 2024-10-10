@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsSelect, In, IsNull, Repository } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { BuildingsService } from "../buildings/buildings.service";
@@ -11,6 +13,10 @@ import { PremisesService } from "../premises/premises.service";
 import { ProjectService } from "../projects/projects.service";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserService } from "../user/user.service";
+import { NotificationService } from "../notification/notification.service";
+import { NotificationType } from "../notification/notification.entity";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { UserEntity } from "../user/user.entity";
 
 import { CreateLeadDto } from "./dtos/CreateLead.dto";
 import { LeadReadByFilterDto } from "./dtos/LeadReadByFilter.dto";
@@ -33,6 +39,7 @@ export class LeadsService {
 		private readonly premisesService: PremisesService,
 		private readonly buildingsService: BuildingsService,
 		private readonly userService: UserService,
+		private readonly notificationsService: NotificationService,
 	) {}
 
 	async create(lead: CreateLeadDto): Promise<LeadsEntity> {
@@ -163,6 +170,27 @@ export class LeadsService {
 		return lead;
 	}
 
+	async viewNPS(id: number, user: ICurrentUser) {
+		const lead = await this.leadRepository.findOneBy({ id });
+
+		if (!lead) {
+			throw new LeadNotFoundError(`id: ${id}`);
+		}
+
+		const notification =
+			await this.notificationsService.readOneByObjectIdAndType(
+				lead.id,
+				NotificationType.END_LEAD,
+			);
+
+		await this.notificationsService.readNotification(notification.id, user);
+
+		lead.sign_nps_passed = true;
+		await this.leadRepository.save(lead);
+
+		return lead;
+	}
+
 	async changeStatus(
 		leadId: number,
 		toStatus: LeadOpStatus,
@@ -181,9 +209,32 @@ export class LeadsService {
 				id: leadId,
 			},
 		});
+
 		if (!foundLead) {
 			throw new LeadNotFoundError(`lead id: ${leadId}`);
 		}
+
+		const users: Array<Pick<UserEntity, "id" | "firebase_token">> = [];
+
+		if (foundLead.manager_id) {
+			const manager = await this.userService.readOne(
+				foundLead.manager_id,
+				{ id: true, firebase_token: true },
+			);
+
+			users.push({
+				id: manager.id,
+				firebase_token: manager.firebase_token,
+			});
+		}
+
+		const agent = await this.userService.readOne(foundLead.agent_id, {
+			id: true,
+			firebase_token: true,
+		});
+
+		users.push({ id: agent.id, firebase_token: agent.firebase_token });
+
 		if (toStatus === LeadOpStatus.ON_PAUSE) {
 			await this.leadRepository.update(leadId, {
 				state: LeadState.IN_PROGRESS,
@@ -193,10 +244,22 @@ export class LeadsService {
 				state: LeadState.FAILED,
 			});
 		} else if (toStatus === LeadOpStatus.BOOK_CANCELED) {
+			await this.notificationsService.sendToUsers(users, {
+				object_id: leadId,
+				type: NotificationType.END_LEAD,
+				title: `LEAD ${leadId}`,
+				description: `Статус LEAD ${leadId} изменен на ${LeadOpStatus.BOOK_CANCELED}`,
+			});
 			await this.leadRepository.update(leadId, {
 				state: LeadState.FAILED,
 			});
 		} else if (toStatus === LeadOpStatus.WON) {
+			await this.notificationsService.sendToUsers(users, {
+				object_id: leadId,
+				type: NotificationType.END_LEAD,
+				title: `LEAD ${leadId}`,
+				description: `Статус LEAD ${leadId} изменен на ${LeadOpStatus.WON}`,
+			});
 			await this.leadRepository.update(leadId, {
 				state: LeadState.COMPLETE,
 			});
@@ -215,10 +278,10 @@ export class LeadsService {
 		return [foundLead, leadsCount];
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<LeadsEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<LeadsEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<LeadsEntity, T>> {
 		const client = await this.leadRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },

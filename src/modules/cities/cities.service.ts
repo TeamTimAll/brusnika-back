@@ -8,6 +8,8 @@ import {
 	Repository,
 } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { CityEntity } from "./cities.entity";
 import { CreateCitiesDto } from "./dtos/CreateCities.dto";
 import { UpdateCitiesDto } from "./dtos/UpdateCities.dto";
@@ -92,10 +94,10 @@ export class CityService {
 		return foundCity;
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<CityEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<CityEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<CityEntity, T>> {
 		const client = await this.cityRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },

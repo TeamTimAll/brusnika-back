@@ -2,6 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, FindOptionsSelect, Repository } from "typeorm";
 
+import { PickBySelect } from "interfaces/pick_by_select";
+
 import { BaseDto } from "../../common/base/base_dto";
 import { CityService } from "../cities/cities.service";
 import { PremiseEntity, PremisesType } from "../premises/premises.entity";
@@ -258,10 +260,10 @@ export class ProjectService {
 		}
 	}
 
-	async readOneByExtId(
+	async readOneByExtId<T extends FindOptionsSelect<ProjectEntity>>(
 		ext_id: string,
-		select?: FindOptionsSelect<ProjectEntity>,
-	) {
+		select?: T,
+	): Promise<PickBySelect<ProjectEntity, T>> {
 		const client = await this.projectsRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },

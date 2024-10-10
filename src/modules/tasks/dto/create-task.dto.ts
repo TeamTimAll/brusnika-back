@@ -21,7 +21,7 @@ export class CreateTaskDto {
 	@ApiProperty()
 	@IsInt()
 	@IsNotEmpty()
-	user_id!: number;
+	manager_id!: number;
 
 	@ApiProperty()
 	@IsString()
@@ -56,12 +56,12 @@ export class CreateTaskDto {
 	@ApiProperty()
 	@IsDateString()
 	@IsNotEmpty()
-	deadline!: Date;
+	end_date!: Date;
 
 	@ApiPropertyOptional()
 	@IsDateString()
 	@IsOptional()
-	started_at?: Date;
+	start_date?: Date;
 }
 
 export class CreateTaskMetaDataDto extends BaseDto<CreateTaskDto> {

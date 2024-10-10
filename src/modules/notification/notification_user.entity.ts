@@ -12,7 +12,7 @@ export class NotificationUserEntity extends BaseEntity {
 		onDelete: "SET NULL",
 	})
 	@JoinColumn({ name: "notification_id" })
-	notification!: UserEntity;
+	notification!: NotificationEntity;
 
 	@Column({ type: "integer", nullable: true })
 	notification_id?: number;

@@ -1,8 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOptionsSelect, Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
+import { PickBySelect } from "interfaces/pick_by_select";
 
 import { ClientService } from "../client/client.service";
 import { ProjectService } from "../projects/projects.service";
@@ -64,6 +65,20 @@ export class VisitsService {
 			throw new VisitNotFoundError(`'${id}' city not found`);
 		}
 		return findOne;
+	}
+
+	async readOneByExtId<T extends FindOptionsSelect<VisitsEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<VisitsEntity, T>> {
+		const booking = await this.visitsRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!booking) {
+			throw new VisitNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return booking;
 	}
 
 	async update(
