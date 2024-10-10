@@ -62,11 +62,11 @@ export class BookingsEntity extends BaseEntity {
 	@Column({ nullable: true, type: "integer" })
 	agent_id?: number;
 
-	@Column({ type: "date" })
-	date!: Date;
+	// @Column({ type: "date" })
+	// date!: Date;
 
-	@Column({ type: "time" })
-	time!: string;
+	// @Column({ type: "time" })
+	// time!: string;
 
 	@Column({ type: "enum", enum: PuchaseOptions })
 	purchase_option!: PuchaseOptions;

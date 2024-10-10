@@ -61,8 +61,8 @@ export class BookingQueueService {
 
 		return {
 			ext_id: booking.ext_id,
-			date: booking.date,
-			time: booking.time,
+			// date: booking.date,
+			// time: booking.time,
 			purchase_option: booking.purchase_option,
 			status: booking.status,
 			agent_ext_id: agent?.ext_id ?? null,

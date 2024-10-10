@@ -48,11 +48,11 @@ export class BookingDto implements IBookingDto {
 	@ApiProperty()
 	agent_id?: number;
 
-	@ApiProperty()
-	date!: Date;
+	// @ApiProperty()
+	// date!: Date;
 
-	@ApiProperty()
-	time!: string;
+	// @ApiProperty()
+	// time!: string;
 
 	@ApiProperty()
 	purchase_option!: PuchaseOptions;
