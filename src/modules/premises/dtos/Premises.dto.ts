@@ -22,6 +22,9 @@ export class PremiseDto
 	id!: number;
 
 	@ApiProperty()
+	ext_id!: string;
+
+	@ApiProperty()
 	created_at!: Date;
 
 	@ApiProperty()

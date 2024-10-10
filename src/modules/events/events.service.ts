@@ -678,11 +678,9 @@ export class EventsService {
 			);
 		}
 		if (dto.is_accepted) {
-			await this.notificationService.repository.update(
+			await this.notificationService.readNotification(
 				foundNotification.id,
-				{
-					is_read: true,
-				},
+				user,
 			);
 		} else {
 			await this.notificationService.repository.delete(
@@ -713,7 +711,7 @@ export class EventsService {
 		});
 	}
 
-	async remove(id: number) {
+	async delete(id: number) {
 		const foundEvent = await this.eventRepository.findOne({
 			select: { id: true },
 			where: { id: id },

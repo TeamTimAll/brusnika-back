@@ -2,7 +2,9 @@ import { randomUUID } from "crypto";
 
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, Repository } from "typeorm";
+import { FindOptionsSelect, In, Repository } from "typeorm";
+
+import { PickBySelect } from "interfaces/pick_by_select";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { BuildingEntity } from "../buildings/buildings.entity";
@@ -14,12 +16,12 @@ import { SectionsService } from "../sections/sections.service";
 import { CreatePremisesDto } from "./dtos/CreatePremises.dto";
 import { PremisesFilterDto } from "./dtos/PremisesFilter.dto";
 import { UpdatePremisesDto } from "./dtos/UpdatePremises.dto";
+import { PremiseBasketLinkEntity } from "./entities";
 import { PremiseNotFoundError } from "./errors/PremiseNotFound.error";
+import { InvalidLinkError } from "./errors/invalid-link.error";
 import { PremiseSchemaEntity } from "./premise_schema.entity";
 import { PremiseEntity } from "./premises.entity";
 import { SeasonEntity } from "./season.entity";
-import { PremiseBasketLinkEntity } from "./entities";
-import { InvalidLinkError } from "./errors/invalid-link.error";
 
 @Injectable()
 export class PremisesService {
@@ -94,7 +96,20 @@ export class PremisesService {
 		);
 	}
 
-	async readOne(id: number): Promise<PremiseEntity> {
+	async readOne(id: number, select?: FindOptionsSelect<PremiseEntity>) {
+		const foundClient = await this.premiseRepository.findOne({
+			select: select ? { id: true, ...select } : undefined, // NOTE: If id is not provided it returns null
+			where: {
+				id: id,
+			},
+		});
+		if (!foundClient) {
+			throw new PremiseNotFoundError(`id: ${id}`);
+		}
+		return foundClient;
+	}
+
+	async readOneWithRelation(id: number): Promise<PremiseEntity> {
 		const premises = await this.getPremisesFiltered({
 			id: id,
 			limit: 1,
@@ -114,7 +129,7 @@ export class PremisesService {
 	}
 
 	async update(id: number, dto: UpdatePremisesDto) {
-		const foundPremise = await this.readOne(id);
+		const foundPremise = await this.readOneWithRelation(id);
 		if (typeof dto.building_id !== "undefined") {
 			await this.buildingService.readOne(dto.building_id);
 		}
@@ -126,7 +141,7 @@ export class PremisesService {
 	}
 
 	async delete(id: number) {
-		const foundPremise = await this.readOne(id);
+		const foundPremise = await this.readOneWithRelation(id);
 		await this.premiseRepository.delete(foundPremise.id);
 		return foundPremise;
 	}
@@ -412,5 +427,19 @@ export class PremisesService {
 		metaData.setPagination(premiseCount, filter.page, filter.limit);
 		metaData.data = premises;
 		return metaData;
+	}
+
+	async readOneByExtId<T extends FindOptionsSelect<PremiseEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<PremiseEntity, T>> {
+		const client = await this.premiseRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new PremiseNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

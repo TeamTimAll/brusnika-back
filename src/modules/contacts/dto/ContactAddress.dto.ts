@@ -6,7 +6,7 @@ import { ContactAddressEntity } from "../contact_address.entity";
 
 type IContactAddressDto = Omit<
 	ContactAddressEntity,
-	"id" | "is_active" | "created_at" | "updated_at" | "contact"
+	"id" | "ext_id" | "is_active" | "created_at" | "updated_at" | "contact"
 >;
 
 export class ContactAddressDto implements IContactAddressDto {

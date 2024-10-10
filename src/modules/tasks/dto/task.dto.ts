@@ -8,7 +8,7 @@ import { PremiseEntity } from "../../premises/premises.entity";
 import { ProjectEntity } from "../../projects/project.entity";
 import { UserEntity } from "../../user/user.entity";
 
-type ITasksEntity = TasksEntity;
+type ITasksEntity = Omit<TasksEntity, "ext_id">;
 
 export class TasksDto implements ITasksEntity {
 	@ApiProperty()
@@ -24,7 +24,7 @@ export class TasksDto implements ITasksEntity {
 	created_at!: Date;
 
 	@ApiProperty()
-	deadline!: Date;
+	end_date!: Date;
 
 	@ApiProperty()
 	id!: number;
@@ -54,7 +54,7 @@ export class TasksDto implements ITasksEntity {
 	result?: string;
 
 	@ApiProperty()
-	started_at!: Date;
+	start_date!: Date;
 
 	@ApiProperty()
 	status!: TaskStatus;
@@ -66,10 +66,10 @@ export class TasksDto implements ITasksEntity {
 	updated_at!: Date;
 
 	@ApiProperty()
-	user_id!: number;
+	manager_id!: number;
 
 	@ApiProperty()
-	user!: UserEntity;
+	manager!: UserEntity;
 }
 
 export class TasksMetaDataDto extends BaseDto<TasksDto> implements Dto {

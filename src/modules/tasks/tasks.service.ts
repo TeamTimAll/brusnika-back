@@ -26,9 +26,9 @@ export class TasksService {
 	) {}
 
 	async create(payload: CreateTaskDto) {
-		await this.userService.checkExists(payload.user_id);
+		await this.userService.checkExists(payload.manager_id);
 		await this.clientService.checkExists(payload.client_id);
-		await this.projectService.readOne(payload.project_id);
+		await this.projectService.checkExists(payload.project_id);
 		await this.premiseService.checkExists(payload.premise_id);
 		await this.leadService.readOne(payload.lead_id);
 
@@ -43,10 +43,15 @@ export class TasksService {
 			select: {
 				client: { id: true, fullname: true, phone_number: true },
 				project: { id: true, name: true },
-				user: { id: true, fullName: true },
+				manager: { id: true, fullName: true },
 				lead: { id: true },
 			},
-			relations: { lead: true, project: true, client: true, user: true },
+			relations: {
+				lead: true,
+				project: true,
+				client: true,
+				manager: true,
+			},
 		});
 
 		if (!findOne) {
@@ -67,7 +72,7 @@ export class TasksService {
 				id: true,
 				task_type: true,
 				comment: true,
-				deadline: true,
+				end_date: true,
 				client: { id: true, fullname: true },
 				project: { id: true, name: true },
 			},

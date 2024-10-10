@@ -1,16 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { FindOptionsSelect, Repository } from "typeorm";
+
+import { PickBySelect } from "interfaces/pick_by_select";
 
 import { ProjectService } from "../projects/projects.service";
 
 import { BuildingEntity } from "./buildings.entity";
-import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
 import {
-	FilterBuildingDto,
 	CreateBuildingDto,
+	FilterBuildingDto,
 	UpdateBuildingDto,
 } from "./dtos";
+import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
 import { IReadAllFilter } from "./types";
 
 @Injectable()
@@ -20,6 +22,10 @@ export class BuildingsService {
 		private buildingRepository: Repository<BuildingEntity>,
 		private projectService: ProjectService,
 	) {}
+
+	get repository(): Repository<BuildingEntity> {
+		return this.buildingRepository;
+	}
 
 	async readAll(payload: FilterBuildingDto) {
 		const { city_id, project_id } = payload;
@@ -55,7 +61,7 @@ export class BuildingsService {
 	}
 
 	async create(dto: CreateBuildingDto) {
-		await this.projectService.readOne(dto.project_id);
+		await this.projectService.checkExists(dto.project_id);
 		return await this.buildingRepository.save(dto);
 	}
 
@@ -72,5 +78,19 @@ export class BuildingsService {
 		const building = await this.readOne(id);
 		await this.buildingRepository.delete(building.id);
 		return building;
+	}
+
+	async readOneByExtId<T extends FindOptionsSelect<BuildingEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<BuildingEntity, T>> {
+		const client = await this.buildingRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new BuildingNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

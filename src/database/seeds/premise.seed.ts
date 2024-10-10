@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
 import { chunkArray } from "../../lib/array";
@@ -13,9 +12,12 @@ import {
 } from "../../modules/premises/premises.entity";
 import { SectionEntity } from "../../modules/sections/sections.entity";
 
+import { faker } from "./faker";
+
 type IPremiseEntity = Omit<
 	PremiseEntity,
 	| "id"
+	| "ext_id"
 	| "section"
 	| "building"
 	| "created_at"
@@ -34,7 +36,7 @@ const typeRussianName = new Map([
 
 type IPremiseSchema = Omit<
 	PremiseSchemaEntity,
-	"id" | "premise" | "created_at" | "updated_at" | "is_active"
+	"id" | "ext_id" | "premise" | "created_at" | "updated_at" | "is_active"
 >;
 
 function createPremiseSchema(premise_id: number): IPremiseSchema {

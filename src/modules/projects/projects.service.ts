@@ -1,6 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, Repository } from "typeorm";
+import { Brackets, FindOptionsSelect, Repository } from "typeorm";
+
+import { PickBySelect } from "interfaces/pick_by_select";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { CityService } from "../cities/cities.service";
@@ -240,13 +242,35 @@ export class ProjectService {
 		return project;
 	}
 
-	async readOne(id: number) {
+	async readOne(id: number, select?: FindOptionsSelect<ProjectEntity>) {
 		const foundProject = await this.projectsRepository.findOne({
+			select: select ? { id: true, ...select } : undefined, // NOTE: If id is not provided it returns null
 			where: { id: id },
 		});
 		if (!foundProject) {
 			throw new ProjectNotFoundError(`id: ${id}`);
 		}
 		return foundProject;
+	}
+
+	async checkExists(id: number): Promise<void> {
+		const foundClient = await this.projectsRepository.existsBy({ id: id });
+		if (!foundClient) {
+			throw new ProjectNotFoundError(`id: ${id}`);
+		}
+	}
+
+	async readOneByExtId<T extends FindOptionsSelect<ProjectEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<ProjectEntity, T>> {
+		const client = await this.projectsRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new ProjectNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

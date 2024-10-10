@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { QueryBuilder } from "typeorm";
 
 import { chunkArray } from "../../lib/array";
@@ -11,9 +10,12 @@ import {
 import { LeadState, LeadsEntity } from "../../modules/leads/leads.entity";
 import { PremiseEntity } from "../../modules/premises/premises.entity";
 
+import { faker } from "./faker";
+
 type ILeadsEntity = Omit<
 	LeadsEntity,
 	| "id"
+	| "ext_id"
 	| "client"
 	| "agent"
 	| "project"
@@ -21,10 +23,12 @@ type ILeadsEntity = Omit<
 	| "created_at"
 	| "updated_at"
 	| "is_active"
+	| "start_date"
+	| "status_updated_at"
 >;
 type ILeadOpsEntity = Omit<
 	LeadOpsEntity,
-	"id" | "lead" | "created_at" | "updated_at" | "is_active"
+	"id" | "ext_id" | "lead" | "created_at" | "updated_at" | "is_active"
 >;
 
 const successLeads = [
@@ -113,7 +117,7 @@ function createLead(
 		lead_number: faker.number.int({ min: 1, max: 100 }),
 		state: state,
 		fee: faker.number.int({ min: 100000, max: 999999 }),
-		comment: faker.word.words({ count: { min: 5, max: 10 } }),
+		comment: faker.lorem.words({ min: 5, max: 10 }),
 		sign_nps_passed: false,
 	};
 	return lead;

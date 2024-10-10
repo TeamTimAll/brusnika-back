@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BaseDto, Dto } from "../../../common/base/base_dto";
 import { NotificationEntity, NotificationType } from "../notification.entity";
 
-export type INotificationDto = Omit<NotificationEntity, "user">;
+export type INotificationDto = Omit<NotificationEntity, "ext_id" | "user">;
 
 class ObjectType {
 	@ApiProperty()

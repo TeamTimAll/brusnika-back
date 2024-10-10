@@ -1,7 +1,9 @@
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Between, Brackets, Repository } from "typeorm";
+import { Between, Brackets, FindOptionsSelect, Repository } from "typeorm";
+
+import { PickBySelect } from "interfaces/pick_by_select";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
@@ -22,6 +24,7 @@ import { CityService } from "../cities/cities.service";
 import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
 import { SettingsRepository } from "../settings/settings.repository";
 
+import { NewUserFilterDto } from "./dtos";
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
 import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
@@ -32,14 +35,13 @@ import { UserResponseDto } from "./dtos/UserResponse.dto";
 import { UserUpdateDto } from "./dtos/UserUpdate.dto";
 import { UserUpdateRoleDto } from "./dtos/UserUpdateRole.dto";
 import { UserVerifyDto } from "./dtos/UserVerify.dto";
+import { UserActivityEntity } from "./entities/user-activity.entity";
 import { UserAlreadyExistsError } from "./errors/UserExists.error";
 import { UserNotFoundError } from "./errors/UserNotFound.error";
 import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
+import { IUserDailyStatistics, IUserStatisticsByCity } from "./types";
 import { UserEntity } from "./user.entity";
 import { UserChangeRoleRule } from "./user.rule";
-import { NewUserFilterDto } from "./dtos";
-import { IUserDailyStatistics, IUserStatisticsByCity } from "./types";
-import { UserActivityEntity } from "./entities/user-activity.entity";
 
 @Injectable()
 export class UserService {
@@ -324,7 +326,20 @@ export class UserService {
 		return metaData;
 	}
 
-	async readOne(id: number) {
+	async readOne(id: number, select?: FindOptionsSelect<UserEntity>) {
+		const foundUser = await this.userRepository.findOne({
+			select: select ? { id: true, ...select } : undefined, // NOTE: If id is not provided it returns null
+			where: {
+				id: id,
+			},
+		});
+		if (!foundUser) {
+			throw new UserNotFoundError(`id: ${id}`);
+		}
+		return foundUser;
+	}
+
+	async readOneWithRelation(id: number) {
 		const foundUser = await this.userRepository.findOne({
 			select: [
 				"id",
@@ -373,7 +388,7 @@ export class UserService {
 	}
 
 	async me(user_id: number) {
-		const foundUser = await this.readOne(user_id);
+		const foundUser = await this.readOneWithRelation(user_id);
 		const userCreatedCount = await this.bookingRepository.count({
 			where: {
 				create_by_id: user_id,
@@ -447,7 +462,7 @@ export class UserService {
 	}
 
 	async updateUser(dto: UserUpdateRoleDto): Promise<UserEntity> {
-		const foundUser = await this.readOne(dto.id);
+		const foundUser = await this.readOneWithRelation(dto.id);
 		if (dto.city_id) {
 			await this.cityService.checkExsits(dto.city_id);
 		}
@@ -460,7 +475,7 @@ export class UserService {
 
 	/** Do not use this function directly. It containes permision handler for agent role user. */
 	async update(id: number, dto: UserUpdateDto): Promise<UserEntity> {
-		const user = await this.readOne(id);
+		const user = await this.readOneWithRelation(id);
 		if (!user) {
 			throw new UserNotFoundError(`id: ${id}`);
 		}
@@ -472,14 +487,14 @@ export class UserService {
 			}
 		}
 		await this.userRepository.update(id, dto);
-		return this.readOne(id);
+		return this.readOneWithRelation(id);
 	}
 
 	async changePhone(
 		id: number,
 		dto: UserCreateDto,
 	): Promise<UserResponseDto> {
-		const user = await this.readOne(id);
+		const user = await this.readOneWithRelation(id);
 		const doesUserExist = await this.userRepository.existsBy({
 			phone: dto.phone,
 		});
@@ -514,7 +529,7 @@ export class UserService {
 		id: number,
 		dto: UserChangeEmailDto,
 	): Promise<UserResponseDto> {
-		const user = await this.readOne(id);
+		const user = await this.readOneWithRelation(id);
 		const doesUserExist = await this.userRepository.existsBy({
 			email: dto.email,
 		});
@@ -548,7 +563,7 @@ export class UserService {
 		user: ICurrentUser,
 		dto: UserChangePhoneVerifyCodeDto,
 	): Promise<UserResponseDto> {
-		const foundUser = await this.readOne(user.user_id);
+		const foundUser = await this.readOneWithRelation(user.user_id);
 
 		if (!foundUser.is_email_verified) {
 			throw new UserPhoneNotVerifiedError();
@@ -582,7 +597,7 @@ export class UserService {
 		user: ICurrentUser,
 		dto: UserChangePhoneVerifyCodeDto,
 	): Promise<UserResponseDto> {
-		const foundUser = await this.readOne(user.user_id);
+		const foundUser = await this.readOneWithRelation(user.user_id);
 
 		if (!foundUser.is_phone_verified) {
 			throw new UserPhoneNotVerifiedError();
@@ -655,7 +670,7 @@ export class UserService {
 	async loginAsUser(
 		dto: AdminLoginAsUserDto,
 	): Promise<AuthResponeWithTokenDto> {
-		const foundUser = await this.readOne(dto.user_id);
+		const foundUser = await this.readOneWithRelation(dto.user_id);
 		const jwtBuffer: ICurrentUser = {
 			user_id: foundUser.id,
 			role: foundUser.role,
@@ -666,13 +681,13 @@ export class UserService {
 	}
 
 	async delete(id: number) {
-		const foundUser = await this.readOne(id);
+		const foundUser = await this.readOneWithRelation(id);
 		await this.userRepository.delete(foundUser.id);
 		return foundUser;
 	}
 
 	async verifyUser(dto: UserVerifyDto) {
-		const foundUser = await this.readOne(dto.user_id);
+		const foundUser = await this.readOneWithRelation(dto.user_id);
 		let userRole: RoleType = foundUser.role;
 		if (dto.is_verified) {
 			if (foundUser.temporary_role) {
@@ -805,5 +820,19 @@ export class UserService {
 		});
 
 		return await this.userActivityRepository.save(newActivity);
+	}
+
+	async readOneByExtId<T extends FindOptionsSelect<UserEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<UserEntity, T>> {
+		const client = await this.userRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new UserNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

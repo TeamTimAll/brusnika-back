@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BannerDto } from "../../banner/dto/Banner.dto";
 import { CityEntity } from "../cities.entity";
 
-type ICityDto = Omit<CityEntity, "users">;
+type ICityDto = Omit<CityEntity, "ext_id" | "users" | "banner">;
 
 export class CityDto implements ICityDto {
 	@ApiProperty()

@@ -1,6 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { EntityManager, ILike, In, Repository } from "typeorm";
+import {
+	EntityManager,
+	FindOptionsSelect,
+	ILike,
+	In,
+	Repository,
+} from "typeorm";
+
+import { PickBySelect } from "interfaces/pick_by_select";
 
 import { CityEntity } from "./cities.entity";
 import { CreateCitiesDto } from "./dtos/CreateCities.dto";
@@ -84,5 +92,19 @@ export class CityService {
 		const foundCity = await this.readOne(id);
 		await this.cityRepository.delete(id);
 		return foundCity;
+	}
+
+	async readOneByExtId<T extends FindOptionsSelect<CityEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<CityEntity, T>> {
+		const client = await this.cityRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new CityNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

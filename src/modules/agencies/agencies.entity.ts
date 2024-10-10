@@ -13,9 +13,6 @@ export class AgencyEntity extends BaseEntity {
 	@JoinColumn({ name: "userId" })
 	user!: UserEntity[];
 
-	@Column({ nullable: true, type: "varchar", unique: true })
-	ext_id!: string | null;
-
 	@Column({ nullable: true, type: "varchar" })
 	title!: string | null;
 

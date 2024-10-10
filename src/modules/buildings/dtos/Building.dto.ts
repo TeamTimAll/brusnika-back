@@ -6,7 +6,7 @@ import { ProjectEntity } from "../../projects/project.entity";
 import { SectionEntity } from "../../sections/sections.entity";
 import { BuildingEntity } from "../buildings.entity";
 
-export class BuildingDto implements BuildingEntity {
+export class BuildingDto implements Omit<BuildingEntity, "ext_id"> {
 	@ApiProperty()
 	id!: number;
 

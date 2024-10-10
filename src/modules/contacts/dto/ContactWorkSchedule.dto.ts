@@ -9,7 +9,10 @@ import {
 import { Weekdays } from "../../../common/enums/weekdays";
 import { ContactWorkScheduleEntity } from "../contact_work_schedule.entity";
 
-type IContactWorkScheduleDto = Omit<ContactWorkScheduleEntity, "contact">;
+type IContactWorkScheduleDto = Omit<
+	ContactWorkScheduleEntity,
+	"ext_id" | "contact"
+>;
 
 export class ContactWorkScheduleDto implements IContactWorkScheduleDto {
 	@ApiProperty()
@@ -40,6 +43,7 @@ export class ContactWorkScheduleDto implements IContactWorkScheduleDto {
 type ICreateContactWorkScheduleDto = Omit<
 	ContactWorkScheduleEntity,
 	| "id"
+	| "ext_id"
 	| "is_active"
 	| "created_at"
 	| "updated_at"

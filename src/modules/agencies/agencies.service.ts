@@ -1,8 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ILike, Repository } from "typeorm";
+import { FindOptionsSelect, ILike, Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
+import { PickBySelect } from "interfaces/pick_by_select";
 
 import { CityService } from "../../modules/cities/cities.service";
 
@@ -126,5 +127,19 @@ export class AgencyService {
 				.returning("*")
 				.execute()
 		).generatedMaps;
+	}
+
+	async readOneByExtId<T extends FindOptionsSelect<AgencyEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<AgencyEntity, T>> {
+		const client = await this.agencyRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!client) {
+			throw new AgencyNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return client;
 	}
 }

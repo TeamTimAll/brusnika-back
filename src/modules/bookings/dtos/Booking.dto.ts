@@ -10,7 +10,7 @@ import { IUserCreation } from "../bookings.service";
 
 type IBookingDto = Omit<
 	BookingEntity,
-	"premise" | "client" | "agent" | "create_by"
+	"ext_id" | "premise" | "client" | "agent" | "create_by"
 >;
 
 export class UserCreationDto implements IUserCreation {
@@ -48,11 +48,11 @@ export class BookingDto implements IBookingDto {
 	@ApiProperty()
 	agent_id?: number;
 
-	@ApiProperty()
-	date!: Date;
+	// @ApiProperty()
+	// date!: Date;
 
-	@ApiProperty()
-	time!: string;
+	// @ApiProperty()
+	// time!: string;
 
 	@ApiProperty()
 	purchase_option!: PuchaseOptions;

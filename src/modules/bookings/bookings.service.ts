@@ -1,16 +1,19 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { FindOptionsSelect } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
+import { PickBySelect } from "interfaces/pick_by_select";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { ClientService } from "../client/client.service";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesService } from "../premises/premises.service";
+import { BookingQueueService } from "../queues/booking_queue/booking_queue.service";
 import { SettingsService } from "../settings/settings.service";
 
 import { BookingRepository } from "./booking.repository";
-import { BookingsEntity as BookingEntity } from "./bookings.entity";
+import { BookingsEntity } from "./bookings.entity";
 import { CreateBookingsDto } from "./dtos/CreateBookings.dto";
 import { NotBookedPremisesFilter } from "./dtos/NotBookedPremisesFilter.dto";
 import { UpdateBookingsDto } from "./dtos/UpdateBookings.dto";
@@ -31,6 +34,7 @@ export class BookingsService {
 		@Inject() private premiseService: PremisesService,
 		@Inject() private clientService: ClientService,
 		@Inject() private settingsService: SettingsService,
+		private bookingQueueService: BookingQueueService,
 	) {}
 
 	get repository(): BookingRepository {
@@ -59,7 +63,12 @@ export class BookingsService {
 		const booking = this.bookingRepository.create(dto);
 		booking.agent_id = user.user_id;
 		booking.create_by_id = user.user_id;
-		const metaData = BaseDto.create<BookingEntity>();
+
+		this.bookingQueueService.makeRequest(
+			await this.bookingQueueService.createFormEntity(booking),
+		);
+
+		const metaData = BaseDto.create<BookingsEntity>();
 		metaData.data = await this.bookingRepository.save(booking);
 		metaData.meta.data = {
 			user_created_count: userCreatedCount,
@@ -70,13 +79,13 @@ export class BookingsService {
 		return metaData;
 	}
 
-	async readAll(user: ICurrentUser): Promise<BookingEntity[]> {
+	async readAll(user: ICurrentUser): Promise<BookingsEntity[]> {
 		return this.bookingRepository.readAll({
 			where: { agent_id: user.user_id },
 		});
 	}
 
-	async readOne(id: number): Promise<BookingEntity> {
+	async readOne(id: number): Promise<BookingsEntity> {
 		const findOne = await this.bookingRepository.readOne({
 			where: { id },
 		});
@@ -84,6 +93,20 @@ export class BookingsService {
 			throw new BookingNotFoundError(`'${id}' not found`);
 		}
 		return findOne;
+	}
+
+	async readOneByExtId<T extends FindOptionsSelect<BookingsEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<BookingsEntity, T>> {
+		const booking = await this.bookingRepository.readOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+		if (!booking) {
+			throw new BookingNotFoundError(`ext_id: ${ext_id}`);
+		}
+		return booking;
 	}
 
 	readAllNotBookedPremises(
@@ -110,10 +133,10 @@ export class BookingsService {
 		return query.getRawMany();
 	}
 
-	async update(id: number, dto: UpdateBookingsDto): Promise<BookingEntity> {
+	async update(id: number, dto: UpdateBookingsDto): Promise<BookingsEntity> {
 		const foundBooking = await this.readOne(id);
 		if (typeof dto.premise_id !== "undefined") {
-			const foundPremise = await this.premiseService.readOne(
+			const foundPremise = await this.premiseService.readOneWithRelation(
 				dto.premise_id,
 			);
 			if (!foundPremise) {
@@ -127,7 +150,7 @@ export class BookingsService {
 		return await this.bookingRepository.save(mergedBooking);
 	}
 
-	async delete(id: number): Promise<BookingEntity> {
+	async delete(id: number): Promise<BookingsEntity> {
 		const foundBooking = await this.readOne(id);
 		await this.bookingRepository.delete(foundBooking.id);
 		return foundBooking;
