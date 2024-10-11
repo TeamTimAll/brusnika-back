@@ -117,10 +117,10 @@ export class ClientService {
 			new Brackets((qb) =>
 				qb
 					.where("c.fullname ILIKE :fullname", {
-						fullname: `%${dto.text}%`,
+						fullname: `${dto.text}%`,
 					})
 					.orWhere("c.phone_number ILIKE :phone_number", {
-						phone_number: `%${dto.text}%`,
+						phone_number: `${dto.text}%`,
 					}),
 			),
 		);
