@@ -120,10 +120,10 @@ export class EventsService {
 				new Brackets((qb) =>
 					qb
 						.where("e.title ILIKE :text", {
-							text: `%${dto.text}%`,
+							text: `${dto.text}%`,
 						})
 						.orWhere("e.description ILIKE :text", {
-							text: `%${dto.text}%`,
+							text: `${dto.text}%`,
 						}),
 				),
 			)
