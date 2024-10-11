@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { type Request } from "express";
 import { Observable } from "rxjs";
+// eslint-disable-next-line import/no-deprecated
 import { map } from "rxjs/operators";
 
 import { BaseDto } from "../common/base/base_dto";
@@ -30,6 +31,7 @@ export class TransformInterceptor<T>
 			ResponseStatusType.SUCCESS,
 		);
 		return next.handle().pipe(
+			// eslint-disable-next-line import/no-deprecated
 			map((data: T) => {
 				if (data instanceof BaseDto) {
 					metaData = data;
