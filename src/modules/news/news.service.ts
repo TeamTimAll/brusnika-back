@@ -233,9 +233,9 @@ export class NewsService {
 		newsQuery = newsQuery.andWhere(
 			new Brackets((qb) =>
 				qb
-					.where("n.title ILIKE :text", { text: `%${dto.text}%` })
+					.where("n.title ILIKE :text", { text: `${dto.text}%` })
 					.orWhere("n.content ILIKE :text", {
-						text: `%${dto.text}%`,
+						text: `${dto.text}%`,
 					}),
 			),
 		);
