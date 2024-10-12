@@ -244,9 +244,15 @@ export class PremisesService {
 			}
 
 			if (filter.rooms) {
-				query = query.andWhere("premise.rooms = :rooms", {
-					rooms: filter.rooms,
-				});
+				if (filter.rooms === "4") {
+					query = query.andWhere("premise.rooms >= :rooms", {
+						rooms: filter.rooms,
+					});
+				} else {
+					query = query.andWhere("premise.rooms = :rooms", {
+						rooms: filter.rooms,
+					});
+				}
 			}
 
 			if (filter.project_id) {
