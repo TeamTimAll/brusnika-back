@@ -790,6 +790,14 @@ export class AnalyticsService {
 							city_id,
 						),
 				),
+				this.getDataPair(
+					() => this.getPremiseBasketLinksCount(fromDate, toDate),
+					() =>
+						this.getPremiseBasketLinksCount(
+							pastFromDate,
+							pastToDate,
+						),
+				),
 			]);
 
 			const [
@@ -797,6 +805,7 @@ export class AnalyticsService {
 				completedLeads,
 				averagePriceOfCompletedLeads,
 				averageSizeOfCompletedLeads,
+				premiseBasketLinksCount,
 			] = currentPastPairs.map(([current, past]) =>
 				this.calculateDifference(current, past),
 			);
@@ -806,6 +815,7 @@ export class AnalyticsService {
 				completed_leads: completedLeads,
 				complited_leads_avg_price: averagePriceOfCompletedLeads,
 				complited_leads_avg_size: averageSizeOfCompletedLeads,
+				premise_basket_links_count: premiseBasketLinksCount,
 			};
 		} else {
 			currentPastPairs = await Promise.all([

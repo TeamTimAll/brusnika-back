@@ -588,7 +588,7 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
     heshlanib qaytarilib berilishi kerak. Padbor database'da saqlanmaydi. Gen
     qilingan link'ni ichidan olinadi.
 -   [x] Visit'lar cencel qilinsa kalendar'ga chiqarmaslik.
--   [-] Lead status'ga misol yozish kerak.
+-   [x] Lead status'ga misol yozish kerak.
 -   [x] Bron limit agent va head of agency'ga ko'rinsin.
 -   [ ] Client fixing type'i update bo'lsa `fixing_type_updated_at`ning vaqtini
         yangilab qo'yish
@@ -599,7 +599,7 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 -   [x] Lead'ga `start_date` va `status_updated_at` fieldlar qo'shish kerak.
 
 -   [ ] Project CRUD'ini ko'rib chiqish.
--   [ ] Client search query. GetAll bilan bir xil qilish kerak.
+-   [x] Client search query. GetAll bilan bir xil qilish kerak. (Aktiv yoki VSEligi kerak xolos)
 -   [ ] Client uchun end_date qo'shib chiqish kerak. (seed).
 -   [ ] Bron'dan date va time olib tashlash kerak.
 -   [ ] Lead fixing_type o'zgarganda Notification yuborish. Notification shakli:

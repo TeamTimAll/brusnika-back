@@ -83,11 +83,13 @@ export class ClientService {
 	): Promise<BaseDto<ClientEntity[]>> {
 		let queryBuilder = this.clientRepository
 			.createQueryBuilder("c")
+			.leftJoin("leads", "l", "l.client_id = c.id")
 			.select([
 				"c.id",
 				"c.fullname",
 				"c.phone_number",
-			] as `c.${keyof ClientEntity}`[]);
+			] as `c.${keyof ClientEntity}`[])
+			.addSelect(["l.state"]);
 
 		if (user.role === RoleType.AGENT) {
 			queryBuilder = queryBuilder.where("c.agent_id = :client_agent_id", {
@@ -113,6 +115,12 @@ export class ClientService {
 			);
 		}
 
+		if (dto.state) {
+			queryBuilder = queryBuilder.andWhere("l.state = :state", {
+				state: dto.state,
+			});
+		}
+
 		queryBuilder = queryBuilder.andWhere(
 			new Brackets((qb) =>
 				qb
@@ -124,6 +132,7 @@ export class ClientService {
 					}),
 			),
 		);
+
 		const pageSize = (dto.page - 1) * dto.limit;
 		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
 		const [clients, clientCount] = await queryBuilder.getManyAndCount();
