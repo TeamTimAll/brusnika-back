@@ -1,4 +1,4 @@
-import { QueryBuilder } from "typeorm";
+import { DataSource, QueryBuilder } from "typeorm";
 
 import { chunkArray } from "../../lib/array";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
@@ -184,7 +184,14 @@ export async function up(
 	return createdLeads;
 }
 
-export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(LeadOpsEntity).execute();
-	await query.delete().from(LeadsEntity).execute();
+export async function down(dataSource: DataSource) {
+	const leadTableName = dataSource.getMetadata(LeadOpsEntity).tableName;
+	await dataSource.query(
+		`TRUNCATE ${leadTableName} RESTART IDENTITY CASCADE;`,
+	);
+
+	const leadOpsTableName = dataSource.getMetadata(LeadsEntity).tableName;
+	await dataSource.query(
+		`TRUNCATE ${leadOpsTableName} RESTART IDENTITY CASCADE;`,
+	);
 }

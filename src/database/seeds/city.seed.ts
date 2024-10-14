@@ -1,4 +1,4 @@
-import { QueryBuilder } from "typeorm";
+import { DataSource, QueryBuilder } from "typeorm";
 
 import { CityEntity } from "../../modules/cities/cities.entity";
 
@@ -27,6 +27,7 @@ export async function up(query: QueryBuilder<object>): Promise<CityEntity[]> {
 	return generatedMaps as CityEntity[];
 }
 
-export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(CityEntity).execute();
+export async function down(dataSource: DataSource) {
+	const tableName = dataSource.getMetadata(CityEntity).tableName;
+	await dataSource.query(`TRUNCATE ${tableName} RESTART IDENTITY CASCADE;`);
 }
