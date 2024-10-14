@@ -25,13 +25,13 @@ export class ProjectEntity extends BaseEntity {
 	@OneToMany(() => BuildingEntity, (buildings) => buildings.project)
 	buildings?: BuildingEntity[];
 
-	@Column({ nullable: false })
+	@Column({ nullable: false, default: ""  })
 	company_link!: string;
 
-	@Column({ nullable: false })
+	@Column({ nullable: false, default: ""  })
 	building_link!: string;
 
-	@Column({ nullable: false })
+	@Column({ nullable: false, default: ""  })
 	project_link!: string;
 
 	@ManyToOne(() => CityEntity, { onDelete: "CASCADE" })
