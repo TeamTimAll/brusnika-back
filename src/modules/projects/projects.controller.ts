@@ -59,7 +59,7 @@ export class ProjectsController {
 		return await this.projectsService.search(dto);
 	}
 
-	@Roles([RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.AFFILIATE_MANAGER, RoleType.ADMIN])
 	@ApiBearerAuth()
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Post()
@@ -74,7 +74,7 @@ export class ProjectsController {
 		return res;
 	}
 
-	@Roles([RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.AFFILIATE_MANAGER, RoleType.ADMIN])
 	@ApiBearerAuth()
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Put(":id")
@@ -86,7 +86,7 @@ export class ProjectsController {
 		return await this.projectsService.update(id, dto.data);
 	}
 
-	@Roles([RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.AFFILIATE_MANAGER, RoleType.ADMIN])
 	@ApiBearerAuth()
 	@UseGuards(JwtAuthGuard, RolesGuard)
 	@Delete(":id")
