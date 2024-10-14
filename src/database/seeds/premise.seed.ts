@@ -1,4 +1,4 @@
-import { QueryBuilder } from "typeorm";
+import { DataSource, QueryBuilder } from "typeorm";
 
 import { chunkArray } from "../../lib/array";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
@@ -176,6 +176,7 @@ export async function up(
 	return premiseResult;
 }
 
-export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(PremiseEntity).execute();
+export async function down(dataSource: DataSource) {
+	const tableName = dataSource.getMetadata(PremiseEntity).tableName;
+	await dataSource.query(`TRUNCATE ${tableName} RESTART IDENTITY CASCADE;`);
 }

@@ -1,4 +1,4 @@
-import { QueryBuilder } from "typeorm";
+import { DataSource, QueryBuilder } from "typeorm";
 
 import { SettingsEntity } from "../../modules/settings/settings.entity";
 
@@ -15,6 +15,7 @@ export async function up(query: QueryBuilder<object>) {
 	await query.insert().into(SettingsEntity).values(settings).execute();
 }
 
-export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(SettingsEntity).execute();
+export async function down(dataSource: DataSource) {
+	const tableName = dataSource.getMetadata(SettingsEntity).tableName;
+	await dataSource.query(`TRUNCATE ${tableName} RESTART IDENTITY CASCADE;`);
 }
