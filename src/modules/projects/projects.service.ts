@@ -73,10 +73,7 @@ export class ProjectService {
 						.where("p.name ILIKE :text", {
 							text: `${dto.text}%`,
 						})
-						.orWhere("p.detailed_description ILIKE :text", {
-							text: `${dto.text}%`,
-						})
-						.orWhere("p.brief_description ILIKE :text", {
+						.orWhere("p.description ILIKE :text", {
 							text: `${dto.text}%`,
 						}),
 				),
