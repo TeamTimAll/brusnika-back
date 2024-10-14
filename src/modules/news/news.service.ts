@@ -328,7 +328,10 @@ export class NewsService {
 
 		const newsCount = await query.getCount();
 
-		query = query.limit(payload.limit).offset(pageSize);
+		query = query
+			.limit(payload.limit)
+			.offset(pageSize)
+			.orderBy("news.id", "DESC");
 
 		const metaData = BaseDto.create<NewsEntity[]>();
 		metaData.setPagination(newsCount, payload.page, payload.limit);
