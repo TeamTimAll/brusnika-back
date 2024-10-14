@@ -3,21 +3,24 @@ import { DataSource } from "typeorm";
 import { ConfigManager } from "../../config";
 import { RoleType } from "../../constants";
 
+import * as agencySeed from "./agency.seed";
 import * as bookedSeed from "./booked.seed";
 import * as buildingSeed from "./building.seed";
 import * as citySeed from "./city.seed";
 import * as clientSeed from "./client.seed";
+import * as leadSeed from "./lead.seed";
 import * as premiseSeed from "./premise.seed";
 import * as projectSeed from "./project.seed";
 import * as sectionSeed from "./section.seed";
 import * as settingsSeed from "./settings.seed";
 import * as userSeed from "./user.seed";
-import * as agencySeed from "./agency.seed";
-import * as leadSeed from "./lead.seed";
 // import { LeadOpStatus } from "modules/leads/lead_ops.entity";
 
 ConfigManager.init();
-export const dataSource = new DataSource(ConfigManager.databaseConfig);
+export const dataSource = new DataSource({
+	...ConfigManager.databaseConfig,
+	migrationsRun: false,
+});
 
 // -----------------Planting seeds-----------------
 // prettier-ignore
@@ -38,17 +41,17 @@ async function up(dataSource: DataSource) {
 }
 
 async function down(dataSource: DataSource) {
-	await settingsSeed.down(dataSource.createQueryBuilder());
-	await citySeed.down(dataSource.createQueryBuilder());
-	await projectSeed.down(dataSource.createQueryBuilder());
-	await buildingSeed.down(dataSource.createQueryBuilder());
-	await sectionSeed.down(dataSource.createQueryBuilder());
-	await premiseSeed.down(dataSource.createQueryBuilder());
-	await clientSeed.down(dataSource.createQueryBuilder());
-	await leadSeed.down(dataSource.createQueryBuilder());
-	await userSeed.down(dataSource.createQueryBuilder());
-	await agencySeed.down(dataSource.createQueryBuilder());
-	await bookedSeed.down(dataSource.createQueryBuilder());
+	await settingsSeed.down(dataSource);
+	await citySeed.down(dataSource);
+	await projectSeed.down(dataSource);
+	await buildingSeed.down(dataSource);
+	await sectionSeed.down(dataSource);
+	await premiseSeed.down(dataSource);
+	await clientSeed.down(dataSource);
+	await leadSeed.down(dataSource);
+	await userSeed.down(dataSource);
+	await agencySeed.down(dataSource);
+	await bookedSeed.down(dataSource);
 }
 // ------------------------------------------------
 

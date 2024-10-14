@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, FindOptionsSelect, Repository } from "typeorm";
 
@@ -7,6 +7,7 @@ import { PickBySelect } from "interfaces/pick_by_select";
 import { BaseDto } from "../../common/base/base_dto";
 import { CityService } from "../cities/cities.service";
 import { PremiseEntity, PremisesType } from "../premises/premises.entity";
+import { BuildingsService } from "../buildings/buildings.service";
 
 import { CreateProjectDto } from "./dto/CreateProject.dto";
 import { ProjectSearchDto } from "./dto/ProjectSearch.dto";
@@ -22,16 +23,15 @@ type ProjectRaw = {
 
 export interface GetAllProjectRaw extends ProjectRaw {
 	id: ProjectEntity["id"];
-	name: ProjectEntity["name"];
-	detailed_description: ProjectEntity["detailed_description"];
-	brief_description: ProjectEntity["brief_description"];
 	photo: ProjectEntity["photo"];
-	price: ProjectEntity["price"];
-	location: ProjectEntity["location"];
-	long: ProjectEntity["long"];
-	lat: ProjectEntity["lat"];
-	link: ProjectEntity["link"];
+	name: ProjectEntity["name"];
+	description: ProjectEntity["description"];
 	end_date: ProjectEntity["end_date"];
+	address: ProjectEntity["address"];
+	company_link: ProjectEntity["company_link"];
+	price: ProjectEntity["price"];
+	building_link: ProjectEntity["building_link"];
+	project_link: ProjectEntity["project_link"];
 	premise_type: PremiseEntity["type"];
 	premise_count: string;
 	city: {
@@ -53,6 +53,8 @@ export class ProjectService {
 		private projectsRepository: Repository<ProjectEntity>,
 		@Inject()
 		private cityService: CityService,
+		@Inject(forwardRef(() => BuildingsService))
+		private buildingService: BuildingsService,
 	) {}
 
 	get repository(): Repository<ProjectEntity> {
@@ -71,10 +73,7 @@ export class ProjectService {
 						.where("p.name ILIKE :text", {
 							text: `${dto.text}%`,
 						})
-						.orWhere("p.detailed_description ILIKE :text", {
-							text: `${dto.text}%`,
-						})
-						.orWhere("p.brief_description ILIKE :text", {
+						.orWhere("p.description ILIKE :text", {
 							text: `${dto.text}%`,
 						}),
 				),
@@ -97,16 +96,14 @@ export class ProjectService {
 			.leftJoinAndSelect("project.city", "cities")
 			.select([
 				"project.id AS id",
-				"project.name AS name",
-				"project.detailed_description AS detailed_description",
-				"project.brief_description AS brief_description",
 				"project.photo AS photo",
-				"project.price AS price",
-				"project.location AS location",
-				"project.long AS long",
-				"project.lat AS lat",
-				"project.link AS link",
+				"project.name AS name",
 				"project.end_date AS end_date",
+				"project.address AS address",
+				"project.company_link AS company_link",
+				"project.building_link AS building_link",
+				"project.project_link AS project_link",
+				"project.price AS price",
 				"premise.type AS premise_type",
 				"COUNT(premise.id) AS premise_count",
 				"JSON_BUILD_OBJECT('id', cities.id, 'name', cities.name, 'lat', cities.lat, 'long', cities.long) as city",
@@ -136,16 +133,15 @@ export class ProjectService {
 				if (typeof project === "undefined") {
 					project = {
 						id: row.id,
-						name: row.name,
-						detailed_description: row.detailed_description,
-						brief_description: row.brief_description,
 						photo: row.photo,
-						price: row.price,
-						location: row.location,
-						long: row.long,
-						lat: row.lat,
-						link: row.link,
+						name: row.name,
+						description: row.description,
 						end_date: row.end_date,
+						address: row.address,
+						company_link: row.company_link,
+						price: row.price,
+						building_link: row.building_link,
+						project_link: row.project_link,
 						premise_count: row.premise_count,
 						premise_type: row.premise_type,
 						apartment_count: 0,
@@ -186,8 +182,28 @@ export class ProjectService {
 
 	async create(dto: CreateProjectDto) {
 		await this.cityService.readOne(dto.city_id);
-		const project = this.projectsRepository.create(dto);
-		return await this.projectsRepository.save(project);
+		const newProject = this.projectsRepository.create({
+			photo: dto.photo,
+			name: dto.name,
+			description: dto.description,
+			address: dto.address,
+			end_date: dto.end_date,
+			company_link: dto.company_link,
+			building_link: dto.building_link,
+			project_link: dto.project_link,
+			city_id: dto.city_id,
+			price: dto.price,
+		});
+
+		const project = await this.projectsRepository.save(newProject);
+
+		const newBuilding = dto.buildings.map((b) => {
+			b["project_id"] = project.id;
+
+			return b;
+		});
+
+		return await this.buildingService.createMany(newBuilding);
 	}
 
 	async getOneProject(id: number): Promise<ProjectEntity | null> {

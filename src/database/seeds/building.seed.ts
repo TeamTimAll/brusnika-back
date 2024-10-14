@@ -1,4 +1,4 @@
-import { QueryBuilder } from "typeorm";
+import { DataSource, QueryBuilder } from "typeorm";
 
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
 import { ProjectEntity } from "../../modules/projects/project.entity";
@@ -9,12 +9,7 @@ function findProjectId(buildings: ProjectEntity[], name: string) {
 
 type IBuildingEntity = Omit<
 	BuildingEntity,
-	| "id"
-	| "ext_id"
-	| "project"
-	| "created_at"
-	| "updated_at"
-	| "is_active"
+	"id" | "ext_id" | "project" | "created_at" | "updated_at" | "is_active"
 >;
 
 export async function up(
@@ -38,7 +33,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
@@ -56,7 +51,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Москва Проект"),
@@ -74,7 +69,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 
 		{
@@ -93,7 +88,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Тюмень Проект"),
@@ -111,7 +106,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Тюмень Проект"),
@@ -129,7 +124,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 
 		{
@@ -148,7 +143,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Новосибирск Проект"),
@@ -166,7 +161,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Новосибирск Проект"),
@@ -184,7 +179,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 
 		{
@@ -203,7 +198,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Екатеринбург Проект"),
@@ -221,7 +216,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Екатеринбург Проект"),
@@ -239,7 +234,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 
 		{
@@ -258,7 +253,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Сургут Проект"),
@@ -276,7 +271,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Сургут Проект"),
@@ -294,7 +289,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 
 		{
@@ -313,7 +308,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Курган Проект"),
@@ -331,7 +326,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Курган Проект"),
@@ -349,7 +344,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 
 		{
@@ -368,7 +363,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Омск Проект"),
@@ -386,7 +381,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 		{
 			project_id: findProjectId(projects, "Омск Проект"),
@@ -404,7 +399,7 @@ export async function up(
 			total_commercial: 3,
 			total_vacant_commercial: 12,
 			total_apartment: 0,
-			total_vacant_apartment: 0
+			total_vacant_apartment: 0,
 		},
 	];
 
@@ -417,6 +412,7 @@ export async function up(
 	return res.generatedMaps as BuildingEntity[];
 }
 
-export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(BuildingEntity).execute();
+export async function down(dataSource: DataSource) {
+	const tableName = dataSource.getMetadata(BuildingEntity).tableName;
+	await dataSource.query(`TRUNCATE ${tableName} RESTART IDENTITY CASCADE;`);
 }

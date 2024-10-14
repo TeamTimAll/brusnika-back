@@ -1,20 +1,132 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
+	ArrayNotEmpty,
+	IsArray,
 	IsDateString,
 	IsInt,
 	IsNotEmpty,
-	IsNumber,
-	IsOptional,
 	IsString,
 	ValidateNested,
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
-export class CreateProjectDto {
+class BuildingDto {
+	@IsNotEmpty()
+	@IsString()
 	@ApiProperty({
+		example: "Premise name ",
 		required: true,
+		type: String,
+	})
+	name!: string;
+
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 22,
+		description: "Total storage for the premise",
+		type: Number,
+	})
+	total_storage!: number;
+
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 12,
+		description: "Total  vacant storage for the premise",
+		type: Number,
+	})
+	total_vacant_storage!: number;
+
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 22,
+		description: "Total apartments",
+		type: Number,
+	})
+	total_apartment!: number;
+
+	// vacant apartment
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 12,
+		description: "Total vacant apartment",
+		type: Number,
+	})
+	total_vacant_apartment!: number;
+
+	// total parking space
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 33,
+		description: "Total parking space",
+		type: Number,
+	})
+	total_parking_space!: number;
+
+	// total vacant parking space
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 44,
+		description: "Total vacant parking space ",
+		type: Number,
+	})
+	total_vacant_parking_space!: number;
+
+	// commercial
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 3,
+		description: "Total commercial",
+		type: Number,
+	})
+	total_commercial!: number;
+
+	// vacant commercail
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 1,
+		description: "Total vacant commercial",
+		type: Number,
+		required: true,
+	})
+	total_vacant_commercial!: number;
+
+	@IsNotEmpty()
+	@IsString()
+	@ApiProperty({
+		example: "Somewhere for premise address",
+		type: String,
+		required: true,
+	})
+	address!: string;
+
+	@IsNotEmpty()
+	@ApiProperty({
+		example: 3,
+		type: Number,
+		required: true,
+		description: "Number of floors for a building",
+	})
+	number_of_floors!: number;
+
+	@ApiProperty({
+		type: "array",
+		description: "Images of the premise",
+		required: true,
+	})
+	photos!: string[];
+
+	project_id!: number;
+}
+
+export class CreateProjectDto {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	photo!: string;
+
+	@ApiProperty({
 		example: "Project Name",
 	})
 	@IsString()
@@ -22,48 +134,20 @@ export class CreateProjectDto {
 	name!: string;
 
 	@ApiProperty({
-		required: true,
 		example: "Description about the project",
 	})
-	@IsOptional()
+	@IsNotEmpty()
 	@IsString()
 	description!: string;
 
 	@ApiProperty({
-		required: true,
-		example: "Something deatiled about the project",
-	})
-	@IsNotEmpty()
-	@IsString()
-	detailed_description!: string;
-
-	@ApiProperty({
-		required: true,
-		example: "Brief description about the project",
-	})
-	@IsNotEmpty()
-	@IsString()
-	brief_description!: string;
-
-	@ApiProperty({
-		required: true,
-		type: Number,
-		example: 0,
-	})
-	@IsNotEmpty()
-	@IsNumber()
-	price!: number;
-
-	@ApiProperty({
-		required: true,
 		example: "Some address and some street.",
 	})
 	@IsNotEmpty()
 	@IsString()
-	location!: string;
+	address!: string;
 
 	@ApiProperty({
-		required: true,
 		example: new Date(),
 	})
 	@IsNotEmpty()
@@ -71,26 +155,43 @@ export class CreateProjectDto {
 	end_date!: Date;
 
 	@ApiProperty({
-		required: true,
+		example: "https://telegram.org",
 	})
+	@IsNotEmpty()
 	@IsString()
-	photo!: string;
+	company_link!: string;
 
-	@ApiProperty({ example: "0.00" })
-	@IsOptional()
+	@ApiProperty({
+		example: "https://telegram.org",
+	})
+	@IsNotEmpty()
 	@IsString()
-	long!: string;
+	building_link!: string;
 
-	@ApiProperty({ example: "0.00" })
-	@IsOptional()
+	@ApiProperty({
+		example: "https://telegram.org",
+	})
+	@IsNotEmpty()
 	@IsString()
-	lat!: string;
+	project_link!: string;
+
+	@ApiProperty({ type: BuildingDto, isArray: true })
+	@ArrayNotEmpty()
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => BuildingDto)
+	buildings!: BuildingDto[];
 
 	@ApiProperty()
 	@IsInt()
 	@Type(() => Number)
 	@IsNotEmpty()
 	city_id!: number;
+
+	@ApiProperty()
+	@IsInt()
+	@IsNotEmpty()
+	price!: number;
 }
 
 export class CreateProjectMetaDataDto extends BaseDto<CreateProjectDto> {

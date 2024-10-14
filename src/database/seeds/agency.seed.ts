@@ -1,4 +1,4 @@
-import { QueryBuilder } from "typeorm";
+import { DataSource, QueryBuilder } from "typeorm";
 
 import { AgencyEntity } from "../../modules/agencies/agencies.entity";
 import { CityEntity } from "../../modules/cities/cities.entity";
@@ -73,6 +73,7 @@ export async function up(
 	return generatedMaps as AgencyEntity[];
 }
 
-export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(AgencyEntity).execute();
+export async function down(dataSource: DataSource) {
+	const tableName = dataSource.getMetadata(AgencyEntity).tableName;
+	await dataSource.query(`TRUNCATE ${tableName} RESTART IDENTITY CASCADE;`);
 }
