@@ -1,20 +1,27 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
+	ArrayNotEmpty,
+	IsArray,
 	IsDateString,
 	IsInt,
 	IsNotEmpty,
-	IsNumber,
-	IsOptional,
 	IsString,
 	ValidateNested,
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
+import { CreateBuildingDto } from "../../buildings/dtos";
+
+class BuildingDto extends CreateBuildingDto {}
 
 export class CreateProjectDto {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	photo!: string;
+
 	@ApiProperty({
-		required: true,
 		example: "Project Name",
 	})
 	@IsString()
@@ -22,48 +29,20 @@ export class CreateProjectDto {
 	name!: string;
 
 	@ApiProperty({
-		required: true,
 		example: "Description about the project",
 	})
-	@IsOptional()
+	@IsNotEmpty()
 	@IsString()
 	description!: string;
 
 	@ApiProperty({
-		required: true,
-		example: "Something deatiled about the project",
-	})
-	@IsNotEmpty()
-	@IsString()
-	detailed_description!: string;
-
-	@ApiProperty({
-		required: true,
-		example: "Brief description about the project",
-	})
-	@IsNotEmpty()
-	@IsString()
-	brief_description!: string;
-
-	@ApiProperty({
-		required: true,
-		type: Number,
-		example: 0,
-	})
-	@IsNotEmpty()
-	@IsNumber()
-	price!: number;
-
-	@ApiProperty({
-		required: true,
 		example: "Some address and some street.",
 	})
 	@IsNotEmpty()
 	@IsString()
-	location!: string;
+	address!: string;
 
 	@ApiProperty({
-		required: true,
 		example: new Date(),
 	})
 	@IsNotEmpty()
@@ -71,26 +50,43 @@ export class CreateProjectDto {
 	end_date!: Date;
 
 	@ApiProperty({
-		required: true,
+		example: "https://telegram.org",
 	})
+	@IsNotEmpty()
 	@IsString()
-	photo!: string;
+	company_link!: string;
 
-	@ApiProperty({ example: "0.00" })
-	@IsOptional()
+	@ApiProperty({
+		example: "https://telegram.org",
+	})
+	@IsNotEmpty()
 	@IsString()
-	long!: string;
+	building_link!: string;
 
-	@ApiProperty({ example: "0.00" })
-	@IsOptional()
+	@ApiProperty({
+		example: "https://telegram.org",
+	})
+	@IsNotEmpty()
 	@IsString()
-	lat!: string;
+	project_link!: string;
+
+	@ApiProperty({ type: BuildingDto })
+	@ArrayNotEmpty()
+	@IsArray()
+	@ValidateNested({ each: true })
+	@Type(() => BuildingDto)
+	buildings!: BuildingDto[];
 
 	@ApiProperty()
 	@IsInt()
 	@Type(() => Number)
 	@IsNotEmpty()
 	city_id!: number;
+
+	@ApiProperty()
+	@IsInt()
+	@IsNotEmpty()
+	price!: number;
 }
 
 export class CreateProjectMetaDataDto extends BaseDto<CreateProjectDto> {

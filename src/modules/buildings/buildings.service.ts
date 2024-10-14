@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsSelect, Repository } from "typeorm";
 
@@ -20,6 +20,7 @@ export class BuildingsService {
 	constructor(
 		@InjectRepository(BuildingEntity)
 		private buildingRepository: Repository<BuildingEntity>,
+		@Inject(forwardRef(() => ProjectService))
 		private projectService: ProjectService,
 	) {}
 
@@ -62,6 +63,10 @@ export class BuildingsService {
 
 	async create(dto: CreateBuildingDto) {
 		await this.projectService.checkExists(dto.project_id);
+		return await this.buildingRepository.save(dto);
+	}
+
+	async createMany(dto: CreateBuildingDto[]) {
 		return await this.buildingRepository.save(dto);
 	}
 
