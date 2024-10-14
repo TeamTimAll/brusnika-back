@@ -19,7 +19,7 @@ export class ProjectEntity extends BaseEntity {
 	@Column({ nullable: true, type: "date" })
 	end_date!: Date;
 
-	@Column({ nullable: false })
+	@Column({ nullable: false, default: "" })
 	address!: string;
 
 	@OneToMany(() => BuildingEntity, (buildings) => buildings.project)
