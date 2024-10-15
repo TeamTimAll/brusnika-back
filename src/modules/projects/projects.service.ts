@@ -27,7 +27,9 @@ export interface GetAllProjectRaw extends ProjectRaw {
 	name: ProjectEntity["name"];
 	description: ProjectEntity["description"];
 	end_date: ProjectEntity["end_date"];
-	address: ProjectEntity["address"];
+	location: ProjectEntity["location"];
+	long: ProjectEntity["long"];
+	lat: ProjectEntity["lat"];
 	company_link: ProjectEntity["company_link"];
 	price: ProjectEntity["price"];
 	building_link: ProjectEntity["building_link"];
@@ -99,7 +101,9 @@ export class ProjectService {
 				"project.photo AS photo",
 				"project.name AS name",
 				"project.end_date AS end_date",
-				"project.address AS address",
+				"project.location AS location",
+				"project.long AS long",
+				"project.lat AS lat",
 				"project.company_link AS company_link",
 				"project.building_link AS building_link",
 				"project.project_link AS project_link",
@@ -137,7 +141,9 @@ export class ProjectService {
 						name: row.name,
 						description: row.description,
 						end_date: row.end_date,
-						address: row.address,
+						location: row.location,
+						long: row.long,
+						lat: row.lat,
 						company_link: row.company_link,
 						price: row.price,
 						building_link: row.building_link,
@@ -181,12 +187,16 @@ export class ProjectService {
 	}
 
 	async create(dto: CreateProjectDto) {
+		dto.price = 100000;
+
 		await this.cityService.readOne(dto.city_id);
 		const newProject = this.projectsRepository.create({
 			photo: dto.photo,
 			name: dto.name,
 			description: dto.description,
-			address: dto.address,
+			location: dto.location,
+			long: dto.long,
+			lat: dto.lat,
 			end_date: dto.end_date,
 			company_link: dto.company_link,
 			building_link: dto.building_link,
@@ -203,7 +213,9 @@ export class ProjectService {
 			return b;
 		});
 
-		return await this.buildingService.createMany(newBuilding);
+		await this.buildingService.createMany(newBuilding);
+
+		return project;
 	}
 
 	async getOneProject(id: number): Promise<ProjectEntity | null> {

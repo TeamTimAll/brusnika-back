@@ -19,8 +19,14 @@ export class ProjectEntity extends BaseEntity {
 	@Column({ nullable: true, type: "date" })
 	end_date!: Date;
 
-	@Column({ nullable: false, default: "" })
-	address!: string;
+	@Column({ nullable: true })
+	location!: string;
+
+	@Column({ nullable: true, type: "varchar" })
+	long!: string;
+
+	@Column({ nullable: true, type: "varchar" })
+	lat!: string;
 
 	@OneToMany(() => BuildingEntity, (buildings) => buildings.project)
 	buildings?: BuildingEntity[];
