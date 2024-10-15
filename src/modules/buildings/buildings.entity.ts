@@ -29,6 +29,9 @@ export class BuildingEntity extends BaseEntity {
 	@Column({ type: "integer" })
 	project_id!: number;
 
+	@Column({ nullable: true })
+	object_id?: string;
+
 	@OneToMany(() => PremiseEntity, (Premises) => Premises.building)
 	premises?: PremiseEntity[];
 

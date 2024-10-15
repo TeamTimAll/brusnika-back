@@ -18,6 +18,11 @@ import {
 import { BaseDto } from "../../../common/base/base_dto";
 
 class BuildingDto {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	object_id!: string;
+
 	@IsNotEmpty()
 	@IsString()
 	@ApiProperty({
@@ -44,6 +49,12 @@ class BuildingDto {
 }
 
 export class CreateProjectDto {
+	@ApiProperty()
+	@IsArray()
+	@IsString({ each: true })
+	@IsNotEmpty()
+	photos!: string[];
+
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
