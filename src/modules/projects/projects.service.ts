@@ -23,6 +23,7 @@ type ProjectRaw = {
 
 export interface GetAllProjectRaw extends ProjectRaw {
 	id: ProjectEntity["id"];
+	photos: ProjectEntity["photos"];
 	photo: ProjectEntity["photo"];
 	name: ProjectEntity["name"];
 	description: ProjectEntity["description"];
@@ -32,6 +33,7 @@ export interface GetAllProjectRaw extends ProjectRaw {
 	lat: ProjectEntity["lat"];
 	company_link: ProjectEntity["company_link"];
 	price: ProjectEntity["price"];
+	buildings: ProjectEntity["buildings"];
 	building_link: ProjectEntity["building_link"];
 	project_link: ProjectEntity["project_link"];
 	premise_type: PremiseEntity["type"];
@@ -98,6 +100,7 @@ export class ProjectService {
 			.leftJoinAndSelect("project.city", "cities")
 			.select([
 				"project.id AS id",
+				"project.photos AS photos",
 				"project.photo AS photo",
 				"project.name AS name",
 				"project.end_date AS end_date",
@@ -107,6 +110,7 @@ export class ProjectService {
 				"project.company_link AS company_link",
 				"project.building_link AS building_link",
 				"project.project_link AS project_link",
+				"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'object_id', building.object_id, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
 				"project.price AS price",
 				"premise.type AS premise_type",
 				"COUNT(premise.id) AS premise_count",
@@ -137,6 +141,7 @@ export class ProjectService {
 				if (typeof project === "undefined") {
 					project = {
 						id: row.id,
+						photos: row.photos,
 						photo: row.photo,
 						name: row.name,
 						description: row.description,
@@ -150,6 +155,7 @@ export class ProjectService {
 						project_link: row.project_link,
 						premise_count: row.premise_count,
 						premise_type: row.premise_type,
+						buildings: row.buildings,
 						apartment_count: 0,
 						commercial_count: 0,
 						parking_count: 0,
@@ -191,6 +197,7 @@ export class ProjectService {
 
 		await this.cityService.readOne(dto.city_id);
 		const newProject = this.projectsRepository.create({
+			photos: dto.photos,
 			photo: dto.photo,
 			name: dto.name,
 			description: dto.description,

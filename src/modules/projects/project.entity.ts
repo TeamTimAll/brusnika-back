@@ -7,7 +7,10 @@ import { CityEntity } from "../cities/cities.entity";
 
 @Entity({ name: "projects" })
 export class ProjectEntity extends BaseEntity {
-	@Column({ nullable: false })
+	@Column({ type: "text", array: true, nullable: true, default: [] })
+	photos?: string[];
+
+	@Column({ nullable: true })
 	photo!: string;
 
 	@Column({ nullable: false })
@@ -31,13 +34,13 @@ export class ProjectEntity extends BaseEntity {
 	@OneToMany(() => BuildingEntity, (buildings) => buildings.project)
 	buildings?: BuildingEntity[];
 
-	@Column({ nullable: false, default: ""  })
+	@Column({ nullable: false, default: "" })
 	company_link!: string;
 
-	@Column({ nullable: false, default: ""  })
+	@Column({ nullable: false, default: "" })
 	building_link!: string;
 
-	@Column({ nullable: false, default: ""  })
+	@Column({ nullable: false, default: "" })
 	project_link!: string;
 
 	@ManyToOne(() => CityEntity, { onDelete: "CASCADE" })
