@@ -1,6 +1,6 @@
 import path from "path";
 
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
@@ -10,6 +10,7 @@ import { CityEntity } from "../cities/cities.entity";
 import { CityModule } from "../cities/cities.module";
 import { CityService } from "../cities/cities.service";
 import { UserModule } from "../user/user.module";
+import { BuildingsModule } from "../buildings/buildings.module";
 
 import { ProjectEntity } from "./project.entity";
 import { ProjectsController } from "./projects.controller";
@@ -25,6 +26,7 @@ import { ProjectService } from "./projects.service";
 		AgenciesModule,
 		UserModule,
 		AnalyticsModule,
+		forwardRef(() => BuildingsModule),
 	],
 	controllers: [ProjectsController],
 	providers: [ProjectService, CityService],

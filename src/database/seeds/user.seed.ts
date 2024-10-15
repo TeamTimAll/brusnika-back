@@ -1,4 +1,4 @@
-import { QueryBuilder } from "typeorm";
+import { DataSource, QueryBuilder } from "typeorm";
 
 import { RoleType } from "../../constants";
 import { chunkArray } from "../../lib/array";
@@ -297,6 +297,7 @@ export async function up(
 	return res.flat();
 }
 
-export async function down(query: QueryBuilder<object>) {
-	await query.delete().from(UserEntity).execute();
+export async function down(dataSource: DataSource) {
+	const tableName = dataSource.getMetadata(UserEntity).tableName;
+	await dataSource.query(`TRUNCATE ${tableName} RESTART IDENTITY CASCADE;`);
 }

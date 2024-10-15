@@ -10,42 +10,11 @@ export class BuildingEntity extends BaseEntity {
 	@Column()
 	name!: string;
 
-	// storage
-	@Column({ nullable: true })
-	total_storage!: number;
-
-	// vacant storage
-	@Column({ nullable: true })
-	total_vacant_storage!: number;
-
-	// total parking space
-	@Column({ nullable: true })
-	total_parking_space!: number;
-
-	// total vacant parking space
-	@Column({ nullable: true })
-	total_vacant_parking_space!: number;
-
-	// commercial
-	@Column({ nullable: true })
-	total_commercial!: number;
-
-	// vacant commercail
-	@Column({ nullable: true })
-	total_vacant_commercial!: number;
-
 	@Column({ nullable: true })
 	address!: string;
 
 	@Column({ nullable: true })
 	number_of_floors!: number;
-
-	// TODO: change this columns
-	@Column({ nullable: true })
-	total_apartment!: number;
-
-	@Column({ nullable: true })
-	total_vacant_apartment!: number;
 
 	@Column({ type: "text", array: true, nullable: true })
 	photos?: string[];
@@ -59,6 +28,9 @@ export class BuildingEntity extends BaseEntity {
 
 	@Column({ type: "integer" })
 	project_id!: number;
+
+	@Column({ nullable: true })
+	object_id?: string;
 
 	@OneToMany(() => PremiseEntity, (Premises) => Premises.building)
 	premises?: PremiseEntity[];

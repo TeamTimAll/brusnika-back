@@ -11,6 +11,9 @@ export class ProjectQueueDto {
 	ext_id!: string;
 
 	@IsString()
+	photo!: string;
+
+	@IsString()
 	@IsNotEmpty()
 	name!: string;
 
@@ -20,26 +23,7 @@ export class ProjectQueueDto {
 
 	@IsNotEmpty()
 	@IsString()
-	detailed_description!: string;
-
-	@IsNotEmpty()
-	@IsString()
-	brief_description!: string;
-
-	@IsNotEmpty()
-	@IsNumber()
-	price!: number;
-
-	@IsNotEmpty()
-	@IsString()
 	location!: string;
-
-	@IsNotEmpty()
-	@IsDateString()
-	end_date!: Date;
-
-	@IsString()
-	photo!: string;
 
 	@IsOptional()
 	@IsString()
@@ -49,9 +33,25 @@ export class ProjectQueueDto {
 	@IsString()
 	lat!: string;
 
-	@IsOptional()
+	@IsNotEmpty()
+	@IsDateString()
+	end_date!: Date;
+
+	@IsNotEmpty()
 	@IsString()
-	link!: string;
+	company_link!: string;
+
+	@IsNotEmpty()
+	@IsString()
+	building_link!: string;
+
+	@IsNotEmpty()
+	@IsString()
+	project_link!: string;
+
+	@IsNotEmpty()
+	@IsNumber()
+	price!: number;
 
 	@IsString()
 	@IsNotEmpty()

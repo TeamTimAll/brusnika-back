@@ -2,31 +2,25 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { BuildingEntity } from "../../modules/buildings/buildings.entity";
-import { CityEntity } from "../cities/cities.entity";
 import { VisitsEntity } from "../visits/visits.entity";
+import { CityEntity } from "../cities/cities.entity";
 
 @Entity({ name: "projects" })
 export class ProjectEntity extends BaseEntity {
-	@Column({ nullable: true })
-	name!: string;
-
-	@Column({ nullable: true })
-	description!: string;
-
-	@Column({ nullable: true })
-	detailed_description!: string;
-
-	@Column({ nullable: true })
-	brief_description!: string;
+	@Column({ type: "text", array: true, nullable: true, default: [] })
+	photos?: string[];
 
 	@Column({ nullable: true })
 	photo!: string;
 
-	@OneToMany(() => BuildingEntity, (buildings) => buildings.project)
-	buildings?: BuildingEntity[];
+	@Column({ nullable: false })
+	name!: string;
 
-	@Column({ nullable: true })
-	price!: number;
+	@Column({ nullable: false })
+	description!: string;
+
+	@Column({ nullable: true, type: "date" })
+	end_date!: Date;
 
 	@Column({ nullable: true })
 	location!: string;
@@ -37,18 +31,27 @@ export class ProjectEntity extends BaseEntity {
 	@Column({ nullable: true, type: "varchar" })
 	lat!: string;
 
-	@Column({ nullable: true, type: "varchar" })
-	link!: string;
+	@OneToMany(() => BuildingEntity, (buildings) => buildings.project)
+	buildings?: BuildingEntity[];
 
-	@Column({ nullable: true, type: "date" })
-	end_date!: Date;
+	@Column({ nullable: false, default: "" })
+	company_link!: string;
+
+	@Column({ nullable: false, default: "" })
+	building_link!: string;
+
+	@Column({ nullable: false, default: "" })
+	project_link!: string;
 
 	@ManyToOne(() => CityEntity, { onDelete: "CASCADE" })
 	@JoinColumn({ name: "city_id" })
 	city!: CityEntity;
 
-	@Column({ nullable: true, type: "integer" })
+	@Column({ nullable: false })
 	city_id?: number;
+
+	@Column({ nullable: false })
+	price!: number;
 
 	@OneToMany(() => VisitsEntity, (VisitsEntity) => VisitsEntity.project)
 	visits?: VisitsEntity[];

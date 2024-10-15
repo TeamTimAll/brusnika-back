@@ -601,8 +601,8 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 -   [ ] Project CRUD'ini ko'rib chiqish.
 -   [x] Client search query. GetAll bilan bir xil qilish kerak. (Aktiv yoki VSEligi kerak xolos)
 -   [ ] Client uchun end_date qo'shib chiqish kerak. (seed).
--   [ ] Bron'dan date va time olib tashlash kerak.
--   [ ] Lead fixing_type o'zgarganda Notification yuborish. Notification shakli:
+-   [x] Bron'dan date va time olib tashlash kerak.
+-   [ ] Client fixing_type o'zgarganda Notification yuborish. Notification shakli:
         "По клиенту {client_fullname} было {client_fixing_type}."
 -   [ ] Reklama maketi uchun admin boshqaruvi kerak. Reklama maketi sxemasi
         saqlanilishi kerak. NOTE: Designer admin panelini chizmagan! Lekin
