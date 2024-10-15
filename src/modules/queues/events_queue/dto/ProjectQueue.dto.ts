@@ -23,7 +23,15 @@ export class ProjectQueueDto {
 
 	@IsNotEmpty()
 	@IsString()
-	address!: string;
+	location!: string;
+
+	@IsOptional()
+	@IsString()
+	long!: string;
+
+	@IsOptional()
+	@IsString()
+	lat!: string;
 
 	@IsNotEmpty()
 	@IsDateString()
