@@ -193,6 +193,73 @@ export class ProjectService {
 		return formattedResult;
 	}
 
+	// async getAllProjectsV2(city_id?: number): Promise<GetAllProjectRaw[]> {
+	// 	let projectQueryBuilder = this.projectsRepository
+	// 		.createQueryBuilder("project")
+	// 		.leftJoinAndSelect("project.buildings", "building")
+	// 		.addSelect((subQuery) => {
+	// 			return subQuery
+	// 				.select("COUNT(p.id)", "total_apartment_count")
+	// 				.from("premises", "p")
+	// 				.where("p.type = :apartmentType", {
+	// 					apartmentType: "apartment",
+	// 				})
+	// 				.andWhere(
+	// 					"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
+	// 				);
+	// 		}, "total_apartment_count")
+	// 		.addSelect((subQuery) => {
+	// 			return subQuery
+	// 				.select("COUNT(p.id)", "total_storeroom_count")
+	// 				.from("premises", "p")
+	// 				.where("p.type = :storeroomType", {
+	// 					storeroomType: "storeroom",
+	// 				})
+	// 				.andWhere(
+	// 					"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
+	// 				);
+	// 		}, "total_storeroom_count")
+	// 		.addSelect((subQuery) => {
+	// 			return subQuery
+	// 				.select("COUNT(p.id)", "total_parking_count")
+	// 				.from("premises", "p")
+	// 				.where("p.type = :parkingType", { parkingType: "parking" })
+	// 				.andWhere(
+	// 					"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
+	// 				);
+	// 		}, "total_parking_count")
+	// 		.addSelect((subQuery) => {
+	// 			return subQuery
+	// 				.select("COUNT(p.id)", "total_commercial_count")
+	// 				.from("premises", "p")
+	// 				.where("p.type = :commercialType", {
+	// 					commercialType: "commercial",
+	// 				})
+	// 				.andWhere(
+	// 					"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
+	// 				);
+	// 		}, "total_commercial_count")
+	// 		.addSelect([
+	// 			"project.id AS id",
+	// 			"project.name AS name",
+	// 			"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
+	// 		])
+	// 		.groupBy("project.id")
+	// 		.addGroupBy("building.id");
+
+	// 	if (city_id) {
+	// 		projectQueryBuilder = projectQueryBuilder.where(
+	// 			"project.city_id = :city_id",
+	// 			{ city_id },
+	// 		);
+	// 	}
+
+	// 	const projects =
+	// 		await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
+
+	// 	return projects;
+	// }
+
 	async create(dto: CreateProjectDto) {
 		dto.price = 100000;
 
@@ -255,16 +322,40 @@ export class ProjectService {
 		project_id: number,
 		dto: UpdateProjectDto,
 	): Promise<ProjectEntity> {
+		await this.cityService.readOne(dto.city_id);
+
 		const project = await this.projectsRepository.findOne({
 			where: { id: project_id },
 		});
+
 		if (!project) {
 			throw new ProjectNotFoundError(`id: ${project_id}`);
 		}
-		await this.cityService.readOne(dto.city_id);
-		const updatedProject = this.projectsRepository.merge(project, dto);
-		await this.projectsRepository.save(updatedProject);
-		return updatedProject;
+
+		project.name = dto.name;
+		project.description = dto.description;
+		project.location = dto.location;
+		project.long = dto.long;
+		project.lat = dto.lat;
+		project.end_date = dto.end_date;
+		project.company_link = dto.company_link;
+		project.building_link = dto.building_link;
+		project.project_link = dto.project_link;
+		project.city_id = dto.city_id;
+		project.photos = dto.photos;
+		project.photo = dto.photo;
+		project.price = dto.price;
+
+		await this.projectsRepository.save(project);
+
+		if (dto.buildings && dto.buildings.length) {
+			for (const b of dto.buildings) {
+				// eslint-disable-next-line @typescript-eslint/no-floating-promises
+				this.buildingService.update(b.id, b);
+			}
+		}
+
+		return project;
 	}
 
 	async delete(id: number): Promise<ProjectEntity> {

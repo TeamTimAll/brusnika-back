@@ -18,6 +18,9 @@ import {
 import { BaseDto } from "../../../common/base/base_dto";
 
 class BuildingDto {
+	@IsOptional()
+	id!: number;
+
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
