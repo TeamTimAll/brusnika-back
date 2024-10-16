@@ -103,6 +103,7 @@ export class ProjectService {
 				"project.photos AS photos",
 				"project.photo AS photo",
 				"project.name AS name",
+				"project.description AS description",
 				"project.end_date AS end_date",
 				"project.location AS location",
 				"project.long AS long",
