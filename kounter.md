@@ -391,3 +391,4 @@ Fixing type o'zgarishi:
         qabul qilish.
 -   [ ] Kontur'da Mapping logikasini qilish.
 -   [ ] Kontur'da database shaklini to'g'irlash.
+-   [ ] Kontur uchun config qilish.

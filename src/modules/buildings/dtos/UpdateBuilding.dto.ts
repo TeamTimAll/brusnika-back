@@ -1,6 +1,12 @@
 import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import {
+	IsInt,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
@@ -31,6 +37,47 @@ export class UpdateBuildingDto {
 		description: "Number of floors for a building",
 	})
 	number_of_floors?: number;
+}
+
+export class UpdateBuildingWithIdDto {
+	@ApiProperty()
+	@IsInt()
+	@Type(() => Number)
+	id!: number;
+
+	@ApiProperty({
+		example: "Building name",
+		required: true,
+		type: String,
+	})
+	@IsNotEmpty()
+	@IsString()
+	name!: string;
+
+	@ApiProperty({
+		example: "Somewhere for premise address",
+		type: String,
+		required: false,
+	})
+	@IsOptional()
+	@IsString()
+	address?: string;
+
+	@ApiProperty({
+		example: 3,
+		type: Number,
+		required: false,
+		description: "Number of floors for a building",
+	})
+	@IsOptional()
+	number_of_floors?: number;
+
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	object_id!: string;
+
+	project_id!: number;
 }
 
 export class UpdateBuildingMetaDataDto extends BaseDto<UpdateBuildingDto> {
