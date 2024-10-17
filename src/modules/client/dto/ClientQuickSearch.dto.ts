@@ -21,5 +21,5 @@ export class ClientQuickSearchDto {
 	@ApiProperty({ required: false, enum: LeadState })
 	@IsEnum(LeadState)
 	@IsOptional()
-	state?: string;
+	state?: LeadState;
 }
