@@ -16,7 +16,42 @@ import {
 } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
-import { UpdateBuildingWithIdDto } from "../../buildings/dtos";
+
+export class CreateBuildingInProjectDto {
+	@ApiProperty({
+		example: "Building name",
+		required: true,
+		type: String,
+	})
+	@IsNotEmpty()
+	@IsString()
+	name!: string;
+
+	@ApiProperty({
+		example: "Somewhere for premise address",
+		type: String,
+		required: false,
+	})
+	@IsOptional()
+	@IsString()
+	address?: string;
+
+	@ApiProperty({
+		example: 3,
+		type: Number,
+		required: false,
+		description: "Number of floors for a building",
+	})
+	@IsOptional()
+	number_of_floors?: number;
+
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	object_id!: string;
+
+	project_id!: number;
+}
 
 export class CreateProjectDto {
 	@ApiProperty()
@@ -89,12 +124,12 @@ export class CreateProjectDto {
 	@IsString()
 	project_link!: string;
 
-	@ApiProperty({ type: UpdateBuildingWithIdDto, isArray: true })
+	@ApiProperty({ type: CreateBuildingInProjectDto, isArray: true })
 	@ArrayNotEmpty()
 	@IsArray()
 	@ValidateNested({ each: true })
-	@Type(() => UpdateBuildingWithIdDto)
-	buildings!: UpdateBuildingWithIdDto[];
+	@Type(() => CreateBuildingInProjectDto)
+	buildings!: CreateBuildingInProjectDto[];
 
 	@ApiProperty()
 	@IsInt()
