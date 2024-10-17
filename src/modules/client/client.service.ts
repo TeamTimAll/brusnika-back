@@ -278,8 +278,8 @@ export class ClientService {
 					.andWhere("l.state = :state", {
 						state: dto.state,
 					})
-					.andWhere("c.fixing_type != :fixing_type", {
-						fixing_type: FixingType.CENCEL_FIXING,
+					.andWhere("c.fixing_type != :active_fixing_type", {
+						active_fixing_type: FixingType.CENCEL_FIXING,
 					});
 			} else {
 				queryBuilder = queryBuilder.andWhere("l.state = :state", {

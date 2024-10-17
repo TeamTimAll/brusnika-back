@@ -62,7 +62,13 @@ export class AnalyticsController {
 		return this.analyticsService.getTopEventsByViews(payload);
 	}
 
-	@Roles([RoleType.AGENT, RoleType.HEAD_OF_AGENCY])
+	@Roles([
+		RoleType.AGENT,
+		RoleType.HEAD_OF_AGENCY,
+		RoleType.ADMIN,
+		RoleType.AFFILIATE_MANAGER,
+		RoleType.MANAGER,
+	])
 	@Get("manager/time")
 	@ApiOperation({ description: "Get manager time analytics" })
 	getTopManagersByTime(
@@ -71,7 +77,13 @@ export class AnalyticsController {
 	) {
 		return this.analyticsService.managerStatisticsByTime(payload, user);
 	}
-	@Roles([RoleType.AGENT, RoleType.HEAD_OF_AGENCY])
+	@Roles([
+		RoleType.AGENT,
+		RoleType.HEAD_OF_AGENCY,
+		RoleType.ADMIN,
+		RoleType.AFFILIATE_MANAGER,
+		RoleType.MANAGER,
+	])
 	@Get("manager/price")
 	@ApiOperation({ description: "Get manager price analytics" })
 	getTopManagersByPrice(
@@ -81,7 +93,13 @@ export class AnalyticsController {
 		return this.analyticsService.managerStatisticsByPrice(payload, user);
 	}
 
-	@Roles([RoleType.AGENT, RoleType.HEAD_OF_AGENCY])
+	@Roles([
+		RoleType.AGENT,
+		RoleType.HEAD_OF_AGENCY,
+		RoleType.ADMIN,
+		RoleType.AFFILIATE_MANAGER,
+		RoleType.MANAGER,
+	])
 	@Get("manager/count")
 	@ApiOperation({ description: "Get manager count analytics" })
 	getTopManagersByCount(
