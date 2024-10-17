@@ -57,6 +57,11 @@ export class FilterClientDto {
 	@IsOptional()
 	actived_to_date?: Date;
 
+	@ApiProperty({ required: false })
+	@IsDateString()
+	@IsOptional()
+	expiration_date?: Date;
+
 	@ApiProperty({ required: false, enum: LeadOpStatus })
 	@IsEnum(LeadOpStatus)
 	@IsOptional()
