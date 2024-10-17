@@ -7,14 +7,14 @@ import { PickBySelect } from "interfaces/pick_by_select";
 import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { LeadsEntity } from "../leads/leads.entity";
+import { LeadsEntity, LeadState } from "../leads/leads.entity";
 import { PremiseEntity } from "../premises/premises.entity";
 import { ProjectEntity } from "../projects/project.entity";
 import { ClinetQueueService } from "../queues/clients_queue/client_queue.service";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 
-import { ClientEntity } from "./client.entity";
+import { ClientEntity, FixingType } from "./client.entity";
 import { ClientQuickSearchDto } from "./dto/ClientQuickSearch.dto";
 import { ClientSearchFromBmpsoftDto } from "./dto/ClientSearchFromBmpsoft.dto";
 import { CreateClientDto } from "./dto/CreateClient.dto";
@@ -263,9 +263,19 @@ export class ClientService {
 		}
 
 		if (dto.state) {
-			queryBuilder = queryBuilder.andWhere("l.state = :state", {
-				state: dto.state,
-			});
+			if (dto.state === LeadState.ACTIVE) {
+				queryBuilder = queryBuilder
+					.andWhere("l.state = :state", {
+						state: dto.state,
+					})
+					.andWhere("c.fixing_type != :fixing_type", {
+						fixing_type: FixingType.CENCEL_FIXING,
+					});
+			} else {
+				queryBuilder = queryBuilder.andWhere("l.state = :state", {
+					state: dto.state,
+				});
+			}
 		}
 
 		if (dto.project_id) {
