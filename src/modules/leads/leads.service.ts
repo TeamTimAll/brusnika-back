@@ -148,7 +148,10 @@ export class LeadsService {
 					id: dto.client_id,
 				},
 				current_status: dto.is_finished
-					? In([LeadOpStatus.FAILED, LeadOpStatus.WON])
+					? dto.status === LeadOpStatus.WON ||
+						dto.status === LeadOpStatus.FAILED
+						? dto.status
+						: In([LeadOpStatus.FAILED, LeadOpStatus.WON])
 					: dto.status,
 			},
 			relations: {
