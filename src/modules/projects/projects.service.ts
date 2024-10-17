@@ -322,7 +322,7 @@ export class ProjectService {
 		project_id: number,
 		dto: UpdateProjectDto,
 	): Promise<ProjectEntity> {
-		await this.cityService.readOne(dto.city_id);
+		await this.cityService.checkExsits(dto.city_id);
 
 		const project = await this.projectsRepository.findOne({
 			where: { id: project_id },
@@ -332,27 +332,15 @@ export class ProjectService {
 			throw new ProjectNotFoundError(`id: ${project_id}`);
 		}
 
-		project.name = dto.name;
-		project.description = dto.description;
-		project.location = dto.location;
-		project.long = dto.long;
-		project.lat = dto.lat;
-		project.end_date = dto.end_date;
-		project.company_link = dto.company_link;
-		project.building_link = dto.building_link;
-		project.project_link = dto.project_link;
-		project.city_id = dto.city_id;
-		project.photos = dto.photos;
-		project.photo = dto.photo;
-		project.price = dto.price;
+		const newProject = this.projectsRepository.create({
+			...dto,
+			id: project.id,
+		});
 
-		await this.projectsRepository.save(project);
+		await this.projectsRepository.save(newProject);
 
 		if (dto.buildings && dto.buildings.length) {
-			for (const b of dto.buildings) {
-				// eslint-disable-next-line @typescript-eslint/no-floating-promises
-				this.buildingService.update(b.id, b);
-			}
+			await this.buildingService.updateAll(dto.buildings);
 		}
 
 		return project;

@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsSelect, Repository } from "typeorm";
+import { FindOptionsSelect, In, Repository } from "typeorm";
 
 import { PickBySelect } from "interfaces/pick_by_select";
 
@@ -11,6 +11,7 @@ import {
 	CreateBuildingDto,
 	FilterBuildingDto,
 	UpdateBuildingDto,
+	UpdateBuildingWithIdDto,
 } from "./dtos";
 import { BuildingNotFoundError } from "./errors/BuildingNotFound.error";
 import { IReadAllFilter } from "./types";
@@ -77,6 +78,27 @@ export class BuildingsService {
 			dto,
 		);
 		return await this.buildingRepository.save(mergedBuilding);
+	}
+
+	async updateAll(dto: UpdateBuildingWithIdDto[]) {
+		const foundBuilding = await this.readOneIds(dto.map((b) => b.id));
+		const mergedBuildings: BuildingEntity[] = [];
+		foundBuilding.forEach((b, i) => {
+			mergedBuildings.push(this.buildingRepository.merge(b, dto[i]));
+		});
+		return await this.buildingRepository.save(mergedBuildings);
+	}
+
+	async readOneIds(ids: number[]) {
+		const building = await this.buildingRepository.find({
+			where: { id: In([...new Set(ids)]) },
+		});
+
+		if (!building) {
+			throw new BuildingNotFoundError(`ids: ${ids.join(", ")}`);
+		}
+
+		return building;
 	}
 
 	async delete(id: number) {

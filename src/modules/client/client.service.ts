@@ -252,6 +252,7 @@ export class ClientService {
 				client_id: dto.client_id,
 			});
 		}
+
 		if (dto.phone_number) {
 			queryBuilder = queryBuilder.andWhere(
 				"c.phone_number ILIKE :phone_number",
@@ -260,21 +261,25 @@ export class ClientService {
 				},
 			);
 		}
+
 		if (dto.state) {
 			queryBuilder = queryBuilder.andWhere("l.state = :state", {
 				state: dto.state,
 			});
 		}
+
 		if (dto.project_id) {
 			queryBuilder = queryBuilder.andWhere("l.project_id = :project_id", {
 				project_id: dto.project_id,
 			});
 		}
+
 		if (dto.status) {
 			queryBuilder = queryBuilder.andWhere("l.current_status = :status", {
 				status: dto.status,
 			});
 		}
+
 		if (dto.fixing_type) {
 			queryBuilder = queryBuilder.andWhere(
 				"c.fixing_type = :fixing_type",
@@ -283,6 +288,7 @@ export class ClientService {
 				},
 			);
 		}
+
 		if (dto.actived_from_date) {
 			queryBuilder = queryBuilder.andWhere(
 				"c.actived_date >= :actived_from_date",
@@ -291,11 +297,21 @@ export class ClientService {
 				},
 			);
 		}
+
 		if (dto.actived_to_date) {
 			queryBuilder = queryBuilder.andWhere(
 				"c.actived_date <= :actived_to_date",
 				{
 					actived_to_date: dto.actived_to_date,
+				},
+			);
+		}
+
+		if (dto.expiration_date) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.expiration_date <= :expiration_date",
+				{
+					expiration_date: dto.expiration_date,
 				},
 			);
 		}
