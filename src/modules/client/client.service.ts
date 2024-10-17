@@ -276,7 +276,7 @@ export class ClientService {
 			if (dto.state === LeadState.ACTIVE) {
 				queryBuilder = queryBuilder
 					.andWhere("l.state = :state", {
-						state: dto.state,
+						state: LeadState.ACTIVE,
 					})
 					.andWhere("c.fixing_type != :active_fixing_type", {
 						active_fixing_type: FixingType.CENCEL_FIXING,
