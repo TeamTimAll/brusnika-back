@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsSelect, In, Repository } from "typeorm";
+import { FindOptionsSelect, Repository } from "typeorm";
 
 import { PickBySelect } from "interfaces/pick_by_select";
 
@@ -159,6 +159,9 @@ export class PremisesService {
 			.orderBy("project.id", "ASC");
 		const premises = await query.getRawMany<PremiseEntity>();
 		const premiseIds: number[] = premises.map((e) => e.id);
+
+		premiseIds;
+
 		return this.seasonRepository.find({
 			select: {
 				id: true,
@@ -172,11 +175,6 @@ export class PremisesService {
 				},
 			},
 			relations: { premise: true },
-			where: {
-				premise: {
-					id: In(premiseIds),
-				},
-			},
 		});
 	}
 
