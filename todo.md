@@ -611,3 +611,5 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 -   [ ] Time slot logik
 -   [ ] Lead'lar agent bo'yicha chiqish kerak. role client logikasiga o'xshab
         ishlaydi.
+-   [ ] seasons GETda muammo
+
