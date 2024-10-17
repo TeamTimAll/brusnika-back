@@ -87,8 +87,25 @@ export class LeadsService {
 		return updatedLead;
 	}
 
-	async readAll(dto: LeadReadByFilterDto): Promise<BaseDto<LeadsEntity[]>> {
+	async readAll(
+		dto: LeadReadByFilterDto,
+		user: ICurrentUser,
+	): Promise<BaseDto<LeadsEntity[]>> {
 		const pageSize = (dto.page - 1) * dto.limit;
+
+		const filter: { agent?: object } = {};
+
+		if (user.role === RoleType.AGENT) {
+			filter.agent = {
+				id: user.user_id,
+			};
+		} else if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const foundUser = await this.userService.readOne(user.user_id, {
+				agency_id: true,
+			});
+
+			filter.agent = { agency_id: foundUser.agency_id };
+		}
 
 		const [leads, leadsCount] = await this.leadRepository.findAndCount({
 			select: {
@@ -126,6 +143,7 @@ export class LeadsService {
 				premise: {
 					type: dto.premise_type,
 				},
+				...filter,
 				client: {
 					id: dto.client_id,
 				},
