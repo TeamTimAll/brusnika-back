@@ -70,7 +70,7 @@ export class FilterClientDto {
 	@ApiProperty({ required: false, enum: LeadState })
 	@IsEnum(LeadState)
 	@IsOptional()
-	state?: string;
+	state?: LeadState;
 
 	@ApiProperty({ required: false, enum: FixingType })
 	@IsEnum(FixingType)
