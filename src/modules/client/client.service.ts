@@ -116,9 +116,19 @@ export class ClientService {
 		}
 
 		if (dto.state) {
-			queryBuilder = queryBuilder.andWhere("l.state = :state", {
-				state: dto.state,
-			});
+			if (dto.state === LeadState.ACTIVE) {
+				queryBuilder = queryBuilder
+					.andWhere("l.state = :state", {
+						state: dto.state,
+					})
+					.andWhere("c.fixing_type != :fixing_type", {
+						fixing_type: FixingType.CENCEL_FIXING,
+					});
+			} else {
+				queryBuilder = queryBuilder.andWhere("l.state = :state", {
+					state: dto.state,
+				});
+			}
 		}
 
 		queryBuilder = queryBuilder.andWhere(
