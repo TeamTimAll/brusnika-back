@@ -76,8 +76,11 @@ export class LeadsController {
 
 	@Get()
 	// @ApiOkResponse({ type: LeadReadAll })
-	async readAll(@Query() dto: LeadReadByFilterDto) {
-		return await this.dealsService.readAll(dto);
+	async readAll(
+		@Query() dto: LeadReadByFilterDto,
+		@User() user: ICurrentUser,
+	) {
+		return await this.dealsService.readAll(dto, user);
 	}
 
 	@Get("view-nps/:id")
