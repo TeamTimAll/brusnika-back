@@ -22,6 +22,7 @@ import { DeleteClientDto } from "./dto/DeleteClient.dto";
 import { FilterClientDto } from "./dto/FilterClient.dto";
 import { ClientExistsError } from "./errors/ClientExists.error";
 import { ClientNotFoundError } from "./errors/ClientNotFound.error";
+import { ClientPendingError } from "./errors/client-pending.error";
 
 @Injectable()
 export class ClientService {
@@ -51,10 +52,15 @@ export class ClientService {
 	}
 
 	async create(dto: CreateClientDto) {
-		const existClient = await this.clientRepository.existsBy({
+		const existClient = await this.clientRepository.findOneBy({
 			phone_number: dto.phone_number,
 			agent_id: dto.agent_id,
 		});
+		if (existClient?.fixing_type === FixingType.LEAD_VERIFICATION) {
+			throw new ClientPendingError(
+				`phone_number: ${dto.phone_number}; agent_id: ${dto.agent_id}`,
+			);
+		}
 		if (existClient) {
 			throw new ClientExistsError(
 				`phone_number: ${dto.phone_number}; agent_id: ${dto.agent_id}`,
