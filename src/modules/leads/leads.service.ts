@@ -91,7 +91,7 @@ export class LeadsService {
 		dto: LeadReadByFilterDto,
 		user: ICurrentUser,
 	): Promise<BaseDto<LeadsEntity[]>> {
-		const pageSize = (dto.page - 1) * dto.limit;
+		// const pageSize = (dto.page - 1) * dto.limit;
 
 		const filter: { agent?: object } = {};
 
@@ -171,8 +171,6 @@ export class LeadsService {
 				},
 				created_at: dto.createdAt ?? "ASC",
 			},
-			take: dto.limit,
-			skip: pageSize,
 		});
 
 		const metaData = BaseDto.create<LeadsEntity[]>();
