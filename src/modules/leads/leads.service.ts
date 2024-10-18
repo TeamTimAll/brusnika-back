@@ -96,6 +96,7 @@ export class LeadsService {
 		const metaData = BaseDto.create<LeadsEntity[]>();
 		if (
 			dto.is_finished &&
+			dto.status &&
 			!(
 				dto.status === LeadOpStatus.WON ||
 				dto.status === LeadOpStatus.FAILED
