@@ -19,7 +19,7 @@ export function Limit() {
 		Transform(({ value }) => parseInt(value as string)),
 		IsNumber(),
 		IsOptional(),
-		Max(100),
+		Max(600),
 		Min(1),
 	);
 }
