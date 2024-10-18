@@ -131,6 +131,15 @@ export class ClientService {
 			}
 		}
 
+		if (dto.is_active) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.fixing_type != :fixing_type",
+				{
+					fixing_type: FixingType.CENCEL_FIXING,
+				},
+			);
+		}
+
 		queryBuilder = queryBuilder.andWhere(
 			new Brackets((qb) =>
 				qb
