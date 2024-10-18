@@ -50,6 +50,7 @@ export enum ApplicationPromptID {
 	CONTACT_ADDRESS_NOT_FOUND_ERROR = 438,
 	USER_ALREADY_EXISTS_ERROR = 439,
 	CLIENT_EXISTS_ERROR = 440,
+	CLIENT_PENDING_ERROR = 447,
 	ANALYTICS_NOT_FOUND_ERROR = 441,
 	BANNER_NOT_FOUND_ERROR = 442,
 	Exchange_Request_NOT_FOUND_ERROR = 443,
@@ -608,6 +609,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Client already exists error",
 			ru: "Ошибка «Клиент уже существует»",
 			uz: "Client already exists error",
+		},
+	},
+	[ApplicationPromptID.CLIENT_PENDING_ERROR]: {
+		promptId: ApplicationPromptID.CLIENT_PENDING_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "client_pending_error",
+		promptLabels: {
+			en: "Client status is pending error",
+			ru: "У вас уже есть запрос на закрепления этого клиента, пожалуйста ожидайте ответа",
+			uz: "Client status is pending error",
 		},
 	},
 	[ApplicationPromptID.ANALYTICS_NOT_FOUND_ERROR]: {

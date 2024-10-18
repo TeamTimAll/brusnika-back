@@ -93,6 +93,23 @@ export class LeadsService {
 	): Promise<BaseDto<LeadsEntity[]>> {
 		// const pageSize = (dto.page - 1) * dto.limit;
 
+		const metaData = BaseDto.create<LeadsEntity[]>();
+		if (
+			dto.is_finished &&
+			!(
+				dto.status === LeadOpStatus.WON ||
+				dto.status === LeadOpStatus.FAILED
+			)
+		) {
+			metaData.data = [];
+			metaData.setPagination(0, dto.page, dto.limit);
+			metaData.meta.data = {
+				statuses: Object.values(LeadOpStatus),
+			};
+
+			return metaData;
+		}
+
 		const filter: { agent?: object } = {};
 
 		if (user.role === RoleType.AGENT) {
@@ -173,12 +190,12 @@ export class LeadsService {
 			},
 		});
 
-		const metaData = BaseDto.create<LeadsEntity[]>();
 		metaData.data = leads;
 		metaData.setPagination(leadsCount, dto.page, leads.length);
 		metaData.meta.data = {
 			statuses: Object.values(LeadOpStatus),
 		};
+
 		return metaData;
 	}
 
