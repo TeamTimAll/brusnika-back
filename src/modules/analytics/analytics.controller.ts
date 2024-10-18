@@ -41,21 +41,21 @@ export class AnalyticsController {
 		return this.analyticsService.createOrFind(user.user_id);
 	}
 
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("top-news")
 	@ApiOperation({ description: "Get news analytics" })
 	getTopNews(@Query() payload: TopAnalyticsDto) {
 		return this.analyticsService.getTopNewsByViews(payload);
 	}
 
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("top-trainings")
 	@ApiOperation({ description: "Get trainings analytics" })
 	getTopTrainings(@Query() payload: TopAnalyticsDto) {
 		return this.analyticsService.getTopTrainings(payload);
 	}
 
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("top-events")
 	@ApiOperation({ description: "Get events analytics" })
 	getTopEvents(@Query() payload: TopAnalyticsDto) {
@@ -109,21 +109,21 @@ export class AnalyticsController {
 		return this.analyticsService.managerStatisticsByCount(payload, user);
 	}
 
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("users/city")
 	@ApiOperation({ description: "Get users by city analytics" })
 	getUsersByCity(@Query() payload: UsersAnalyticsDto) {
 		return this.analyticsService.getUsersByCity(payload);
 	}
 
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("users/date")
 	@ApiOperation({ description: "Get users by date analytics" })
 	getUsersByDate(@Query() payload: UsersAnalyticsDto) {
 		return this.analyticsService.getUsersByDate(payload);
 	}
 
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("users/active")
 	@ApiOperation({ description: "Get users by date analytics" })
 	getUsersByActive(@Query() payload: UsersAnalyticsDto) {
@@ -142,14 +142,14 @@ export class AnalyticsController {
 		return this.analyticsService.getMainAnalytics(payload, user);
 	}
 
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("leads/by-status")
 	@ApiOperation({ description: "Get leads analytics by status" })
 	getLeadsByStatus(@Query() payload: MainAnalyticsDto) {
 		return this.analyticsService.getLeadsByCurrentStatus(payload);
 	}
 
-	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("leads/count")
 	@ApiOperation({ description: "Get leads analytics by status" })
 	getLeadsCount(@Query() payload: LeadAnalyticsDto) {
