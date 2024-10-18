@@ -1,5 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import {
+	IsBoolean,
+	IsEnum,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+} from "class-validator";
+import { Transform } from "class-transformer";
 
 import { Limit, Page } from "../../../decorators";
 import { LeadState } from "../../leads/leads.entity";
@@ -22,4 +29,10 @@ export class ClientQuickSearchDto {
 	@IsEnum(LeadState)
 	@IsOptional()
 	state?: LeadState;
+
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_active?: boolean;
 }
