@@ -50,13 +50,14 @@ export enum ApplicationPromptID {
 	CONTACT_ADDRESS_NOT_FOUND_ERROR = 438,
 	USER_ALREADY_EXISTS_ERROR = 439,
 	CLIENT_EXISTS_ERROR = 440,
-	CLIENT_PENDING_ERROR = 447,
 	ANALYTICS_NOT_FOUND_ERROR = 441,
 	BANNER_NOT_FOUND_ERROR = 442,
 	Exchange_Request_NOT_FOUND_ERROR = 443,
 	Call_Request_NOT_FOUND_ERROR = 444,
 	INVALID_LINK = 445,
 	TASK_NOT_FOUND_ERROR = 446,
+	CLIENT_PENDING_ERROR = 447,
+	MORE_INITIAL_PAYMENT_ERROR = 448,
 
 	// Event errors
 	USER_EMAIL_ALREADY_EXISTS_ERROR = 311,
@@ -697,6 +698,17 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 			en: "Mq invalid message error",
 			ru: "Mq invalid message error",
 			uz: "Mq invalid message error",
+		},
+	},
+	[ApplicationPromptID.MORE_INITIAL_PAYMENT_ERROR]: {
+		promptId: ApplicationPromptID.MORE_INITIAL_PAYMENT_ERROR,
+		promptType: "application",
+		promptCode: "",
+		promptCondition: "MORE_INITIAL_PAYMENT_ERROR",
+		promptLabels: {
+			en: "more initial payment error",
+			ru: "больше ошибок первоначального платежа",
+			uz: "more initial payment error",
 		},
 	},
 };
