@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 import { GetAllBanksDto } from "./dto";
+import { MoreInitialPaymentError } from "./errors";
 
 interface BanksResponse {
 	name: string;
@@ -114,6 +115,10 @@ export class CalculatorService {
 	}
 
 	getAllBanks(dto: GetAllBanksDto): BanksResponse[] {
+		if (dto.initial_payment > dto.premise_price) {
+			throw new MoreInitialPaymentError();
+		}
+
 		const loanAmount = dto.premise_price - dto.initial_payment;
 		const initialPaymentPercentage =
 			(dto.initial_payment / dto.premise_price) * 100;
