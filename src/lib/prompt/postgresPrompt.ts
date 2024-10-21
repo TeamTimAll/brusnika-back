@@ -8,7 +8,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "case_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -19,7 +19,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "cardinality_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -30,7 +30,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "data_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -41,7 +41,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "string_data_right_truncation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -52,7 +52,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "null_value_no_indicator_parameter",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -63,7 +63,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "numeric_value_out_of_range",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -74,7 +74,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "null_value_not_allowed",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -85,7 +85,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "error_in_assignment",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -96,7 +96,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_datetime_format",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -107,7 +107,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "datetime_field_overflow",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -118,7 +118,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_time_zone_displacement_value",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -129,7 +129,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_indicator_parameter_value",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -140,7 +140,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "substring_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -151,7 +151,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "division_by_zero",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -162,7 +162,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_preceding_or_following_size",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -173,7 +173,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_argument_for_ntile_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -184,7 +184,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "interval_field_overflow",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -195,7 +195,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_argument_for_nth_value_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -206,7 +206,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_character_value_for_cast",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -217,7 +217,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_escape_character",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -228,7 +228,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "character_not_in_repertoire",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -239,7 +239,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "indicator_overflow",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -250,7 +250,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_parameter_value",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -261,7 +261,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "unterminated_c_string",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -272,7 +272,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_escape_sequence",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -283,7 +283,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "string_data_length_mismatch",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -294,7 +294,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "trim_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -305,7 +305,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_json_object_key_value",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -316,7 +316,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_argument_for_sql_json_datetime_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -327,7 +327,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_json_text",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -338,7 +338,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_sql_json_subscript",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -349,7 +349,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "more_than_one_sql_json_item",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -360,7 +360,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "no_sql_json_item",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -371,7 +371,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "non_numeric_sql_json_item",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -382,7 +382,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "non_unique_keys_in_a_json_object",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -393,7 +393,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "singleton_sql_json_item_required",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -404,7 +404,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sql_json_array_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -415,7 +415,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "integrity_constraint_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -426,7 +426,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "restrict_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -437,7 +437,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "not_null_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -448,7 +448,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "foreign_key_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -459,7 +459,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "unique_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -470,7 +470,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "check_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -481,7 +481,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_cursor_state",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -492,7 +492,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_transaction_state",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -503,7 +503,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "active_sql_transaction",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -514,7 +514,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "branch_transaction_already_active",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -525,7 +525,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "inappropriate_access_mode_for_branch_transaction",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -536,7 +536,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "inappropriate_isolation_level_for_branch_transaction",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -547,7 +547,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "no_active_sql_transaction_for_branch_transaction",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -558,7 +558,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "read_only_sql_transaction",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -569,7 +569,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "schema_and_data_statement_mixing_not_supported",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -580,7 +580,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "held_cursor_requires_same_isolation_level",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -591,7 +591,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_sql_statement_name",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -602,7 +602,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "triggered_data_change_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -613,7 +613,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_authorization_specification",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -624,7 +624,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_cursor_name",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -635,7 +635,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "external_routine_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -646,7 +646,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "containing_sql_not_permitted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -657,7 +657,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "modifying_sql_data_not_permitted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -668,7 +668,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "prohibited_sql_statement_attempted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -679,7 +679,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "reading_sql_data_not_permitted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -690,7 +690,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "external_routine_invocation_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -701,7 +701,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_sqlstate_returned",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -712,7 +712,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "null_value_not_allowed",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -723,7 +723,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "transaction_rollback",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -734,7 +734,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "serialization_failure",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -745,7 +745,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "transaction_integrity_constraint_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -756,7 +756,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "statement_completion_unknown",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -767,7 +767,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "syntax_error_or_access_rule_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -778,7 +778,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "insufficient_privilege",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -789,7 +789,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "syntax_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -800,7 +800,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_name",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -811,7 +811,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_column_definition",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -822,7 +822,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "name_too_long",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -833,7 +833,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_column",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -844,7 +844,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "ambiguous_column",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -855,7 +855,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "undefined_column",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -866,7 +866,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "undefined_object",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -877,7 +877,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_object",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -888,7 +888,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_alias",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -899,7 +899,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -910,7 +910,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "ambiguous_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -921,7 +921,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "grouping_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -932,7 +932,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "datatype_mismatch",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -943,7 +943,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "wrong_object_type",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -954,7 +954,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_foreign_key",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -965,7 +965,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "cannot_coerce",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -976,7 +976,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "undefined_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -987,7 +987,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "reserved_name",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -998,7 +998,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "with_check_option_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1009,7 +1009,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "insufficient_resources",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1020,7 +1020,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "disk_full",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1031,7 +1031,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "out_of_memory",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1042,7 +1042,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "too_many_connections",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1053,7 +1053,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "configuration_limit_exceeded",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1064,7 +1064,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "program_limit_exceeded",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1075,7 +1075,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "statement_too_complex",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1086,7 +1086,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "too_many_columns",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1097,7 +1097,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "too_many_arguments",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1108,7 +1108,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "object_not_in_prerequisite_state",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1119,7 +1119,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "object_in_use",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1130,7 +1130,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "operator_intervention",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1141,7 +1141,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "query_canceled",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1152,7 +1152,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "system_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1163,7 +1163,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "io_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1174,7 +1174,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "snapshot_too_old",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1185,7 +1185,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "successful_completion",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1196,7 +1196,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "warning",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1207,7 +1207,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "dynamic_result_sets_returned",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1218,7 +1218,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "implicit_zero_bit_padding",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1229,7 +1229,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "null_value_eliminated_in_set_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1240,7 +1240,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "privilege_not_granted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1251,7 +1251,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "privilege_not_revoked",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1262,7 +1262,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "string_data_right_truncation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1273,7 +1273,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "deprecated_feature",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1284,7 +1284,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "no_data",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1295,7 +1295,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "no_additional_dynamic_result_sets_returned",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1306,7 +1306,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sql_statement_not_yet_complete",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1317,7 +1317,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "connection_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1328,7 +1328,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "connection_does_not_exist",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1339,7 +1339,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "connection_failure",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1350,7 +1350,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sqlclient_unable_to_establish_sqlconnection",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1361,7 +1361,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sqlserver_rejected_establishment_of_sqlconnection",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1372,7 +1372,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "transaction_resolution_unknown",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1383,7 +1383,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "protocol_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1394,7 +1394,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "triggered_action_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1405,7 +1405,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "feature_not_supported",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1416,7 +1416,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_transaction_initiation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1427,7 +1427,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "locator_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1438,7 +1438,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_locator_specification",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1449,7 +1449,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_grantor",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1460,7 +1460,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_grant_operation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1471,7 +1471,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_role_specification",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1482,7 +1482,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "diagnostics_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1493,7 +1493,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "stacked_diagnostics_accessed_without_active_handler",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1504,7 +1504,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "array_subscript_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1515,7 +1515,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "escape_character_conflict",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1526,7 +1526,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_argument_for_logarithm",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1537,7 +1537,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_argument_for_power_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1548,7 +1548,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_argument_for_width_bucket_function",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1559,7 +1559,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_escape_octet",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1570,7 +1570,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "nonstandard_use_of_escape_character",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1581,7 +1581,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_regular_expression",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1592,7 +1592,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_row_count_in_limit_clause",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1603,7 +1603,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_row_count_in_result_offset_clause",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1614,7 +1614,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_tablesample_argument",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1625,7 +1625,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_tablesample_repeat",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1636,7 +1636,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_use_of_escape_character",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1647,7 +1647,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "most_specific_type_mismatch",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1658,7 +1658,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sequence_generator_limit_exceeded",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1669,7 +1669,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "zero_length_character_string",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1680,7 +1680,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "floating_point_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1691,7 +1691,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_text_representation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1702,7 +1702,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_binary_representation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1713,7 +1713,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "bad_copy_file_format",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1724,7 +1724,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "untranslatable_character",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1735,7 +1735,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "not_an_xml_document",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1746,7 +1746,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_xml_document",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1757,7 +1757,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_xml_content",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1768,7 +1768,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_xml_comment",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1779,7 +1779,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_xml_processing_instruction",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1790,7 +1790,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sql_json_member_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1801,7 +1801,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sql_json_number_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1812,7 +1812,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sql_json_object_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1823,7 +1823,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "too_many_json_array_elements",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1834,7 +1834,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "too_many_json_object_members",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1845,7 +1845,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sql_json_scalar_required",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1856,7 +1856,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "exclusion_violation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1867,7 +1867,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "no_active_sql_transaction",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1878,7 +1878,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "in_failed_sql_transaction",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1889,7 +1889,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "idle_in_transaction_session_timeout",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1900,7 +1900,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_password",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1911,7 +1911,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "dependent_privilege_descriptors_still_exist",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1922,7 +1922,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "dependent_objects_still_exist",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1933,7 +1933,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_transaction_termination",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1944,7 +1944,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "sql_routine_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1955,7 +1955,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "function_executed_no_return_statement",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1966,7 +1966,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "modifying_sql_data_not_permitted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1977,7 +1977,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "prohibited_sql_statement_attempted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1988,7 +1988,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "reading_sql_data_not_permitted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -1999,7 +1999,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "trigger_protocol_violated",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2010,7 +2010,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "srf_protocol_violated",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2021,7 +2021,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "event_trigger_protocol_violated",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2032,7 +2032,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "savepoint_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2043,7 +2043,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_savepoint_specification",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2054,7 +2054,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_catalog_name",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2065,7 +2065,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_schema_name",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2076,7 +2076,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "deadlock_detected",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2087,7 +2087,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "windowing_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2098,7 +2098,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_recursion",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2109,7 +2109,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "indeterminate_datatype",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2120,7 +2120,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "collation_mismatch",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2131,7 +2131,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "indeterminate_collation",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2142,7 +2142,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "generated_always",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2153,7 +2153,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "undefined_table",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2164,7 +2164,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "undefined_parameter",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2175,7 +2175,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_cursor",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2186,7 +2186,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_database",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2197,7 +2197,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_prepared_statement",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2208,7 +2208,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_schema",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2219,7 +2219,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_table",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2230,7 +2230,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "ambiguous_parameter",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2241,7 +2241,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "ambiguous_alias",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2252,7 +2252,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_column_reference",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2263,7 +2263,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_cursor_definition",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2274,7 +2274,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_database_definition",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2285,7 +2285,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_function_definition",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2296,7 +2296,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_prepared_statement_definition",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2307,7 +2307,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_schema_definition",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2318,7 +2318,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_table_definition",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2329,7 +2329,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "invalid_object_definition",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2340,7 +2340,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "cant_change_runtime_param",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2351,7 +2351,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "lock_not_available",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2362,7 +2362,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "unsafe_new_enum_value_usage",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2373,7 +2373,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "admin_shutdown",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2384,7 +2384,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "crash_shutdown",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2395,7 +2395,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "cannot_connect_now",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2406,7 +2406,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "database_dropped",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2417,7 +2417,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "undefined_file",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2428,7 +2428,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "duplicate_file",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2439,7 +2439,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "config_file_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2450,7 +2450,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "lock_file_exists",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2461,7 +2461,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2472,7 +2472,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_column_name_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2483,7 +2483,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_dynamic_parameter_value_needed",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2494,7 +2494,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_function_sequence_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2505,7 +2505,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_inconsistent_descriptor_information",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2516,7 +2516,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_attribute_value",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2527,7 +2527,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_column_name",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2538,7 +2538,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_column_number",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2549,7 +2549,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_data_type",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2560,7 +2560,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_data_type_descriptors",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2571,7 +2571,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_descriptor_field_identifier",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2582,7 +2582,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_handle",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2593,7 +2593,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_option_index",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2604,7 +2604,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_option_name",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2615,7 +2615,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_string_length_or_buffer_length",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2626,7 +2626,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_string_format",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2637,7 +2637,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_invalid_use_of_null_pointer",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2648,7 +2648,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_too_many_handles",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2659,7 +2659,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_out_of_memory",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2670,7 +2670,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_no_schemas",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2681,7 +2681,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_option_name_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2692,7 +2692,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_reply_handle",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2703,7 +2703,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_schema_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2714,7 +2714,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_table_not_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2725,7 +2725,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_unable_to_create_execution",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2736,7 +2736,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_unable_to_create_reply",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2747,7 +2747,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "fdw_unable_to_establish_connection",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2758,7 +2758,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "plpgsql_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2769,7 +2769,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "raise_exception",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2780,7 +2780,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "no_data_found",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2791,7 +2791,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "too_many_rows",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2802,7 +2802,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "assert_failure",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2813,7 +2813,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "internal_error",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2824,7 +2824,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "data_corrupted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами",
+			ru: "Ошибка сервера. Свяжитесь с администратором.",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
@@ -2835,7 +2835,7 @@ export const PostgresPrompts: IPromptMap = {
 		promptCondition: "index_corrupted",
 		promptLabels: {
 			en: "Contact administrators",
-			ru: "Связаться с администраторами?",
+			ru: "Ошибка сервера. Свяжитесь с администратором.?",
 			uz: "Adminlarga aloqaga chiqing",
 		},
 	},
