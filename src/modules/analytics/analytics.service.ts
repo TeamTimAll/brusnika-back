@@ -167,6 +167,7 @@ export class AnalyticsService {
 			.select([
 				"manager.first_name AS first_name",
 				"manager.last_name AS last_name",
+				"manager.avatar AS photo",
 				"agency.title AS agency_name",
 				"COUNT(leads.id)::INT AS total",
 			])
@@ -175,11 +176,17 @@ export class AnalyticsService {
 				fromDate,
 				toDate,
 			})
-			.andWhere("agency.id = :agency_id", {
-				agency_id: userInfo.data.agency_id,
-			})
 			.groupBy("manager.id, agency.title")
 			.orderBy("total", "DESC");
+
+		if (
+			user.role === RoleType.AGENT ||
+			user.role === RoleType.HEAD_OF_AGENCY
+		) {
+			query = query.andWhere("agency.id = :agency_id", {
+				agency_id: userInfo.data.agency_id,
+			});
+		}
 
 		const count = await query.getCount();
 
@@ -210,18 +217,24 @@ export class AnalyticsService {
 				fromDate,
 				toDate,
 			})
-			.andWhere("agency.id = :agency_id", {
-				agency_id: userInfo.data.agency_id,
-			})
 			.select([
 				"agency.title as agency_name",
 				"manager.first_name AS first_name",
 				"manager.last_name AS last_name",
+				"manager.avatar AS photo",
 				"SUM(premise.price) AS total",
 			])
 			.groupBy("manager.id, agency.title")
 			.orderBy("total", "DESC");
 
+		if (
+			user.role === RoleType.AGENT ||
+			user.role === RoleType.HEAD_OF_AGENCY
+		) {
+			query = query.andWhere("agency.id = :agency_id", {
+				agency_id: userInfo.data.agency_id,
+			});
+		}
 		const count = await query.getCount();
 
 		query = query.limit(limit).offset(offset);
@@ -253,17 +266,24 @@ export class AnalyticsService {
 				"agency.title AS agency_name",
 				"manager.first_name AS first_name",
 				"manager.last_name AS last_name",
+				"manager.avatar AS photo",
 				"MIN(DATE_PART('day', lo_won.created_at - leads.created_at)) AS total",
 			])
 			.where("leads.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
 			})
-			.andWhere("agency.id = :agency_id", {
-				agency_id: userInfo.data.agency_id,
-			})
-			.groupBy("agency.title, manager.first_name, manager.last_name")
+			.groupBy("agency.title, manager.id")
 			.orderBy("total", "ASC");
+
+		if (
+			user.role === RoleType.AGENT ||
+			user.role === RoleType.HEAD_OF_AGENCY
+		) {
+			query = query.andWhere("agency.id = :agency_id", {
+				agency_id: userInfo.data.agency_id,
+			});
+		}
 
 		const count = await query.getCount();
 
