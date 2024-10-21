@@ -175,6 +175,17 @@ export class UserService {
 		if (dto.sort_by === UserSortBy.CITY_NAME) {
 			userQuery = userQuery.orderBy("c.name", dto.order_by);
 		}
+
+		if (user.role === RoleType.MANAGER) {
+			userQuery = userQuery.andWhere(
+				"u.role != :admin and u.role != :manager",
+				{
+					admin: RoleType.ADMIN,
+					manager: RoleType.MANAGER,
+				},
+			);
+		}
+
 		const [users, usersCount] = await userQuery.getManyAndCount();
 
 		let agency_id: number | undefined;
