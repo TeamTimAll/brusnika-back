@@ -68,10 +68,8 @@ export class UserFilterDto {
 	order_by?: Order = Order.ASC;
 
 	@ApiProperty({ required: false })
-	@Transform(({ value }) =>
-		value === "true" ? true : value === "false" ? false : undefined,
-	)
+	@Transform(({ value }) => value === "true")
 	@IsBoolean()
 	@IsOptional()
-	is_verified?: boolean;
+	is_new?: boolean;
 }
