@@ -273,6 +273,7 @@ export class AnalyticsService {
 				fromDate,
 				toDate,
 			})
+			.andWhere("leads.state = :state", { state: LeadState.COMPLETE })
 			.groupBy("agency.title, manager.id")
 			.orderBy("total", "ASC");
 
