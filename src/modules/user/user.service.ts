@@ -186,6 +186,10 @@ export class UserService {
 			);
 		}
 
+		if (dto.is_verified) {
+			userQuery = userQuery.andWhere("u.is_verified is TRUE");
+		}
+
 		const [users, usersCount] = await userQuery.getManyAndCount();
 
 		let agency_id: number | undefined;
@@ -201,6 +205,7 @@ export class UserService {
 			where: {
 				role: RoleType.NEW_MEMBER,
 				agency_id: agency_id,
+				is_verified: true,
 			},
 		});
 		const totalUserCount = await this.userRepository.count({

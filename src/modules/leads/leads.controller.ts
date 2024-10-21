@@ -83,6 +83,11 @@ export class LeadsController {
 		return await this.dealsService.readAll(dto, user);
 	}
 
+	@Get(":id")
+	async readOne(@Param("id") id: number) {
+		return await this.dealsService.readOne(id);
+	}
+
 	@Get("view-nps/:id")
 	async viewNPS(@Param("id") id: number, @User() user: ICurrentUser) {
 		return await this.dealsService.viewNPS(id, user);
