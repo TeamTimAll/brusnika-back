@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
+	IsBoolean,
 	IsDateString,
 	IsEnum,
 	IsInt,
@@ -65,4 +66,10 @@ export class UserFilterDto {
 	@IsEnum(Order)
 	@IsOptional()
 	order_by?: Order = Order.ASC;
+
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_verified?: boolean;
 }

@@ -599,17 +599,17 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 -   [x] Lead'ga `start_date` va `status_updated_at` fieldlar qo'shish kerak.
 
 -   [ ] Project CRUD'ini ko'rib chiqish.
--   [x] Client search query. GetAll bilan bir xil qilish kerak. (Aktiv yoki VSEligi kerak xolos)
+-   [x] Client search query. GetAll bilan bir xil qilish kerak. (Aktiv yoki
+        VSEligi kerak xolos)
 -   [ ] Client uchun end_date qo'shib chiqish kerak. (seed).
 -   [x] Bron'dan date va time olib tashlash kerak.
--   [ ] Client fixing_type o'zgarganda Notification yuborish. Notification shakli:
-        "По клиенту {client_fullname} было {client_fixing_type}."
+-   [ ] Client fixing_type o'zgarganda Notification yuborish. Notification
+        shakli: "По клиенту {client_fullname} было {client_fixing_type}."
 -   [ ] Reklama maketi uchun admin boshqaruvi kerak. Reklama maketi sxemasi
         saqlanilishi kerak. NOTE: Designer admin panelini chizmagan! Lekin
         backend'ga buni aloqasi yo'q. Frontend background tanlay oladigan
         qilgan. Lekin premise rasmlaridan birini tanlash imkoniyati yo'q.
 -   [ ] Time slot logik
--   [ ] Lead'lar agent bo'yicha chiqish kerak. role client logikasiga o'xshab
+-   [x] Lead'lar agent bo'yicha chiqish kerak. role client logikasiga o'xshab
         ishlaydi.
 -   [ ] seasons GETda muammo
-
