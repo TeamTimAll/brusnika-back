@@ -135,7 +135,7 @@ export class UserService {
 			});
 		}
 		if (dto.registered_at) {
-			userQuery = userQuery.andWhere("u.created_at <= :created_at", {
+			userQuery = userQuery.andWhere("u.created_at >= :created_at", {
 				created_at: dto.registered_at,
 			});
 		}
