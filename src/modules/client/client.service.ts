@@ -13,6 +13,7 @@ import { ProjectEntity } from "../projects/project.entity";
 import { ClinetQueueService } from "../queues/clients_queue/client_queue.service";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
+import { BuildingEntity } from "../buildings/buildings.entity";
 
 import { ClientEntity, FixingType } from "./client.entity";
 import { ClientQuickSearchDto } from "./dto/ClientQuickSearch.dto";
@@ -397,6 +398,12 @@ export class ClientService {
 				"p2",
 				"p2.id = l.premise_id",
 			)
+			.leftJoinAndMapOne(
+				"p2.building",
+				BuildingEntity,
+				"b",
+				"b.id = p2.building_id",
+			)
 			.leftJoinAndMapOne("l.agent", UserEntity, "u", "u.id = l.agent_id")
 			.select([
 				"c.id",
@@ -422,6 +429,7 @@ export class ClientService {
 			])
 			.addSelect(["p.id", "p.name"])
 			.addSelect(["p2.id", "p2.name", "p2.type"])
+			.addSelect(["b.id", "b.name"])
 			.addSelect(["u.id", "u.fullName"])
 			.orderBy("l.id")
 			.where("c.id = :id", { id })

@@ -201,7 +201,39 @@ export class LeadsService {
 	}
 
 	async readOne(id: number) {
-		const lead = await this.leadRepository.findOneBy({ id });
+		const lead = await this.leadRepository.findOne({
+			where: { id },
+			select: {
+				project: {
+					id: true,
+					name: true,
+				},
+				client: {
+					id: true,
+					fullname: true,
+					phone_number: true,
+				},
+				agent: {
+					id: true,
+					fullName: true,
+				},
+				manager: {
+					id: true,
+					fullName: true,
+				},
+				premise: {
+					id: true,
+					type: true,
+					rooms: true,
+					floor: true,
+					price: true,
+				},
+				lead_ops: {
+					id: true,
+					status: true,
+				},
+			},
+		});
 
 		if (!lead) {
 			throw new LeadNotFoundError(`id: ${id}`);
