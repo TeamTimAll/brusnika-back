@@ -186,10 +186,10 @@ export class UserService {
 			);
 		}
 
-		if (dto.is_verified) {
-			userQuery = userQuery.andWhere("u.is_verified is TRUE");
-		} else if (dto.is_verified === false) {
-			userQuery = userQuery.andWhere("u.is_verified is FALSE");
+		if (dto.is_new) {
+			userQuery = userQuery.andWhere("u.role = :new_member", {
+				new_member: RoleType.NEW_MEMBER,
+			});
 		}
 
 		const [users, usersCount] = await userQuery.getManyAndCount();
