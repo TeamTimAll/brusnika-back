@@ -188,6 +188,8 @@ export class UserService {
 
 		if (dto.is_verified) {
 			userQuery = userQuery.andWhere("u.is_verified is TRUE");
+		} else if (dto.is_verified === false) {
+			userQuery = userQuery.andWhere("u.is_verified is FALSE");
 		}
 
 		const [users, usersCount] = await userQuery.getManyAndCount();
@@ -205,7 +207,6 @@ export class UserService {
 			where: {
 				role: RoleType.NEW_MEMBER,
 				agency_id: agency_id,
-				is_verified: true,
 			},
 		});
 		const totalUserCount = await this.userRepository.count({
@@ -769,7 +770,8 @@ export class UserService {
 			.where("ua.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
-			});
+			})
+			.andWhere("user.is_verified is TRUE");
 
 		if (role) {
 			query.andWhere("user.role = :role", { role });
