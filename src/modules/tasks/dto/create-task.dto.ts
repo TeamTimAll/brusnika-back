@@ -28,7 +28,7 @@ export class CreateTaskDto {
 	@IsNotEmpty()
 	comment!: string;
 
-	@ApiProperty()
+	@ApiProperty({ enum: TaskType })
 	@IsEnum(TaskType)
 	@IsNotEmpty()
 	task_type!: TaskType;
@@ -37,6 +37,11 @@ export class CreateTaskDto {
 	@IsInt()
 	@IsNotEmpty()
 	client_id!: number;
+
+	@ApiProperty()
+	@IsInt()
+	@IsNotEmpty()
+	project_id!: number;
 
 	@ApiProperty()
 	@IsInt()

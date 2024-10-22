@@ -6,6 +6,7 @@ import { BaseDto } from "../../common/base/base_dto";
 import { UserService } from "../user/user.service";
 import { ClientService } from "../client/client.service";
 import { LeadsService } from "../leads/leads.service";
+import { ProjectService } from "../projects/projects.service";
 
 import { CreateTaskDto, FinishTaskDto, ReadAllTasksDto } from "./dto";
 import { TaskNotFoundError } from "./errors/task-not-found.error";
@@ -19,11 +20,14 @@ export class TasksService {
 		private readonly userService: UserService,
 		private readonly clientService: ClientService,
 		private readonly leadService: LeadsService,
+		private readonly projectService: ProjectService,
 	) {}
 
 	async create(payload: CreateTaskDto) {
 		await this.userService.checkExists(payload.manager_id);
 		await this.clientService.checkExists(payload.client_id);
+		await this.projectService.checkExists(payload.project_id);
+
 		await this.leadService.readOne(payload.lead_id);
 
 		const task = this.taskRepository.create({ ...payload });
@@ -38,11 +42,13 @@ export class TasksService {
 				client: { id: true, fullname: true, phone_number: true },
 				manager: { id: true, fullName: true },
 				lead: { id: true },
+				project: { id: true, name: true },
 			},
 			relations: {
 				lead: true,
 				client: true,
 				manager: true,
+				project: true,
 			},
 		});
 
@@ -66,8 +72,9 @@ export class TasksService {
 				comment: true,
 				end_date: true,
 				client: { id: true, fullname: true },
+				project: { id: true, name: true },
 			},
-			relations: { client: true },
+			relations: { client: true, project: true },
 			skip: pageSize,
 			take: payload.limit,
 		});
