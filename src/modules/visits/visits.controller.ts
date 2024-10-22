@@ -3,7 +3,6 @@ import {
 	Controller,
 	Delete,
 	Get,
-	Inject,
 	Param,
 	Post,
 	Put,
@@ -22,7 +21,6 @@ import { ApiErrorResponse, User } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateVisitsMetaDataDto } from "./dtos/CreateVisits.dto";
@@ -36,11 +34,7 @@ import { VisitsService } from "./visits.service";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class VisitsController {
-	constructor(
-		private service: VisitsService,
-		@Inject()
-		private readonly analyticsService: AnalyticsService,
-	) {}
+	constructor(private service: VisitsService) {}
 
 	@ApiOperation({ summary: "Create a visit" })
 	@Post()
@@ -50,7 +44,6 @@ export class VisitsController {
 	) {
 		dto.data.agent_id = user.user_id;
 		const res = this.service.create(dto.data);
-		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
 		return res;
 	}
 

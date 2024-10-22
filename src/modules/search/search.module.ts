@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { ClientModule } from "../client/client.module";
 import { EventsModule } from "../events/events.module";
 import { NewsModule } from "../news/news.module";
@@ -13,7 +12,6 @@ import { SearchService } from "./search.service";
 @Module({
 	imports: [
 		UserModule,
-		AnalyticsModule,
 		ClientModule,
 		ProjectsModule,
 		NewsModule,

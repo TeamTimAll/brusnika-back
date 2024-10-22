@@ -5,7 +5,6 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
-	Inject,
 	Param,
 	Post,
 	Put,
@@ -29,7 +28,6 @@ import { ApiErrorResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../../modules/auth/guards/jwt.guard";
-import { AnalyticsService } from "../analytics/analytics.service";
 
 import { AcceptInvitionMetaDataDto } from "./dtos/AcceptInvition.dto";
 import { BannerFilterDto } from "./dtos/BannerFilter.dto";
@@ -52,11 +50,7 @@ import { EventsService } from "./events.service";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class EventsController {
-	constructor(
-		private eventsService: EventsService,
-		@Inject()
-		private readonly analyticsService: AnalyticsService,
-	) {}
+	constructor(private eventsService: EventsService) {}
 
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
 	@Post()
@@ -67,7 +61,6 @@ export class EventsController {
 		@User() user: ICurrentUser,
 	) {
 		const res = await this.eventsService.create(dto.data, user);
-		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
 		return res;
 	}
 

@@ -5,7 +5,6 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
-	Inject,
 	Param,
 	Post,
 	Put,
@@ -14,11 +13,7 @@ import {
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { ICurrentUser } from "interfaces/current-user.interface";
-
-import { User } from "../../decorators";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
-import { AnalyticsService } from "../analytics/analytics.service";
 
 import { BuildingsService } from "./buildings.service";
 import {
@@ -31,11 +26,7 @@ import {
 @Controller("buildings")
 @UseInterceptors(TransformInterceptor)
 export class BuildingsController {
-	constructor(
-		private buildingsService: BuildingsService,
-		@Inject()
-		private readonly analyticsService: AnalyticsService,
-	) {}
+	constructor(private buildingsService: BuildingsService) {}
 
 	@Get()
 	@HttpCode(HttpStatus.OK)
@@ -45,12 +36,8 @@ export class BuildingsController {
 
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
-	async create(
-		@Body() dto: CreateBuildingMetaDto,
-		@User() user: ICurrentUser,
-	) {
+	async create(@Body() dto: CreateBuildingMetaDto) {
 		const res = await this.buildingsService.create(dto.data);
-		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
 		return res;
 	}
 

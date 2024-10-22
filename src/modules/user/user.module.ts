@@ -2,7 +2,6 @@ import { Module, forwardRef } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AgenciesModule } from "../agencies/agencies.module";
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { BookingRepository } from "../bookings/booking.repository";
 import { BookingsEntity } from "../bookings/bookings.entity";
 import { CityModule } from "../cities/cities.module";
@@ -24,7 +23,6 @@ import { UserActivityEntity } from "./entities/user-activity.entity";
 		]),
 		forwardRef(() => AgenciesModule),
 		forwardRef(() => CityModule),
-		forwardRef(() => AnalyticsModule),
 	],
 	controllers: [UserController],
 	providers: [UserService, BookingRepository, SettingsRepository],

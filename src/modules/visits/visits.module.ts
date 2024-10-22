@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { ClientModule } from "../client/client.module";
 import { ProjectsModule } from "../projects/projects.module";
 import { VisitQueueModule } from "../queues/visit_queue/visit_queue.module";
@@ -17,7 +16,6 @@ import { VisitsService } from "./visits.service";
 		UserModule,
 		ProjectsModule,
 		ClientModule,
-		AnalyticsModule,
 		VisitQueueModule,
 	],
 	providers: [VisitsService],
