@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { UserModule } from "../user/user.module";
 import { ClientModule } from "../client/client.module";
 import { ProjectsModule } from "../projects/projects.module";
@@ -16,7 +15,6 @@ import { TasksService } from "./tasks.service";
 	imports: [
 		TypeOrmModule.forFeature([TasksEntity]),
 		UserModule,
-		AnalyticsModule,
 		ClientModule,
 		ProjectsModule,
 		PremisesModule,

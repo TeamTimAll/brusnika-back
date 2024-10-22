@@ -14,13 +14,11 @@ import { ClientEntity } from "../client/client.entity";
 import { PremiseBasketLinkEntity } from "../premises/entities";
 
 import { AnalyticsController } from "./analytics.controller";
-import { AnalyticsEntity } from "./analytics.entity";
 import { AnalyticsService } from "./analytics.service";
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([
-			AnalyticsEntity,
 			NewsEntity,
 			LeadsEntity,
 			LeadOpsEntity,

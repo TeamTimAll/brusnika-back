@@ -1,8 +1,7 @@
-import { forwardRef, Module } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AgenciesModule } from "../agencies/agencies.module";
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { BuildingsModule } from "../buildings/buildings.module";
 import { ClientModule } from "../client/client.module";
 import { PremisesModule } from "../premises/premises.module";
@@ -24,7 +23,6 @@ import { LeadsService } from "./leads.service";
 		PremisesModule,
 		BuildingsModule,
 		AgenciesModule,
-		forwardRef(() => AnalyticsModule),
 		NotificationModule,
 	],
 	controllers: [LeadsController],
