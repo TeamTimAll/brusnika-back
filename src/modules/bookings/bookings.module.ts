@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { ClientModule } from "../client/client.module";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesModule } from "../premises/premises.module";
@@ -21,7 +20,6 @@ import { BookingsService } from "./bookings.service";
 		ClientModule,
 		PremisesModule,
 		SettingsModule,
-		AnalyticsModule,
 		BookingQueueModule,
 	],
 	providers: [BookingsService, BookingRepository],

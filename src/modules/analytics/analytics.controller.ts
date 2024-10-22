@@ -35,12 +35,6 @@ export class AnalyticsController {
 		private readonly analyticsService: AnalyticsService,
 	) {}
 
-	@Get("me")
-	@ApiOperation({ description: "Get own analytics" })
-	readOne(@User() user: ICurrentUser) {
-		return this.analyticsService.createOrFind(user.user_id);
-	}
-
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("top-news")
 	@ApiOperation({ description: "Get news analytics" })

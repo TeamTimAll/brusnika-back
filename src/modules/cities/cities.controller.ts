@@ -3,7 +3,6 @@ import {
 	Controller,
 	Delete,
 	Get,
-	Inject,
 	Param,
 	Post,
 	Put,
@@ -18,12 +17,9 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { ICurrentUser } from "interfaces/current-user.interface";
-
-import { ApiErrorResponse, User } from "../../decorators";
+import { ApiErrorResponse } from "../../decorators";
 import { RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
-import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CityService } from "./cities.service";
@@ -35,22 +31,14 @@ import { CityNotFoundError } from "./errors/CityNotFound.error";
 @Controller("/cities")
 @UseInterceptors(TransformInterceptor)
 export class CityController {
-	constructor(
-		private service: CityService,
-		@Inject()
-		private readonly analyticsService: AnalyticsService,
-	) {}
+	constructor(private service: CityService) {}
 
 	@ApiOperation({ summary: "Create a city" })
 	@Post()
 	@ApiBearerAuth()
 	@UseGuards(JwtAuthGuard, RolesGuard)
-	async create(
-		@Body() dto: CreateCitiesMetaDataDto,
-		@User() user: ICurrentUser,
-	) {
+	async create(@Body() dto: CreateCitiesMetaDataDto) {
 		const res = this.service.create(dto.data);
-		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
 		return res;
 	}
 

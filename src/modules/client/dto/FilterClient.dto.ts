@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
+	IsBoolean,
 	IsDateString,
 	IsEnum,
 	IsInt,
@@ -10,7 +11,6 @@ import {
 
 import { Limit, Page } from "../../../decorators/pagination";
 import { LeadOpStatus } from "../../leads/lead_ops.entity";
-import { LeadState } from "../../leads/leads.entity";
 import { FixingType } from "../client.entity";
 import { Order } from "../../../constants";
 
@@ -67,11 +67,6 @@ export class FilterClientDto {
 	@IsOptional()
 	status?: LeadOpStatus;
 
-	@ApiProperty({ required: false, enum: LeadState })
-	@IsEnum(LeadState)
-	@IsOptional()
-	state?: LeadState;
-
 	@ApiProperty({ required: false, enum: FixingType })
 	@IsEnum(FixingType)
 	@IsOptional()
@@ -86,4 +81,10 @@ export class FilterClientDto {
 	@IsEnum(Order)
 	@IsOptional()
 	order_by?: Order = Order.ASC;
+
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_active?: boolean;
 }

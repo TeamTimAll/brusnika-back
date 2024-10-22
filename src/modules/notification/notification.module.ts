@@ -1,7 +1,6 @@
 import { Logger, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { UserModule } from "../user/user.module";
 
 import { NotificationController } from "./notification.controller";
@@ -13,7 +12,6 @@ import { NotificationUserEntity } from "./notification_user.entity";
 	imports: [
 		TypeOrmModule.forFeature([NotificationEntity, NotificationUserEntity]),
 		UserModule,
-		AnalyticsModule,
 	],
 	controllers: [NotificationController],
 	providers: [NotificationService, Logger],

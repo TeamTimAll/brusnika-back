@@ -4,7 +4,6 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
-	Inject,
 	Param,
 	Post,
 	Put,
@@ -18,11 +17,8 @@ import {
 	ApiTags,
 } from "@nestjs/swagger";
 
-import { ICurrentUser } from "interfaces/current-user.interface";
-
-import { ApiDtoResponse, User } from "../../decorators";
+import { ApiDtoResponse } from "../../decorators";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
-import { AnalyticsService } from "../analytics/analytics.service";
 
 import { CreateSectionsMetaDataDto } from "./dtos/CreateSections.dto";
 import {
@@ -37,21 +33,13 @@ import { SectionsService } from "./sections.service";
 @ApiTags("Sections")
 @UseInterceptors(TransformInterceptor)
 export class SectionsController {
-	constructor(
-		private service: SectionsService,
-		@Inject()
-		private readonly analyticsService: AnalyticsService,
-	) {}
+	constructor(private service: SectionsService) {}
 
 	@ApiOperation({ summary: "Create a section" })
 	@ApiResponse({ status: HttpStatus.CREATED, type: SectionDto })
 	@Post()
-	async createsection(
-		@Body() dto: CreateSectionsMetaDataDto,
-		@User() user: ICurrentUser,
-	) {
+	async createsection(@Body() dto: CreateSectionsMetaDataDto) {
 		const res = await this.service.create(dto.data);
-		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
 		return res;
 	}
 

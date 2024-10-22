@@ -5,7 +5,6 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
-	Inject,
 	Param,
 	Post,
 	Put,
@@ -25,7 +24,6 @@ import { ApiDtoResponse, User } from "../../decorators";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
-import { AnalyticsService } from "../analytics/analytics.service";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 
 import { CreateNewsMetaDataDto } from "./dto/CreateNews.dto";
@@ -45,11 +43,7 @@ import { NewsService } from "./news.service";
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class NewsController {
-	constructor(
-		private service: NewsService,
-		@Inject()
-		private readonly analyticsService: AnalyticsService,
-	) {}
+	constructor(private service: NewsService) {}
 
 	@Get()
 	@ApiOperation({ summary: "Get all news" })
@@ -68,7 +62,6 @@ export class NewsController {
 		@User() user: ICurrentUser,
 	) {
 		const res = await this.service.create(dto.data, user);
-		await this.analyticsService.incrementCreatedCount(user.analytics_id!);
 		return res;
 	}
 

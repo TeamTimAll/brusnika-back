@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { ClientQueueModule } from "../queues/clients_queue/client_queue.module";
 
 import { ClientController } from "./client.controller";
@@ -13,7 +12,6 @@ import { ClientService } from "./client.service";
 	imports: [
 		TypeOrmModule.forFeature([ClientEntity]),
 		UserModule,
-		AnalyticsModule,
 		ClientQueueModule,
 	],
 	controllers: [ClientController],

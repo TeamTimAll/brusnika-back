@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { AnalyticsModule } from "../analytics/analytics.module";
 import { CityModule } from "../cities/cities.module";
 import { UserModule } from "../user/user.module";
 
@@ -20,7 +19,6 @@ import { ContactWorkScheduleEntity } from "./contact_work_schedule.entity";
 		]),
 		CityModule,
 		UserModule,
-		AnalyticsModule,
 	],
 	controllers: [ContactController],
 	providers: [ContactService],
