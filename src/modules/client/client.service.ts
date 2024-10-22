@@ -288,20 +288,13 @@ export class ClientService {
 			);
 		}
 
-		if (dto.state) {
-			if (dto.state === LeadState.ACTIVE) {
-				queryBuilder = queryBuilder
-					.andWhere("l.state = :state", {
-						state: LeadState.ACTIVE,
-					})
-					.andWhere("c.fixing_type != :active_fixing_type", {
-						active_fixing_type: FixingType.CENCEL_FIXING,
-					});
-			} else {
-				queryBuilder = queryBuilder.andWhere("l.state = :state", {
-					state: dto.state,
-				});
-			}
+		if (dto.is_active) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.fixing_type != :fixing_type",
+				{
+					fixing_type: FixingType.CENCEL_FIXING,
+				},
+			);
 		}
 
 		if (dto.project_id) {
