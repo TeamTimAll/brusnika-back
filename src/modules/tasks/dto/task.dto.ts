@@ -5,6 +5,7 @@ import { TasksEntity, TaskStatus, TaskType } from "../tasks.entity";
 import { ClientEntity } from "../../client/client.entity";
 import { LeadsEntity } from "../../leads/leads.entity";
 import { UserEntity } from "../../user/user.entity";
+import { ProjectEntity } from "../../projects/project.entity";
 
 type ITasksEntity = Omit<TasksEntity, "ext_id">;
 
@@ -35,6 +36,12 @@ export class TasksDto implements ITasksEntity {
 
 	@ApiProperty()
 	lead_id!: number;
+
+	@ApiProperty()
+	project!: ProjectEntity;
+
+	@ApiProperty()
+	project_id!: number;
 
 	@ApiPropertyOptional()
 	result?: string;

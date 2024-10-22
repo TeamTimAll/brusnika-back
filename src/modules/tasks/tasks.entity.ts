@@ -4,6 +4,7 @@ import { BaseEntity } from "../../common/base/base.entity";
 import { ClientEntity } from "../client/client.entity";
 import { LeadsEntity } from "../leads/leads.entity";
 import { UserEntity } from "../user/user.entity";
+import { ProjectEntity } from "../projects/project.entity";
 
 export enum TaskType {
 	FIRST_VIEW = "первичный показ",
@@ -54,6 +55,16 @@ export class TasksEntity extends BaseEntity {
 	})
 	@JoinColumn({ name: "lead_id" })
 	lead!: LeadsEntity;
+
+	@Column({ type: "integer", nullable: false })
+	project_id!: number;
+
+	@ManyToOne(() => ProjectEntity, {
+		onDelete: "SET NULL",
+		onUpdate: "NO ACTION",
+	})
+	@JoinColumn({ name: "project_id" })
+	project!: ProjectEntity;
 
 	@Column({ nullable: true, type: "varchar" })
 	result?: string;
