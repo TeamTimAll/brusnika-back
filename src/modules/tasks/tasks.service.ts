@@ -5,8 +5,6 @@ import { Repository } from "typeorm";
 import { BaseDto } from "../../common/base/base_dto";
 import { UserService } from "../user/user.service";
 import { ClientService } from "../client/client.service";
-import { ProjectService } from "../projects/projects.service";
-import { PremisesService } from "../premises/premises.service";
 import { LeadsService } from "../leads/leads.service";
 
 import { CreateTaskDto, FinishTaskDto, ReadAllTasksDto } from "./dto";
@@ -20,16 +18,12 @@ export class TasksService {
 		private taskRepository: Repository<TasksEntity>,
 		private readonly userService: UserService,
 		private readonly clientService: ClientService,
-		private readonly projectService: ProjectService,
-		private readonly premiseService: PremisesService,
 		private readonly leadService: LeadsService,
 	) {}
 
 	async create(payload: CreateTaskDto) {
 		await this.userService.checkExists(payload.manager_id);
 		await this.clientService.checkExists(payload.client_id);
-		await this.projectService.checkExists(payload.project_id);
-		await this.premiseService.checkExists(payload.premise_id);
 		await this.leadService.readOne(payload.lead_id);
 
 		const task = this.taskRepository.create({ ...payload });
@@ -42,13 +36,11 @@ export class TasksService {
 			where: { id },
 			select: {
 				client: { id: true, fullname: true, phone_number: true },
-				project: { id: true, name: true },
 				manager: { id: true, fullName: true },
 				lead: { id: true },
 			},
 			relations: {
 				lead: true,
-				project: true,
 				client: true,
 				manager: true,
 			},
@@ -74,9 +66,8 @@ export class TasksService {
 				comment: true,
 				end_date: true,
 				client: { id: true, fullname: true },
-				project: { id: true, name: true },
 			},
-			relations: { project: true, client: true },
+			relations: { client: true },
 			skip: pageSize,
 			take: payload.limit,
 		});

@@ -2,9 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { ClientEntity } from "../client/client.entity";
-import { ProjectEntity } from "../projects/project.entity";
 import { LeadsEntity } from "../leads/leads.entity";
-import { PremiseEntity } from "../premises/premises.entity";
 import { UserEntity } from "../user/user.entity";
 
 export enum TaskType {
@@ -46,26 +44,6 @@ export class TasksEntity extends BaseEntity {
 	})
 	@JoinColumn({ name: "client_id" })
 	client?: ClientEntity;
-
-	@Column({ type: "integer", nullable: false })
-	project_id!: number;
-
-	@ManyToOne(() => ProjectEntity, {
-		onDelete: "SET NULL",
-		onUpdate: "NO ACTION",
-	})
-	@JoinColumn({ name: "project_id" })
-	project!: ProjectEntity;
-
-	@Column({ type: "integer", nullable: false })
-	premise_id!: number;
-
-	@ManyToOne(() => PremiseEntity, {
-		onDelete: "SET NULL",
-		onUpdate: "NO ACTION",
-	})
-	@JoinColumn({ name: "premise_id" })
-	premise!: PremiseEntity;
 
 	@Column({ type: "integer", nullable: false })
 	lead_id!: number;

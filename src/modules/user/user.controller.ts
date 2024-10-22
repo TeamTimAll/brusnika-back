@@ -42,7 +42,7 @@ import { UserUpdateRoleMetaDataDto } from "./dtos/UserUpdateRole.dto";
 import { UserVerifyMetaDataDto } from "./dtos/UserVerify.dto";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
-import { NewUserFilterDto } from "./dtos";
+import { NewUserFilterDto, UserSearchDto } from "./dtos";
 
 @ApiTags("users")
 @Controller("users")
@@ -70,6 +70,17 @@ export class UserController {
 	])
 	async readAll(@Query() dto: UserFilterDto, @User() user: ICurrentUser) {
 		return await this.userService.readAll(dto, user);
+	}
+
+	@Get("search")
+	@ApiOperation({
+		description: `### User list'ini search qila olish.
+		\n Ruxsat etilgan foydalanuvchilar rollari:
+		\n - *${RoleType.MANAGER}*`,
+	})
+	@Roles([RoleType.MANAGER])
+	async search(@Query() dto: UserSearchDto) {
+		return await this.userService.search(dto);
 	}
 
 	@Get("new-users")
