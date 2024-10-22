@@ -290,9 +290,9 @@ export class ClientService {
 
 		if (dto.is_active) {
 			queryBuilder = queryBuilder.andWhere(
-				"c.fixing_type != :fixing_type",
+				"c.fixing_type != :fixing_type_cancel",
 				{
-					fixing_type: FixingType.CENCEL_FIXING,
+					fixing_type_cancel: FixingType.CENCEL_FIXING,
 				},
 			);
 		}
