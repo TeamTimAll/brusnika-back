@@ -3,8 +3,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../user/user.module";
 import { ClientModule } from "../client/client.module";
-import { ProjectsModule } from "../projects/projects.module";
-import { PremisesModule } from "../premises/premises.module";
 import { LeadsModule } from "../leads/leads.module";
 
 import { TasksController } from "./tasks.controller";
@@ -16,8 +14,6 @@ import { TasksService } from "./tasks.service";
 		TypeOrmModule.forFeature([TasksEntity]),
 		UserModule,
 		ClientModule,
-		ProjectsModule,
-		PremisesModule,
 		LeadsModule,
 	],
 	controllers: [TasksController],
