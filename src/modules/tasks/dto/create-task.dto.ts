@@ -28,7 +28,7 @@ export class CreateTaskDto {
 	@IsNotEmpty()
 	comment!: string;
 
-	@ApiProperty()
+	@ApiProperty({ enum: TaskType })
 	@IsEnum(TaskType)
 	@IsNotEmpty()
 	task_type!: TaskType;
