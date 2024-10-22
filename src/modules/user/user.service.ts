@@ -366,7 +366,11 @@ export class UserService {
 					RoleType.AFFILIATE_MANAGER,
 				],
 			})
-			.select(["u.id", "u.phone", "u.firstName", "u.lastName"]);
+			.select([
+				"u.id as id",
+				"u.phone as phone_number",
+				"CONCAT(u.firstName, ' ', u.lastName) AS fullname",
+			]);
 
 		queryBuilder = queryBuilder.andWhere(
 			new Brackets((qb) =>
@@ -385,11 +389,14 @@ export class UserService {
 
 		const pageSize = (dto.page - 1) * dto.limit;
 		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
-		const [clients, clientCount] = await queryBuilder.getManyAndCount();
+		const [users, userCount] = await Promise.all([
+			queryBuilder.getRawMany<UserEntity>(),
+			queryBuilder.getCount(),
+		]);
 
 		const metaData = BaseDto.create<UserEntity[]>();
-		metaData.setPagination(clientCount, dto.page, dto.limit);
-		metaData.data = clients;
+		metaData.setPagination(userCount, dto.page, dto.limit);
+		metaData.data = users;
 		return metaData;
 	}
 
