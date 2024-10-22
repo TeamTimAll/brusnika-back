@@ -24,7 +24,7 @@ import { CityService } from "../cities/cities.service";
 import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
 import { SettingsRepository } from "../settings/settings.repository";
 
-import { NewUserFilterDto } from "./dtos";
+import { NewUserFilterDto, UserSearchDto } from "./dtos";
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
 import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
@@ -354,6 +354,43 @@ export class UserService {
 			throw new UserNotFoundError(`id: ${id}`);
 		}
 		return foundUser;
+	}
+
+	async search(dto: UserSearchDto): Promise<BaseDto<UserEntity[]>> {
+		let queryBuilder = this.userRepository
+			.createQueryBuilder("u")
+			.where("u.role IN (:...roles)", {
+				roles: [
+					RoleType.MANAGER,
+					RoleType.ADMIN,
+					RoleType.AFFILIATE_MANAGER,
+				],
+			})
+			.select(["u.id", "u.phone", "u.firstName", "u.lastName"]);
+
+		queryBuilder = queryBuilder.andWhere(
+			new Brackets((qb) =>
+				qb
+					.where(
+						"CONCAT(u.firstName, ' ', u.lastName) ILIKE :fullname",
+						{
+							fullname: `%${dto.text}%`,
+						},
+					)
+					.orWhere("u.phone ILIKE :phone_number", {
+						phone_number: `%${dto.text}%`,
+					}),
+			),
+		);
+
+		const pageSize = (dto.page - 1) * dto.limit;
+		queryBuilder = queryBuilder.limit(dto.limit).offset(pageSize);
+		const [clients, clientCount] = await queryBuilder.getManyAndCount();
+
+		const metaData = BaseDto.create<UserEntity[]>();
+		metaData.setPagination(clientCount, dto.page, dto.limit);
+		metaData.data = clients;
+		return metaData;
 	}
 
 	async readOneWithRelation(id: number) {

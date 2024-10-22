@@ -41,16 +41,6 @@ export class CreateTaskDto {
 	@ApiProperty()
 	@IsInt()
 	@IsNotEmpty()
-	project_id!: number;
-
-	@ApiProperty()
-	@IsInt()
-	@IsNotEmpty()
-	premise_id!: number;
-
-	@ApiProperty()
-	@IsInt()
-	@IsNotEmpty()
 	lead_id!: number;
 
 	@ApiProperty()
