@@ -397,7 +397,7 @@ export class PremisesService {
 				"section.building_id",
 				"season.id",
 				"season.created_at",
-				"season.created_at",
+				"season.date",
 				"season.season_name",
 				"season.year",
 				"season.date",
