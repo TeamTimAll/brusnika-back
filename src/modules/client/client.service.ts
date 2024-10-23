@@ -216,6 +216,12 @@ export class ClientService {
 				"p2.id = l.premise_id",
 			)
 			.leftJoinAndMapOne("l.agent", UserEntity, "u", "u.id = l.agent_id")
+			.leftJoinAndMapOne(
+				"p2.building",
+				BuildingEntity,
+				"b",
+				"b.id = p2.building_id",
+			)
 			.select([
 				"c.id",
 				"c.fullname",
@@ -237,9 +243,18 @@ export class ClientService {
 				"l.current_status",
 				"l.lead_number",
 				"l.state",
+				"l.created_at",
 			])
 			.addSelect(["p.id", "p.name"])
-			.addSelect(["p2.id", "p2.name", "p2.type"])
+			.addSelect([
+				"p2.id",
+				"p2.name",
+				"p2.type",
+				"p2.floor",
+				"p2.rooms",
+				"p2.price",
+			])
+			.addSelect(["b.id", "b.name"])
 			.addSelect(["u.id", "u.fullName"]);
 
 		if (dto.sort_by) {
