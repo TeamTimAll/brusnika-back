@@ -419,9 +419,17 @@ export class ClientService {
 				"l.current_status",
 				"l.lead_number",
 				"l.state",
+				"l.created_at",
 			])
 			.addSelect(["p.id", "p.name"])
-			.addSelect(["p2.id", "p2.name", "p2.type"])
+			.addSelect([
+				"p2.id",
+				"p2.name",
+				"p2.type",
+				"p2.floor",
+				"p2.rooms",
+				"p2.price",
+			])
 			.addSelect(["b.id", "b.name"])
 			.addSelect(["u.id", "u.fullName"])
 			.orderBy("l.id")

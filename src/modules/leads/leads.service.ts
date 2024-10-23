@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsSelect, In, IsNull, Repository } from "typeorm";
+import { FindOptionsSelect, In, IsNull, Not, Repository } from "typeorm";
 
 import { PickBySelect } from "interfaces/pick_by_select";
 
@@ -173,7 +173,7 @@ export class LeadsService {
 								? dto.status
 								: In([LeadOpStatus.FAILED, LeadOpStatus.WON])
 							: dto.status
-						: undefined,
+						: Not(In([LeadOpStatus.FAILED, LeadOpStatus.WON])),
 			},
 			relations: {
 				lead_ops: true,
@@ -189,6 +189,7 @@ export class LeadsService {
 				},
 				created_at: dto.createdAt ?? "ASC",
 			},
+			take: 300,
 		});
 
 		metaData.data = leads;
