@@ -189,7 +189,6 @@ export class LeadsService {
 				},
 				created_at: dto.createdAt ?? "ASC",
 			},
-			take: 300,
 		});
 
 		metaData.data = leads;
