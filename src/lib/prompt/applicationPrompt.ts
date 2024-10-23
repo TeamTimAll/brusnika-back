@@ -190,7 +190,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "user_password_or_email_not_correct_error",
 		promptLabels: {
 			en: "Your email address or password is invalid",
-			ru: "Ваш адрес электронной почты или пароль недействителен",
+			ru: "Указан неверный пароль, проверьте раскладку клавиатуры",
 			uz: "Your email address or password is invalid",
 		},
 	},
