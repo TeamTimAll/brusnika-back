@@ -139,12 +139,14 @@ export class ClientService {
 		}
 
 		if (dto.is_active) {
-			queryBuilder = queryBuilder.andWhere(
-				"c.fixing_type != :fixing_type",
-				{
-					fixing_type: FixingType.CENCEL_FIXING,
-				},
-			);
+			queryBuilder = queryBuilder
+				.andWhere("c.fixing_type != :fixing_type_cancel", {
+					fixing_type_cancel: FixingType.CENCEL_FIXING,
+				})
+				.andWhere(
+					"(l.id IS NULL OR l.current_status NOT IN (:...statuses))",
+					{ statuses: [LeadState.IN_PROGRESS, LeadState.FAILED] },
+				);
 		}
 
 		queryBuilder = queryBuilder.andWhere(
@@ -304,12 +306,13 @@ export class ClientService {
 		}
 
 		if (dto.is_active) {
-			queryBuilder = queryBuilder.andWhere(
-				"c.fixing_type != :fixing_type_cancel",
-				{
+			queryBuilder = queryBuilder
+				.andWhere("c.fixing_type != :fixing_type_cancel", {
 					fixing_type_cancel: FixingType.CENCEL_FIXING,
-				},
-			);
+				})
+				.andWhere("(l.id IS NULL OR l.state NOT IN (:...statuses))", {
+					statuses: [LeadState.IN_PROGRESS, LeadState.FAILED],
+				});
 		}
 
 		if (dto.project_id) {

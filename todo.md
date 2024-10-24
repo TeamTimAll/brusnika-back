@@ -614,12 +614,3 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
         ishlaydi.
 -   [ ] seasons GETda muammo
 -   [ ] USERS updateda pustoy kerak emas
--   [ ] seasons GETda muammo
--   [ ] seasons GETda muammo
--   [ ] seasons GETda muammo
--   [ ] seasons GETda muammo
--   [ ] seasons GETda muammo
--   [ ] seasons GETda muammo
--   [ ] seasons GETda muammo
--   [ ] seasons GETda muammo
--   [ ] seasons GETda muammo
