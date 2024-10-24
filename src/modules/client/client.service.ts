@@ -144,7 +144,7 @@ export class ClientService {
 					fixing_type_cancel: FixingType.CENCEL_FIXING,
 				})
 				.andWhere(
-					"(l.id IS NULL OR l.current_status NOT IN (:...statuses))",
+					"(l.id IS NULL OR l.state NOT IN (:...statuses))",
 					{ statuses: [LeadState.IN_PROGRESS, LeadState.FAILED] },
 				);
 		}
