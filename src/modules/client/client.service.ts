@@ -458,17 +458,13 @@ export class ClientService {
 		return result;
 	}
 
-	async delete(
-		dto: DeleteClientDto,
-		user: ICurrentUser,
-	): Promise<ClientEntity> {
+	async delete(dto: DeleteClientDto): Promise<ClientEntity> {
 		const foundClient = await this.clientRepository.findOne({
 			select: {
 				id: true,
 			},
 			where: {
 				id: dto.client_id,
-				agent_id: user.user_id,
 			},
 		});
 
