@@ -35,13 +35,13 @@ export class UserUpdateRoleDto {
 
 	@ApiProperty({ required: false, description: "The first name of the user" })
 	@IsString()
-	@IsOptional()
+	@IsNotEmpty()
 	@MaxLength(50, { message: "First name cannot exceed 50 characters" })
 	firstName?: string;
 
 	@ApiProperty({ required: false, description: "The last name of the user" })
 	@IsString()
-	@IsOptional()
+	@IsNotEmpty()
 	@MaxLength(50, { message: "Last name cannot exceed 50 characters" })
 	lastName?: string;
 
