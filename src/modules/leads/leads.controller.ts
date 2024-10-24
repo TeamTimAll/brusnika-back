@@ -7,6 +7,7 @@ import {
 	Query,
 	UseGuards,
 	UseInterceptors,
+	Version,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
@@ -52,6 +53,15 @@ export class LeadsController {
 		@User() user: ICurrentUser,
 	) {
 		return await this.dealsService.readAll(dto, user);
+	}
+
+	@Get()
+	@Version("2")
+	async readAllV2(
+		@Query() dto: LeadReadByFilterDto,
+		@User() user: ICurrentUser,
+	) {
+		return await this.dealsService.readAllV2(dto, user);
 	}
 
 	@Get(":id")

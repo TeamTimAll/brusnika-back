@@ -5,6 +5,7 @@ import { IsBoolean, IsEnum, IsInt, IsOptional } from "class-validator";
 import { Order } from "../../../constants";
 import { Limit, Page } from "../../../decorators";
 import { LeadOpStatus, PremisesType } from "../lead_ops.entity";
+import { LeadState } from "../leads.entity";
 
 export class LeadReadByFilterDto {
 	@ApiProperty({ required: false })
@@ -36,6 +37,11 @@ export class LeadReadByFilterDto {
 	@IsOptional()
 	@IsEnum(LeadOpStatus)
 	status?: LeadOpStatus;
+
+	@ApiPropertyOptional({ enum: LeadState })
+	@IsOptional()
+	@IsEnum(LeadState)
+	state?: LeadState;
 
 	@ApiProperty({ required: false })
 	@IsOptional()
