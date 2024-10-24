@@ -87,7 +87,7 @@ export class ClientController {
 
 	@Delete()
 	@ApiOkResponse({ type: CreateClientMetaDataDto })
-	async delete(@User() user: ICurrentUser, @Query() dto: DeleteClientDto) {
-		return await this.clientService.delete(dto, user);
+	async delete(@Query() dto: DeleteClientDto) {
+		return await this.clientService.delete(dto);
 	}
 }

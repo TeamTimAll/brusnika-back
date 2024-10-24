@@ -32,10 +32,6 @@ export class AgencyService {
 			},
 		});
 
-		if (!foundAgencies.length) {
-			throw new AgencyNotFoundError(`name: ${name}`);
-		}
-
 		return foundAgencies;
 	}
 

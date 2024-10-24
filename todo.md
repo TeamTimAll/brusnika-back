@@ -613,3 +613,13 @@ event_contacts, lead_ops, analytics cascade RESTART IDENTITY;
 -   [x] Lead'lar agent bo'yicha chiqish kerak. role client logikasiga o'xshab
         ishlaydi.
 -   [ ] seasons GETda muammo
+-   [ ] USERS updateda pustoy kerak emas
+-   [ ] seasons GETda muammo
+-   [ ] seasons GETda muammo
+-   [ ] seasons GETda muammo
+-   [ ] seasons GETda muammo
+-   [ ] seasons GETda muammo
+-   [ ] seasons GETda muammo
+-   [ ] seasons GETda muammo
+-   [ ] seasons GETda muammo
+-   [ ] seasons GETda muammo
