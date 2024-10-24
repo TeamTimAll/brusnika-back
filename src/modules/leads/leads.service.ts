@@ -194,7 +194,16 @@ export class LeadsService {
 		metaData.data = leads;
 		metaData.setPagination(leadsCount, dto.page, leads.length);
 		metaData.meta.data = {
-			statuses: Object.values(LeadOpStatus),
+			statuses: [
+				LeadOpStatus.INTEREST_IN_PURCHASING,
+				LeadOpStatus.PRESENTATION,
+				LeadOpStatus.BOOKED,
+				LeadOpStatus.REQUEST_FOR_CONTRACT,
+				LeadOpStatus.CONTRACT_IS_REGISTERED,
+				LeadOpStatus.BOOK_CANCELED,
+				LeadOpStatus.LOST_BOOK,
+				LeadOpStatus.CHECK_LEAD,
+			],
 		};
 
 		return metaData;
