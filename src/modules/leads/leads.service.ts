@@ -4,7 +4,7 @@ import { FindOptionsSelect, In, IsNull, Not, Repository } from "typeorm";
 
 import { PickBySelect } from "interfaces/pick_by_select";
 
-import { BaseDto } from "../../common/base/base_dto";
+import { BaseDto, MetaLinkWithLeadState } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { BuildingsService } from "../buildings/buildings.service";
 import { ClientService } from "../client/client.service";
@@ -23,6 +23,11 @@ import { LeadReadByFilterDto } from "./dtos/LeadReadByFilter.dto";
 import { LeadNotFoundError } from "./errors/LeadNotFound.error";
 import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 import { LeadState, LeadsEntity } from "./leads.entity";
+
+export interface ReadAllData {
+	state?: LeadState;
+	data?: LeadsEntity[];
+}
 
 @Injectable()
 export class LeadsService {
@@ -242,6 +247,231 @@ export class LeadsService {
 			});
 
 			filter.agent = { agency_id: foundUser.agency_id };
+		}
+
+		if (dto.state) {
+			filter.state = dto.state;
+		}
+
+		const [leads, leadsCount] = await this.leadRepository.findAndCount({
+			select: {
+				project: {
+					id: true,
+					name: true,
+				},
+				client: {
+					id: true,
+					fullname: true,
+					phone_number: true,
+				},
+				agent: {
+					id: true,
+					fullName: true,
+				},
+				manager: {
+					id: true,
+					fullName: true,
+				},
+				premise: {
+					id: true,
+					type: true,
+					rooms: true,
+					floor: true,
+					price: true,
+				},
+				lead_ops: {
+					id: true,
+					status: true,
+				},
+			},
+			where: {
+				project_id: dto.project_id,
+				premise: {
+					type: dto.premise_type,
+				},
+				...filter,
+				client: {
+					id: dto.client_id,
+				},
+				current_status:
+					dto.is_finished || dto.status
+						? dto.is_finished
+							? dto.status === LeadOpStatus.WON ||
+								dto.status === LeadOpStatus.FAILED
+								? dto.status
+								: In([LeadOpStatus.FAILED, LeadOpStatus.WON])
+							: dto.status
+						: Not(In([LeadOpStatus.FAILED, LeadOpStatus.WON])),
+			},
+			relations: {
+				lead_ops: true,
+				client: true,
+				agent: true,
+				manager: true,
+				premise: true,
+				project: true,
+			},
+			order: {
+				created_at: dto.createdAt ?? "ASC",
+			},
+			take: dto.limit,
+			skip: pageSize,
+		});
+
+		metaData.data = leads;
+		metaData.setPagination(leadsCount, dto.page, leads.length);
+		metaData.meta.data = {
+			statuses: [
+				LeadOpStatus.INTEREST_IN_PURCHASING,
+				LeadOpStatus.PRESENTATION,
+				LeadOpStatus.BOOKED,
+				LeadOpStatus.REQUEST_FOR_CONTRACT,
+				LeadOpStatus.CONTRACT_IS_REGISTERED,
+				LeadOpStatus.BOOK_CANCELED,
+				LeadOpStatus.LOST_BOOK,
+			],
+		};
+
+		return metaData;
+	}
+
+	async readAllV3(
+		dto: LeadReadByFilterDto,
+		user: ICurrentUser,
+	): Promise<BaseDto<(LeadsEntity | ReadAllData)[]>> {
+		const pageSize = (dto.page - 1) * dto.limit;
+
+		const metaData = BaseDto.create<LeadsEntity[]>();
+		if (
+			dto.is_finished &&
+			dto.status &&
+			!(
+				dto.status === LeadOpStatus.WON ||
+				dto.status === LeadOpStatus.FAILED
+			)
+		) {
+			metaData.data = [];
+			metaData.setPagination(0, dto.page, dto.limit);
+			metaData.meta.data = {
+				statuses: Object.values(LeadOpStatus),
+			};
+
+			return metaData;
+		}
+
+		const filter: { agent?: object; state?: LeadState } = {};
+
+		if (user.role === RoleType.AGENT) {
+			filter.agent = {
+				id: user.user_id,
+			};
+		} else if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const foundUser = await this.userService.readOne(user.user_id, {
+				agency_id: true,
+			});
+
+			filter.agent = { agency_id: foundUser.agency_id };
+		}
+
+		if (dto.is_initial) {
+			const response: ReadAllData[] = [];
+			const links: MetaLinkWithLeadState[] = [];
+
+			await Promise.all(
+				Object.values(LeadState).map(async (state) => {
+					const [leads, leadsCount] =
+						await this.leadRepository.findAndCount({
+							select: {
+								project: {
+									id: true,
+									name: true,
+								},
+								client: {
+									id: true,
+									fullname: true,
+									phone_number: true,
+								},
+								agent: {
+									id: true,
+									fullName: true,
+								},
+								manager: {
+									id: true,
+									fullName: true,
+								},
+								premise: {
+									id: true,
+									type: true,
+									rooms: true,
+									floor: true,
+									price: true,
+								},
+								lead_ops: {
+									id: true,
+									status: true,
+								},
+							},
+							where: {
+								project_id: dto.project_id,
+								premise: {
+									type: dto.premise_type,
+								},
+								...filter,
+								state,
+								client: {
+									id: dto.client_id,
+								},
+								current_status:
+									dto.is_finished || dto.status
+										? dto.is_finished
+											? dto.status === LeadOpStatus.WON ||
+												dto.status ===
+													LeadOpStatus.FAILED
+												? dto.status
+												: In([
+														LeadOpStatus.FAILED,
+														LeadOpStatus.WON,
+													])
+											: dto.status
+										: Not(
+												In([
+													LeadOpStatus.FAILED,
+													LeadOpStatus.WON,
+												]),
+											),
+							},
+							relations: {
+								lead_ops: true,
+								client: true,
+								agent: true,
+								manager: true,
+								premise: true,
+								project: true,
+							},
+							order: {
+								created_at: dto.createdAt ?? "ASC",
+							},
+							take: dto.limit,
+							skip: pageSize,
+						});
+
+					const metaData = BaseDto.create<LeadsEntity[]>();
+
+					metaData.setPagination(leadsCount, dto.page, dto.limit);
+
+					response.push({ state, data: leads });
+					links.push({
+						state,
+						...metaData.getPagination(),
+					});
+				}),
+			);
+
+			const metaData = BaseDto.create<ReadAllData[]>();
+			metaData.data = response;
+			metaData.setLinks(links);
+
+			return metaData;
 		}
 
 		if (dto.state) {
