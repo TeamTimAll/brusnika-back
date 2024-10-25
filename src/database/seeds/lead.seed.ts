@@ -64,8 +64,6 @@ const pauseLeads = [
 	LeadOpStatus.ON_PAUSE,
 ];
 
-const checkLeads = [LeadOpStatus.OPEN, LeadOpStatus.CHECK_LEAD];
-
 const failedLeads = [
 	LeadOpStatus.OPEN,
 	LeadOpStatus.INTEREST_IN_PURCHASING,
@@ -80,7 +78,6 @@ const leadOpStatusMap = new Map([
 	[LeadOpStatus.BOOK_CANCELED, canceledLeads],
 	[LeadOpStatus.LOST_BOOK, lostLeads],
 	[LeadOpStatus.ON_PAUSE, pauseLeads],
-	[LeadOpStatus.CHECK_LEAD, checkLeads],
 	[LeadOpStatus.FAILED, failedLeads],
 ]);
 
@@ -95,7 +92,6 @@ function createLead(
 		LeadOpStatus.BOOK_CANCELED,
 		LeadOpStatus.LOST_BOOK,
 		LeadOpStatus.ON_PAUSE,
-		LeadOpStatus.CHECK_LEAD,
 		LeadOpStatus.FAILED,
 	]);
 	let state = LeadState.ACTIVE;
