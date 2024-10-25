@@ -42,7 +42,11 @@ import { UserUpdateRoleMetaDataDto } from "./dtos/UserUpdateRole.dto";
 import { UserVerifyMetaDataDto } from "./dtos/UserVerify.dto";
 import { UserEntity } from "./user.entity";
 import { UserService } from "./user.service";
-import { NewUserFilterDto, UserSearchDto } from "./dtos";
+import {
+	NewUserFilterDto,
+	UserSearchDto,
+	UserUpdateTokenMetaDataDto,
+} from "./dtos";
 
 @ApiTags("users")
 @Controller("users")
@@ -112,6 +116,16 @@ export class UserController {
 	@ApiOperation({ description: "### User o'z ma'lumotlarini o'zgartirish." })
 	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
 	update(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {
+		return this.userService.update(user.user_id, dto.data);
+	}
+
+	@Put("token")
+	@ApiOperation({ description: "### User o'z ma'lumotlarini o'zgartirish." })
+	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
+	updateToken(
+		@Body() dto: UserUpdateTokenMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
 		return this.userService.update(user.user_id, dto.data);
 	}
 

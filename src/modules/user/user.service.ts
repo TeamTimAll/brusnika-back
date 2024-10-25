@@ -24,7 +24,7 @@ import { CityService } from "../cities/cities.service";
 import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
 import { SettingsRepository } from "../settings/settings.repository";
 
-import { NewUserFilterDto, UserSearchDto } from "./dtos";
+import { NewUserFilterDto, UserSearchDto, UserUpdateTokenDto } from "./dtos";
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
 import { UserChangeAgencyDto } from "./dtos/UserChangeAgency.dto";
 import { UserChangeEmailDto } from "./dtos/UserChangeEmail.dto";
@@ -534,7 +534,6 @@ export class UserService {
 		return await this.userRepository.save(mergedUser);
 	}
 
-	/** Do not use this function directly. It containes permision handler for agent role user. */
 	async update(id: number, dto: UserUpdateDto): Promise<UserEntity> {
 		const user = await this.readOneWithRelation(id);
 		if (!user) {
@@ -547,6 +546,14 @@ export class UserService {
 				new PermissionDeniedError(`role: ${user.role}`);
 			}
 		}
+		await this.userRepository.update(id, dto);
+		return this.readOneWithRelation(id);
+	}
+
+	async updateToken(
+		id: number,
+		dto: UserUpdateTokenDto,
+	): Promise<UserEntity> {
 		await this.userRepository.update(id, dto);
 		return this.readOneWithRelation(id);
 	}
