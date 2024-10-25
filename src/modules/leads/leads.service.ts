@@ -200,7 +200,6 @@ export class LeadsService {
 				LeadOpStatus.CONTRACT_IS_REGISTERED,
 				LeadOpStatus.BOOK_CANCELED,
 				LeadOpStatus.LOST_BOOK,
-				LeadOpStatus.CHECK_LEAD,
 			],
 		};
 
@@ -325,7 +324,6 @@ export class LeadsService {
 				LeadOpStatus.CONTRACT_IS_REGISTERED,
 				LeadOpStatus.BOOK_CANCELED,
 				LeadOpStatus.LOST_BOOK,
-				LeadOpStatus.CHECK_LEAD,
 			],
 		};
 

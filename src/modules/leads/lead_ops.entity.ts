@@ -15,7 +15,6 @@ export enum LeadOpStatus {
 	BOOK_CANCELED = "отмененная бронь",
 	LOST_BOOK = "слетевшая бронь",
 	ON_PAUSE = "на паузе",
-	CHECK_LEAD = "проверка лида",
 	FAILED = "проиграна",
 }
 
