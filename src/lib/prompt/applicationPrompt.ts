@@ -542,7 +542,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "max_creatable_booking_count_reached_error",
 		promptLabels: {
 			en: "Max creatable booking count reached error",
-			ru: "Ошибка: достигнуто максимальное количество создаваемых бронирований.",
+			ru: "Лимит на бронирование в текущем месяце уже выбран. Бронирование возможно только в офисе продаж.",
 			uz: "Max creatable booking count reached error",
 		},
 	},
