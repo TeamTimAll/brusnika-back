@@ -64,6 +64,15 @@ export class LeadsController {
 		return await this.dealsService.readAllV2(dto, user);
 	}
 
+	@Get()
+	@Version("3")
+	async readAllV3(
+		@Query() dto: LeadReadByFilterDto,
+		@User() user: ICurrentUser,
+	) {
+		return await this.dealsService.readAllV3(dto, user);
+	}
+
 	@Get(":id")
 	async readOne(@Param("id") id: number) {
 		return await this.dealsService.readOne(id);
