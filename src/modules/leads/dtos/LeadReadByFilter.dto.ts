@@ -33,6 +33,12 @@ export class LeadReadByFilterDto {
 	@IsOptional()
 	is_finished?: boolean;
 
+	@ApiPropertyOptional()
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_initial?: boolean;
+
 	@ApiProperty({ required: false, enum: LeadOpStatus })
 	@IsOptional()
 	@IsEnum(LeadOpStatus)

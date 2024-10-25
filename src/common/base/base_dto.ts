@@ -11,6 +11,7 @@ import { PromptLabel } from "lib/prompt/prompt";
 
 import { SearchData } from "../../modules/search/search.service";
 import { ResponseStatusType } from "../enums/response_status_type_enum";
+import { LeadState } from "../../modules//leads/leads.entity";
 
 import { BaseEntity } from "./base.entity";
 import { BaseError } from "./baseError";
@@ -43,12 +44,16 @@ export interface MetaLinkWithModule extends MetaLink {
 	module_name?: SearchData["module_name"];
 }
 
+export interface MetaLinkWithLeadState extends MetaLink {
+	state?: LeadState;
+}
+
 export class MetaDto<T = object> {
 	@IsOptional()
 	type: ResponseStatusType = ResponseStatusType.SUCCESS;
 
 	@IsOptional()
-	links!: MetaLink | MetaLinkWithModule[];
+	links!: MetaLink | (MetaLinkWithModule | MetaLinkWithLeadState)[];
 
 	@IsOptional()
 	taskId!: string;
@@ -100,7 +105,7 @@ export class BaseDto<T = unknown> {
 		return this;
 	}
 
-	setLinks(links: MetaLinkWithModule[]) {
+	setLinks(links: (MetaLinkWithModule | MetaLinkWithLeadState)[]) {
 		this.meta.links = links;
 		return this;
 	}
