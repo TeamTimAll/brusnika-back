@@ -469,6 +469,17 @@ export class LeadsService {
 
 			const metaData = BaseDto.create<ReadAllData[]>();
 			metaData.data = response;
+			metaData.meta.data = {
+				statuses: [
+					LeadOpStatus.INTEREST_IN_PURCHASING,
+					LeadOpStatus.PRESENTATION,
+					LeadOpStatus.BOOKED,
+					LeadOpStatus.REQUEST_FOR_CONTRACT,
+					LeadOpStatus.CONTRACT_IS_REGISTERED,
+					LeadOpStatus.BOOK_CANCELED,
+					LeadOpStatus.LOST_BOOK,
+				],
+			};
 			metaData.setLinks(links);
 
 			return metaData;
