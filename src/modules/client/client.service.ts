@@ -96,6 +96,7 @@ export class ClientService {
 				"c.fullname",
 				"c.phone_number",
 				"c.fixing_type",
+				"c.expiration_date",
 			] as `c.${keyof ClientEntity}`[])
 			.addSelect(["l.state"]);
 
