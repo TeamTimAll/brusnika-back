@@ -8,6 +8,7 @@ import { chunkArray } from "../../lib/array";
 import { FirebaseMessage, FirebaseService } from "../../lib/firebase";
 import { LogColor, logColorize } from "../../lib/log";
 import { UserEntity } from "../user/user.entity";
+import { BaseDto } from "../../common/base/base_dto";
 
 import { CreateNotificationDto } from "./dto/CreateNotification.dto";
 import { NotificationFilterDto } from "./dto/NotificationFilter.dto";
@@ -40,7 +41,7 @@ export class NotificationService {
 			NotificationType.WARNING_EVENT,
 		];
 
-		const query = this.notificationRepository
+		let query = this.notificationRepository
 			.createQueryBuilder("n")
 			.leftJoin(NotificationUserEntity, "nu", "nu.notification_id = n.id")
 			.leftJoin(
@@ -58,10 +59,8 @@ export class NotificationService {
 				"leads",
 				"n.type = :end_lead AND leads.id = n.object_id",
 			)
-			.offset(pageSize)
-			.limit(dto.limit)
-			.orderBy("n.id", "DESC")
-			.where("nu.user_id = :user_id", { user_id: user.user_id });
+			.where("nu.user_id = :user_id", { user_id: user.user_id })
+			.andWhere("n.created_at >= NOW() - INTERVAL '7 DAYS'");
 
 		const caseStatement = `
 			CASE
@@ -89,9 +88,16 @@ export class NotificationService {
 			end_lead: NotificationType.END_LEAD,
 		});
 
-		const results = await query.getRawMany<INotification[]>();
+		const count = await query.getCount();
 
-		return results;
+		query = query.offset(pageSize).limit(dto.limit).orderBy("n.id", "DESC");
+
+		const results = await query.getRawMany<INotification>();
+
+		const metaData = BaseDto.create<INotification[]>();
+		metaData.setPagination(count, dto.page, dto.limit);
+		metaData.data = results;
+		return metaData;
 	}
 
 	async readOne(id: number): Promise<NotificationEntity> {

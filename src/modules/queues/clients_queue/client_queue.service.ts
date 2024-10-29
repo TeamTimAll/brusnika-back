@@ -32,9 +32,9 @@ export class ClinetQueueService {
 			expiration_date: client.expiration_date,
 			confirmation_type: client.confirmation_type,
 			agent_ext_id: agent.ext_id,
-            comment: client.comment,
-            fixing_type: client.fixing_type,
-            node: client.node,
+			comment: client.comment,
+			fixing_type: client.fixing_type,
+			node: client.node,
 		};
 	}
 }
