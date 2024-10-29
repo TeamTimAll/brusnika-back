@@ -26,7 +26,11 @@ export class ClientEntity extends BaseEntity {
 	@Column({ type: "varchar", length: 15 })
 	phone_number!: string;
 
-	@Column({ type: "timestamp", nullable: true })
+	@Column({
+		type: "timestamp",
+		nullable: true,
+		default: () => "CURRENT_TIMESTAMP",
+	})
 	actived_date?: Date | null;
 
 	@Column({ type: "timestamp", nullable: true })
