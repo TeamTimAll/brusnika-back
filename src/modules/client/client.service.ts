@@ -95,6 +95,7 @@ export class ClientService {
 				"c.id",
 				"c.fullname",
 				"c.phone_number",
+				"c.fixing_type",
 			] as `c.${keyof ClientEntity}`[])
 			.addSelect(["l.state"]);
 
@@ -143,10 +144,9 @@ export class ClientService {
 				.andWhere("c.fixing_type != :fixing_type_cancel", {
 					fixing_type_cancel: FixingType.CENCEL_FIXING,
 				})
-				.andWhere(
-					"(l.id IS NULL OR l.state NOT IN (:...statuses))",
-					{ statuses: [LeadState.IN_PROGRESS, LeadState.FAILED] },
-				);
+				.andWhere("(l.id IS NULL OR l.state NOT IN (:...statuses))", {
+					statuses: [LeadState.IN_PROGRESS, LeadState.FAILED],
+				});
 		}
 
 		queryBuilder = queryBuilder.andWhere(
