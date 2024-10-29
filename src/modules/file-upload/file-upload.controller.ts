@@ -59,10 +59,10 @@ export class FileUploadController {
 		file: Express.Multer.File,
 		callback: (error: Error | null, acceptFile: boolean) => void,
 	): void {
-		if (!file.originalname.match(/\.(jpg|jpeg|png|gif|pdf|doc)$/)) {
+		if (!file.originalname.match(/\.(jpg|jpeg|png|gif|pdf|doc|docx)$/)) {
 			callback(
 				new FileExtensionNotAllowedError(
-					"Allowed file extension: jpg, jpeg, png, gif, pdf, doc",
+					"Allowed file extension: jpg, jpeg, png, gif, pdf, doc, docx",
 				),
 				false,
 			);
