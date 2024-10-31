@@ -84,7 +84,7 @@ export class UserController {
 		\n - *${RoleType.AFFILIATE_MANAGER}*
 		\n - *${RoleType.ADMIN}*`,
 	})
-	@Roles([RoleType.MANAGER])
+	@Roles([RoleType.MANAGER, RoleType.AFFILIATE_MANAGER, RoleType.ADMIN])
 	async search(@Query() dto: UserSearchDto) {
 		return await this.userService.search(dto);
 	}
