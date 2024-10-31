@@ -80,7 +80,9 @@ export class UserController {
 	@ApiOperation({
 		description: `### User list'ini search qila olish.
 		\n Ruxsat etilgan foydalanuvchilar rollari:
-		\n - *${RoleType.MANAGER}*`,
+		\n - *${RoleType.MANAGER}*
+		\n - *${RoleType.AFFILIATE_MANAGER}*
+		\n - *${RoleType.ADMIN}*`,
 	})
 	@Roles([RoleType.MANAGER])
 	async search(@Query() dto: UserSearchDto) {
