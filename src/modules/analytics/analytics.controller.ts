@@ -22,6 +22,7 @@ import {
 	MainAnalyticsDto,
 	TopAnalyticsDto,
 	UsersAnalyticsDto,
+	UsersByCityAnalyticsDto,
 } from "./dtos";
 
 @ApiTags("Analytics")
@@ -106,7 +107,7 @@ export class AnalyticsController {
 	@Roles([RoleType.ADMIN, RoleType.AFFILIATE_MANAGER, RoleType.MANAGER])
 	@Get("users/city")
 	@ApiOperation({ description: "Get users by city analytics" })
-	getUsersByCity(@Query() payload: UsersAnalyticsDto) {
+	getUsersByCity(@Query() payload: UsersByCityAnalyticsDto) {
 		return this.analyticsService.getUsersByCity(payload);
 	}
 
