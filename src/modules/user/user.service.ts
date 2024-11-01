@@ -782,9 +782,25 @@ export class UserService {
 		role?: RoleType,
 		city_id?: number,
 	): Promise<IUserDailyStatistics[]> {
-		const query = this.userRepository
-			.createQueryBuilder("users")
-			.select("DATE(users.created_at)", "date")
+		const diffInDays =
+			(new Date(toDate).getTime() - new Date(fromDate).getTime()) /
+			(1000 * 60 * 60 * 24);
+
+		const query = this.userRepository.createQueryBuilder("users");
+
+		if (diffInDays < 365) {
+			query
+				.select("DATE(users.created_at)", "date")
+				.groupBy("DATE(users.created_at)")
+				.orderBy("DATE(users.created_at)", "ASC");
+		} else {
+			query
+				.select("TO_CHAR(users.created_at, 'YYYY-MM')", "date")
+				.groupBy("TO_CHAR(users.created_at, 'YYYY-MM')")
+				.orderBy("TO_CHAR(users.created_at, 'YYYY-MM')", "ASC");
+		}
+
+		query
 			.addSelect("COUNT(users.id)::INT", "count")
 			.where("users.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
@@ -799,10 +815,6 @@ export class UserService {
 			query.andWhere("users.city_id = :city_id", { city_id });
 		}
 
-		query
-			.groupBy("DATE(users.created_at)")
-			.orderBy("DATE(users.created_at)", "ASC");
-
 		const result: IUserDailyStatistics[] = await query.getRawMany();
 
 		return result;
@@ -814,16 +826,33 @@ export class UserService {
 		role?: RoleType,
 		city_id?: number,
 	): Promise<IUserDailyStatistics[]> {
+		const diffInDays =
+			(new Date(toDate).getTime() - new Date(fromDate).getTime()) /
+			(1000 * 60 * 60 * 24);
+
 		const query = this.userActivityRepository
 			.createQueryBuilder("ua")
-			.leftJoinAndSelect("ua.user", "user")
-			.select("DATE(ua.created_at)", "date")
+			.leftJoinAndSelect("ua.user", "user");
+
+		if (diffInDays < 365) {
+			query
+				.select("DATE(ua.created_at)", "date")
+				.groupBy("DATE(ua.created_at)")
+				.orderBy("DATE(ua.created_at)", "ASC");
+		} else {
+			query
+				.select("TO_CHAR(ua.created_at, 'YYYY-MM')", "date")
+				.groupBy("TO_CHAR(ua.created_at, 'YYYY-MM')")
+				.orderBy("TO_CHAR(ua.created_at, 'YYYY-MM')", "ASC");
+		}
+
+		query
 			.addSelect("COUNT(ua.id)::INT", "count")
 			.where("ua.created_at BETWEEN :fromDate AND :toDate", {
 				fromDate,
 				toDate,
 			})
-			.andWhere("user.is_verified is TRUE");
+			.andWhere("user.is_verified IS TRUE");
 
 		if (role) {
 			query.andWhere("user.role = :role", { role });
@@ -832,10 +861,6 @@ export class UserService {
 		if (city_id) {
 			query.andWhere("user.city_id = :city_id", { city_id });
 		}
-
-		query
-			.groupBy("DATE(ua.created_at)")
-			.orderBy("DATE(ua.created_at)", "ASC");
 
 		const result: IUserDailyStatistics[] = await query.getRawMany();
 
