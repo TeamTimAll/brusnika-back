@@ -1,1 +1,1 @@
-export * from "./manager-statistics.interface.dto";
+export * from "./manager-statistics.type.dto";

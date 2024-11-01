@@ -22,6 +22,7 @@ import {
 	MainAnalyticsDto,
 	TopAnalyticsDto,
 	UsersAnalyticsDto,
+	UsersByCityAnalyticsDto,
 } from "./dtos";
 import { ICompletedLeadsRatingResponse } from "./types";
 
@@ -451,11 +452,11 @@ export class AnalyticsService {
 		return metaData;
 	}
 
-	async getUsersByCity(payload: UsersAnalyticsDto) {
+	async getUsersByCity(payload: UsersByCityAnalyticsDto) {
 		const data = await this.usersService.getUserCountByCity(
 			payload.fromDate,
 			payload.toDate,
-			payload.role,
+			payload.type,
 		);
 
 		return data;

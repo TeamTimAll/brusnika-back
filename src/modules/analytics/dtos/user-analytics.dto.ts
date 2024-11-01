@@ -9,6 +9,7 @@ import {
 import { Type } from "class-transformer";
 
 import { RoleType } from "../../../constants";
+import { UserFilterByDateEnum } from "../types/user-by-date.type";
 
 export class UsersAnalyticsDto {
 	@ApiProperty()
@@ -31,4 +32,21 @@ export class UsersAnalyticsDto {
 	@Type(() => Number)
 	@IsOptional()
 	city_id?: number;
+}
+
+export class UsersByCityAnalyticsDto {
+	@ApiProperty()
+	@IsDateString()
+	@IsNotEmpty()
+	toDate!: Date;
+
+	@ApiProperty()
+	@IsDateString()
+	@IsNotEmpty()
+	fromDate!: Date;
+
+	@ApiPropertyOptional({ enum: UserFilterByDateEnum })
+	@IsOptional()
+	@IsEnum(UserFilterByDateEnum)
+	type?: UserFilterByDateEnum;
 }
