@@ -23,6 +23,7 @@ import { CityEntity } from "../cities/cities.entity";
 import { CityService } from "../cities/cities.service";
 import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
 import { SettingsRepository } from "../settings/settings.repository";
+import { UserFilterByDateEnum } from "../analytics/types/user-by-date.type";
 
 import { NewUserFilterDto, UserSearchDto, UserUpdateTokenDto } from "./dtos";
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
@@ -844,9 +845,9 @@ export class UserService {
 	async getUserCountByCity(
 		fromDate: Date,
 		toDate: Date,
-		role?: RoleType,
+		type?: UserFilterByDateEnum,
 	): Promise<IUserStatisticsByCity[]> {
-		const query = this.userRepository
+		let query = this.userRepository
 			.createQueryBuilder("user")
 			.leftJoin("user.city", "city")
 			.select(["city.name AS city_name", "COUNT(user.id)::INT AS count"])
@@ -855,8 +856,25 @@ export class UserService {
 				toDate,
 			});
 
-		if (role) {
-			query.andWhere("user.role = :role", { role });
+		if (type) {
+			if (type === UserFilterByDateEnum.ACTIVE_AGENT) {
+				query = query
+					.andWhere("user.role = :agent", { agent: RoleType.AGENT })
+					.andWhere("user.is_verified = true");
+			} else if (type === UserFilterByDateEnum.ACTIVE_WORKER) {
+				query = query
+					.andWhere("user.role != :agent", {
+						agent: RoleType.AGENT,
+					})
+					.andWhere("user.role != :head_of_agency", {
+						head_of_agency: RoleType.HEAD_OF_AGENCY,
+					})
+					.andWhere("user.is_verified = true");
+			} else if (type === UserFilterByDateEnum.REGISTERED_AGENT) {
+				query = query.andWhere("user.role = :agent", {
+					agent: RoleType.AGENT,
+				});
+			}
 		}
 
 		query.groupBy("city.id").orderBy("city.name", "ASC");
