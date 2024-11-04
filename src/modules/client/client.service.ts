@@ -140,6 +140,21 @@ export class ClientService {
 			}
 		}
 
+		if (dto.status) {
+			queryBuilder = queryBuilder.andWhere("l.current_status = :status", {
+				status: dto.status,
+			});
+		}
+
+		if (dto.fixing_type) {
+			queryBuilder = queryBuilder.andWhere(
+				"c.fixing_type = :fixing_type_filter",
+				{
+					fixing_type_filter: dto.fixing_type,
+				},
+			);
+		}
+
 		if (dto.is_active) {
 			queryBuilder = queryBuilder
 				.andWhere("c.fixing_type != :fixing_type_cancel", {
