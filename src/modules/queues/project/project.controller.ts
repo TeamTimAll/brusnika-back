@@ -4,7 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { decrypt, IEncryptedText } from "../../../lib/crypto";
 
 import { ProjectQueueService } from "./project.service";
-import { CreateProjectMetaDataDto } from "./dto";
+import { ProjectDto } from "./dto";
 
 @ApiTags("QUEUE")
 @Controller("queue/project")
@@ -13,9 +13,11 @@ export class ProjectController {
 
 	@Post()
 	async execute(@Body() data: IEncryptedText) {
-		const project = JSON.parse(decrypt(data)) as CreateProjectMetaDataDto;
+		const project = JSON.parse(decrypt(data)) as ProjectDto;
 
-		await this.projectService.createOrUpdateProject(project.data);
+		await this.projectService.createOrUpdateProject(project);
+
+		return { message: "SUCCESS" };
 	}
 
 	// @Delete(":id")
