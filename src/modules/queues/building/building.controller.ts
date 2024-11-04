@@ -4,7 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { decrypt, IEncryptedText } from "../../../lib/crypto";
 
 import { BuildingQueuervice } from "./building.service";
-import { CreateBuildingMetaDataDto } from "./dto";
+import { BuildingDto } from "./dto";
 
 @ApiTags("QUEUE")
 @Controller("queue/building")
@@ -13,11 +13,9 @@ export class BuildingQueueController {
 
 	@Post()
 	async execute(@Body() payload: IEncryptedText) {
-		const building = JSON.parse(
-			decrypt(payload),
-		) as CreateBuildingMetaDataDto;
+		const building = JSON.parse(decrypt(payload)) as BuildingDto;
 
-		await this.service.createOrUpdateBuilding(building.data);
+		await this.service.createOrUpdateBuilding(building);
 	}
 
 	// @Delete(":id")
