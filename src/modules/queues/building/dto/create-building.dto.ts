@@ -1,13 +1,4 @@
-import { Type } from "class-transformer";
-import {
-	IsNotEmpty,
-	IsNumber,
-	IsOptional,
-	IsString,
-	ValidateNested,
-} from "class-validator";
-
-import { BaseDto } from "common/base/base_dto";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class BuildingDto {
 	@IsString()
@@ -33,10 +24,4 @@ export class BuildingDto {
 	@IsString()
 	@IsNotEmpty()
 	project_ext_id!: string;
-}
-
-export class CreateBuildingMetaDataDto extends BaseDto<BuildingDto> {
-	@ValidateNested()
-	@Type(() => BuildingDto)
-	declare data: BuildingDto;
 }

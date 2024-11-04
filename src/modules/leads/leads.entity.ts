@@ -9,7 +9,7 @@ import { UserEntity } from "../user/user.entity";
 import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 
 export enum LeadState {
-	ACTIVE = "Активные",
+	ACTIVE = "Открыта",
 	IN_PROGRESS = "На паузе",
 	FAILED = "Проиграна",
 	COMPLETE = "Выиграна",
