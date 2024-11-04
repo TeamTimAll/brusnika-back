@@ -32,11 +32,13 @@ export function encrypt(data: string): IEncryptedText {
 	};
 }
 
-export function decrypt(encryption: IEncryptedText): string {
-	const { key: encryptedKey, iv, data } = encryption;
+export function decrypt(encryptedData: IEncryptedText): string {
+	const privateKey = String(process.env.PRIVATE_KEY).replace(/\\n/g, "\n");
+
+	const { key: encryptedKey, iv, data } = encryptedData;
 	const decryptedAesKey = crypto.privateDecrypt(
 		{
-			key: ConfigManager.config.PRIVATE_KEY,
+			key: privateKey,
 			padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
 			oaepHash: "sha256",
 		},
