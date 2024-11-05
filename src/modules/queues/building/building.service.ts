@@ -32,14 +32,6 @@ export class BuildingQueuervice {
 			.orUpdate(
 				[
 					"name",
-					"total_storage",
-					"total_vacant_storage",
-					"total_parking_space",
-					"total_vacant_parking_space",
-					"total_commercial",
-					"total_vacant_commercial",
-					"total_apartment",
-					"total_vacant_apartment",
 					"address",
 					"number_of_floors",
 					"photos",
