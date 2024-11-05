@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsSelect, In, IsNull, Not, Repository } from "typeorm";
+import { FindOptionsSelect, IsNull, Repository } from "typeorm";
 
 import { PickBySelect } from "interfaces/pick_by_select";
 
@@ -168,15 +168,7 @@ export class LeadsService {
 				client: {
 					id: dto.client_id,
 				},
-				current_status:
-					dto.is_finished || dto.status
-						? dto.is_finished
-							? dto.status === LeadOpStatus.WON ||
-								dto.status === LeadOpStatus.FAILED
-								? dto.status
-								: In([LeadOpStatus.FAILED, LeadOpStatus.WON])
-							: dto.status
-						: Not(In([LeadOpStatus.FAILED, LeadOpStatus.WON])),
+				current_status: dto.status,
 			},
 			relations: {
 				lead_ops: true,
@@ -293,15 +285,7 @@ export class LeadsService {
 				client: {
 					id: dto.client_id,
 				},
-				current_status:
-					dto.is_finished || dto.status
-						? dto.is_finished
-							? dto.status === LeadOpStatus.WON ||
-								dto.status === LeadOpStatus.FAILED
-								? dto.status
-								: In([LeadOpStatus.FAILED, LeadOpStatus.WON])
-							: dto.status
-						: Not(In([LeadOpStatus.FAILED, LeadOpStatus.WON])),
+				current_status: dto.status,
 			},
 			relations: {
 				lead_ops: true,
@@ -359,7 +343,8 @@ export class LeadsService {
 			return metaData;
 		}
 
-		const filter: { agent?: object; state?: LeadState } = {};
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const filter: { agent?: object; state?: any } = {};
 
 		if (user.role === RoleType.AGENT) {
 			filter.agent = {
@@ -377,95 +362,162 @@ export class LeadsService {
 			const response: ReadAllData[] = [];
 			const links: MetaLinkWithLeadState[] = [];
 
-			await Promise.all(
-				Object.values(LeadState).map(async (state) => {
-					const [leads, leadsCount] =
-						await this.leadRepository.findAndCount({
-							select: {
-								project: {
-									id: true,
-									name: true,
+			if (!dto.is_finished) {
+				await Promise.all(
+					Object.values([
+						LeadState.ACTIVE,
+						LeadState.IN_PROGRESS,
+					]).map(async (state) => {
+						const [leads, leadsCount] =
+							await this.leadRepository.findAndCount({
+								select: {
+									project: {
+										id: true,
+										name: true,
+									},
+									client: {
+										id: true,
+										fullname: true,
+										phone_number: true,
+									},
+									agent: {
+										id: true,
+										fullName: true,
+									},
+									manager: {
+										id: true,
+										fullName: true,
+									},
+									premise: {
+										id: true,
+										type: true,
+										rooms: true,
+										floor: true,
+										price: true,
+									},
+									lead_ops: {
+										id: true,
+										status: true,
+									},
 								},
-								client: {
-									id: true,
-									fullname: true,
-									phone_number: true,
+								where: {
+									project_id: dto.project_id,
+									premise: {
+										type: dto.premise_type,
+									},
+									...filter,
+									state,
+									client: {
+										id: dto.client_id,
+									},
+									current_status: dto.status,
 								},
-								agent: {
-									id: true,
-									fullName: true,
+								relations: {
+									lead_ops: true,
+									client: true,
+									agent: true,
+									manager: true,
+									premise: true,
+									project: true,
 								},
-								manager: {
-									id: true,
-									fullName: true,
+								order: {
+									created_at: dto.createdAt ?? "ASC",
 								},
-								premise: {
-									id: true,
-									type: true,
-									rooms: true,
-									floor: true,
-									price: true,
-								},
-								lead_ops: {
-									id: true,
-									status: true,
-								},
-							},
-							where: {
-								project_id: dto.project_id,
-								premise: {
-									type: dto.premise_type,
-								},
-								...filter,
-								state,
-								client: {
-									id: dto.client_id,
-								},
-								current_status:
-									dto.is_finished || dto.status
-										? dto.is_finished
-											? dto.status === LeadOpStatus.WON ||
-												dto.status ===
-													LeadOpStatus.FAILED
-												? dto.status
-												: In([
-														LeadOpStatus.FAILED,
-														LeadOpStatus.WON,
-													])
-											: dto.status
-										: Not(
-												In([
-													LeadOpStatus.FAILED,
-													LeadOpStatus.WON,
-												]),
-											),
-							},
-							relations: {
-								lead_ops: true,
-								client: true,
-								agent: true,
-								manager: true,
-								premise: true,
-								project: true,
-							},
-							order: {
-								created_at: dto.createdAt ?? "ASC",
-							},
-							take: dto.limit,
-							skip: pageSize,
+								take: dto.limit,
+								skip: pageSize,
+							});
+
+						const metaData = BaseDto.create<LeadsEntity[]>();
+
+						metaData.setPagination(leadsCount, dto.page, dto.limit);
+
+						response.push({ state, data: leads });
+						links.push({
+							state,
+							...metaData.getPagination(),
 						});
+					}),
+				);
+			} else {
+				await Promise.all(
+					Object.values([LeadState.COMPLETE, LeadState.FAILED]).map(
+						async (state) => {
+							const [leads, leadsCount] =
+								await this.leadRepository.findAndCount({
+									select: {
+										project: {
+											id: true,
+											name: true,
+										},
+										client: {
+											id: true,
+											fullname: true,
+											phone_number: true,
+										},
+										agent: {
+											id: true,
+											fullName: true,
+										},
+										manager: {
+											id: true,
+											fullName: true,
+										},
+										premise: {
+											id: true,
+											type: true,
+											rooms: true,
+											floor: true,
+											price: true,
+										},
+										lead_ops: {
+											id: true,
+											status: true,
+										},
+									},
+									where: {
+										project_id: dto.project_id,
+										premise: {
+											type: dto.premise_type,
+										},
+										...filter,
+										state,
+										client: {
+											id: dto.client_id,
+										},
+										current_status: dto.status,
+									},
+									relations: {
+										lead_ops: true,
+										client: true,
+										agent: true,
+										manager: true,
+										premise: true,
+										project: true,
+									},
+									order: {
+										created_at: dto.createdAt ?? "ASC",
+									},
+									take: dto.limit,
+									skip: pageSize,
+								});
 
-					const metaData = BaseDto.create<LeadsEntity[]>();
+							const metaData = BaseDto.create<LeadsEntity[]>();
 
-					metaData.setPagination(leadsCount, dto.page, dto.limit);
+							metaData.setPagination(
+								leadsCount,
+								dto.page,
+								dto.limit,
+							);
 
-					response.push({ state, data: leads });
-					links.push({
-						state,
-						...metaData.getPagination(),
-					});
-				}),
-			);
+							response.push({ state, data: leads });
+							links.push({
+								state,
+								...metaData.getPagination(),
+							});
+						},
+					),
+				);
+			}
 
 			const metaData = BaseDto.create<ReadAllData[]>();
 			metaData.data = response;
@@ -529,15 +581,7 @@ export class LeadsService {
 				client: {
 					id: dto.client_id,
 				},
-				current_status:
-					dto.is_finished || dto.status
-						? dto.is_finished
-							? dto.status === LeadOpStatus.WON ||
-								dto.status === LeadOpStatus.FAILED
-								? dto.status
-								: In([LeadOpStatus.FAILED, LeadOpStatus.WON])
-							: dto.status
-						: Not(In([LeadOpStatus.FAILED, LeadOpStatus.WON])),
+				current_status: dto.status,
 			},
 			relations: {
 				lead_ops: true,
