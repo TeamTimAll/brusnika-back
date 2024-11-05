@@ -326,22 +326,6 @@ export class LeadsService {
 		const pageSize = (dto.page - 1) * dto.limit;
 
 		const metaData = BaseDto.create<LeadsEntity[]>();
-		if (
-			dto.is_finished &&
-			dto.status &&
-			!(
-				dto.status === LeadOpStatus.WON ||
-				dto.status === LeadOpStatus.FAILED
-			)
-		) {
-			metaData.data = [];
-			metaData.setPagination(0, dto.page, dto.limit);
-			metaData.meta.data = {
-				statuses: Object.values(LeadOpStatus),
-			};
-
-			return metaData;
-		}
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const filter: { agent?: object; state?: any } = {};
