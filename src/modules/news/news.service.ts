@@ -382,6 +382,10 @@ export class NewsService {
 			);
 		}
 
+		if (!payload.is_draft) {
+			query = query.andWhere("news.is_draft IS FALSE");
+		}
+
 		return await query.getMany();
 	}
 

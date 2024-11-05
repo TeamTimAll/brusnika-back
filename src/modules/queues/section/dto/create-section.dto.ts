@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class SectionDto {
 	@IsString()
@@ -6,6 +6,9 @@ export class SectionDto {
 
 	@IsString()
 	name!: string;
+
+	@IsNumber()
+	number_of_floors!: number;
 
 	@IsString()
 	@IsOptional()

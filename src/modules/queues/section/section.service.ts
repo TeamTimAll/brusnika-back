@@ -29,9 +29,10 @@ export class SectionQueueService {
 			.values({
 				ext_id: section.ext_id,
 				name: section.name,
+				number_of_floors: section.number_of_floors,
 				building_id: building?.id,
 			})
-			.orUpdate(["name", "building_id"], ["ext_id"])
+			.orUpdate(["name", "building_id", "number_of_floors"], ["ext_id"])
 			.execute();
 	}
 }
