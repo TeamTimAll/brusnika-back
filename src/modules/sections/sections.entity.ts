@@ -23,6 +23,9 @@ export class SectionEntity extends BaseEntity {
 	@Column({ type: "integer", nullable: true })
 	building_id?: number;
 
+	@Column({ nullable: true })
+	number_of_floors?: number;
+
 	@OneToMany(() => PremiseEntity, (PremisesEntity) => PremisesEntity.section)
 	premises?: PremiseEntity[];
 }

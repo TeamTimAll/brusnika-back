@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsInt, IsOptional } from "class-validator";
+import { Transform, Type } from "class-transformer";
+import { IsBoolean, IsInt, IsOptional } from "class-validator";
 
 export class ReadAllBannerNewsDto {
 	@ApiPropertyOptional({
@@ -10,4 +10,10 @@ export class ReadAllBannerNewsDto {
 	@Type(() => Number)
 	@IsOptional()
 	city_id?: number;
+
+	@ApiPropertyOptional()
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_draft?: boolean;
 }
