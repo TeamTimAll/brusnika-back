@@ -11,4 +11,4 @@ import { SectionQueueController } from "./section.controller";
 	controllers: [SectionQueueController],
 	providers: [SectionQueueService],
 })
-export class PremiseQueueModule {}
+export class SectionQueueModule {}
