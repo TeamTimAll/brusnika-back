@@ -15,7 +15,7 @@ export enum TaskType {
 
 export enum TaskStatus {
 	PENDING = "Ожидание",
-	ARCHIVE = "Архив",
+	CLOSE = "Закрытый",
 }
 
 @Entity({ name: "tasks" })
@@ -65,9 +65,6 @@ export class TasksEntity extends BaseEntity {
 	})
 	@JoinColumn({ name: "project_id" })
 	project!: ProjectEntity;
-
-	@Column({ nullable: true, type: "varchar" })
-	result?: string;
 
 	@Column({
 		type: "timestamp without time zone",

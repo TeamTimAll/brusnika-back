@@ -348,83 +348,86 @@ export class LeadsService {
 
 			if (!dto.is_finished) {
 				await Promise.all(
-					Object.values([
-						LeadState.ACTIVE,
-						LeadState.IN_PROGRESS,
-					]).map(async (state) => {
-						const [leads, leadsCount] =
-							await this.leadRepository.findAndCount({
-								select: {
-									project: {
-										id: true,
-										name: true,
+					[LeadState.ACTIVE, LeadState.IN_PROGRESS].map(
+						async (state) => {
+							const [leads, leadsCount] =
+								await this.leadRepository.findAndCount({
+									select: {
+										project: {
+											id: true,
+											name: true,
+										},
+										client: {
+											id: true,
+											fullname: true,
+											phone_number: true,
+										},
+										agent: {
+											id: true,
+											fullName: true,
+										},
+										manager: {
+											id: true,
+											fullName: true,
+										},
+										premise: {
+											id: true,
+											type: true,
+											rooms: true,
+											floor: true,
+											price: true,
+										},
+										lead_ops: {
+											id: true,
+											status: true,
+										},
 									},
-									client: {
-										id: true,
-										fullname: true,
-										phone_number: true,
+									where: {
+										project_id: dto.project_id,
+										premise: {
+											type: dto.premise_type,
+										},
+										...filter,
+										state,
+										client: {
+											id: dto.client_id,
+										},
+										current_status: dto.status,
 									},
-									agent: {
-										id: true,
-										fullName: true,
+									relations: {
+										lead_ops: true,
+										client: true,
+										agent: true,
+										manager: true,
+										premise: true,
+										project: true,
 									},
-									manager: {
-										id: true,
-										fullName: true,
+									order: {
+										created_at: dto.createdAt ?? "ASC",
 									},
-									premise: {
-										id: true,
-										type: true,
-										rooms: true,
-										floor: true,
-										price: true,
-									},
-									lead_ops: {
-										id: true,
-										status: true,
-									},
-								},
-								where: {
-									project_id: dto.project_id,
-									premise: {
-										type: dto.premise_type,
-									},
-									...filter,
-									state,
-									client: {
-										id: dto.client_id,
-									},
-									current_status: dto.status,
-								},
-								relations: {
-									lead_ops: true,
-									client: true,
-									agent: true,
-									manager: true,
-									premise: true,
-									project: true,
-								},
-								order: {
-									created_at: dto.createdAt ?? "ASC",
-								},
-								take: dto.limit,
-								skip: pageSize,
+									take: dto.limit,
+									skip: pageSize,
+								});
+
+							const metaData = BaseDto.create<LeadsEntity[]>();
+
+							metaData.setPagination(
+								leadsCount,
+								dto.page,
+								dto.limit,
+							);
+
+							response.push({ state, data: leads });
+							links.push({
+								state,
+								...metaData.getPagination(),
 							});
-
-						const metaData = BaseDto.create<LeadsEntity[]>();
-
-						metaData.setPagination(leadsCount, dto.page, dto.limit);
-
-						response.push({ state, data: leads });
-						links.push({
-							state,
-							...metaData.getPagination(),
-						});
-					}),
+						},
+					),
 				);
 			} else {
 				await Promise.all(
-					Object.values([LeadState.COMPLETE, LeadState.FAILED]).map(
+					[LeadState.COMPLETE, LeadState.FAILED].map(
 						async (state) => {
 							const [leads, leadsCount] =
 								await this.leadRepository.findAndCount({

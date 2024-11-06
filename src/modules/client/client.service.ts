@@ -233,6 +233,24 @@ export class ClientService {
 				"p2",
 				"p2.id = l.premise_id",
 			)
+			.leftJoinAndMapOne(
+				"l.manager",
+				UserEntity,
+				"m",
+				"m.id = l.manager_id",
+			)
+			.leftJoinAndMapOne(
+				"l.client",
+				ClientEntity,
+				"c2",
+				"c2.id = l.client_id",
+			)
+			.leftJoinAndMapOne(
+				"l.agent",
+				UserEntity,
+				"a",
+				"a.id = l.manager_id",
+			)
 			.leftJoinAndMapOne("l.agent", UserEntity, "u", "u.id = l.agent_id")
 			.leftJoinAndMapOne(
 				"p2.building",
@@ -273,7 +291,10 @@ export class ClientService {
 				"p2.price",
 			])
 			.addSelect(["b.id", "b.name"])
-			.addSelect(["u.id", "u.fullName"]);
+			.addSelect(["u.id", "u.fullName"])
+			.addSelect(["m.id", "m.fullName"])
+			.addSelect(["a.id", "a.fullName"])
+			.addSelect(["c2.id", "c2.fullname", "c2.phone_number"]);
 
 		if (dto.sort_by) {
 			queryBuilder = queryBuilder.orderBy(

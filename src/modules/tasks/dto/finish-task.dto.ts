@@ -8,7 +8,7 @@ export class FinishTaskDto {
 	@ApiProperty()
 	@IsString()
 	@IsNotEmpty()
-	result!: string;
+	comment!: string;
 }
 
 export class FinishTaskMetaDataDto extends BaseDto<FinishTaskDto> {

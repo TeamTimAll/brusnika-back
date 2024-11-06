@@ -64,7 +64,7 @@ export class TasksService {
 
 		const [tasks, count] = await this.taskRepository.findAndCount({
 			where: {
-				status: payload.is_archive ? TaskStatus.ARCHIVE : undefined,
+				status: payload.is_closed ? TaskStatus.CLOSE : undefined,
 			},
 			select: {
 				id: true,
@@ -91,8 +91,8 @@ export class TasksService {
 		const task = await this.readOne(id);
 
 		const updatedTask = this.taskRepository.merge(task, {
-			result: payload.result,
-			status: TaskStatus.ARCHIVE,
+			status: TaskStatus.CLOSE,
+			comment: payload.comment,
 		});
 
 		return await this.taskRepository.save(updatedTask);
