@@ -9,6 +9,7 @@ import { PremiseQueueModule } from "./premise/premise.module";
 import { SectionQueueModule } from "./section/section.module";
 import { ClientQueueModule } from "./client/client.module";
 import { LeadQueueModule } from "./lead/lead.module";
+import { UserQueueModule } from "./user/user.module";
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { LeadQueueModule } from "./lead/lead.module";
 		SectionQueueModule,
 		ClientQueueModule,
 		LeadQueueModule,
+		UserQueueModule,
 	],
 })
 export class QueueSecuredModule {}
