@@ -280,6 +280,7 @@ export class ClientService {
 				"l.lead_number",
 				"l.state",
 				"l.created_at",
+				"l.updated_at",
 			])
 			.addSelect(["p.id", "p.name"])
 			.addSelect([

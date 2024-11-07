@@ -33,6 +33,7 @@ export class PremiseQueueService {
 			.insert()
 			.values({
 				ext_id: premise.ext_id,
+				name: premise.name,
 				type: premise.type,
 				building_id: building.id,
 				price: premise.price,
@@ -51,6 +52,7 @@ export class PremiseQueueService {
 			})
 			.orUpdate(
 				[
+					"name",
 					"type",
 					"price",
 					"size",

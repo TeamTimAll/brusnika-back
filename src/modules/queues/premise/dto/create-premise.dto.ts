@@ -17,6 +17,9 @@ export class PremiseDto {
 	@IsString()
 	ext_id!: string;
 
+	@IsString()
+	name!: string;
+
 	@IsEnum(PremisesType)
 	type!: PremisesType;
 
