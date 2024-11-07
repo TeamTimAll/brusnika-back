@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { LessThan, Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { UserService } from "../user/user.service";
@@ -62,10 +62,15 @@ export class TasksService {
 	async readAll(payload: ReadAllTasksDto) {
 		const pageSize = (payload.page - 1) * payload.limit;
 
+		const whereCondition = payload.is_archived
+			? {
+					status: TaskStatus.CLOSE,
+					end_date: LessThan(new Date()),
+				}
+			: {};
+
 		const [tasks, count] = await this.taskRepository.findAndCount({
-			where: {
-				status: payload.is_closed ? TaskStatus.CLOSE : undefined,
-			},
+			where: whereCondition,
 			select: {
 				id: true,
 				task_type: true,

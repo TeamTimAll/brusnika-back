@@ -17,5 +17,5 @@ export class ReadAllTasksDto {
 	@Transform(({ value }) => value === "true")
 	@IsBoolean()
 	@IsOptional()
-	is_closed?: boolean;
+	is_archived?: boolean;
 }

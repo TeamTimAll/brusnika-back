@@ -14,8 +14,10 @@ export enum TaskType {
 }
 
 export enum TaskStatus {
-	PENDING = "Ожидание",
-	CLOSE = "Закрытый",
+	CREATED = "Создана",
+	PENDING = "В работе",
+	CLOSE = "Завершена",
+	CANCEL = "Отменена",
 }
 
 @Entity({ name: "tasks" })
