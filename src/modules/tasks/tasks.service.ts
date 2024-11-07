@@ -7,8 +7,14 @@ import { UserService } from "../user/user.service";
 import { ClientService } from "../client/client.service";
 import { LeadsService } from "../leads/leads.service";
 import { ProjectService } from "../projects/projects.service";
+import { Order } from "../../constants";
 
-import { CreateTaskDto, FinishTaskDto, ReadAllTasksDto } from "./dto";
+import {
+	CreateTaskDto,
+	FinishTaskDto,
+	ReadAllTasksDto,
+	TaskSortBy,
+} from "./dto";
 import { TaskNotFoundError } from "./errors/task-not-found.error";
 import { TasksEntity, TaskStatus } from "./tasks.entity";
 
@@ -69,17 +75,46 @@ export class TasksService {
 				}
 			: {};
 
+		let orderCondition = {};
+		if (payload.sort_by === TaskSortBy.CLIENT_FULLNAME) {
+			orderCondition = {
+				client: {
+					fullname:
+						payload.order_by === Order.DESC
+							? Order.DESC
+							: Order.ASC,
+				},
+			};
+		} else if (payload.sort_by === TaskSortBy.PROJECT_NAME) {
+			orderCondition = {
+				project: {
+					name:
+						payload.order_by === Order.DESC
+							? Order.DESC
+							: Order.ASC,
+				},
+			};
+		} else {
+			orderCondition = {
+				created_at:
+					payload.order_by === Order.DESC ? Order.DESC : Order.ASC,
+			};
+		}
 		const [tasks, count] = await this.taskRepository.findAndCount({
 			where: whereCondition,
 			select: {
 				id: true,
 				task_type: true,
 				comment: true,
+				status: true,
+				start_date: true,
 				end_date: true,
 				client: { id: true, fullname: true },
 				project: { id: true, name: true },
+				created_at: true,
 			},
 			relations: { client: true, project: true },
+			order: orderCondition,
 			skip: pageSize,
 			take: payload.limit,
 		});

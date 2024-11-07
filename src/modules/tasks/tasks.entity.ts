@@ -81,6 +81,6 @@ export class TasksEntity extends BaseEntity {
 	})
 	start_date!: Date;
 
-	@Column({ type: "varchar", enum: TaskStatus, default: TaskStatus.PENDING })
+	@Column({ type: "varchar", enum: TaskStatus, default: TaskStatus.CREATED })
 	status!: TaskStatus;
 }
