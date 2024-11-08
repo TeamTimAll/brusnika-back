@@ -99,6 +99,14 @@ export class TasksService {
 					currentDate: new Date(),
 				})
 				.orWhere("task.status = :status", { status: TaskStatus.CLOSE });
+		} else {
+			query
+				.where("task.end_date >= :currentDate", {
+					currentDate: new Date(),
+				})
+				.andWhere("task.status != :status", {
+					status: TaskStatus.CLOSE,
+				});
 		}
 
 		switch (payload.sort_by) {
