@@ -49,6 +49,7 @@ export class PremiseQueueService {
 				mortagePayment: premise.mortagePayment,
 				section_id: section?.id,
 				purchase_option: premise.purchase_option,
+				feature: premise.feature,
 			})
 			.orUpdate(
 				[
@@ -67,6 +68,7 @@ export class PremiseQueueService {
 					"mortage_payment",
 					"section_id",
 					"purchase_option",
+					"feature",
 				] as Array<keyof PremiseDto>,
 				["ext_id"],
 			)

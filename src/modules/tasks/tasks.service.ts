@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { LessThan, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { UserService } from "../user/user.service";
@@ -68,60 +68,56 @@ export class TasksService {
 	async readAll(payload: ReadAllTasksDto) {
 		const pageSize = (payload.page - 1) * payload.limit;
 
-		const whereCondition = payload.is_archived
-			? {
-					status: TaskStatus.CLOSE,
-					end_date: LessThan(new Date()),
-				}
-			: {};
+		const query = this.taskRepository
+			.createQueryBuilder("task")
+			.leftJoinAndSelect("task.client", "client")
+			.leftJoinAndSelect("task.project", "project")
+			.select([
+				"task.id",
+				"task.task_type",
+				"task.comment",
+				"task.status",
+				"task.start_date",
+				"task.end_date",
+				"task.created_at",
+				"client.id",
+				"client.fullname",
+				"project.id",
+				"project.name",
+			])
+			.skip(pageSize)
+			.take(payload.limit);
 
-		let orderCondition = {};
-		if (payload.sort_by === TaskSortBy.CLIENT_FULLNAME) {
-			orderCondition = {
-				client: {
-					fullname:
-						payload.order_by === Order.DESC
-							? Order.DESC
-							: Order.ASC,
-				},
-			};
-		} else if (payload.sort_by === TaskSortBy.PROJECT_NAME) {
-			orderCondition = {
-				project: {
-					name:
-						payload.order_by === Order.DESC
-							? Order.DESC
-							: Order.ASC,
-				},
-			};
-		} else {
-			orderCondition = {
-				created_at:
-					payload.order_by === Order.DESC ? Order.DESC : Order.ASC,
-			};
+		if (payload.is_archived) {
+			query
+				.where("task.end_date < :currentDate", {
+					currentDate: new Date(),
+				})
+				.orWhere("task.status = :status", { status: TaskStatus.CLOSE });
 		}
-		const [tasks, count] = await this.taskRepository.findAndCount({
-			where: whereCondition,
-			select: {
-				id: true,
-				task_type: true,
-				comment: true,
-				status: true,
-				start_date: true,
-				end_date: true,
-				client: { id: true, fullname: true },
-				project: { id: true, name: true },
-				created_at: true,
-			},
-			relations: { client: true, project: true },
-			order: orderCondition,
-			skip: pageSize,
-			take: payload.limit,
-		});
+
+		switch (payload.sort_by) {
+			case TaskSortBy.CLIENT_FULLNAME:
+				query.orderBy("client.fullname", payload.order_by || Order.ASC);
+				break;
+			case TaskSortBy.PROJECT_NAME:
+				query.orderBy("project.name", payload.order_by || Order.ASC);
+				break;
+			case TaskSortBy.END_DATE:
+				query.orderBy("task.end_date", payload.order_by || Order.ASC);
+				break;
+			case TaskSortBy.TASK_TYPE:
+				query.orderBy("task.task_type", payload.order_by || Order.ASC);
+				break;
+			default:
+				query.orderBy("task.created_at", payload.order_by || Order.ASC);
+				break;
+		}
+
+		const [tasks, count] = await query.getManyAndCount();
 
 		const metaData = BaseDto.create<TasksEntity[]>();
 		metaData.setPagination(count, payload.page, payload.limit);
-
 		metaData.data = tasks;
 
 		return metaData;
