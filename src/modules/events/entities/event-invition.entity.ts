@@ -15,6 +15,9 @@ export class EventInvitationEntity extends BaseEntity {
 	@Column({ type: "boolean", nullable: true })
 	is_accepted?: boolean;
 
+	@Column({ type: "boolean", nullable: true })
+	is_invited?: boolean;
+
 	@ManyToOne(() => EventsEntity)
 	@JoinColumn({ name: "event_id" })
 	event!: EventsEntity;

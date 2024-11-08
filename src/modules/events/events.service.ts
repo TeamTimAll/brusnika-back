@@ -141,9 +141,11 @@ export class EventsService {
 		const foundEvent = await this.selectEventQuery(user)
 			.where("e.id = :id", { id })
 			.getOne();
+
 		if (!foundEvent) {
 			throw new EventsNotFoundError(`id: ${id}`);
 		}
+
 		const isViewed = await this.eventViewsRepository.findOne({
 			where: {
 				event_id: id,
@@ -157,6 +159,7 @@ export class EventsService {
 			});
 			await this.eventViewsRepository.save(eventViews);
 		}
+
 		return foundEvent;
 	}
 
@@ -352,6 +355,7 @@ export class EventsService {
 				"contacts.phone",
 				"invitation.id",
 				"invitation.is_accepted",
+				"invitation.is_invited",
 				"user.id",
 				"user.avatar",
 				"user.fullName",
@@ -580,6 +584,7 @@ export class EventsService {
 				this.eventInvitationRepository.create({
 					user_id: u.id,
 					event_id: foundEvent.id,
+					is_invited: true,
 				}),
 			);
 		});
@@ -638,6 +643,7 @@ export class EventsService {
 		const invitation = this.eventInvitationRepository.create({
 			user_id: user.user_id,
 			event_id: foundEvent.id,
+			is_invited: false,
 		});
 		return await this.eventInvitationRepository.save(invitation);
 	}
