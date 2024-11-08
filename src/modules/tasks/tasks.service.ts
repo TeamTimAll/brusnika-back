@@ -45,9 +45,14 @@ export class TasksService {
 		const findOne = await this.taskRepository.findOne({
 			where: { id },
 			select: {
-				client: { id: true, fullname: true, phone_number: true },
+				client: {
+					id: true,
+					fullname: true,
+					phone_number: true,
+					email: true,
+				},
 				manager: { id: true, fullName: true },
-				lead: { id: true },
+				lead: { id: true, current_status: true },
 				project: { id: true, name: true },
 			},
 			relations: {

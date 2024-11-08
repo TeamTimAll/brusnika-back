@@ -27,6 +27,7 @@ export class ClientQueueService {
 				ext_id: client.ext_id,
 				fullname: client.fullname,
 				phone_number: client.phone_number,
+				email: client.email,
 				actived_date: client.actived_date,
 				comment: client.comment,
 				confirmation_type: client.confirmation_type,
@@ -40,6 +41,7 @@ export class ClientQueueService {
 				[
 					"fullname",
 					"phone_number",
+					"email",
 					"actived_date",
 					"comment",
 					"confirmation_type",

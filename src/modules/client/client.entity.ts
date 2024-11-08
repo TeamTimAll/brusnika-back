@@ -26,6 +26,9 @@ export class ClientEntity extends BaseEntity {
 	@Column({ type: "varchar", length: 15 })
 	phone_number!: string;
 
+	@Column({ type: "text", nullable: true })
+	email?: string;
+
 	@Column({
 		type: "timestamp",
 		nullable: true,

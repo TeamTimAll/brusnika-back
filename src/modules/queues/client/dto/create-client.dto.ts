@@ -15,6 +15,10 @@ export class ClientDto {
 	@IsString()
 	fullname!: string;
 
+	@IsString()
+	@IsOptional()
+	email?: string;
+
 	@IsMobilePhone()
 	phone_number!: string;
 
