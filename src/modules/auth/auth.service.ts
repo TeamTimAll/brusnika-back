@@ -10,6 +10,7 @@ import { UserFillDataDto } from "../user/dtos/UserFillData.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserRegisterStatus, UserStatus } from "../user/user.entity";
 import { UserService } from "../user/user.service";
+// import { randomOtp } from "../../lib/firebase/random-number";
 
 import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
 import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
@@ -29,6 +30,7 @@ import { UserPasswordOrEmailNotCorrectError } from "./errors/UserPasswordOrEmail
 import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "./errors/VerificationExists.error";
+import { SmsService } from "./sms.service";
 
 @Injectable()
 export class AuthService {
@@ -37,6 +39,7 @@ export class AuthService {
 		private userService: UserService,
 		private agenciesService: AgencyService,
 		private cityService: CityService,
+		private smsService: SmsService,
 	) {}
 
 	async agentRegister(body: UserCreateDto): Promise<AuthResponeWithData> {
@@ -60,11 +63,16 @@ export class AuthService {
 		}
 
 		const randomNumber = 111111;
+		// const randomNumber = randomOtp();
 
 		await this.userService.repository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
+
+		if (user.phone) {
+			await this.smsService.sendMessage(randomNumber, user.phone);
+		}
 
 		return {
 			user_id: user.id,
@@ -269,11 +277,16 @@ export class AuthService {
 		}
 
 		const randomNumber = 111111;
+		// const randomNumber = randomOtp();
 
 		await this.userService.repository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
+
+		if (user.phone) {
+			await this.smsService.sendMessage(randomNumber, user.phone);
+		}
 
 		return {
 			user_id: user.id,

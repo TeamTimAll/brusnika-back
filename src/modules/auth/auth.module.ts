@@ -9,6 +9,7 @@ import { UserModule } from "../user/user.module";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+import { SmsService } from "./sms.service";
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { AuthService } from "./auth.service";
 		UserModule,
 		AgenciesModule,
 		CityModule,
+		SmsService,
 	],
 	controllers: [AuthController],
 	providers: [AuthService],

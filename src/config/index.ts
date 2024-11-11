@@ -36,6 +36,8 @@ export interface IConfig {
 	RMQ_CLIENT_PASS: string | undefined;
 	RMQ_CLIENT_HOST: string | undefined;
 	RMQ_CLIENT_PORT: number | undefined;
+	// SMS
+	SMS_API_URL: string;
 }
 
 export class ConfigManager {
@@ -65,6 +67,7 @@ export class ConfigManager {
 		RMQ_CLIENT_HOST: process.env.RMQ_CLIENT_HOST,
 		RMQ_CLIENT_PORT:
 			(process.env.RMQ_CLIENT_PORT as number | undefined) ?? 5672,
+		SMS_API_URL: process.env.SMS_API_URL as string,
 	};
 
 	public static get databaseConfig(): DatabaseConfig {
@@ -96,6 +99,7 @@ export class ConfigManager {
 		RMQ_CLIENT_PASS: Joi.string().optional(),
 		RMQ_CLIENT_HOST: Joi.string().optional(),
 		RMQ_CLIENT_PORT: Joi.number().optional(),
+		SMS_API_URL: Joi.string().optional(),
 	});
 
 	static init() {
