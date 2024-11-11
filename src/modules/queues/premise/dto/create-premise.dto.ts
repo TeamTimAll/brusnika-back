@@ -1,10 +1,13 @@
 import {
 	IsArray,
 	IsEnum,
+	IsNotEmpty,
 	IsNumber,
 	IsOptional,
 	IsString,
+	ValidateNested,
 } from "class-validator";
+import { Type } from "class-transformer";
 
 import {
 	CommercialStatus,
@@ -80,4 +83,11 @@ export class PremiseDto {
 	@IsEnum(PremiseFeature, { each: true })
 	@IsOptional()
 	feature?: PremiseFeature[];
+}
+
+export class PremisesDto {
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => PremiseDto)
+	premises!: PremiseDto[];
 }
