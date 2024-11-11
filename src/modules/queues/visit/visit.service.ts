@@ -23,18 +23,19 @@ export class VisitQueueService {
 		private readonly projectService: ProjectService,
 	) {}
 
-	makeRequest(visit: VisitQueueDto) {
+	async makeRequest(visit: VisitQueueDto) {
 		const data: Pick<BaseDto<VisitQueueDto>, "data"> = {
 			data: visit,
 		};
-		this.queueService.send("request_visit", data);
+		await this.queueService.send("url", data);
 	}
 
-	requestStatusChange(dto: VisitStatusChangeDto) {
+	async requestStatusChange(dto: VisitStatusChangeDto) {
 		const data: Pick<BaseDto<VisitStatusChangeDto>, "data"> = {
 			data: dto,
 		};
-		this.queueService.send("request_visit_status_change", data);
+
+		await this.queueService.send("url", data);
 	}
 
 	async createFormEntity(visit: VisitsEntity): Promise<VisitQueueDto> {

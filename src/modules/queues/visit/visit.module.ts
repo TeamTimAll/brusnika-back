@@ -5,7 +5,7 @@ import { ProjectsModule } from "../../projects/projects.module";
 import { UserModule } from "../../user/user.module";
 import { QueueModule } from "../queue.module";
 
-import { VisitQueueService } from "./visit_queue.service";
+import { VisitQueueService } from "./visit.service";
 
 @Module({
 	imports: [QueueModule, UserModule, ClientModule, ProjectsModule],

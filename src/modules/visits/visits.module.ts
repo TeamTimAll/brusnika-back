@@ -4,7 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "../../modules/user/user.module";
 import { ClientModule } from "../client/client.module";
 import { ProjectsModule } from "../projects/projects.module";
-import { VisitQueueModule } from "../queues/visit_queue/visit_queue.module";
+import { VisitQueueModule } from "../queues/visit/visit.module";
 
 import { VisitsController } from "./visits.controller";
 import { VisitsEntity } from "./visits.entity";

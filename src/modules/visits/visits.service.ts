@@ -7,7 +7,7 @@ import { PickBySelect } from "interfaces/pick_by_select";
 
 import { ClientService } from "../client/client.service";
 import { ProjectService } from "../projects/projects.service";
-import { VisitQueueService } from "../queues/visit_queue/visit_queue.service";
+import { VisitQueueService } from "../queues/visit/visit.service";
 import { UserService } from "../user/user.service";
 
 import { CreateVisitsDto } from "./dtos/CreateVisits.dto";

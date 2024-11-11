@@ -1,6 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
+import axios from "axios";
 
 import { BaseDto } from "../../common/base/base_dto";
+import { encrypt } from "../../lib/crypto";
 
 @Injectable()
 export class QueueService {
@@ -8,13 +10,12 @@ export class QueueService {
 
 	constructor() {}
 
-	public send<T extends Pick<BaseDto, "data"> & Partial<BaseDto>>(
-		pattern: string,
+	public async send<T extends Pick<BaseDto, "data"> & Partial<BaseDto>>(
+		url: string,
 		data: T,
 	) {
-		console.log(pattern);
-
 		this.logger.log(JSON.stringify(data));
-		return;
+
+		return await axios.post(url, encrypt(JSON.stringify(data)));
 	}
 }

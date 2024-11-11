@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { FindOptionsSelect } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
@@ -9,7 +9,7 @@ import { ClientService } from "../client/client.service";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesService } from "../premises/premises.service";
-import { BookingQueueService } from "../queues/booking_queue/booking_queue.service";
+import { BookingQueueService } from "../queues/booking/booking.service";
 import { SettingsService } from "../settings/settings.service";
 
 import { BookingRepository } from "./booking.repository";
@@ -34,6 +34,7 @@ export class BookingsService {
 		@Inject() private premiseService: PremisesService,
 		@Inject() private clientService: ClientService,
 		@Inject() private settingsService: SettingsService,
+		@Inject(forwardRef(() => BookingQueueService))
 		private bookingQueueService: BookingQueueService,
 	) {}
 
@@ -64,7 +65,7 @@ export class BookingsService {
 		booking.agent_id = user.user_id;
 		booking.create_by_id = user.user_id;
 
-		this.bookingQueueService.makeRequest(
+		await this.bookingQueueService.makeRequest(
 			await this.bookingQueueService.createFormEntity(booking),
 		);
 

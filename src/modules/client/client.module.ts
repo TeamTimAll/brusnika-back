@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
-import { ClientQueueModule } from "../queues/clients_queue/client_queue.module";
+import { ClientQueueModule } from "../queues/client/client.module";
 
 import { ClientController } from "./client.controller";
 import { ClientEntity } from "./client.entity";
@@ -12,7 +12,7 @@ import { ClientService } from "./client.service";
 	imports: [
 		TypeOrmModule.forFeature([ClientEntity]),
 		UserModule,
-		ClientQueueModule,
+		forwardRef(() => ClientQueueModule),
 	],
 	controllers: [ClientController],
 	providers: [ClientService],
