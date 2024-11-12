@@ -22,9 +22,8 @@ import { SmsService } from "./sms.service";
 		UserModule,
 		AgenciesModule,
 		CityModule,
-		SmsService,
 	],
 	controllers: [AuthController],
-	providers: [AuthService],
+	providers: [AuthService, SmsService],
 })
 export class AuthModule {}
