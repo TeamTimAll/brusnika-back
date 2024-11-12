@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, FindOptionsSelect, ILike, Repository } from "typeorm";
 
@@ -10,7 +10,7 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadsEntity, LeadState } from "../leads/leads.entity";
 import { PremiseEntity } from "../premises/premises.entity";
 import { ProjectEntity } from "../projects/project.entity";
-import { ClientQueueService } from "../queues/client/client.service";
+// import { ClientQueueService } from "../queues/client/client.service";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 import { BuildingEntity } from "../buildings/buildings.entity";
@@ -31,8 +31,8 @@ export class ClientService {
 		@InjectRepository(ClientEntity)
 		private clientRepository: Repository<ClientEntity>,
 		private userService: UserService,
-		@Inject(forwardRef(() => ClientQueueService))
-		private clinetQueueService: ClientQueueService,
+		// @Inject(forwardRef(() => ClientQueueService))
+		// private clinetQueueService: ClientQueueService,
 	) {}
 
 	get repository(): Repository<ClientEntity> {
@@ -71,9 +71,9 @@ export class ClientService {
 		let client = this.clientRepository.create(dto);
 		client = await this.clientRepository.save(client);
 
-		await this.clinetQueueService.send(
-			await this.clinetQueueService.createFromEntity(client),
-		);
+		// await this.clinetQueueService.send(
+		// 	await this.clinetQueueService.createFromEntity(client),
+		// );
 
 		return client;
 	}

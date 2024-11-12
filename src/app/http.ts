@@ -46,6 +46,7 @@ export class Http {
 			),
 		);
 		this.app.enableVersioning();
+		this.app.enableCors();
 
 		this.app.useGlobalFilters(
 			new HttpValidationErrorFilter(),

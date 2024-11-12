@@ -7,7 +7,7 @@ import { PickBySelect } from "interfaces/pick_by_select";
 
 import { ClientService } from "../client/client.service";
 import { ProjectService } from "../projects/projects.service";
-import { VisitQueueService } from "../queues/visit/visit.service";
+// import { VisitQueueService } from "../queues/visit/visit.service";
 import { UserService } from "../user/user.service";
 
 import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
@@ -24,7 +24,7 @@ export class VisitsService {
 		@Inject() private projectService: ProjectService,
 		@Inject() private clientService: ClientService,
 		@Inject() private userService: UserService,
-		@Inject() private visitQueueService: VisitQueueService,
+		// @Inject() private visitQueueService: VisitQueueService,
 	) {}
 
 	get repository(): Repository<VisitsEntity> {
@@ -44,9 +44,9 @@ export class VisitsService {
 		let visit = this.visitsRepository.create(dto);
 		visit = await this.visitsRepository.save(visit);
 
-		this.visitQueueService.makeRequest(
-			await this.visitQueueService.createFormEntity(visit),
-		);
+		// await this.visitQueueService.makeRequest(
+		// 	await this.visitQueueService.createFormEntity(visit),
+		// );
 
 		return visit;
 	}
