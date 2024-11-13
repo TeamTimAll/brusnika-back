@@ -8,8 +8,10 @@ import { ConfigManager } from "../../config";
 @Injectable()
 export class SmsService {
 	private readonly smsApi: string;
+	private readonly smsApiKey: string;
 	constructor() {
 		this.smsApi = ConfigManager.config.SMS_API_URL;
+		this.smsApiKey = ConfigManager.config.SMS_API_KEY;
 	}
 
 	async sendMessage(code: number, phone_number: string) {
@@ -32,7 +34,7 @@ export class SmsService {
 			body,
 			{
 				headers: {
-					"X-API-KEY": "aeea1f99-fee0-49f2-ad90-843cb4d7162c",
+					"X-API-KEY": this.smsApiKey,
 				},
 			},
 		);
