@@ -29,6 +29,10 @@ export class TasksService {
 		private readonly projectService: ProjectService,
 	) {}
 
+	get repository(): Repository<TasksEntity> {
+		return this.taskRepository;
+	}
+
 	async create(payload: CreateTaskDto) {
 		await this.userService.checkExists(payload.manager_id);
 		await this.clientService.checkExists(payload.client_id);
