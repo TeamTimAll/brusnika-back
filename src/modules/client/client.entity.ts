@@ -23,7 +23,7 @@ export class ClientEntity extends BaseEntity {
 	@Column({ type: "varchar", length: 255 })
 	fullname!: string;
 
-	@Column({ type: "varchar", length: 15 })
+	@Column({ type: "varchar", length: 255 })
 	phone_number!: string;
 
 	@Column({ type: "text", nullable: true })
