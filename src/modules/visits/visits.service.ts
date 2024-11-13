@@ -44,9 +44,12 @@ export class VisitsService {
 		let visit = this.visitsRepository.create(dto);
 		visit = await this.visitsRepository.save(visit);
 
-		await this.visitQueueService.makeRequest(
-			await this.visitQueueService.createFormEntity(visit),
-		);
+		// eslint-disable-next-line no-constant-condition
+		if (false) {
+			await this.visitQueueService.makeRequest(
+				await this.visitQueueService.createFormEntity(visit),
+			);
+		}
 
 		return visit;
 	}

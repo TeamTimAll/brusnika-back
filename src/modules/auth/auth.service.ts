@@ -70,8 +70,9 @@ export class AuthService {
 			verification_code_sent_date: new Date(),
 		});
 
-		if (user.phone) {
-			await this.smsService.sendMessage(randomNumber, user.phone);
+		// eslint-disable-next-line no-constant-condition
+		if (user.phone && false) {
+			await this.smsService.sendMessage(randomNumber, "user.phone");
 		}
 
 		return {
@@ -284,8 +285,9 @@ export class AuthService {
 			verification_code_sent_date: new Date(),
 		});
 
-		if (user.phone) {
-			await this.smsService.sendMessage(randomNumber, user.phone);
+		// eslint-disable-next-line no-constant-condition
+		if (user.phone && false) {
+			await this.smsService.sendMessage(randomNumber, "user.phone");
 		}
 
 		return {

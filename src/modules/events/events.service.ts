@@ -169,23 +169,26 @@ export class EventsService {
 		if (!(user.role === RoleType.ADMIN && dto.include_non_actives)) {
 			eventsQuery = eventsQuery.andWhere("e.is_active IS TRUE");
 		}
-		if (dto.query_type !== QueryType.ALL) {
+
+		if (dto.date) {
+			eventsQuery = eventsQuery.andWhere("e.date = :date", {
+				date: dto.date,
+			});
+		} else if (dto.query_type === QueryType.FEATURE) {
 			const today_date = new Date();
+
 			eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
 				today_date: today_date,
 			});
 		}
+
 		if (dto.is_banner) {
 			eventsQuery = eventsQuery.andWhere("e.is_banner IS TRUE");
 		}
+
 		if (dto.city_id) {
 			eventsQuery = eventsQuery.andWhere("e.city_id = :city_id", {
 				city_id: dto.city_id,
-			});
-		}
-		if (dto.date) {
-			eventsQuery = eventsQuery.andWhere("e.date = :date", {
-				date: dto.date,
 			});
 		}
 		if (dto.format) {
