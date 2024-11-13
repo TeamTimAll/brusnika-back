@@ -27,8 +27,8 @@ export class LeadDto {
 	@IsString()
 	premise_ext_id!: string;
 
-	@IsNumber()
-	lead_number!: number;
+	@IsString()
+	lead_number!: string;
 
 	@IsString()
 	project_ext_id!: string;

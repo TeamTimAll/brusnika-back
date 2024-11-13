@@ -1,3 +1,5 @@
+import { randomUUID } from "crypto";
+
 import { Injectable } from "@nestjs/common";
 import axios from "axios";
 
@@ -10,23 +12,10 @@ export class SmsService {
 		this.smsApi = ConfigManager.config.SMS_API_URL;
 	}
 
-	private getToken(): string {
-		// private async getToken(): Promise<string> {
-		// const { data: result } = await axios.post(`${this.smsApi}/auth/login`, {
-		// 	email: this.smsEmail,
-		// 	password: this.smsPassword,
-		// });
-
-		// return result.data.token;
-
-		return "string";
-	}
-
 	async sendMessage(code: number, phone_number: string) {
-		// const token = await this.getToken();
-		const token = this.getToken();
-
 		const body = {
+			requestId: randomUUID(),
+			cascadeId: "5190",
 			subscriberFilter: {
 				address: phone_number,
 				type: "PHONE",
@@ -43,7 +32,7 @@ export class SmsService {
 			body,
 			{
 				headers: {
-					Authorization: `Bearer ${token}`,
+					"X-API-KEY": "aeea1f99-fee0-49f2-ad90-843cb4d7162c",
 				},
 			},
 		);

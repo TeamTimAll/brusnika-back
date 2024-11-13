@@ -83,8 +83,8 @@ export class LeadsEntity extends BaseEntity {
 	})
 	sign_nps_passed!: boolean;
 
-	@Column({ default: 0, type: "integer" })
-	lead_number!: number;
+	@Column({ default: "0", type: "text" })
+	lead_number!: string;
 
 	@Column({ default: LeadState.ACTIVE, enum: LeadState })
 	state!: LeadState;

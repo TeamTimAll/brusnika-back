@@ -181,7 +181,7 @@ enum LeadState {
 			"project_ext_id": "string",
 			"premise_ext_id": "string",
 			"fee": "number",
-			"lead_number": "number",
+			"lead_number": "string",
 			"state": "LeadState"
 		}
 	},

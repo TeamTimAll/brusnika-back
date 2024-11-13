@@ -28,7 +28,7 @@ export class LeadQueueDto {
 	premise_ext_id!: string;
 
 	@IsNumber()
-	lead_number!: number;
+	lead_number!: string;
 
 	@IsString()
 	project_ext_id!: string;

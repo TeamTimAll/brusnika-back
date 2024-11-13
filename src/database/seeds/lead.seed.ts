@@ -110,7 +110,7 @@ function createLead(
 		project_id: project_id,
 		premise_id: premise_id,
 		current_status: current_status,
-		lead_number: faker.number.int({ min: 1, max: 100 }),
+		lead_number: faker.string.numeric(7),
 		state: state,
 		fee: faker.number.int({ min: 100000, max: 999999 }),
 		comment: faker.lorem.words({ min: 5, max: 10 }),

@@ -18,7 +18,10 @@ export class EventInvitationEntity extends BaseEntity {
 	@Column({ type: "boolean", nullable: true })
 	is_invited?: boolean;
 
-	@ManyToOne(() => EventsEntity)
+	@ManyToOne(() => EventsEntity, (e) => e.invited_users, {
+		onDelete: "CASCADE",
+		onUpdate: "NO ACTION",
+	})
 	@JoinColumn({ name: "event_id" })
 	event!: EventsEntity;
 

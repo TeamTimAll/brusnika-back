@@ -19,7 +19,7 @@ export class EventViewsEntity extends BaseEntity {
 
 	@ManyToOne(() => EventsEntity, {
 		onDelete: "CASCADE",
-		onUpdate: "CASCADE",
+		onUpdate: "NO ACTION",
 	})
 	@JoinColumn({ name: "event_id" })
 	events!: EventsEntity;
