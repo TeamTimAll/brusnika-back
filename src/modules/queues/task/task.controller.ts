@@ -13,9 +13,9 @@ export class TaskQueueController {
 
 	@Post()
 	async execute(@Body() data: IEncryptedText) {
-		const booking = JSON.parse(decrypt(data)) as TaskDto;
+		const task = JSON.parse(decrypt(data)) as TaskDto;
 
-		await this.service.createOrUpdateBooking(booking);
+		await this.service.createOrUpdateTask(task);
 
 		return { message: "SUCCESS" };
 	}

@@ -1,6 +1,5 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 
-import { BookingsService } from "../../bookings/bookings.service";
 import { UserService } from "../../user/user.service";
 import { ClientService } from "../../client/client.service";
 import { TasksService } from "../../tasks/tasks.service";
@@ -11,14 +10,14 @@ import { TaskDto } from "./dto";
 @Injectable()
 export class TaskQueueService {
 	constructor(
-		@Inject(forwardRef(() => BookingsService))
+		@Inject(forwardRef(() => TasksService))
 		private readonly taskService: TasksService,
 		private readonly userService: UserService,
 		private readonly clientService: ClientService,
 		private readonly projectService: ProjectService,
 	) {}
 
-	async createOrUpdateBooking(task: TaskDto) {
+	async createOrUpdateTask(task: TaskDto) {
 		const foundManager = await this.userService.readOneByExtId(
 			task.manager_ext_id,
 			{ id: true, agent: { id: true } },

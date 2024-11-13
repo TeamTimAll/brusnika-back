@@ -21,4 +21,4 @@ import { TaskQueueController } from "./task.controller";
 	providers: [TaskQueueService],
 	exports: [TaskQueueService],
 })
-export class BookingQueueModule {}
+export class TaskQueueModule {}
