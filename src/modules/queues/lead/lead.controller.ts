@@ -4,7 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { decrypt, IEncryptedText } from "../../../lib/crypto";
 
 import { LeadQueueService } from "./lead.service";
-import { LeadDto } from "./dto";
+import { LeadDto, LeadsDto } from "./dto";
 
 @ApiTags("QUEUE")
 @Controller("queue/lead")
@@ -13,9 +13,18 @@ export class LeadQueueController {
 
 	@Post()
 	async execute(@Body() data: IEncryptedText) {
-		const client = JSON.parse(decrypt(data)) as LeadDto;
+		const lead = JSON.parse(decrypt(data)) as LeadDto;
 
-		await this.service.createOrUpdateLead(client);
+		await this.service.createOrUpdateLead(lead);
+
+		return { message: "SUCCESS" };
+	}
+
+	@Post("many")
+	async executeMany(@Body() data: IEncryptedText) {
+		const leads = JSON.parse(decrypt(data)) as LeadsDto;
+
+		await this.service.createLeads(leads);
 
 		return { message: "SUCCESS" };
 	}

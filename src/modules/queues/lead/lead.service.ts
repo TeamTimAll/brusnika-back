@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 
 import { ClientService } from "../../client/client.service";
 import { UserService } from "../../user/user.service";
@@ -7,7 +7,8 @@ import { ProjectService } from "../../projects/projects.service";
 import { PremisesService } from "../../premises/premises.service";
 import { LeadsService } from "../../leads/leads.service";
 
-import { LeadDto } from "./dto";
+import { LeadDto, LeadsDto } from "./dto";
+import { ILead } from "./types";
 
 @Injectable()
 export class LeadQueueService {
@@ -73,5 +74,58 @@ export class LeadQueueService {
 				["ext_id"],
 			)
 			.execute();
+	}
+
+	async createLeads({ data: leads }: LeadsDto) {
+		const preparedValues: ILead[] = [];
+
+		for await (const lead of leads) {
+			const client = await this.clientService.readOneByExtId(
+				lead.client_ext_id,
+			);
+
+			const agent = await this.userService.readOneByExtId(
+				lead.agent_ext_id,
+			);
+			let manager: Pick<UserEntity, "id"> | undefined;
+			if (lead.manager_ext_id) {
+				manager = await this.userService.readOneByExtId(
+					lead.manager_ext_id,
+					{ id: true },
+				);
+			}
+			const project = await this.projectService.readOneByExtId(
+				lead.project_ext_id,
+				{ id: true },
+			);
+			const premise = await this.premiseService.readOneByExtId(
+				lead.premise_ext_id,
+				{ id: true },
+			);
+
+			preparedValues.push({
+				ext_id: lead.ext_id,
+				agent_id: agent.id,
+				client_id: client.id,
+				current_status: lead.current_status,
+				fee: lead.fee,
+				lead_number: lead.lead_number,
+				manager_id: manager?.id,
+				premise_id: premise.id,
+				project_id: project.id,
+				state: lead.state,
+				comment: lead.comment,
+			});
+		}
+
+		if (preparedValues.length > 0) {
+			return this.premiseService.repository
+				.createQueryBuilder()
+				.insert()
+				.values(preparedValues)
+				.execute();
+		} else {
+			throw new BadRequestException("No valid project data to insert.");
+		}
 	}
 }

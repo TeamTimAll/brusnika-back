@@ -201,12 +201,18 @@ export class EventsService {
 				type: dto.type,
 			});
 		}
-		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
+
+		if (
+			!dto.is_draft ||
+			(user.role !== RoleType.ADMIN &&
+				user.role !== RoleType.AFFILIATE_MANAGER)
+		) {
 			eventsQuery = eventsQuery.andWhere("e.is_draft IS FALSE");
 			// .orWhere("e.create_by_id = :create_by_id", {
-			// 	create_by_id: user.user_id,
+			//     create_by_id: user.user_id,
 			// });
 		}
+
 		const eventCount = await eventsQuery.getCount();
 
 		eventsQuery = eventsQuery.limit(dto.limit).offset(pageSize);

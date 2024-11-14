@@ -1,4 +1,12 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
+import {
+	IsEnum,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
 
 import { LeadOpStatus } from "../../../leads/lead_ops.entity";
 import { LeadState } from "../../../leads/leads.entity";
@@ -38,4 +46,11 @@ export class LeadDto {
 
 	@IsEnum(LeadState)
 	state!: LeadState;
+}
+
+export class LeadsDto {
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => LeadDto)
+	data!: LeadDto[];
 }
