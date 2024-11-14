@@ -89,5 +89,5 @@ export class PremisesDto {
 	@IsNotEmpty()
 	@ValidateNested()
 	@Type(() => PremiseDto)
-	premises!: PremiseDto[];
+	data!: PremiseDto[];
 }

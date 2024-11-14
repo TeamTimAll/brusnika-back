@@ -37,7 +37,7 @@ export class SectionQueueService {
 			.execute();
 	}
 
-	async createSections({ sections }: SectionsDto) {
+	async createSections({ data: sections }: SectionsDto) {
 		const preparedValues: ISection[] = [];
 
 		for await (const section of sections) {

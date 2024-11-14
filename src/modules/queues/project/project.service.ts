@@ -44,7 +44,7 @@ export class ProjectQueueService {
 			.execute();
 	}
 
-	async createProjects({ projects }: ProjectsDto) {
+	async createProjects({ data: projects }: ProjectsDto) {
 		const preparedValues: IProject[] = [];
 
 		for await (const project of projects) {

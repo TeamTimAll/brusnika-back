@@ -26,5 +26,5 @@ export class SectionsDto {
 	@IsNotEmpty()
 	@ValidateNested()
 	@Type(() => SectionDto)
-	sections!: SectionDto[];
+	data!: SectionDto[];
 }

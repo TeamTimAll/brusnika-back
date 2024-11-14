@@ -37,5 +37,5 @@ export class BuildingsDto {
 	@IsNotEmpty()
 	@ValidateNested()
 	@Type(() => BuildingDto)
-	buildings!: BuildingDto[];
+	data!: BuildingDto[];
 }

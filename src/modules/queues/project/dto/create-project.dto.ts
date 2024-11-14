@@ -68,5 +68,5 @@ export class ProjectsDto {
 	@IsNotEmpty()
 	@ValidateNested()
 	@Type(() => ProjectDto)
-	projects!: ProjectDto[];
+	data!: ProjectDto[];
 }

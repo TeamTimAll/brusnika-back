@@ -76,7 +76,7 @@ export class PremiseQueueService {
 			.execute();
 	}
 
-	async createPremises({ premises }: PremisesDto) {
+	async createPremises({ data: premises }: PremisesDto) {
 		const preparedValues: IPremise[] = [];
 
 		for await (const premise of premises) {

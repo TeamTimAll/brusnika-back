@@ -41,7 +41,7 @@ export class BuildingQueuervice {
 			.execute();
 	}
 
-	async createBuildings({ buildings }: BuildingsDto) {
+	async createBuildings({ data: buildings }: BuildingsDto) {
 		const preparedValues: IBuilding[] = [];
 
 		for await (const building of buildings) {
