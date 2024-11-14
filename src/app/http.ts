@@ -38,7 +38,11 @@ export class Http {
 			{
 				cors: {
 					credentials: true,
-					origin: true,
+					origin: [
+						"http://localhost:3000",
+						"https://dashboard-brusnika.teamtim.tech",
+						"https://dev-dashboard-brusnika.teamtim.tech",
+					],
 				},
 			},
 		);
