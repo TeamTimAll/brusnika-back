@@ -127,7 +127,7 @@ export class TasksService {
 				query.orderBy("task.task_type", payload.order_by || Order.ASC);
 				break;
 			default:
-				query.orderBy("task.created_at", payload.order_by || Order.ASC);
+				query.orderBy("task.created_at", Order.DESC);
 				break;
 		}
 

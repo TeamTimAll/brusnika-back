@@ -117,9 +117,8 @@ export class UserService {
 				"a.id",
 				"a.legalName",
 				"u.agency_id",
-			])
-			.limit(dto.limit)
-			.offset(pageSize);
+			]);
+
 		if (dto.city_id) {
 			userQuery = userQuery.where("u.city_id = :city_id", {
 				city_id: dto.city_id,
@@ -192,6 +191,12 @@ export class UserService {
 				new_member: RoleType.NEW_MEMBER,
 			});
 		}
+
+		if (dto.is_verified) {
+			userQuery = userQuery.andWhere("u.is_verified is TRUE");
+		}
+
+		userQuery = userQuery.limit(dto.limit).offset(pageSize);
 
 		const [users, usersCount] = await userQuery.getManyAndCount();
 
