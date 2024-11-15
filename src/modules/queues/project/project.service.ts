@@ -1,8 +1,4 @@
-import {
-	BadRequestException,
-	Injectable,
-	NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 
 import { ProjectService } from "../../projects/projects.service";
 import { CityService } from "../../cities/cities.service";
@@ -53,10 +49,6 @@ export class ProjectQueueService {
 				{ id: true },
 			);
 
-			if (!city) {
-				throw new NotFoundException();
-			}
-
 			preparedValues.push({
 				ext_id: project.ext_id,
 				photo: project.photo,
@@ -79,23 +71,6 @@ export class ProjectQueueService {
 				.createQueryBuilder()
 				.insert()
 				.values(preparedValues)
-				.orUpdate(
-					[
-						"photo",
-						"name",
-						"description",
-						"location",
-						"long",
-						"lat",
-						"end_date",
-						"company_link",
-						"building_link",
-						"project_link",
-						"price",
-						"city_id",
-					],
-					["ext_id"],
-				)
 				.execute();
 		} else {
 			throw new BadRequestException("No valid project data to insert.");

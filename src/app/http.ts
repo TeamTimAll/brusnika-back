@@ -38,16 +38,16 @@ export class Http {
 			{
 				cors: {
 					credentials: true,
-					origin: [
-						"http://localhost:3000",
-						"https://dashboard-brusnika.teamtim.tech",
-						"https://dev-dashboard-brusnika.teamtim.tech",
-					],
+					origin: true,
 				},
 			},
 		);
 		this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
-		this.app.use(helmet());
+		this.app.use(
+			helmet({
+				crossOriginResourcePolicy: false,
+			}),
+		);
 		this.app.use(compression());
 		this.app.use(
 			morgan(

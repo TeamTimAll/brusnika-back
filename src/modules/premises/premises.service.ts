@@ -44,6 +44,10 @@ export class PremisesService {
 		return this.premiseRepository;
 	}
 
+	get schemaRepository(): Repository<PremiseSchemaEntity> {
+		return this.premiseSchemaRepository;
+	}
+
 	async create(dto: CreatePremisesDto) {
 		if (typeof dto.building_id !== "undefined") {
 			await this.buildingService.readOne(dto.building_id);

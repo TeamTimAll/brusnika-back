@@ -5,6 +5,7 @@ import {
 	IsNumber,
 	IsOptional,
 	IsString,
+	Max,
 	ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
@@ -71,6 +72,11 @@ export class PremiseDto {
 	@IsNumber()
 	@IsOptional()
 	mortagePayment?: number;
+
+	@IsNumber()
+	@Max(360)
+	@IsOptional()
+	sun_noon_angle?: number;
 
 	@IsString()
 	@IsOptional()

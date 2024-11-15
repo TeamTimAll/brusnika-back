@@ -4,6 +4,8 @@ import { PremisesService } from "../../premises/premises.service";
 import { SectionEntity } from "../../sections/sections.entity";
 import { BuildingsService } from "../../buildings/buildings.service";
 import { SectionsService } from "../../sections/sections.service";
+import { PremiseSchemaEntity } from "../../premises/premise_schema.entity";
+import { PremiseEntity } from "../../premises/premises.entity";
 
 import { PremiseDto, PremisesDto } from "./dto";
 import { IPremise } from "./types";
@@ -29,7 +31,8 @@ export class PremiseQueueService {
 				{ id: true },
 			);
 		}
-		return this.premiseService.repository
+
+		const newPremise = await this.premiseService.repository
 			.createQueryBuilder()
 			.insert()
 			.values({
@@ -74,6 +77,25 @@ export class PremiseQueueService {
 				["ext_id"],
 			)
 			.execute();
+
+		const newPremiseData = newPremise.generatedMaps[0] as PremiseEntity;
+
+		const schema = await this.premiseService.schemaRepository
+			.createQueryBuilder()
+			.insert()
+			.values({
+				premise_id: newPremiseData.id,
+				sunrise_angle: premise.sun_noon_angle,
+				schema_image: premise.photo,
+			})
+			.orUpdate(["sunrise_angle", "schema_image"], ["premise_id"])
+			.execute();
+
+		const newSchemaData = schema.generatedMaps[0] as PremiseSchemaEntity;
+
+		return this.premiseService.repository.update(newPremiseData.id, {
+			schema_id: newSchemaData.id,
+		});
 	}
 
 	async createPremises({ data: premises }: PremisesDto) {

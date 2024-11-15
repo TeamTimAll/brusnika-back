@@ -27,7 +27,12 @@ import { TasksService } from "./tasks.service";
 @Controller("tasks")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles([RoleType.MANAGER, RoleType.ADMIN, RoleType.AFFILIATE_MANAGER])
+@Roles([
+	RoleType.MANAGER,
+	RoleType.ADMIN,
+	RoleType.AFFILIATE_MANAGER,
+	RoleType.HEAD_OF_AGENCY,
+])
 @UseInterceptors(TransformInterceptor)
 export class TasksController {
 	constructor(private service: TasksService) {}

@@ -65,7 +65,7 @@ export class BuildingQueuervice {
 		}
 
 		if (preparedValues.length > 0) {
-			return this.projectService.repository
+			return this.buildingService.repository
 				.createQueryBuilder()
 				.insert()
 				.values(preparedValues)
