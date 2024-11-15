@@ -32,8 +32,8 @@ export class TasksEntity extends BaseEntity {
 	@JoinColumn({ name: "manager_id" })
 	manager!: UserEntity;
 
-	@Column({ nullable: false, type: "varchar" })
-	comment!: string;
+	@Column({ nullable: true, type: "varchar" })
+	comment?: string;
 
 	@Column({ nullable: false, type: "text", enum: TaskType })
 	task_type!: TaskType;

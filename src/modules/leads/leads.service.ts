@@ -47,6 +47,10 @@ export class LeadsService {
 		private readonly notificationsService: NotificationService,
 	) {}
 
+	get repository(): Repository<LeadsEntity> {
+		return this.leadRepository;
+	}
+
 	async create(lead: CreateLeadDto): Promise<LeadsEntity> {
 		const foundPremises = await this.premisesService.readOneWithRelation(
 			lead.premise_id,

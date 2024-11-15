@@ -119,7 +119,7 @@ export class LeadQueueService {
 		}
 
 		if (preparedValues.length > 0) {
-			return this.premiseService.repository
+			return this.leadService.repository
 				.createQueryBuilder()
 				.insert()
 				.values(preparedValues)
