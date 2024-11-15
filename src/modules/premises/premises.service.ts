@@ -422,6 +422,10 @@ export class PremisesService {
 				"premise_schema.sunrise_angle",
 				"premise_schema.schema_image",
 			])
+			.andWhere("premise.is_sold is FALSE")
+			.andWhere(
+				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) = FALSE",
+			)
 			.limit(filter.limit)
 			.offset(pageSize);
 
