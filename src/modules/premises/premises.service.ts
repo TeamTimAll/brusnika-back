@@ -369,65 +369,68 @@ export class PremisesService {
 			.addGroupBy("premise_schema.id")
 			.orderBy("project.id", "ASC");
 
-		query = query
-			.select([
-				"premise.id",
-				"premise.name",
-				"premise.type",
-				"premise.building",
-				"premise.building_id",
-				"premise.price",
-				"premise.size",
-				"premise.status",
-				"premise.purchase_option",
-				"premise.number",
-				"premise.floor",
-				"premise.photo",
-				"premise.rooms",
-				"premise.photos",
-				"premise.similiar_apartment_count",
-				"premise.mortage_payment",
-				"premise.section_id",
-				"premise.is_sold",
-				"premise.is_booked",
-				"building.id",
-				"building.name",
-				"building.address",
-				"building.number_of_floors",
-				"building.photos",
-				"building.project_id",
-				"section.id",
-				"section.name",
-				"section.building_id",
-				"season.id",
-				"season.created_at",
-				"season.date",
-				"season.season_name",
-				"season.year",
-				"season.date",
-				"project.id",
-				"project.photo",
-				"project.name",
-				"project.description",
-				"project.end_date",
-				"project.location",
-				"project.long",
-				"project.lat",
-				"project.company_link",
-				"project.price",
-				"project.building_link",
-				"project.project_link",
-				"project.city_id",
-				"premise_schema.id",
-				"premise_schema.sunrise_angle",
-				"premise_schema.schema_image",
-			])
-			.andWhere("premise.is_sold is FALSE")
-			.andWhere(
-				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) = FALSE",
-			)
-			.limit(filter.limit)
-			.offset(pageSize);
+		query = query.select([
+			"premise.id",
+			"premise.name",
+			"premise.type",
+			"premise.building",
+			"premise.building_id",
+			"premise.price",
+			"premise.size",
+			"premise.status",
+			"premise.purchase_option",
+			"premise.number",
+			"premise.floor",
+			"premise.photo",
+			"premise.rooms",
+			"premise.photos",
+			"premise.similiar_apartment_count",
+			"premise.mortage_payment",
+			"premise.section_id",
+			"premise.is_sold",
+			"premise.is_booked",
+			"building.id",
+			"building.name",
+			"building.address",
+			"building.number_of_floors",
+			"building.photos",
+			"building.project_id",
+			"section.id",
+			"section.name",
+			"section.building_id",
+			"season.id",
+			"season.created_at",
+			"season.date",
+			"season.season_name",
+			"season.year",
+			"season.date",
+			"project.id",
+			"project.photo",
+			"project.name",
+			"project.description",
+			"project.end_date",
+			"project.location",
+			"project.long",
+			"project.lat",
+			"project.company_link",
+			"project.price",
+			"project.building_link",
+			"project.project_link",
+			"project.city_id",
+			"premise_schema.id",
+			"premise_schema.sunrise_angle",
+			"premise_schema.schema_image",
+		]);
+
+		if (!filter.id) {
+			query = query
+				.andWhere("premise.is_sold is FALSE")
+				.andWhere(
+					"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) = FALSE",
+				);
+		}
+
+		query = query.limit(filter.limit).offset(pageSize);
 
 		const [premises, premiseCount] = await query.getManyAndCount();
 		const metaData = BaseDto.create<PremiseEntity[]>();
