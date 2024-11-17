@@ -6,6 +6,7 @@ import { ConfigManager } from "../../config";
 import { AgenciesModule } from "../agencies/agencies.module";
 import { CityModule } from "../cities/cities.module";
 import { UserModule } from "../user/user.module";
+import { NotificationModule } from "../notification/notification.module";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
@@ -22,6 +23,7 @@ import { SmsService } from "./sms.service";
 		UserModule,
 		AgenciesModule,
 		CityModule,
+		NotificationModule,
 	],
 	controllers: [AuthController],
 	providers: [AuthService, SmsService],

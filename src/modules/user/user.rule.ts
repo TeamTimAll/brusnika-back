@@ -12,6 +12,6 @@ export const UserChangeRoleRule: IRule = {
 	[RoleType.HEAD_OF_AGENCY]: {
 		[RoleType.NEW_MEMBER]: true,
 	},
-	[RoleType.OZK_MANAGER]: undefined,
+	[RoleType.OPERATOR]: undefined,
 	[RoleType.AFFILIATE_MANAGER]: undefined,
 };

@@ -133,8 +133,10 @@ export class CalendarService {
 		const visitsWithManager = visits.map((v, i) => {
 			v["manager"] = {
 				id: i + 1,
-				fullname: "manager_name",
-				phone: "+99899" + Math.floor(Math.random() * 1000 * 1000 * 10),
+				// fullname: "manager_name",
+				// phone: "+99899" + Math.floor(Math.random() * 1000 * 1000 * 10),
+				fullname: null,
+				phone: null,
 			};
 			return v;
 		});

@@ -35,6 +35,7 @@ import {
 } from "./dto/trainings.dto";
 import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
 import { TrainingsService as TrainingService } from "./trainings.service";
+import { TrainigsSearchDto } from "./dto/search-training.dto";
 
 @ApiTags("Trainings")
 @Controller("trainings")
@@ -49,6 +50,13 @@ export class TrainingController {
 	@ApiDtoResponse(TrainingArrayMetaDataDto, HttpStatus.OK)
 	async readAll(@Query() dto: FilterTrainingDto, @User() user: ICurrentUser) {
 		return this.service.readAll(dto, user);
+	}
+
+	@Get("search")
+	@ApiOperation({ summary: "Get trainings by search" })
+	@ApiDtoResponse(TrainingArrayMetaDataDto, HttpStatus.OK)
+	async search(@Query() dto: TrainigsSearchDto) {
+		return this.service.search(dto);
 	}
 
 	@Get("newbie")

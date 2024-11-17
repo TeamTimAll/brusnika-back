@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
-import { FindOptionsSelect } from "typeorm";
+import { Between, FindOptionsSelect } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 import { PickBySelect } from "interfaces/pick_by_select";
@@ -52,6 +52,18 @@ export class BookingsService {
 		let userCreatedCount = await this.bookingRepository.count({
 			where: {
 				create_by_id: user.user_id,
+				created_at: Between(
+					new Date(
+						new Date().getFullYear(),
+						new Date().getMonth(),
+						1,
+					),
+					new Date(
+						new Date().getFullYear(),
+						new Date().getMonth() + 1,
+						0,
+					),
+				),
 			},
 		});
 		const settings = await this.settingsService.read();

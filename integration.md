@@ -472,7 +472,7 @@ oshiriladi.
     -   `MANAGER`
     -   `NEW_MEMBER`
     -   `HEAD_OF_AGENCY`
-    -   `OZK_MANAGER`
+    -   `OPERATOR`
     -   `AFFILIATE_MANAGER`
 
 ---
@@ -486,7 +486,7 @@ oshiriladi.
     -   `MANAGER`
     -   `NEW_MEMBER`
     -   `HEAD_OF_AGENCY`
-    -   `OZK_MANAGER`
+    -   `OPERATOR`
     -   `AFFILIATE_MANAGER`
 
 ---

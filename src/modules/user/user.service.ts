@@ -459,6 +459,18 @@ export class UserService {
 		const userCreatedCount = await this.bookingRepository.count({
 			where: {
 				create_by_id: user_id,
+				created_at: Between(
+					new Date(
+						new Date().getFullYear(),
+						new Date().getMonth(),
+						1,
+					),
+					new Date(
+						new Date().getFullYear(),
+						new Date().getMonth() + 1,
+						0,
+					),
+				),
 			},
 		});
 		const settings = await this.settingsRepository.readOne();

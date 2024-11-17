@@ -11,6 +11,8 @@ import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserRegisterStatus, UserStatus } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 // import { randomOtp } from "../../lib/firebase/random-number";
+import { NotificationService } from "../notification/notification.service";
+import { NotificationType } from "../notification/notification.entity";
 
 import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
 import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
@@ -40,6 +42,7 @@ export class AuthService {
 		private agenciesService: AgencyService,
 		private cityService: CityService,
 		private smsService: SmsService,
+		private notificationService: NotificationService,
 	) {}
 
 	async agentRegister(body: UserCreateDto): Promise<AuthResponeWithData> {
@@ -116,6 +119,18 @@ export class AuthService {
 			register_status: UserRegisterStatus.FINISHED,
 			agency_id: body.agency_id,
 			workStartDate: body.startWorkDate,
+		});
+
+		const users = await this.userService.repository.find({
+			where: { agency_id: body.agency_id, role: RoleType.HEAD_OF_AGENCY },
+			select: { id: true, firebase_token: true },
+		});
+
+		await this.notificationService.sendToUsers(users, {
+			type: NotificationType.AGENT_REQUEST_FOR_AGENCY,
+			object_id: user.id,
+			title: "К вашему агентству прикрепился новый агент.",
+			description: user.fullName,
 		});
 
 		return {
