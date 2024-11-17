@@ -92,167 +92,167 @@ export class ProjectService {
 		return metaData;
 	}
 
-	// async getAllProjects(city_id?: number): Promise<GetAllProjectRaw[]> {
-	// 	let projectQueryBuilder = this.projectsRepository
-	// 		.createQueryBuilder("project")
-	// 		.leftJoinAndSelect("project.buildings", "building")
-	// 		.leftJoinAndSelect("building.premises", "premise")
-	// 		.leftJoinAndSelect("project.city", "cities")
-	// 		.select([
-	// 			"project.id AS id",
-	// 			"project.photos AS photos",
-	// 			"project.photo AS photo",
-	// 			"project.name AS name",
-	// 			"project.description AS description",
-	// 			"project.end_date AS end_date",
-	// 			"project.location AS location",
-	// 			"project.long AS long",
-	// 			"project.lat AS lat",
-	// 			"project.company_link AS company_link",
-	// 			"project.building_link AS building_link",
-	// 			"project.project_link AS project_link",
-	// 			"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'object_id', building.object_id, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
-	// 			"project.price AS price",
-	// 			"premise.type AS premise_type",
-	// 			"COUNT(premise.id) AS premise_count",
-	// 			"JSON_BUILD_OBJECT('id', cities.id, 'name', cities.name, 'lat', cities.lat, 'long', cities.long) as city",
-	// 		])
-	// 		.groupBy("project.id")
-	// 		.addGroupBy("premise.type")
-	// 		.addGroupBy("cities.id");
-	// 	if (city_id) {
-	// 		projectQueryBuilder = projectQueryBuilder.where(
-	// 			"city_id = :city_id",
-	// 			{
-	// 				city_id: city_id,
-	// 			},
-	// 		);
-	// 	}
-
-	// 	const projects =
-	// 		await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
-
-	// 	const validTypes = Object.values(PremisesType);
-
-	// 	const formattedResult = projects.reduce<GetAllProjectRaw[]>(
-	// 		(acc, row) => {
-	// 			const projectId = row.id;
-
-	// 			let project = acc.find((p) => p.id === projectId);
-	// 			if (typeof project === "undefined") {
-	// 				project = {
-	// 					id: row.id,
-	// 					photos: row.photos,
-	// 					photo: row.photo,
-	// 					name: row.name,
-	// 					description: row.description,
-	// 					end_date: row.end_date,
-	// 					location: row.location,
-	// 					long: row.long,
-	// 					lat: row.lat,
-	// 					company_link: row.company_link,
-	// 					price: row.price,
-	// 					building_link: row.building_link,
-	// 					project_link: row.project_link,
-	// 					premise_count: row.premise_count,
-	// 					premise_type: row.premise_type,
-	// 					buildings: row.buildings,
-	// 					apartment_count: 0,
-	// 					commercial_count: 0,
-	// 					parking_count: 0,
-	// 					storeroom_count: 0,
-	// 					city: {
-	// 						id: row.city.id,
-	// 						name: row.city.name,
-	// 						lat: row.city.lat,
-	// 						long: row.city.long,
-	// 					},
-	// 				};
-	// 				validTypes.forEach((type) => {
-	// 					if (typeof project !== "undefined") {
-	// 						project[`${type.toLowerCase()}_count`] = 0;
-	// 					}
-	// 				});
-	// 				acc.push(project);
-	// 			}
-
-	// 			if (validTypes.includes(row.premise_type)) {
-	// 				project[`${row.premise_type.toLowerCase()}_count`] =
-	// 					parseInt(row.premise_count, 10);
-	// 			}
-
-	// 			return acc;
-	// 		},
-	// 		[],
-	// 	);
-
-	// 	if (!formattedResult.length) {
-	// 		throw new ProjectNotFoundError("Projects not found");
-	// 	}
-
-	// 	return formattedResult;
-	// }
-
 	async getAllProjects(city_id?: number): Promise<GetAllProjectRaw[]> {
 		let projectQueryBuilder = this.projectsRepository
 			.createQueryBuilder("project")
-			.leftJoin("project.buildings", "building")
-			.leftJoinAndSelect("project.city", "city")
+			.leftJoinAndSelect("project.buildings", "building")
+			.leftJoinAndSelect("building.premises", "premise")
+			.leftJoinAndSelect("project.city", "cities")
 			.select([
 				"project.id AS id",
-				"project.name AS name",
 				"project.photos AS photos",
 				"project.photo AS photo",
+				"project.name AS name",
 				"project.description AS description",
 				"project.end_date AS end_date",
+				"project.location AS location",
 				"project.long AS long",
 				"project.lat AS lat",
-				"project.location AS location",
-				"project.price AS price",
+				"project.company_link AS company_link",
 				"project.building_link AS building_link",
 				"project.project_link AS project_link",
-				"project.company_link AS company_link",
-				"project.premise_count AS premise_count",
-				"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
-				`(SELECT COUNT(p.id) 
-              FROM premises p 
-              WHERE p.type = 'apartment' 
-              AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
-            ) AS apartment_count`,
-				`(SELECT COUNT(p.id) 
-              FROM premises p 
-              WHERE p.type = 'storeroom' 
-              AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
-            ) AS storeroom_count`,
-				`(SELECT COUNT(p.id) 
-              FROM premises p 
-              WHERE p.type = 'parking' 
-              AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
-            ) AS parking_count`,
-				`(SELECT COUNT(p.id) 
-              FROM premises p 
-              WHERE p.type = 'commercial' 
-              AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
-            ) AS commercial_count`,
+				"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'object_id', building.object_id, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
+				"project.price AS price",
+				"premise.type AS premise_type",
+				"COUNT(premise.id) AS premise_count",
+				"JSON_BUILD_OBJECT('id', cities.id, 'name', cities.name, 'lat', cities.lat, 'long', cities.long) as city",
 			])
-			.groupBy("project.id");
-
+			.groupBy("project.id")
+			.addGroupBy("premise.type")
+			.addGroupBy("cities.id");
 		if (city_id) {
 			projectQueryBuilder = projectQueryBuilder.where(
-				"project.city_id = :city_id",
-				{ city_id: city_id },
+				"city_id = :city_id",
+				{
+					city_id: city_id,
+				},
 			);
 		}
 
 		const projects =
 			await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
 
-		if (!projects.length) {
+		const validTypes = Object.values(PremisesType);
+
+		const formattedResult = projects.reduce<GetAllProjectRaw[]>(
+			(acc, row) => {
+				const projectId = row.id;
+
+				let project = acc.find((p) => p.id === projectId);
+				if (typeof project === "undefined") {
+					project = {
+						id: row.id,
+						photos: row.photos,
+						photo: row.photo,
+						name: row.name,
+						description: row.description,
+						end_date: row.end_date,
+						location: row.location,
+						long: row.long,
+						lat: row.lat,
+						company_link: row.company_link,
+						price: row.price,
+						building_link: row.building_link,
+						project_link: row.project_link,
+						premise_count: row.premise_count,
+						premise_type: row.premise_type,
+						buildings: row.buildings,
+						apartment_count: 0,
+						commercial_count: 0,
+						parking_count: 0,
+						storeroom_count: 0,
+						city: {
+							id: row.city.id,
+							name: row.city.name,
+							lat: row.city.lat,
+							long: row.city.long,
+						},
+					};
+					validTypes.forEach((type) => {
+						if (typeof project !== "undefined") {
+							project[`${type.toLowerCase()}_count`] = 0;
+						}
+					});
+					acc.push(project);
+				}
+
+				if (validTypes.includes(row.premise_type)) {
+					project[`${row.premise_type.toLowerCase()}_count`] =
+						parseInt(row.premise_count, 10);
+				}
+
+				return acc;
+			},
+			[],
+		);
+
+		if (!formattedResult.length) {
 			throw new ProjectNotFoundError("Projects not found");
 		}
 
-		return projects;
+		return formattedResult;
 	}
+
+	// async getAllProjects(city_id?: number): Promise<GetAllProjectRaw[]> {
+	// 	let projectQueryBuilder = this.projectsRepository
+	// 		.createQueryBuilder("project")
+	// 		.leftJoin("project.buildings", "building")
+	// 		.leftJoinAndSelect("project.city", "city")
+	// 		.select([
+	// 			"project.id AS id",
+	// 			"project.name AS name",
+	// 			"project.photos AS photos",
+	// 			"project.photo AS photo",
+	// 			"project.description AS description",
+	// 			"project.end_date AS end_date",
+	// 			"project.long AS long",
+	// 			"project.lat AS lat",
+	// 			"project.location AS location",
+	// 			"project.price AS price",
+	// 			"project.building_link AS building_link",
+	// 			"project.project_link AS project_link",
+	// 			"project.company_link AS company_link",
+	// 			"project.premise_count AS premise_count",
+	// 			"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
+	// 			`(SELECT COUNT(p.id)
+	//             FROM premises p
+	//             WHERE p.type = 'apartment'
+	//             AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
+	//           ) AS apartment_count`,
+	// 			`(SELECT COUNT(p.id)
+	//             FROM premises p
+	//             WHERE p.type = 'storeroom'
+	//             AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
+	//           ) AS storeroom_count`,
+	// 			`(SELECT COUNT(p.id)
+	//             FROM premises p
+	//             WHERE p.type = 'parking'
+	//             AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
+	//           ) AS parking_count`,
+	// 			`(SELECT COUNT(p.id)
+	//             FROM premises p
+	//             WHERE p.type = 'commercial'
+	//             AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
+	//           ) AS commercial_count`,
+	// 		])
+	// 		.groupBy("project.id");
+
+	// 	if (city_id) {
+	// 		projectQueryBuilder = projectQueryBuilder.where(
+	// 			"project.city_id = :city_id",
+	// 			{ city_id: city_id },
+	// 		);
+	// 	}
+
+	// 	const projects =
+	// 		await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
+
+	// 	if (!projects.length) {
+	// 		throw new ProjectNotFoundError("Projects not found");
+	// 	}
+
+	// 	return projects;
+	// }
 
 	// async getAllProjectsV2(city_id?: number): Promise<GetAllProjectRaw[]> {
 	// 	let projectQueryBuilder = this.projectsRepository
