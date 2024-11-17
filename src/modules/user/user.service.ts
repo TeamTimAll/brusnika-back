@@ -192,8 +192,8 @@ export class UserService {
 			});
 		}
 
-		if (dto.is_verified) {
-			userQuery = userQuery.andWhere("u.is_verified is TRUE");
+		if (!dto.is_verified) {
+			userQuery = userQuery.andWhere("u.is_verified is FALSE");
 		}
 
 		userQuery = userQuery.limit(dto.limit).offset(pageSize);

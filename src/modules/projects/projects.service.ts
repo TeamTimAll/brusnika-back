@@ -111,7 +111,12 @@ export class ProjectService {
 				"project.company_link AS company_link",
 				"project.building_link AS building_link",
 				"project.project_link AS project_link",
-				"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'object_id', building.object_id, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
+				`JSON_AGG(DISTINCT JSON_BUILD_OBJECT(
+	      	'id', building.id,
+	      	'name', building.name,
+	      	'address', building.address,
+	      	'number_of_floors', building.number_of_floors
+	  		)::TEXT) AS buildings`,
 				"project.price AS price",
 				"premise.type AS premise_type",
 				"COUNT(premise.id) AS premise_count",
@@ -131,6 +136,15 @@ export class ProjectService {
 
 		const projects =
 			await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
+
+		projects.forEach((project) => {
+			if (project.buildings) {
+				project.buildings = project.buildings.map((building) =>
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+					JSON.parse(building as unknown as string),
+				);
+			}
+		});
 
 		const validTypes = Object.values(PremisesType);
 
@@ -196,8 +210,9 @@ export class ProjectService {
 	// async getAllProjects(city_id?: number): Promise<GetAllProjectRaw[]> {
 	// 	let projectQueryBuilder = this.projectsRepository
 	// 		.createQueryBuilder("project")
-	// 		.leftJoin("project.buildings", "building")
-	// 		.leftJoinAndSelect("project.city", "city")
+	// 		.leftJoinAndSelect("project.buildings", "building")
+	// 		.leftJoinAndSelect("building.premises", "premise")
+	// 		.leftJoinAndSelect("project.city", "cities")
 	// 		.select([
 	// 			"project.id AS id",
 	// 			"project.name AS name",
@@ -212,40 +227,43 @@ export class ProjectService {
 	// 			"project.building_link AS building_link",
 	// 			"project.project_link AS project_link",
 	// 			"project.company_link AS company_link",
-	// 			"project.premise_count AS premise_count",
-	// 			"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
-	// 			`(SELECT COUNT(p.id)
-	//             FROM premises p
-	//             WHERE p.type = 'apartment'
-	//             AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
-	//           ) AS apartment_count`,
-	// 			`(SELECT COUNT(p.id)
-	//             FROM premises p
-	//             WHERE p.type = 'storeroom'
-	//             AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
-	//           ) AS storeroom_count`,
-	// 			`(SELECT COUNT(p.id)
-	//             FROM premises p
-	//             WHERE p.type = 'parking'
-	//             AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
-	//           ) AS parking_count`,
-	// 			`(SELECT COUNT(p.id)
-	//             FROM premises p
-	//             WHERE p.type = 'commercial'
-	//             AND p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)
-	//           ) AS commercial_count`,
+	// 			`JSON_AGG(DISTINCT JSON_BUILD_OBJECT(
+	//       	'id', building.id,
+	//       	'name', building.name,
+	//       	'address', building.address,
+	//       	'number_of_floors', building.number_of_floors
+	//   		)::TEXT) AS buildings`,
+	// 			"premise.type AS premise_type",
+	// 			"COUNT(premise.id) AS premise_count",
+	// 			"COUNT(CASE WHEN premise.type = 'apartment' THEN premise.id END) AS apartment_count",
+	// 			"COUNT(CASE WHEN premise.type = 'storeroom' THEN premise.id END) AS storeroom_count",
+	// 			"COUNT(CASE WHEN premise.type = 'parking' THEN premise.id END) AS parking_count",
+	// 			"COUNT(CASE WHEN premise.type = 'commercial' THEN premise.id END) AS commercial_count",
 	// 		])
-	// 		.groupBy("project.id");
+	// 		.groupBy("project.id")
+	// 		.addGroupBy("cities.id")
+	// 		.addGroupBy("premise.type");
 
 	// 	if (city_id) {
-	// 		projectQueryBuilder = projectQueryBuilder.where(
+	// 		projectQueryBuilder = projectQueryBuilder.andWhere(
 	// 			"project.city_id = :city_id",
-	// 			{ city_id: city_id },
+	// 			{
+	// 				city_id,
+	// 			},
 	// 		);
 	// 	}
 
 	// 	const projects =
 	// 		await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
+
+	// 	projects.forEach((project) => {
+	// 		if (project.buildings) {
+	// 			project.buildings = project.buildings.map((building) =>
+	// 				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	// 				JSON.parse(building as unknown as string),
+	// 			);
+	// 		}
+	// 	});
 
 	// 	if (!projects.length) {
 	// 		throw new ProjectNotFoundError("Projects not found");
@@ -254,72 +272,72 @@ export class ProjectService {
 	// 	return projects;
 	// }
 
-	// async getAllProjectsV2(city_id?: number): Promise<GetAllProjectRaw[]> {
-	// 	let projectQueryBuilder = this.projectsRepository
-	// 		.createQueryBuilder("project")
-	// 		.leftJoinAndSelect("project.buildings", "building")
-	// 		.addSelect((subQuery) => {
-	// 			return subQuery
-	// 				.select("COUNT(p.id)", "total_apartment_count")
-	// 				.from("premises", "p")
-	// 				.where("p.type = :apartmentType", {
-	// 					apartmentType: "apartment",
-	// 				})
-	// 				.andWhere(
-	// 					"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
-	// 				);
-	// 		}, "total_apartment_count")
-	// 		.addSelect((subQuery) => {
-	// 			return subQuery
-	// 				.select("COUNT(p.id)", "total_storeroom_count")
-	// 				.from("premises", "p")
-	// 				.where("p.type = :storeroomType", {
-	// 					storeroomType: "storeroom",
-	// 				})
-	// 				.andWhere(
-	// 					"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
-	// 				);
-	// 		}, "total_storeroom_count")
-	// 		.addSelect((subQuery) => {
-	// 			return subQuery
-	// 				.select("COUNT(p.id)", "total_parking_count")
-	// 				.from("premises", "p")
-	// 				.where("p.type = :parkingType", { parkingType: "parking" })
-	// 				.andWhere(
-	// 					"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
-	// 				);
-	// 		}, "total_parking_count")
-	// 		.addSelect((subQuery) => {
-	// 			return subQuery
-	// 				.select("COUNT(p.id)", "total_commercial_count")
-	// 				.from("premises", "p")
-	// 				.where("p.type = :commercialType", {
-	// 					commercialType: "commercial",
-	// 				})
-	// 				.andWhere(
-	// 					"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
-	// 				);
-	// 		}, "total_commercial_count")
-	// 		.addSelect([
-	// 			"project.id AS id",
-	// 			"project.name AS name",
-	// 			"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
-	// 		])
-	// 		.groupBy("project.id")
-	// 		.addGroupBy("building.id");
+	async getAllProjectsV2(city_id?: number): Promise<GetAllProjectRaw[]> {
+		let projectQueryBuilder = this.projectsRepository
+			.createQueryBuilder("project")
+			.leftJoinAndSelect("project.buildings", "building")
+			.addSelect((subQuery) => {
+				return subQuery
+					.select("COUNT(p.id)", "total_apartment_count")
+					.from("premises", "p")
+					.where("p.type = :apartmentType", {
+						apartmentType: "apartment",
+					})
+					.andWhere(
+						"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
+					);
+			}, "total_apartment_count")
+			.addSelect((subQuery) => {
+				return subQuery
+					.select("COUNT(p.id)", "total_storeroom_count")
+					.from("premises", "p")
+					.where("p.type = :storeroomType", {
+						storeroomType: "storeroom",
+					})
+					.andWhere(
+						"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
+					);
+			}, "total_storeroom_count")
+			.addSelect((subQuery) => {
+				return subQuery
+					.select("COUNT(p.id)", "total_parking_count")
+					.from("premises", "p")
+					.where("p.type = :parkingType", { parkingType: "parking" })
+					.andWhere(
+						"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
+					);
+			}, "total_parking_count")
+			.addSelect((subQuery) => {
+				return subQuery
+					.select("COUNT(p.id)", "total_commercial_count")
+					.from("premises", "p")
+					.where("p.type = :commercialType", {
+						commercialType: "commercial",
+					})
+					.andWhere(
+						"p.building_id IN (SELECT b.id FROM buildings b WHERE b.project_id = project.id)",
+					);
+			}, "total_commercial_count")
+			.addSelect([
+				"project.id AS id",
+				"project.name AS name",
+				"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
+			])
+			.groupBy("project.id")
+			.addGroupBy("building.id");
 
-	// 	if (city_id) {
-	// 		projectQueryBuilder = projectQueryBuilder.where(
-	// 			"project.city_id = :city_id",
-	// 			{ city_id },
-	// 		);
-	// 	}
+		if (city_id) {
+			projectQueryBuilder = projectQueryBuilder.where(
+				"project.city_id = :city_id",
+				{ city_id },
+			);
+		}
 
-	// 	const projects =
-	// 		await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
+		const projects =
+			await projectQueryBuilder.getRawMany<GetAllProjectRaw>();
 
-	// 	return projects;
-	// }
+		return projects;
+	}
 
 	async create(dto: CreateProjectDto) {
 		dto.price = 100000;
