@@ -253,7 +253,7 @@ export class EventsService {
 		let eventsQuery = this.selectEventQuery(user)
 			.andWhere("e.is_banner IS TRUE")
 			.andWhere("e.is_draft IS FALSE")
-			.orderBy("e.created_at", "ASC");
+			.orderBy("e.created_at", "DESC");
 
 		const today_date = new Date();
 		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {

@@ -371,7 +371,7 @@ export class NewsService {
 				"news.city_id",
 			])
 			.setParameter("user_id", user.user_id)
-			.orderBy("news.created_at", "ASC")
+			.orderBy("news.created_at", "DESC")
 			.where("news.is_banner IS TRUE");
 
 		if (payload.city_id) {
