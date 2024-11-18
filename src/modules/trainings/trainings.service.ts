@@ -193,8 +193,8 @@ export class TrainingsService {
 		trainingQuery = trainingQuery.andWhere(
 			new Brackets((qb) =>
 				qb
-					.where("n.title ILIKE :text", { text: `%${dto.text}%` })
-					.orWhere("n.content ILIKE :text", {
+					.where("trainings.title ILIKE :text", { text: `%${dto.text}%` })
+					.orWhere("trainings.content ILIKE :text", {
 						text: `%${dto.text}%`,
 					}),
 			),
