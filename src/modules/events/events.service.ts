@@ -165,7 +165,87 @@ export class EventsService {
 
 	async readAll(dto: FilterEventsDto, user: ICurrentUser) {
 		const pageSize = (dto.page - 1) * dto.limit;
-		let eventsQuery = this.selectEventQuery(user);
+		let eventsQuery = this.eventRepository
+			.createQueryBuilder("e")
+			.leftJoinAndMapMany(
+				"e.contacts",
+				EventContactEntity,
+				"contacts",
+				"contacts.event_id = e.id",
+			)
+			.leftJoinAndMapMany(
+				"e.invited_users",
+				EventInvitationEntity,
+				"invitation",
+				"invitation.event_id = e.id",
+			)
+			.leftJoinAndMapOne(
+				"invitation.user",
+				UserEntity,
+				"user",
+				"user.id = invitation.user_id",
+			)
+			.leftJoinAndMapOne(
+				"user.agency",
+				AgencyEntity,
+				"agency",
+				"agency.id = user.agency_id",
+			)
+			.leftJoinAndMapOne(
+				"e.city",
+				CityEntity,
+				"city",
+				"city.id = e.city_id",
+			)
+			.loadRelationCountAndMap("e.likes_count", "e.likes")
+			.loadRelationCountAndMap("e.views_count", "e.views")
+			.loadRelationCountAndMap(
+				"e.accepted_invitation_count",
+				"e.invited_users",
+				"i",
+				(qb) => {
+					return qb.where("i.is_accepted IS TRUE");
+				},
+			)
+			.select([
+				"e.id",
+				"e.is_liked",
+				"e.is_joined",
+				"e.title",
+				"e.description",
+				"e.photo",
+				"e.location",
+				"e.date",
+				"e.start_time",
+				"e.end_time",
+				"e.leader",
+				"e.max_visitors",
+				"e.phone",
+				"e.format",
+				"e.type",
+				"e.is_banner",
+				"e.is_draft",
+				"e.tags",
+				"e.city_id",
+				"city.id",
+				"city.name",
+				"contacts.id",
+				"contacts.fullname",
+				"contacts.phone",
+				"invitation.id",
+				"invitation.is_accepted",
+				"invitation.is_invited",
+				"user.id",
+				"user.avatar",
+				"user.fullName",
+				"agency.id",
+				"agency.title",
+			])
+			.distinct(true)
+			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
+			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
+			.setParameter("user_id", user.user_id);
+
 		if (!(user.role === RoleType.ADMIN && dto.include_non_actives)) {
 			eventsQuery = eventsQuery.andWhere("e.is_active IS TRUE");
 		}

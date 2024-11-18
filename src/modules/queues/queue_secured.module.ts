@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 
-import { EventsQueueModule } from "./events_queue/events_queue.module";
 import { VisitQueueModule } from "./visit/visit.module";
 import { ProjectQueueModule } from "./project/project.module";
 import { BuildingQueueModule } from "./building/building.module";
@@ -15,7 +14,6 @@ import { TaskQueueModule } from "./task/task.module";
 @Module({
 	imports: [
 		ProjectQueueModule,
-		EventsQueueModule,
 		VisitQueueModule,
 		BuildingQueueModule,
 		PremiseQueueModule,
