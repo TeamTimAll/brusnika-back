@@ -190,15 +190,19 @@ export class TrainingsService {
 				"access_user_agency.legalName",
 			]);
 
-		trainingQuery = trainingQuery.andWhere(
-			new Brackets((qb) =>
-				qb
-					.where("trainings.title ILIKE :text", { text: `%${dto.text}%` })
-					.orWhere("trainings.content ILIKE :text", {
-						text: `%${dto.text}%`,
-					}),
-			),
-		);
+		if (dto.text) {
+			trainingQuery = trainingQuery.andWhere(
+				new Brackets((qb) =>
+					qb
+						.where("trainings.title ILIKE :text", {
+							text: `%${dto.text}%`,
+						})
+						.orWhere("trainings.content ILIKE :text", {
+							text: `%${dto.text}%`,
+						}),
+				),
+			);
+		}
 
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.andWhere(
