@@ -413,6 +413,15 @@ export class EventsService {
 			.setParameter("user_id", user.user_id);
 	}
 
+	async eventDates() {
+		const dates = await this.eventRepository
+			.createQueryBuilder("event")
+			.select("DISTINCT event.date::text", "date")
+			.getRawMany<string[]>();
+
+		return dates;
+	}
+
 	async create(dto: CreateEventsDto, user: ICurrentUser) {
 		const event = this.eventRepository.create(dto);
 		event.create_by_id = user.user_id;
@@ -480,7 +489,7 @@ export class EventsService {
 			eventInvitations.map((e) => e.user),
 			{
 				title: "Мероприятие",
-				description: `Незадолго до начала мероприятия ${event_title}`,
+				description: `Скоро начнется мероприятие! ${event_title}`,
 				type: NotificationType.WARNING_EVENT,
 				object_id: event_id,
 			},

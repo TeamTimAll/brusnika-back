@@ -78,6 +78,12 @@ export class EventsController {
 		return await this.eventsService.userEvents(user);
 	}
 
+	@Get("event-dates")
+	@HttpCode(HttpStatus.OK)
+	async eventDates() {
+		return await this.eventsService.eventDates();
+	}
+
 	@Get("banner")
 	@HttpCode(HttpStatus.OK)
 	@ApiOkResponse({ type: EventsDto })
