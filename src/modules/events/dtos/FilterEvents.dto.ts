@@ -45,7 +45,7 @@ export class FilterEventsDto {
 
 	@ApiProperty({ required: false })
 	@Limit()
-	limit: number = 50;
+	limit: number = 599;
 
 	@ApiProperty({ required: false })
 	@Transform(({ value }) => value === "true")

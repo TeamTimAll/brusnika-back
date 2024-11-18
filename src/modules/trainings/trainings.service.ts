@@ -3,7 +3,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, DataSource, EntityManager, In, Repository } from "typeorm";
 
 import { LikedResponseDto } from "../../common/dtos/likeResponse.dto";
-import { BaseDto } from "../../common/base/base_dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { arraysEqual } from "../../lib/array";
@@ -31,7 +30,6 @@ import { TrainingViewEntity } from "./entities/views.entity";
 import { TrainingCategoryNotFoundError } from "./errors/TrainingsCategoryNotFound.error";
 import { TrainingNotFoundError } from "./errors/TrainingsNotFound.error";
 import { TrainingAccess, TrainingEntity } from "./trainings.entity";
-import { TrainigsSearchDto } from "./dto/search-training.dto";
 
 interface BulkResponse<T = TrainingEntity, C = TrainingCategoryEntity> {
 	trainings: T[];
@@ -133,33 +131,6 @@ export class TrainingsService {
 		return query.getMany();
 	}
 
-	async search(dto: TrainigsSearchDto): Promise<BaseDto<TrainingEntity[]>> {
-		const pageSize = (dto.page - 1) * dto.limit;
-		let newsQuery = this.trainingRepository
-			.createQueryBuilder("n")
-			.select(["n.id", "n.title"] as Array<`n.${keyof TrainingEntity}`>)
-			.where("n.is_active IS TRUE")
-			.limit(dto.limit)
-			.offset(pageSize);
-
-		newsQuery = newsQuery.andWhere(
-			new Brackets((qb) =>
-				qb
-					.where("n.title ILIKE :text", { text: `%${dto.text}%` })
-					.orWhere("n.content ILIKE :text", {
-						text: `%${dto.text}%`,
-					}),
-			),
-		);
-
-		const [trainings, trainingsCount] = await newsQuery.getManyAndCount();
-
-		const metaData = BaseDto.create<TrainingEntity[]>();
-		metaData.setPagination(trainingsCount, dto.page, dto.limit);
-		metaData.data = trainings;
-		return metaData;
-	}
-
 	async readOne(id: number, user: ICurrentUser): Promise<unknown> {
 		const findOne = await this.trainingRepository
 			.createQueryBuilder("trainings")
@@ -218,6 +189,17 @@ export class TrainingsService {
 				"access_user_agency.id",
 				"access_user_agency.legalName",
 			]);
+
+		trainingQuery = trainingQuery.andWhere(
+			new Brackets((qb) =>
+				qb
+					.where("n.title ILIKE :text", { text: `%${dto.text}%` })
+					.orWhere("n.content ILIKE :text", {
+						text: `%${dto.text}%`,
+					}),
+			),
+		);
+
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.andWhere(
 				"trainings.category_id = :category_id",
