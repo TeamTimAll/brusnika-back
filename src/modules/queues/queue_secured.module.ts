@@ -10,6 +10,7 @@ import { LeadQueueModule } from "./lead/lead.module";
 import { UserQueueModule } from "./user/user.module";
 import { BookingQueueModule } from "./booking/booking.module";
 import { TaskQueueModule } from "./task/task.module";
+import { AgenciesQueueModule } from "./agency/agency.module";
 
 @Module({
 	imports: [
@@ -23,6 +24,7 @@ import { TaskQueueModule } from "./task/task.module";
 		UserQueueModule,
 		BookingQueueModule,
 		TaskQueueModule,
+		AgenciesQueueModule,
 	],
 })
 export class QueueSecuredModule {}

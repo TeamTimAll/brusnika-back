@@ -11,4 +11,4 @@ import { AgencyQueueController } from "./agency.controller";
 	controllers: [AgencyQueueController],
 	providers: [AgencyQueueService],
 })
-export class LeadQueueModule {}
+export class AgenciesQueueModule {}
