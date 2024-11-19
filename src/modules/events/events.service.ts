@@ -417,7 +417,8 @@ export class EventsService {
 	async eventDates(dto: FilterEventDatesDto) {
 		const datesQuery = this.eventRepository
 			.createQueryBuilder("event")
-			.select("DISTINCT event.date::text", "date");
+			.select("DISTINCT event.date::text", "date")
+			.where("event.is_draft is FALSE");
 
 		if (dto.city_id) {
 			datesQuery.andWhere("event.city_id = :city_id", {
