@@ -41,6 +41,7 @@ import { EventReachedMaximumVisitorsError } from "./errors/EventReachedMaximumVi
 import { UserAlreadyRegisteredToEventError } from "./errors/UserAlreadyRegisteredToEvent.error";
 import { EventsNotFoundError } from "./errors/events-not-found.error";
 import { EventsEntity } from "./events.entity";
+import { FilterEventDatesDto } from "./dtos/event-dates-dto";
 
 @Injectable()
 export class EventsService {
@@ -413,13 +414,20 @@ export class EventsService {
 			.setParameter("user_id", user.user_id);
 	}
 
-	async eventDates() {
-		const dates = await this.eventRepository
+	async eventDates(dto: FilterEventDatesDto) {
+		const datesQuery = this.eventRepository
 			.createQueryBuilder("event")
-			.select("DISTINCT event.date::text", "date")
-			.getRawMany<string[]>();
+			.select("DISTINCT event.date::text", "date");
 
-		return dates;
+		if (dto.city_id) {
+			datesQuery.andWhere("event.city_id = :city_id", {
+				city_id: dto.city_id,
+			});
+		}
+
+		const data = await datesQuery.getRawMany<string[]>();
+
+		return data;
 	}
 
 	async create(dto: CreateEventsDto, user: ICurrentUser) {
