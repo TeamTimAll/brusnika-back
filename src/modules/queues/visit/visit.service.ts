@@ -12,7 +12,7 @@ import { VisitsEntity } from "../../visits/visits.entity";
 import { QueueService } from "../queue.service";
 
 import { VisitStatusChangeDto } from "./dto/VisitStatusChange.dto";
-import { IVisit } from "./types";
+import { IVisit, IVisitFreeTime } from "./types";
 
 @Injectable()
 export class VisitQueueService {
@@ -38,12 +38,38 @@ export class VisitQueueService {
 		await this.queueService.send(data);
 	}
 
-	async timeSlots(dto: VisitStatusChangeDto) {
-		const data: Pick<BaseDto<VisitStatusChangeDto>, "data"> = {
-			data: dto,
+	async timeSlots(slots: IVisitFreeTime) {
+		const data: Pick<BaseDto<IVisitFreeTime>, "data"> = {
+			data: slots,
 		};
 
 		return await this.queueService.send(data);
+	}
+
+	async getTimeSlots(project_id: number): Promise<IVisitFreeTime> {
+		let project: ProjectEntity | undefined;
+		if (project_id) {
+			project = await this.projectService.readOne(
+				project_id,
+				{
+					ext_id: true,
+					buildings: { premises: { type: true } },
+				},
+				{ buildings: { premises: true } },
+			);
+		}
+
+		return {
+			method: "POST",
+			url: "https://1c.tarabanov.tech/crm/hs/ofo/FreeTime",
+			data: {
+				requestType: "schedule",
+				type: "offline",
+				project: project?.ext_id,
+				premisesKind:
+					project?.buildings?.[0]?.premises?.[0]?.type ?? null,
+			},
+		};
 	}
 
 	async createFormEntity(visit: VisitsEntity): Promise<IVisit> {
@@ -63,9 +89,14 @@ export class VisitQueueService {
 
 		let project: ProjectEntity | undefined;
 		if (visit.project_id) {
-			project = await this.projectService.readOne(visit.project_id, {
-				ext_id: true,
-			});
+			project = await this.projectService.readOne(
+				visit.project_id,
+				{
+					ext_id: true,
+					buildings: { premises: { type: true } },
+				},
+				{ buildings: { premises: true } },
+			);
 		}
 
 		return {

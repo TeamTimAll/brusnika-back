@@ -60,14 +60,12 @@ export class VisitsController {
 	}
 
 	@ApiQuery({
-		name: "name",
-		description: " visit Name (optional if not provided  or empty)",
+		name: "project_id",
 		required: false,
 	})
-	@ApiOperation({ summary: "Get all visits" })
-	@Get()
-	async getTimeSlots() {
-		return await this.service.getTimeSlots();
+	@Get("time-slots")
+	async getTimeSlots(@Query("project_id") project_id: string) {
+		return await this.service.getTimeSlots(Number(project_id));
 	}
 
 	@ApiOperation({ summary: "Get a single visit by ID" })

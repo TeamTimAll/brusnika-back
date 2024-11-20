@@ -57,8 +57,10 @@ export class VisitsService {
 		});
 	}
 
-	async getTimeSlots() {
-		
+	async getTimeSlots(project_id: number) {
+		return await this.visitQueueService.timeSlots(
+			await this.visitQueueService.getTimeSlots(project_id),
+		);
 	}
 
 	async readOne(id: number): Promise<VisitsEntity> {

@@ -1,6 +1,11 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Brackets, FindOptionsSelect, Repository } from "typeorm";
+import {
+	Brackets,
+	FindOptionsRelations,
+	FindOptionsSelect,
+	Repository,
+} from "typeorm";
 
 import { PickBySelect } from "interfaces/pick_by_select";
 
@@ -436,10 +441,15 @@ export class ProjectService {
 		return project;
 	}
 
-	async readOne(id: number, select?: FindOptionsSelect<ProjectEntity>) {
+	async readOne(
+		id: number,
+		select?: FindOptionsSelect<ProjectEntity>,
+		relations?: FindOptionsRelations<ProjectEntity>,
+	) {
 		const foundProject = await this.projectsRepository.findOne({
 			select: select ? { id: true, ...select } : undefined, // NOTE: If id is not provided it returns null
 			where: { id: id },
+			relations: relations ? { ...relations } : undefined,
 		});
 		if (!foundProject) {
 			throw new ProjectNotFoundError(`id: ${id}`);
