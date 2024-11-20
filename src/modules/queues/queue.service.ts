@@ -11,11 +11,13 @@ export class QueueService {
 	constructor() {}
 
 	public async send<T extends Pick<BaseDto, "data"> & Partial<BaseDto>>(
-		url: string,
 		data: T,
 	) {
 		this.logger.log(JSON.stringify(data));
 
-		return await axios.post(url, encrypt(JSON.stringify(data)));
+		return await axios.post(
+			"http://localhost:3000/logs/crm/",
+			encrypt(JSON.stringify(data)),
+		);
 	}
 }

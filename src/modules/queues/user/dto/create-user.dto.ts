@@ -5,43 +5,40 @@ import { UserRegisterStatus, UserStatus } from "../../../user/user.entity";
 
 export class UserDto {
 	@IsString()
-	ext_id!: string;
+	ext_id!: string | null;
 
 	@IsString()
-	firstName!: string;
+	firstName!: string | null;
 
 	@IsString()
-	lastName!: string;
+	lastName!: string | null;
 
 	@IsEnum(RoleType)
 	role!: RoleType;
 
 	@IsString()
-	email!: string;
+	email?: string | null;
 
 	@IsString()
-	username!: string;
+	username!: string | null;
 
 	@IsString()
-	password!: string;
+	password!: string | null;
 
 	@IsString()
-	phone!: string;
+	phone!: string | null;
 
 	@IsString()
-	birthDate!: Date;
+	birthDate!: Date | null;
 
 	@IsString()
-	workStartDate!: Date;
+	workStartDate!: Date | null;
 
 	@IsString()
-	avatar!: string;
+	avatar!: string | null;
 
 	@IsEnum(UserRegisterStatus)
 	register_status!: UserRegisterStatus;
-
-	@IsString()
-	fullName!: string;
 
 	@IsBoolean()
 	@IsOptional()
@@ -60,9 +57,9 @@ export class UserDto {
 
 	@IsString()
 	@IsOptional()
-	city_ext_id?: string;
+	city_ext_id?: string | null;
 
 	@IsString()
 	@IsOptional()
-	agency_ext_id?: string;
+	agency_ext_id?: string | null;
 }

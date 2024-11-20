@@ -11,8 +11,8 @@ import { UserService } from "../../user/user.service";
 import { VisitsEntity } from "../../visits/visits.entity";
 import { QueueService } from "../queue.service";
 
-import { VisitQueueDto } from "./dto/VisitQueue.dto";
 import { VisitStatusChangeDto } from "./dto/VisitStatusChange.dto";
+import { IVisit } from "./types";
 
 @Injectable()
 export class VisitQueueService {
@@ -23,11 +23,11 @@ export class VisitQueueService {
 		private readonly projectService: ProjectService,
 	) {}
 
-	async makeRequest(visit: VisitQueueDto) {
-		const data: Pick<BaseDto<VisitQueueDto>, "data"> = {
+	async makeRequest(visit: IVisit) {
+		const data: Pick<BaseDto<IVisit>, "data"> = {
 			data: visit,
 		};
-		await this.queueService.send("url", data);
+		await this.queueService.send(data);
 	}
 
 	async requestStatusChange(dto: VisitStatusChangeDto) {
@@ -35,10 +35,10 @@ export class VisitQueueService {
 			data: dto,
 		};
 
-		await this.queueService.send("url", data);
+		await this.queueService.send(data);
 	}
 
-	async createFormEntity(visit: VisitsEntity): Promise<VisitQueueDto> {
+	async createFormEntity(visit: VisitsEntity): Promise<IVisit> {
 		let agent: UserEntity | undefined;
 		if (visit.agent_id) {
 			agent = await this.userService.readOne(visit.agent_id, {
@@ -61,16 +61,23 @@ export class VisitQueueService {
 		}
 
 		return {
-			ext_id: visit.ext_id,
-			date: visit.date,
-			time: visit.time,
-			request_date: visit.request_date,
-			request_time: visit.request_time,
-			note: visit.note,
-			status: visit.status,
-			agent_ext_id: agent?.ext_id ?? null,
-			client_ext_id: client?.ext_id ?? null,
-			project_ext_id: project?.ext_id ?? null,
+			method: "POST",
+			url: "https://1c.tarabanov.tech/crm/hs/ofo/FreeTime",
+			data: {
+				requestType: "create_demo",
+				type: "offline",
+				date: visit.date,
+				name: client?.fullname,
+				phone: client?.phone_number,
+				project: project?.name,
+				premisesKind:
+					project?.buildings?.[0]?.premises?.[0]?.type ?? null,
+				realtor: {
+					name: agent?.fullName,
+					phone: agent?.phone,
+					agency: agent?.agency.title,
+				},
+			},
 		};
 	}
 }

@@ -3,43 +3,46 @@ import { Type } from "class-transformer";
 
 export class AgencyDto {
 	@IsString()
-	ext_id!: string;
+	ext_id!: string | null;
 
 	@IsString()
-	city_ext_id!: string;
+	city_ext_id?: string | null;
 
 	@IsString()
-	title!: string;
+	user_ext_id?: string | null;
 
 	@IsString()
-	legalName?: string;
+	title!: string | null;
 
 	@IsString()
-	inn?: string;
+	legalName?: string | null;
 
 	@IsString()
-	phone?: string;
+	inn?: string | null;
 
 	@IsString()
-	email?: string;
+	phone?: string | null;
 
 	@IsString()
-	ownerFullName?: string;
+	email?: string | null;
 
 	@IsString()
-	ownerPhone?: string;
+	ownerFullName?: string | null;
 
 	@IsString()
-	entry_doc?: string;
+	ownerPhone?: string | null;
 
 	@IsString()
-	company_card_doc?: string;
+	entry_doc?: string | null;
 
 	@IsString()
-	tax_registration_doc?: string;
+	company_card_doc?: string | null;
 
 	@IsString()
-	authority_signatory_doc?: string;
+	tax_registration_doc?: string | null;
+
+	@IsString()
+	authority_signatory_doc?: string | null;
 }
 
 export class AgenciesDto {

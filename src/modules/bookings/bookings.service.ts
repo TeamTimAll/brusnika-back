@@ -77,12 +77,9 @@ export class BookingsService {
 		booking.agent_id = user.user_id;
 		booking.create_by_id = user.user_id;
 
-		// eslint-disable-next-line no-constant-condition
-		if (false) {
-			await this.bookingQueueService.makeRequest(
-				await this.bookingQueueService.createFormEntity(booking),
-			);
-		}
+		await this.bookingQueueService.makeRequest(
+			await this.bookingQueueService.createFormEntity(booking),
+		);
 
 		const metaData = BaseDto.create<BookingsEntity>();
 		metaData.data = await this.bookingRepository.save(booking);

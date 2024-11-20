@@ -220,6 +220,11 @@ export class TrainingsService {
 			}
 			return trainingQuery.getMany();
 		}
+
+		if (dto.is_show) {
+			trainingQuery = trainingQuery.andWhere("trainings.is_show is TRUE");
+		}
+
 		trainingQuery = trainingQuery.andWhere("trainings.is_active IS TRUE");
 		trainingQuery = trainingQuery
 			.andWhere(

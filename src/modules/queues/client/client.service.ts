@@ -8,6 +8,7 @@ import { BaseDto } from "../../../common/base/base_dto";
 import { QueueService } from "../queue.service";
 
 import { ClientDto } from "./dto";
+import { IClient } from "./types/client.type";
 
 @Injectable()
 export class ClientQueueService {
@@ -60,29 +61,38 @@ export class ClientQueueService {
 			.execute();
 	}
 
-	async send(client: ClientDto) {
-		const data: Pick<BaseDto<ClientDto>, "data"> = {
+	async send(client: IClient) {
+		const data: Pick<BaseDto<IClient>, "data"> = {
 			data: client,
 		};
 
-		await this.queueService.send("url", data);
+		await this.queueService.send(data);
 	}
 
-	async createFromEntity(client: ClientEntity): Promise<ClientDto> {
+	async createFromEntity(client: ClientEntity): Promise<IClient> {
 		const agent = await this.userService.readOne(client.agent_id, {
 			ext_id: true,
 		});
+
 		return {
-			ext_id: client.ext_id ?? null,
-			actived_date: client.actived_date?.toISOString() ?? null,
-			fullname: client.fullname,
-			phone_number: client.phone_number,
-			expiration_date: client.expiration_date,
-			confirmation_type: client.confirmation_type,
-			agent_ext_id: agent.ext_id,
-			comment: client.comment,
-			fixing_type: client.fixing_type,
-			node: client.node,
+			url: "https://1c.tarabanov.tech/crm/hs/ofo",
+			method: "POST",
+			data: {
+				requestType: "realtorForm",
+				contourId: "0100afa8-b6c2-11ea-8f75-34e12d85ce6a",
+				realtor: {
+					phone: agent.phone,
+					name: agent.fullName,
+				},
+				agency: {
+					name: agent.agency.title,
+				},
+				client: {
+					phone: client.phone_number,
+					name: client.fullname,
+				},
+				contact: client.confirmation_type,
+			},
 		};
 	}
 }

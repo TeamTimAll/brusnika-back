@@ -114,7 +114,7 @@ export class UserController {
 		return this.userService.me(user.user_id);
 	}
 
-	@Put("/")
+	@Put()
 	@ApiOperation({ description: "### User o'z ma'lumotlarini o'zgartirish." })
 	@ApiDtoResponse(UserMetaDataDto, HttpStatus.OK)
 	update(@Body() dto: UserUpdateMetaDataDto, @User() user: ICurrentUser) {

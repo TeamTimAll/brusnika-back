@@ -71,12 +71,9 @@ export class ClientService {
 		let client = this.clientRepository.create(dto);
 		client = await this.clientRepository.save(client);
 
-		// eslint-disable-next-line no-constant-condition
-		if (false) {
-			await this.clinetQueueService.send(
-				await this.clinetQueueService.createFromEntity(client),
-			);
-		}
+		await this.clinetQueueService.send(
+			await this.clinetQueueService.createFromEntity(client),
+		);
 
 		return client;
 	}

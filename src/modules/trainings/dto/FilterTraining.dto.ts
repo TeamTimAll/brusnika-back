@@ -19,4 +19,10 @@ export class FilterTrainingDto {
 	@IsString()
 	@IsOptional()
 	text?: string;
+
+	@ApiProperty({ required: false })
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_show?: boolean;
 }

@@ -1,26 +1,23 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 
 import { BookingsService } from "../../bookings/bookings.service";
-import { UserService } from "../../user/user.service";
 import { ClientService } from "../../client/client.service";
-import { PremisesService } from "../../premises/premises.service";
 import { BaseDto } from "../../../common/base/base_dto";
 import { QueueService } from "../queue.service";
 import { BookingsEntity } from "../../bookings/bookings.entity";
-import { UserEntity } from "../../user/user.entity";
 import { ClientEntity } from "../../client/client.entity";
-import { PremiseEntity } from "../../premises/premises.entity";
 
-import { BookingDto, BookingQueueDto } from "./dto";
+import { BookingDto } from "./dto";
+import { IBooking } from "./types/booking.type";
 
 @Injectable()
 export class BookingQueueService {
 	constructor(
 		@Inject(forwardRef(() => BookingsService))
 		private readonly bookingService: BookingsService,
-		private readonly userService: UserService,
+		// private readonly userService: UserService,
 		private readonly clientService: ClientService,
-		private readonly premisesService: PremisesService,
+		// private readonly premisesService: PremisesService,
 		private readonly queueService: QueueService,
 	) {}
 
@@ -35,11 +32,11 @@ export class BookingQueueService {
 		});
 	}
 
-	async makeRequest(booking: BookingQueueDto) {
-		const data: Pick<BaseDto<BookingQueueDto>, "data"> = {
+	async makeRequest(booking: IBooking) {
+		const data: Pick<BaseDto<IBooking>, "data"> = {
 			data: booking,
 		};
-		await this.queueService.send("url", data);
+		await this.queueService.send(data);
 	}
 
 	async requestStatusChange(dto: BookingDto) {
@@ -47,16 +44,16 @@ export class BookingQueueService {
 			data: dto,
 		};
 
-		await this.queueService.send("url", data);
+		await this.queueService.send(data);
 	}
 
-	async createFormEntity(booking: BookingsEntity): Promise<BookingQueueDto> {
-		let agent: UserEntity | undefined;
-		if (booking.agent_id) {
-			agent = await this.userService.readOne(booking.agent_id, {
-				ext_id: true,
-			});
-		}
+	async createFormEntity(booking: BookingsEntity): Promise<IBooking> {
+		// let agent: UserEntity | undefined;
+		// if (booking.agent_id) {
+		// 	agent = await this.userService.readOne(booking.agent_id, {
+		// 		ext_id: true,
+		// 	});
+		// }
 
 		let client: ClientEntity | undefined;
 		if (booking.client_id) {
@@ -65,20 +62,31 @@ export class BookingQueueService {
 			});
 		}
 
-		let premise: PremiseEntity | undefined;
-		if (booking.premise_id) {
-			premise = await this.premisesService.readOne(booking.premise_id, {
-				ext_id: true,
-			});
-		}
+		// let premise: PremiseEntity | undefined;
+		// if (booking.premise_id) {
+		// 	premise = await this.premisesService.readOne(booking.premise_id, {
+		// 		ext_id: true,
+		// 	});
+		// }
 
 		return {
-			ext_id: booking.ext_id,
-			purchase_option: booking.purchase_option,
-			status: booking.status,
-			agent_ext_id: agent?.ext_id ?? null,
-			client_ext_id: client?.ext_id ?? null,
-			premise_ext_id: premise?.ext_id ?? null,
+			url: "https://1c.tarabanov.tech/crm/hs/ofo/",
+			method: "POST",
+			data: {
+				contourId: "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
+				requestType: "reservation_paid",
+				contacts: {
+					name: client?.fullname,
+					phone: client?.phone_number,
+				},
+				data: {
+					flatIdC: "fafb8ccd-59aa-4509-a520-5d45e14f42c6",
+					ga_client_id: "",
+					metrika_client_id: "",
+					payment_method: booking.purchase_option,
+				},
+				referer: "",
+			},
 		};
 	}
 }
