@@ -165,6 +165,12 @@ export class AuthService {
 				legalName: dto.legalName,
 				phone: dto.phone,
 				title: dto.title,
+				authority_signatory_doc: dto.authority_signatory_doc,
+				company_card_doc: dto.company_card_doc,
+				entry_doc: dto.entry_doc,
+				ownerFullName: dto.ownerFullName,
+				ownerPhone: dto.ownerPhone,
+				tax_registration_doc: dto.tax_registration_doc
 			},
 			{ user_id: user.id, role: user.role },
 		);

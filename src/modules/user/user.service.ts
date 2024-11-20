@@ -355,6 +355,7 @@ export class UserService {
 			where: {
 				id: id,
 			},
+			relations: {agency: true}
 		});
 		if (!foundUser) {
 			throw new UserNotFoundError(`id: ${id}`);

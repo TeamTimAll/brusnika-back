@@ -72,8 +72,11 @@ export class ClientQueueService {
 	async createFromEntity(client: ClientEntity): Promise<IClient> {
 		const agent = await this.userService.readOne(client.agent_id, {
 			ext_id: true,
+			agency: {title: true}
 		});
 
+		console.log(agent);
+		
 		return {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo",
 			method: "POST",

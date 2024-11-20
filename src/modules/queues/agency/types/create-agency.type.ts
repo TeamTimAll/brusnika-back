@@ -2,11 +2,13 @@ export interface IAgency {
 	url: string;
 	method: string;
 	data: {
-		countourId: string;
+		contourId: string;
 		city?: string;
 		agency: string | null;
 		organizationalLegalForm: string | null;
 		inn: string | null;
+		agencyFull: string;
+		okved: string;
 		phone: string | null;
 		email: string | null;
 		taxRegistrationRef: string | null;
@@ -17,5 +19,25 @@ export interface IAgency {
 		contactPersonPosition?: string | null;
 		contactPersonPhone?: string | null;
 		citiesWork: (string | undefined)[];
+		registrationAgencyDate: string
+		vatAvailability: boolean
+		agencyWorkingTerm: {
+			count: number
+			unit: string
+		}
+		employees: number
+		reasonAgreements: string
+		agreementsAnotherDeveloper: {
+			availability: boolean
+			developerList: string[]
+		}
+		associations: {
+			availability: boolean
+			associationList: string[]
+		}
+		amountDealsMonth: string
+		signer: string
+		basisForSigning: string
+		siteLinks: string[]
 	};
 }

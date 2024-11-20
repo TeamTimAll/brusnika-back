@@ -57,12 +57,12 @@ export class AgencyService {
 		}
 	}
 
-	async create(dto: CreateAgenciesDto, user: ICurrentUser) {
+	async create(dto: CreateAgenciesDto, user: ICurrentUser) {		
 		// Check city exist or not
 		await this.cityService.readOne(dto.city_id);
 		const agency = this.agencyRepository.create(dto);
 		agency.create_by_id = user.user_id;
-
+		
 		await this.agencyQueueService.makeRequest(
 			await this.agencyQueueService.createFormEntity(agency),
 		);

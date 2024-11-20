@@ -64,7 +64,7 @@ export class AgencyController {
 	async create(
 		@Body() dto: CreateAgenciesMetaDataDto,
 		@User() user: ICurrentUser,
-	) {
+	) {		
 		const res = await this.service.create(dto.data, user);
 		return res;
 	}

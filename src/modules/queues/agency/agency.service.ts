@@ -40,6 +40,7 @@ export class AgencyQueueService {
 			.createQueryBuilder()
 			.insert()
 			.values({
+				ext_id: payload.ext_id,
 				authority_signatory_doc: payload.authority_signatory_doc,
 				city_id: city?.id,
 				company_card_doc: payload.company_card_doc,
@@ -48,7 +49,7 @@ export class AgencyQueueService {
 				inn: payload.inn,
 				legalName: payload.legalName,
 				ownerFullName: payload.ownerFullName,
-				ownerPhone: payload.ownerFullName,
+				ownerPhone: payload.ownerPhone,
 				phone: payload.phone,
 				tax_registration_doc: payload.tax_registration_doc,
 				title: payload.title,
@@ -62,9 +63,9 @@ export class AgencyQueueService {
 					"email",
 					"entry_doc",
 					"inn",
-					"legalName",
-					"ownerFullName",
-					"ownerPhone",
+					"legal_name",
+					"owner_full_name",
+					"owner_phone",
 					"phone",
 					"tax_registration_doc",
 					"title",
@@ -99,25 +100,61 @@ export class AgencyQueueService {
 			user = await this.usersService.readOne(agency.create_by_id);
 		}
 
+		console.log(agency);
+		
+
 		return {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo/AgreementWithAgent",
 			method: "POST",
 			data: {
-				countourId: "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
+				contourId: "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
 				city: city?.name,
 				agency: agency.title,
 				organizationalLegalForm: agency.legalName,
 				inn: agency.inn,
 				phone: agency.phone,
 				email: agency.email,
-				taxRegistrationRef: agency.tax_registration_doc,
-				ogrnRef: agency.entry_doc,
-				agencyRef: agency.company_card_doc,
-				basisForSigningRef: agency.authority_signatory_doc,
+				// taxRegistrationRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.tax_registration_doc}`,
+				// ogrnRef:  `https://test-api-brusnika.teamtim.tech/api/files/${agency.entry_doc}`,
+				// agencyRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.company_card_doc}` ,
+				// basisForSigningRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.authority_signatory_doc}` ,
+				taxRegistrationRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
+				ogrnRef:  `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
+				agencyRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg` ,
+				basisForSigningRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
 				contactPersonName: user?.firstName,
 				contactPersonPosition: user?.role,
 				contactPersonPhone: user?.phone,
 				citiesWork: [city?.name],
+				"agencyFull": "testagency LLC",
+				"okved": "711111111",
+				"registrationAgencyDate": "2024-11-18",
+				"vatAvailability": true,
+				"agencyWorkingTerm": {
+					"count": 10,
+					"unit": "MONTH"
+				},
+				"employees": 10,
+				"reasonAgreements": "testagency.ru",
+				"agreementsAnotherDeveloper": {
+					"availability": true,
+					"developerList": [
+						"testdev"
+					]
+				},
+				"associations": {
+					"availability": true,
+					"associationList": [
+					"testagency"
+					]
+				},
+				"amountDealsMonth": "LESS_THAN_10",
+				"signer": "testuser",
+				"basisForSigning": "testuser",
+				"siteLinks": [
+					"testagency.ru"
+				]
+			
 			},
 		};
 	}
