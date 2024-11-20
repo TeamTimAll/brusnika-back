@@ -19,25 +19,25 @@ export interface IAgency {
 		contactPersonPosition?: string | null;
 		contactPersonPhone?: string | null;
 		citiesWork: (string | undefined)[];
-		registrationAgencyDate: string
-		vatAvailability: boolean
+		registrationAgencyDate: string;
+		vatAvailability: boolean;
 		agencyWorkingTerm: {
-			count: number
-			unit: string
-		}
-		employees: number
-		reasonAgreements: string
+			count: number;
+			unit: string;
+		};
+		employees: number;
+		reasonAgreements: string;
 		agreementsAnotherDeveloper: {
-			availability: boolean
-			developerList: string[]
-		}
+			availability: boolean;
+			developerList: string[];
+		};
 		associations: {
-			availability: boolean
-			associationList: string[]
-		}
-		amountDealsMonth: string
-		signer: string
-		basisForSigning: string
-		siteLinks: string[]
+			availability: boolean;
+			associationList: string[];
+		};
+		amountDealsMonth: string;
+		signer: string;
+		basisForSigning: string;
+		siteLinks: string[];
 	};
 }

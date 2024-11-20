@@ -38,6 +38,14 @@ export class VisitQueueService {
 		await this.queueService.send(data);
 	}
 
+	async timeSlots(dto: VisitStatusChangeDto) {
+		const data: Pick<BaseDto<VisitStatusChangeDto>, "data"> = {
+			data: dto,
+		};
+
+		return await this.queueService.send(data);
+	}
+
 	async createFormEntity(visit: VisitsEntity): Promise<IVisit> {
 		let agent: UserEntity | undefined;
 		if (visit.agent_id) {

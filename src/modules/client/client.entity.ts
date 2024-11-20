@@ -18,6 +18,11 @@ export enum ConfirmationType {
 	SMS = "смс",
 }
 
+export enum ConfirmationTypeKontur {
+	PHONE = "call",
+	SMS = "sms",
+}
+
 @Entity({ name: "clients" })
 export class ClientEntity extends BaseEntity {
 	@Column({ type: "varchar", length: 255 })

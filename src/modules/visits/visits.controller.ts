@@ -59,6 +59,17 @@ export class VisitsController {
 		return await this.service.readAll(user);
 	}
 
+	@ApiQuery({
+		name: "name",
+		description: " visit Name (optional if not provided  or empty)",
+		required: false,
+	})
+	@ApiOperation({ summary: "Get all visits" })
+	@Get()
+	async getTimeSlots() {
+		return await this.service.getTimeSlots();
+	}
+
 	@ApiOperation({ summary: "Get a single visit by ID" })
 	@ApiErrorResponse(VisitNotFoundError, "'name' visit not found")
 	@Get(":id")

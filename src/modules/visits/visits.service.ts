@@ -57,6 +57,10 @@ export class VisitsService {
 		});
 	}
 
+	async getTimeSlots() {
+		
+	}
+
 	async readOne(id: number): Promise<VisitsEntity> {
 		const findOne = await this.visitsRepository.findOne({
 			where: { id },

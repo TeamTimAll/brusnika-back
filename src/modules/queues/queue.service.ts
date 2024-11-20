@@ -17,7 +17,7 @@ export class QueueService {
 
 		return await axios.post(
 			"http://localhost:3001/logs/crm/",
-			data
+			data,
 			// encrypt(JSON.stringify(data)),
 		);
 	}

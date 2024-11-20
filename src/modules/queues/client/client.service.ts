@@ -3,7 +3,11 @@ import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { ClientService } from "../../client/client.service";
 import { UserService } from "../../user/user.service";
 import { UserEntity } from "../../user/user.entity";
-import { ClientEntity } from "../../client/client.entity";
+import {
+	ClientEntity,
+	ConfirmationType,
+	ConfirmationTypeKontur,
+} from "../../client/client.entity";
 import { BaseDto } from "../../../common/base/base_dto";
 import { QueueService } from "../queue.service";
 
@@ -72,11 +76,11 @@ export class ClientQueueService {
 	async createFromEntity(client: ClientEntity): Promise<IClient> {
 		const agent = await this.userService.readOne(client.agent_id, {
 			ext_id: true,
-			agency: {title: true}
+			agency: { title: true },
+			phone: true,
+			fullName: true,
 		});
 
-		console.log(agent);
-		
 		return {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo",
 			method: "POST",
@@ -94,7 +98,10 @@ export class ClientQueueService {
 					phone: client.phone_number,
 					name: client.fullname,
 				},
-				contact: client.confirmation_type,
+				contact:
+					client.confirmation_type === ConfirmationType.PHONE
+						? ConfirmationTypeKontur.PHONE
+						: ConfirmationTypeKontur.SMS,
 			},
 		};
 	}

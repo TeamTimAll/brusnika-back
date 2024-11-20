@@ -100,9 +100,6 @@ export class AgencyQueueService {
 			user = await this.usersService.readOne(agency.create_by_id);
 		}
 
-		console.log(agency);
-		
-
 		return {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo/AgreementWithAgent",
 			method: "POST",
@@ -119,42 +116,35 @@ export class AgencyQueueService {
 				// agencyRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.company_card_doc}` ,
 				// basisForSigningRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.authority_signatory_doc}` ,
 				taxRegistrationRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
-				ogrnRef:  `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
-				agencyRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg` ,
+				ogrnRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
+				agencyRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
 				basisForSigningRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
 				contactPersonName: user?.firstName,
 				contactPersonPosition: user?.role,
 				contactPersonPhone: user?.phone,
 				citiesWork: [city?.name],
-				"agencyFull": "testagency LLC",
-				"okved": "711111111",
-				"registrationAgencyDate": "2024-11-18",
-				"vatAvailability": true,
-				"agencyWorkingTerm": {
-					"count": 10,
-					"unit": "MONTH"
+				agencyFull: "testagency LLC",
+				okved: "711111111",
+				registrationAgencyDate: "2024-11-18",
+				vatAvailability: true,
+				agencyWorkingTerm: {
+					count: 10,
+					unit: "MONTH",
 				},
-				"employees": 10,
-				"reasonAgreements": "testagency.ru",
-				"agreementsAnotherDeveloper": {
-					"availability": true,
-					"developerList": [
-						"testdev"
-					]
+				employees: 10,
+				reasonAgreements: "testagency.ru",
+				agreementsAnotherDeveloper: {
+					availability: true,
+					developerList: ["testdev"],
 				},
-				"associations": {
-					"availability": true,
-					"associationList": [
-					"testagency"
-					]
+				associations: {
+					availability: true,
+					associationList: ["testagency"],
 				},
-				"amountDealsMonth": "LESS_THAN_10",
-				"signer": "testuser",
-				"basisForSigning": "testuser",
-				"siteLinks": [
-					"testagency.ru"
-				]
-			
+				amountDealsMonth: "LESS_THAN_10",
+				signer: "testuser",
+				basisForSigning: "testuser",
+				siteLinks: ["testagency.ru"],
 			},
 		};
 	}
