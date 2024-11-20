@@ -58,9 +58,11 @@ export class VisitsService {
 	}
 
 	async getTimeSlots(project_id: number) {
-		return await this.visitQueueService.timeSlots(
+		const {data} = await this.visitQueueService.timeSlots(
 			await this.visitQueueService.getTimeSlots(project_id),
 		);
+
+		return data
 	}
 
 	async readOne(id: number): Promise<VisitsEntity> {
