@@ -15,6 +15,8 @@ import { RoleType } from "../../constants";
 import { Roles, RolesGuard } from "../../guards/roles.guard";
 import { TransformInterceptor } from "../../interceptors/transform.interceptor";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { User } from "../../decorators";
 
 import {
 	CreateTaskMetaDataDto,
@@ -45,8 +47,11 @@ export class TasksController {
 
 	@Post()
 	@ApiOperation({ summary: "create task" })
-	async create(@Body() dto: CreateTaskMetaDataDto) {
-		const res = await this.service.create(dto.data);
+	async create(
+		@Body() dto: CreateTaskMetaDataDto,
+		@User() user: ICurrentUser,
+	) {
+		const res = await this.service.create(dto.data, user);
 
 		return res;
 	}

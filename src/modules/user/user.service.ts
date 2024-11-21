@@ -363,6 +363,26 @@ export class UserService {
 		return foundUser;
 	}
 
+	async readOneByKeycloakIdOrEmail(
+		id: string,
+		email: string,
+		select?: FindOptionsSelect<UserEntity>,
+	) {
+		const foundUser = await this.userRepository.findOne({
+			select: select ? { id: true, ...select } : undefined, // NOTE: If id is not provided it returns null
+			where: [
+				{
+					keycloak_id: id,
+				},
+				{
+					email,
+				},
+			],
+		});
+
+		return foundUser;
+	}
+
 	async search(dto: UserSearchDto): Promise<BaseDto<UserEntity[]>> {
 		let queryBuilder = this.userRepository
 			.createQueryBuilder("u")

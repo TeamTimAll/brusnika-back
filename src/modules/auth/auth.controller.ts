@@ -25,6 +25,7 @@ import { UserEmailAlreadyExistsError } from "./errors/UserAlreadyExists.error";
 import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "./errors/VerificationExists.error";
+import { KeycloakMetaDataDto } from "./dtos/keycloack.dto";
 
 @ApiTags("auth")
 @Controller("auth")
@@ -89,6 +90,12 @@ export class AuthController {
 	@Post("/agent/register/choose_agency")
 	agentChooseAgency(@Body() dto: AgentChooseAgencyMetaDataDto) {
 		return this.authService.agentChooseAgency(dto.data);
+	}
+
+	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
+	@Post("/keycloack")
+	keycloak(@Body() dto: KeycloakMetaDataDto) {
+		return this.authService.keycloak(dto.data);
 	}
 
 	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })

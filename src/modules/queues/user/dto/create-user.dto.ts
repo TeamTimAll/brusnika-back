@@ -1,4 +1,12 @@
-import { IsBoolean, IsEnum, IsOptional, IsString } from "class-validator";
+import {
+	IsBoolean,
+	IsEnum,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
 
 import { RoleType } from "../../../../constants";
 import { UserRegisterStatus, UserStatus } from "../../../user/user.entity";
@@ -62,4 +70,11 @@ export class UserDto {
 	@IsString()
 	@IsOptional()
 	agency_ext_id?: string | null;
+}
+
+export class UsersDto {
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => UserDto)
+	data!: UserDto[];
 }

@@ -9,7 +9,7 @@ import { BaseDto } from "../../../common/base/base_dto";
 import { UserEntity } from "../../user/user.entity";
 import { QueueService } from "../queue.service";
 
-import { UserDto } from "./dto";
+import { UserDto, UsersDto } from "./dto";
 import { IUser } from "./types";
 
 @Injectable()
@@ -79,6 +79,12 @@ export class UserQueueService {
 				["ext_id"],
 			)
 			.execute();
+	}
+
+	async createUsers({ data: users }: UsersDto) {
+		for await (const user of users) {
+			await this.createOrUpdateUser(user);
+		}
 	}
 
 	async makeRequest(user: IUser) {

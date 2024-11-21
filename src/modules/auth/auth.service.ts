@@ -1,5 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import axios from "axios";
 
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
@@ -33,6 +34,8 @@ import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.e
 import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "./errors/VerificationExists.error";
 import { SmsService } from "./sms.service";
+import { KeycloakDto } from "./dtos/keycloack.dto";
+import { IDecodedPayload } from "./types";
 
 @Injectable()
 export class AuthService {
@@ -111,6 +114,72 @@ export class AuthService {
 		};
 	}
 
+	async keycloak(dto: KeycloakDto) {
+		const url =
+			"https://login.brusnika.ru/realms/Staging/protocol/openid-connect/token";
+		const data = new URLSearchParams({
+			grant_type: "authorization_code",
+			client_id: "aquamarine",
+			code: dto.code,
+			redirect_uri: dto.redirectUri,
+			client_secret: "ML48XVCU1lv362574ZTyonqXoHQgrJJh",
+		});
+
+		const headers = {
+			"Content-Type": "application/x-www-form-urlencoded",
+		};
+
+		try {
+			const response = await axios.post(url, data.toString(), {
+				headers,
+			});
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+			const token: string = response?.data?.access_token;
+
+			const [, payload] = token.split(".");
+
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			const decodedPayload: IDecodedPayload = JSON.parse(
+				Buffer.from(payload, "base64").toString("utf-8"),
+			);
+
+			const foundUser = await this.userService.readOneByKeycloakIdOrEmail(
+				decodedPayload.sub,
+				decodedPayload.email,
+			);
+
+			if (foundUser) {
+				return {
+					accessToken: this.jwtService.sign({
+						user_id: foundUser.id,
+						role: foundUser.role,
+					}),
+				};
+			}
+
+			const newUser = this.userService.repository.create({
+				email: decodedPayload.email,
+				firstName: decodedPayload.given_name,
+				lastName: decodedPayload.family_name,
+				keycloak_id: decodedPayload.sub,
+				role: RoleType.AFFILIATE_MANAGER,
+				is_verified: true,
+				city_id: 1,
+			});
+
+			const savedUser = await this.userService.repository.save(newUser);
+
+			return {
+				accessToken: this.jwtService.sign({
+					user_id: savedUser.id,
+					role: savedUser.role,
+				}),
+			};
+		} catch (error: unknown) {
+			throw new ForbiddenException();
+		}
+	}
+
 	async agentChooseAgency(
 		body: AgentChooseAgencyDto,
 	): Promise<AuthResponeWithTokenDto> {
@@ -170,7 +239,7 @@ export class AuthService {
 				entry_doc: dto.entry_doc,
 				ownerFullName: dto.ownerFullName,
 				ownerPhone: dto.ownerPhone,
-				tax_registration_doc: dto.tax_registration_doc
+				tax_registration_doc: dto.tax_registration_doc,
 			},
 			{ user_id: user.id, role: user.role },
 		);

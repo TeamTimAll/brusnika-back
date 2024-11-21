@@ -27,6 +27,7 @@ import { CreateVisitsMetaDataDto } from "./dtos/CreateVisits.dto";
 import { UpdateVisitsMetaDataDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
 import { VisitsService } from "./visits.service";
+import { TimeSlotDto } from "./dtos/time-slot.dto";
 
 @ApiTags("Visits")
 @Controller("/visits")
@@ -59,13 +60,9 @@ export class VisitsController {
 		return await this.service.readAll(user);
 	}
 
-	@ApiQuery({
-		name: "project_id",
-		required: false,
-	})
 	@Get("time-slots")
-	async getTimeSlots(@Query("project_id") project_id: string) {
-		return await this.service.getTimeSlots(Number(project_id));
+	async getTimeSlots(@Query() query: TimeSlotDto) {
+		return await this.service.getTimeSlots(query);
 	}
 
 	@ApiOperation({ summary: "Get a single visit by ID" })

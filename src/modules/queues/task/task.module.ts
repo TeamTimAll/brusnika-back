@@ -5,6 +5,7 @@ import { UserModule } from "../../user/user.module";
 import { QueueModule } from "../queue.module";
 import { TasksModule } from "../../tasks/tasks.module";
 import { ProjectsModule } from "../../projects/projects.module";
+import { LeadsModule } from "../../leads/leads.module";
 
 import { TaskQueueService } from "./task.service";
 import { TaskQueueController } from "./task.controller";
@@ -16,6 +17,7 @@ import { TaskQueueController } from "./task.controller";
 		ClientModule,
 		ProjectsModule,
 		QueueModule,
+		LeadsModule,
 	],
 	controllers: [TaskQueueController],
 	providers: [TaskQueueService],

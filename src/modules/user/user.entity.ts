@@ -32,6 +32,9 @@ export class UserEntity extends BaseEntity {
 	firstName!: string | null;
 
 	@Column({ nullable: true, type: "varchar" })
+	keycloak_id?: string | null;
+
+	@Column({ nullable: true, type: "varchar" })
 	lastName!: string | null;
 
 	@Column({ type: "enum", enum: RoleType, default: RoleType.NEW_MEMBER })

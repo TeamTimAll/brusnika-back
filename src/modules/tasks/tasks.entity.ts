@@ -83,4 +83,10 @@ export class TasksEntity extends BaseEntity {
 
 	@Column({ type: "varchar", enum: TaskStatus, default: TaskStatus.CREATED })
 	status!: TaskStatus;
+
+	@ManyToOne(() => UserEntity)
+	create_by!: UserEntity;
+
+	@Column({ type: "integer", nullable: true })
+	created_by_id?: number;
 }

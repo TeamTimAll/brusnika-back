@@ -14,6 +14,7 @@ import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
 import { UpdateVisitsDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
 import { VisitsEntity } from "./visits.entity";
+import { TimeSlotDto } from "./dtos/time-slot.dto";
 
 @Injectable()
 export class VisitsService {
@@ -57,9 +58,70 @@ export class VisitsService {
 		});
 	}
 
-	async getTimeSlots(project_id: number) {
+	async getTimeSlots(query: TimeSlotDto) {
+		if (query.debug) {
+			return [
+				{
+					"2024-11-21": [
+						{
+							start: "10:00",
+							end: "11:30",
+						},
+						{
+							start: "11:30",
+							end: "13:00",
+						},
+						{
+							start: "13:00",
+							end: "14:30",
+						},
+						{
+							start: "14:30",
+							end: "16:00",
+						},
+						{
+							start: "16:00",
+							end: "17:30",
+						},
+						{
+							start: "17:30",
+							end: "19:00",
+						},
+					],
+				},
+				{
+					"2024-11-22": [
+						{
+							start: "10:00",
+							end: "11:30",
+						},
+						{
+							start: "11:30",
+							end: "13:00",
+						},
+						{
+							start: "13:00",
+							end: "14:30",
+						},
+						{
+							start: "14:30",
+							end: "16:00",
+						},
+						{
+							start: "16:00",
+							end: "17:30",
+						},
+						{
+							start: "17:30",
+							end: "19:00",
+						},
+					],
+				},
+			];
+		}
+
 		return await this.visitQueueService.timeSlots(
-			await this.visitQueueService.getTimeSlots(project_id),
+			await this.visitQueueService.getTimeSlots(query.project_id),
 		);
 	}
 

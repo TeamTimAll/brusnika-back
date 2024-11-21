@@ -8,6 +8,7 @@ import { ClientService } from "../client/client.service";
 import { LeadsService } from "../leads/leads.service";
 import { ProjectService } from "../projects/projects.service";
 import { Order } from "../../constants";
+import { ICurrentUser } from "../../interfaces/current-user.interface";
 
 import {
 	CreateTaskDto,
@@ -33,14 +34,17 @@ export class TasksService {
 		return this.taskRepository;
 	}
 
-	async create(payload: CreateTaskDto) {
+	async create(payload: CreateTaskDto, user: ICurrentUser) {
 		await this.userService.checkExists(payload.manager_id);
 		await this.clientService.checkExists(payload.client_id);
 		await this.projectService.checkExists(payload.project_id);
 
 		await this.leadService.readOne(payload.lead_id);
 
-		const task = this.taskRepository.create({ ...payload });
+		const task = this.taskRepository.create({
+			...payload,
+			created_by_id: user.user_id,
+		});
 
 		return await this.taskRepository.save(task);
 	}

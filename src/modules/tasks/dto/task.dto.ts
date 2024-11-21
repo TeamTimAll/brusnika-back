@@ -63,6 +63,9 @@ export class TasksDto implements ITasksEntity {
 
 	@ApiProperty()
 	manager!: UserEntity;
+
+	@ApiProperty()
+	create_by!: UserEntity;
 }
 
 export class TasksMetaDataDto extends BaseDto<TasksDto> implements Dto {

@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import axios from "axios";
 
 import { BaseDto } from "../../common/base/base_dto";
-// import { encrypt } from "../../lib/crypto";
+import { ConfigManager } from "../../config";
 
 @Injectable()
 export class QueueService {
@@ -15,10 +15,10 @@ export class QueueService {
 	) {
 		this.logger.log(JSON.stringify(data));
 
-		return await axios.post(
-			"http://localhost:3001/logs/crm/",
-			data,
-			// encrypt(JSON.stringify(data)),
-		);
+		try {
+			return await axios.post(ConfigManager.config.KONTUR_SEND, data);
+		} catch (error) {
+			return true;
+		}
 	}
 }

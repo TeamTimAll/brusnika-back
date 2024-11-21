@@ -2,9 +2,12 @@ import {
 	IsDateString,
 	IsEnum,
 	IsInt,
+	IsNotEmpty,
 	IsOptional,
 	IsString,
+	ValidateNested,
 } from "class-validator";
+import { Type } from "class-transformer";
 
 import { TaskStatus, TaskType } from "../../../tasks/tasks.entity";
 
@@ -32,6 +35,9 @@ export class TaskDto {
 	manager_ext_id!: string;
 
 	@IsInt()
+	created_by_ext_id!: string;
+
+	@IsInt()
 	lead_ext_id!: string;
 
 	@IsDateString()
@@ -40,4 +46,11 @@ export class TaskDto {
 	@IsDateString()
 	@IsOptional()
 	start_date?: Date;
+}
+
+export class TasksDto {
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => TaskDto)
+	data!: TaskDto[];
 }

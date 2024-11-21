@@ -4,7 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { decrypt, IEncryptedText } from "../../../lib/crypto";
 
 import { TaskQueueService } from "./task.service";
-import { TaskDto } from "./dto";
+import { TaskDto, TasksDto } from "./dto";
 
 @ApiTags("QUEUE")
 @Controller("queue/task")
@@ -16,6 +16,15 @@ export class TaskQueueController {
 		const task = JSON.parse(decrypt(data)) as TaskDto;
 
 		await this.service.createOrUpdateTask(task);
+
+		return { message: "SUCCESS" };
+	}
+
+	@Post("many")
+	async executeMany(@Body() data: IEncryptedText) {
+		const tasks = JSON.parse(decrypt(data)) as TasksDto;
+
+		await this.service.createTasks(tasks);
 
 		return { message: "SUCCESS" };
 	}
