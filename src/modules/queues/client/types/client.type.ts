@@ -4,7 +4,11 @@ export interface IClient {
 	data: {
 		requestType: string;
 		contourId: string;
+		contactType: {
+			isClient: boolean;
+		};
 		realtor: {
+			agentId: number;
 			phone: string | null;
 			name: string;
 		};

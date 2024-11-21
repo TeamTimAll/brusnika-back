@@ -87,7 +87,11 @@ export class ClientQueueService {
 			data: {
 				requestType: "realtorForm",
 				contourId: "0100afa8-b6c2-11ea-8f75-34e12d85ce6a",
+				contactType: {
+					isClient: true,
+				},
 				realtor: {
+					agentId: agent.id,
 					phone: agent.phone,
 					name: agent.fullName,
 				},
