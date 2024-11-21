@@ -17,8 +17,7 @@ export class QueueService {
 
 		try {
 			return await axios.post(ConfigManager.config.KONTUR_SEND, data);
-		} catch (error) {
-			return true;
-		}
+		// eslint-disable-next-line no-empty
+		} catch (error) {}
 	}
 }

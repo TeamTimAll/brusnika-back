@@ -120,9 +120,14 @@ export class VisitsService {
 			];
 		}
 
-		return await this.visitQueueService.timeSlots(
+		const response = await this.visitQueueService.timeSlots(
 			await this.visitQueueService.getTimeSlots(query.project_id),
 		);
+
+		if (response) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+			return response.data;
+		}
 	}
 
 	async readOne(id: number): Promise<VisitsEntity> {

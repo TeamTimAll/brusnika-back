@@ -62,6 +62,7 @@ export class VisitsController {
 
 	@Get("time-slots")
 	async getTimeSlots(@Query() query: TimeSlotDto) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return await this.service.getTimeSlots(query);
 	}
 
