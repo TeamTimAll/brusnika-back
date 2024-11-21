@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import axios from "axios";
 
@@ -124,6 +124,10 @@ export class AuthService {
 			redirect_uri: dto.redirectUri,
 			client_secret: "ML48XVCU1lv362574ZTyonqXoHQgrJJh",
 		});
+		console.log(
+			dto,
+			"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-",
+		);
 
 		const headers = {
 			"Content-Type": "application/x-www-form-urlencoded",
@@ -133,6 +137,7 @@ export class AuthService {
 			const response = await axios.post(url, data.toString(), {
 				headers,
 			});
+
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			const token: string = response?.data?.access_token;
 
@@ -175,8 +180,11 @@ export class AuthService {
 					role: savedUser.role,
 				}),
 			};
-		} catch (error: unknown) {
-			throw new ForbiddenException();
+		} catch (error: any) {
+			console.log(error);
+
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			throw new BadRequestException(error.code);
 		}
 	}
 
