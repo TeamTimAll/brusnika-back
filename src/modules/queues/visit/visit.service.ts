@@ -41,7 +41,7 @@ export class VisitQueueService {
 	async timeSlots(slots: IVisitFreeTime) {
 		const data: Pick<BaseDto<IVisitFreeTime>, "data"> = {
 			data: slots,
-		};
+		};		
 
 		return await this.queueService.send(data);
 	}
@@ -65,7 +65,7 @@ export class VisitQueueService {
 			data: {
 				requestType: "schedule",
 				type: "offline",
-				project: project?.ext_id,
+				project: "58dab450-25e4-11e9-b797-4fe75fbf4950",
 				premisesKind:
 					project?.buildings?.[0]?.premises?.[0]?.type ?? null,
 			},
