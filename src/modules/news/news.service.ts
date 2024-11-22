@@ -376,7 +376,7 @@ export class NewsService {
 
 		if (payload.city_id) {
 			query = query.andWhere(
-				"news.city_id = :city OR news.city_id IS NULL",
+				"(news.city_id = :city OR news.city_id IS NULL)",
 				{
 					city: payload.city_id,
 				},
@@ -385,7 +385,7 @@ export class NewsService {
 
 		if (payload.is_draft === false) {
 			query = query.andWhere("news.is_draft IS FALSE");
-		} else if(payload.is_draft === true) {
+		} else if (payload.is_draft === true) {
 			query = query.andWhere("news.is_draft IS TRUE");
 		}
 
