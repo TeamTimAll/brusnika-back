@@ -125,5 +125,5 @@ export class LeadsEntity extends BaseEntity {
       )
     `,
 	})
-	is_has_task!: boolean;
+	is_has_task?: boolean;
 }
