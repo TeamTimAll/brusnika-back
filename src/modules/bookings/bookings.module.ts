@@ -1,11 +1,11 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { UserModule } from "../../modules/user/user.module";
 import { ClientModule } from "../client/client.module";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesModule } from "../premises/premises.module";
-import { BookingQueueModule } from "../queues/booking_queue/booking_queue.module";
+import { BookingQueueModule } from "../queues/booking/booking.module";
 import { SettingsModule } from "../settings/settings.module";
 
 import { BookingRepository } from "./booking.repository";
@@ -20,7 +20,7 @@ import { BookingsService } from "./bookings.service";
 		ClientModule,
 		PremisesModule,
 		SettingsModule,
-		BookingQueueModule,
+		forwardRef(() => BookingQueueModule),
 	],
 	providers: [BookingsService, BookingRepository],
 	controllers: [BookingsController],

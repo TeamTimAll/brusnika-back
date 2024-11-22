@@ -41,6 +41,7 @@ import { TasksModule } from "./tasks/tasks.module";
 import { TrainingModule } from "./trainings/trainings.module";
 import { UserModule } from "./user/user.module";
 import { VisitsModule } from "./visits/visits.module";
+import { ApartmentImageModule } from "./apartment-mage/apartment-image.module";
 
 @Module({
 	imports: [
@@ -79,6 +80,7 @@ import { VisitsModule } from "./visits/visits.module";
 		MortgageRequestModule,
 		TasksModule,
 		QueueSecuredModule,
+		ApartmentImageModule,
 	],
 	exports: [],
 })

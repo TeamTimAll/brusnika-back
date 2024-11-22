@@ -1,10 +1,14 @@
 import {
 	IsArray,
 	IsEnum,
+	IsNotEmpty,
 	IsNumber,
 	IsOptional,
 	IsString,
+	Max,
+	ValidateNested,
 } from "class-validator";
+import { Type } from "class-transformer";
 
 import {
 	CommercialStatus,
@@ -16,6 +20,9 @@ import {
 export class PremiseDto {
 	@IsString()
 	ext_id!: string;
+
+	@IsString()
+	name!: string;
 
 	@IsEnum(PremisesType)
 	type!: PremisesType;
@@ -66,6 +73,11 @@ export class PremiseDto {
 	@IsOptional()
 	mortagePayment?: number;
 
+	@IsNumber()
+	@Max(360)
+	@IsOptional()
+	sun_noon_angle?: number;
+
 	@IsString()
 	@IsOptional()
 	section_ext_id?: string;
@@ -77,4 +89,11 @@ export class PremiseDto {
 	@IsEnum(PremiseFeature, { each: true })
 	@IsOptional()
 	feature?: PremiseFeature[];
+}
+
+export class PremisesDto {
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => PremiseDto)
+	data!: PremiseDto[];
 }

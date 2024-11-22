@@ -117,9 +117,8 @@ export class UserService {
 				"a.id",
 				"a.legalName",
 				"u.agency_id",
-			])
-			.limit(dto.limit)
-			.offset(pageSize);
+			]);
+
 		if (dto.city_id) {
 			userQuery = userQuery.where("u.city_id = :city_id", {
 				city_id: dto.city_id,
@@ -192,6 +191,12 @@ export class UserService {
 				new_member: RoleType.NEW_MEMBER,
 			});
 		}
+
+		if (!dto.is_verified) {
+			userQuery = userQuery.andWhere("u.is_verified is FALSE");
+		}
+
+		userQuery = userQuery.limit(dto.limit).offset(pageSize);
 
 		const [users, usersCount] = await userQuery.getManyAndCount();
 
@@ -350,10 +355,31 @@ export class UserService {
 			where: {
 				id: id,
 			},
+			relations: { agency: true },
 		});
 		if (!foundUser) {
 			throw new UserNotFoundError(`id: ${id}`);
 		}
+		return foundUser;
+	}
+
+	async readOneByKeycloakIdOrEmail(
+		id: string,
+		email: string,
+		select?: FindOptionsSelect<UserEntity>,
+	) {
+		const foundUser = await this.userRepository.findOne({
+			select: select ? { id: true, ...select } : undefined, // NOTE: If id is not provided it returns null
+			where: [
+				{
+					keycloak_id: id,
+				},
+				{
+					email,
+				},
+			],
+		});
+
 		return foundUser;
 	}
 
@@ -434,6 +460,7 @@ export class UserService {
 				"city_id",
 				"agency",
 				"agency_id",
+				"keycloak_id",
 			],
 			relations: {
 				agency: true,
@@ -454,6 +481,18 @@ export class UserService {
 		const userCreatedCount = await this.bookingRepository.count({
 			where: {
 				create_by_id: user_id,
+				created_at: Between(
+					new Date(
+						new Date().getFullYear(),
+						new Date().getMonth(),
+						1,
+					),
+					new Date(
+						new Date().getFullYear(),
+						new Date().getMonth() + 1,
+						0,
+					),
+				),
 			},
 		});
 		const settings = await this.settingsRepository.readOne();

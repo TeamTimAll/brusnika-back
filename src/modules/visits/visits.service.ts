@@ -7,13 +7,14 @@ import { PickBySelect } from "interfaces/pick_by_select";
 
 import { ClientService } from "../client/client.service";
 import { ProjectService } from "../projects/projects.service";
-import { VisitQueueService } from "../queues/visit_queue/visit_queue.service";
+import { VisitQueueService } from "../queues/visit/visit.service";
 import { UserService } from "../user/user.service";
 
 import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
 import { UpdateVisitsDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
 import { VisitsEntity } from "./visits.entity";
+import { TimeSlotDto } from "./dtos/time-slot.dto";
 
 @Injectable()
 export class VisitsService {
@@ -44,7 +45,7 @@ export class VisitsService {
 		let visit = this.visitsRepository.create(dto);
 		visit = await this.visitsRepository.save(visit);
 
-		this.visitQueueService.makeRequest(
+		await this.visitQueueService.makeRequest(
 			await this.visitQueueService.createFormEntity(visit),
 		);
 
@@ -55,6 +56,78 @@ export class VisitsService {
 		return this.visitsRepository.find({
 			where: { agent_id: user.user_id },
 		});
+	}
+
+	async getTimeSlots(query: TimeSlotDto) {
+		if (query.debug) {
+			return [
+				{
+					"2024-11-21": [
+						{
+							start: "10:00",
+							end: "11:30",
+						},
+						{
+							start: "11:30",
+							end: "13:00",
+						},
+						{
+							start: "13:00",
+							end: "14:30",
+						},
+						{
+							start: "14:30",
+							end: "16:00",
+						},
+						{
+							start: "16:00",
+							end: "17:30",
+						},
+						{
+							start: "17:30",
+							end: "19:00",
+						},
+					],
+				},
+				{
+					"2024-11-22": [
+						{
+							start: "10:00",
+							end: "11:30",
+						},
+						{
+							start: "11:30",
+							end: "13:00",
+						},
+						{
+							start: "13:00",
+							end: "14:30",
+						},
+						{
+							start: "14:30",
+							end: "16:00",
+						},
+						{
+							start: "16:00",
+							end: "17:30",
+						},
+						{
+							start: "17:30",
+							end: "19:00",
+						},
+					],
+				},
+			];
+		}
+
+		const response = await this.visitQueueService.timeSlots(
+			await this.visitQueueService.getTimeSlots(query.project_id),
+		);
+
+		if (response) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+			return response.data;
+		}
 	}
 
 	async readOne(id: number): Promise<VisitsEntity> {

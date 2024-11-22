@@ -14,8 +14,10 @@ export enum TaskType {
 }
 
 export enum TaskStatus {
-	PENDING = "Ожидание",
-	ARCHIVE = "Архив",
+	CREATED = "Создана",
+	PENDING = "В работе",
+	CLOSE = "Завершена",
+	CANCEL = "Отменена",
 }
 
 @Entity({ name: "tasks" })
@@ -30,13 +32,13 @@ export class TasksEntity extends BaseEntity {
 	@JoinColumn({ name: "manager_id" })
 	manager!: UserEntity;
 
-	@Column({ nullable: false, type: "varchar" })
-	comment!: string;
+	@Column({ nullable: true, type: "varchar" })
+	comment?: string;
 
 	@Column({ nullable: false, type: "text", enum: TaskType })
 	task_type!: TaskType;
 
-	@Column({ type: "integer", nullable: false })
+	@Column({ type: "integer", nullable: true })
 	client_id!: number;
 
 	@ManyToOne(() => ClientEntity, {
@@ -66,9 +68,6 @@ export class TasksEntity extends BaseEntity {
 	@JoinColumn({ name: "project_id" })
 	project!: ProjectEntity;
 
-	@Column({ nullable: true, type: "varchar" })
-	result?: string;
-
 	@Column({
 		type: "timestamp without time zone",
 		nullable: false,
@@ -82,6 +81,12 @@ export class TasksEntity extends BaseEntity {
 	})
 	start_date!: Date;
 
-	@Column({ type: "varchar", enum: TaskStatus, default: TaskStatus.PENDING })
+	@Column({ type: "varchar", enum: TaskStatus, default: TaskStatus.CREATED })
 	status!: TaskStatus;
+
+	@ManyToOne(() => UserEntity)
+	create_by!: UserEntity;
+
+	@Column({ type: "integer", nullable: true })
+	created_by_id?: number;
 }

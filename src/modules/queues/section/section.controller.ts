@@ -4,7 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { decrypt, IEncryptedText } from "../../../lib/crypto";
 
 import { SectionQueueService } from "./section.service";
-import { SectionDto } from "./dto";
+import { SectionDto, SectionsDto } from "./dto";
 
 @ApiTags("QUEUE")
 @Controller("queue/section")
@@ -16,6 +16,15 @@ export class SectionQueueController {
 		const section = JSON.parse(decrypt(data)) as SectionDto;
 
 		await this.service.createOrUpdateSection(section);
+
+		return { message: "SUCCESS" };
+	}
+
+	@Post("many")
+	async executeMany(@Body() data: IEncryptedText) {
+		const section = JSON.parse(decrypt(data)) as SectionsDto;
+
+		await this.service.createSections(section);
 
 		return { message: "SUCCESS" };
 	}

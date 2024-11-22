@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsSelect, ILike, Repository } from "typeorm";
 
@@ -6,6 +6,7 @@ import { ICurrentUser } from "interfaces/current-user.interface";
 import { PickBySelect } from "interfaces/pick_by_select";
 
 import { CityService } from "../../modules/cities/cities.service";
+import { AgencyQueueService } from "../queues/agency/agency.service";
 
 import { AgencyEntity } from "./agencies.entity";
 import { CounterAgent } from "./dtos/AgencySync.dto";
@@ -19,6 +20,8 @@ export class AgencyService {
 		@InjectRepository(AgencyEntity)
 		private agencyRepository: Repository<AgencyEntity>,
 		@Inject() private cityService: CityService,
+		@Inject(forwardRef(() => AgencyQueueService))
+		private agencyQueueService: AgencyQueueService,
 	) {}
 
 	get repository(): Repository<AgencyEntity> {
@@ -59,6 +62,11 @@ export class AgencyService {
 		await this.cityService.readOne(dto.city_id);
 		const agency = this.agencyRepository.create(dto);
 		agency.create_by_id = user.user_id;
+
+		await this.agencyQueueService.makeRequest(
+			await this.agencyQueueService.createFormEntity(agency),
+		);
+
 		return await this.agencyRepository.save(agency);
 	}
 

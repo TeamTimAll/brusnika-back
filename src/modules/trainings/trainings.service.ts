@@ -1,9 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DataSource, EntityManager, In, Repository } from "typeorm";
+import { Brackets, DataSource, EntityManager, In, Repository } from "typeorm";
 
-import { LikedResponseDto } from "common/dtos/likeResponse.dto";
-
+import { LikedResponseDto } from "../../common/dtos/likeResponse.dto";
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { arraysEqual } from "../../lib/array";
@@ -190,6 +189,21 @@ export class TrainingsService {
 				"access_user_agency.id",
 				"access_user_agency.legalName",
 			]);
+
+		if (dto.text) {
+			trainingQuery = trainingQuery.andWhere(
+				new Brackets((qb) =>
+					qb
+						.where("trainings.title ILIKE :text", {
+							text: `%${dto.text}%`,
+						})
+						.orWhere("trainings.content ILIKE :text", {
+							text: `%${dto.text}%`,
+						}),
+				),
+			);
+		}
+
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.andWhere(
 				"trainings.category_id = :category_id",
@@ -206,6 +220,11 @@ export class TrainingsService {
 			}
 			return trainingQuery.getMany();
 		}
+
+		if (dto.is_show) {
+			trainingQuery = trainingQuery.andWhere("trainings.is_show is TRUE");
+		}
+
 		trainingQuery = trainingQuery.andWhere("trainings.is_active IS TRUE");
 		trainingQuery = trainingQuery
 			.andWhere(

@@ -6,9 +6,12 @@ import { ConfigManager } from "../../config";
 import { AgenciesModule } from "../agencies/agencies.module";
 import { CityModule } from "../cities/cities.module";
 import { UserModule } from "../user/user.module";
+import { NotificationModule } from "../notification/notification.module";
+import { UserQueueModule } from "../queues/user/user.module";
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+import { SmsService } from "./sms.service";
 
 @Module({
 	imports: [
@@ -21,8 +24,10 @@ import { AuthService } from "./auth.service";
 		UserModule,
 		AgenciesModule,
 		CityModule,
+		NotificationModule,
+		UserQueueModule,
 	],
 	controllers: [AuthController],
-	providers: [AuthService],
+	providers: [AuthService, SmsService],
 })
 export class AuthModule {}

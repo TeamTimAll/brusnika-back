@@ -45,7 +45,7 @@ export class FilterEventsDto {
 
 	@ApiProperty({ required: false })
 	@Limit()
-	limit: number = 50;
+	limit: number = 599;
 
 	@ApiProperty({ required: false })
 	@Transform(({ value }) => value === "true")
@@ -63,13 +63,12 @@ export class FilterEventsDto {
 	@IsOptional()
 	format?: EVENT_FORMAT;
 
-	@ApiProperty({
-		required: false,
+	@ApiPropertyOptional({
 		enum: QueryType,
-		description:
-			"In this enum, Feature represents the default feature where events planned for the future are given, and All represents reading all events.",
 	})
-	query_type: QueryType = QueryType.FEATURE;
+	@IsEnum(QueryType)
+	@IsOptional()
+	query_type?: QueryType;
 
 	@ApiProperty({
 		required: false,

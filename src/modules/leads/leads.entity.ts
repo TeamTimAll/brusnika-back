@@ -1,10 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	VirtualColumn,
+} from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
 import { ClientEntity } from "../client/client.entity";
 import { PremiseEntity } from "../premises/premises.entity";
 import { ProjectEntity } from "../projects/project.entity";
 import { UserEntity } from "../user/user.entity";
+import { TaskStatus } from "../tasks/tasks.entity";
 
 import { LeadOpStatus, LeadOpsEntity } from "./lead_ops.entity";
 
@@ -83,8 +91,8 @@ export class LeadsEntity extends BaseEntity {
 	})
 	sign_nps_passed!: boolean;
 
-	@Column({ default: 0, type: "integer" })
-	lead_number!: number;
+	@Column({ default: "0", type: "text" })
+	lead_number!: string;
 
 	@Column({ default: LeadState.ACTIVE, enum: LeadState })
 	state!: LeadState;
@@ -107,4 +115,15 @@ export class LeadsEntity extends BaseEntity {
 		nullable: true,
 	})
 	status_updated_at!: Date;
+
+	@VirtualColumn({
+		query: (lead) => `
+      EXISTS (
+        SELECT 1 
+        FROM tasks task
+        WHERE task.lead_id = ${lead}.id and task.status NOT IN ('${TaskStatus.CANCEL}', '${TaskStatus.CLOSE}')
+      )
+    `,
+	})
+	is_has_task?: boolean;
 }

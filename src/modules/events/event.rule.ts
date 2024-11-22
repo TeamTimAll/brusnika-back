@@ -12,6 +12,6 @@ export const EventRule: IRule = {
 	[RoleType.MANAGER]: undefined,
 	[RoleType.NEW_MEMBER]: undefined,
 	[RoleType.HEAD_OF_AGENCY]: undefined,
-	[RoleType.OZK_MANAGER]: undefined,
+	[RoleType.OPERATOR]: undefined,
 	[RoleType.AFFILIATE_MANAGER]: undefined,
 };

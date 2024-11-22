@@ -10,6 +10,7 @@ export interface IConfig {
 	// Server
 	NODE_ENV: NodeEnv;
 	SERVER_PORT: number;
+	SMS_API_KEY: string;
 	API_VERSION: string;
 	// DB
 	DB_TYPE: string;
@@ -36,6 +37,10 @@ export interface IConfig {
 	RMQ_CLIENT_PASS: string | undefined;
 	RMQ_CLIENT_HOST: string | undefined;
 	RMQ_CLIENT_PORT: number | undefined;
+	// SMS
+	SMS_API_URL: string;
+	// KONTUR_SEND
+	KONTUR_SEND: string;
 }
 
 export class ConfigManager {
@@ -65,6 +70,9 @@ export class ConfigManager {
 		RMQ_CLIENT_HOST: process.env.RMQ_CLIENT_HOST,
 		RMQ_CLIENT_PORT:
 			(process.env.RMQ_CLIENT_PORT as number | undefined) ?? 5672,
+		SMS_API_URL: process.env.SMS_API_URL as string,
+		SMS_API_KEY: process.env.SMS_API_KEY as string,
+		KONTUR_SEND: process.env.KONTUR_SEND as string,
 	};
 
 	public static get databaseConfig(): DatabaseConfig {
@@ -96,6 +104,9 @@ export class ConfigManager {
 		RMQ_CLIENT_PASS: Joi.string().optional(),
 		RMQ_CLIENT_HOST: Joi.string().optional(),
 		RMQ_CLIENT_PORT: Joi.number().optional(),
+		SMS_API_URL: Joi.string().optional(),
+		SMS_API_KEY: Joi.string().optional(),
+		KONTUR_SEND: Joi.string().optional(),
 	});
 
 	static init() {

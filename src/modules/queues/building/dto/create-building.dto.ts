@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import {
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from "class-validator";
 
 export class BuildingDto {
 	@IsString()
@@ -24,4 +31,11 @@ export class BuildingDto {
 	@IsString()
 	@IsNotEmpty()
 	project_ext_id!: string;
+}
+
+export class BuildingsDto {
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => BuildingDto)
+	data!: BuildingDto[];
 }

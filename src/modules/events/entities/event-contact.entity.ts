@@ -12,7 +12,7 @@ export class EventContactEntity extends BaseEntity {
 	phone!: string;
 
 	@ManyToOne(() => EventsEntity, (e) => e.contacts, {
-		onDelete: "SET NULL",
+		onDelete: "CASCADE",
 		onUpdate: "NO ACTION",
 	})
 	@JoinColumn({ name: "event_id" })

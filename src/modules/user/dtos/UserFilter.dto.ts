@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import {
 	IsBoolean,
@@ -72,4 +72,10 @@ export class UserFilterDto {
 	@IsBoolean()
 	@IsOptional()
 	is_new?: boolean;
+
+	@ApiPropertyOptional()
+	@Transform(({ value }) => value === "true")
+	@IsBoolean()
+	@IsOptional()
+	is_verified?: boolean;
 }

@@ -1,14 +1,18 @@
-import { ApiProperty, getSchemaPath } from "@nestjs/swagger";
+import {
+	ApiProperty,
+	ApiPropertyOptional,
+	getSchemaPath,
+} from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import { IsOptional, IsString, ValidateNested } from "class-validator";
 
 import { BaseDto } from "../../../common/base/base_dto";
 
 export class FinishTaskDto {
-	@ApiProperty()
+	@ApiPropertyOptional()
 	@IsString()
-	@IsNotEmpty()
-	result!: string;
+	@IsOptional()
+	comment?: string;
 }
 
 export class FinishTaskMetaDataDto extends BaseDto<FinishTaskDto> {

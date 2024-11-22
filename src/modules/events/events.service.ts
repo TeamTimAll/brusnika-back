@@ -41,6 +41,7 @@ import { EventReachedMaximumVisitorsError } from "./errors/EventReachedMaximumVi
 import { UserAlreadyRegisteredToEventError } from "./errors/UserAlreadyRegisteredToEvent.error";
 import { EventsNotFoundError } from "./errors/events-not-found.error";
 import { EventsEntity } from "./events.entity";
+import { FilterEventDatesDto } from "./dtos/event-dates-dto";
 
 @Injectable()
 export class EventsService {
@@ -141,9 +142,11 @@ export class EventsService {
 		const foundEvent = await this.selectEventQuery(user)
 			.where("e.id = :id", { id })
 			.getOne();
+
 		if (!foundEvent) {
 			throw new EventsNotFoundError(`id: ${id}`);
 		}
+
 		const isViewed = await this.eventViewsRepository.findOne({
 			where: {
 				event_id: id,
@@ -157,32 +160,72 @@ export class EventsService {
 			});
 			await this.eventViewsRepository.save(eventViews);
 		}
+
 		return foundEvent;
 	}
 
 	async readAll(dto: FilterEventsDto, user: ICurrentUser) {
 		const pageSize = (dto.page - 1) * dto.limit;
-		let eventsQuery = this.selectEventQuery(user);
+		let eventsQuery = this.eventRepository
+			.createQueryBuilder("e")
+			.leftJoinAndMapOne(
+				"e.city",
+				CityEntity,
+				"city",
+				"city.id = e.city_id",
+			)
+			.loadRelationCountAndMap("e.likes_count", "e.likes")
+			.loadRelationCountAndMap("e.views_count", "e.views")
+			.select([
+				"e.id",
+				"e.is_liked",
+				"e.is_joined",
+				"e.title",
+				"e.description",
+				"e.photo",
+				"e.location",
+				"e.date",
+				"e.start_time",
+				"e.end_time",
+				"e.leader",
+				"e.max_visitors",
+				"e.phone",
+				"e.format",
+				"e.type",
+				"e.is_banner",
+				"e.is_draft",
+				"e.tags",
+				"e.city_id",
+				"city.id",
+				"city.name",
+			])
+			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
+			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
+			.setParameter("user_id", user.user_id);
+
 		if (!(user.role === RoleType.ADMIN && dto.include_non_actives)) {
 			eventsQuery = eventsQuery.andWhere("e.is_active IS TRUE");
 		}
-		if (dto.query_type !== QueryType.ALL) {
+
+		if (dto.date) {
+			eventsQuery = eventsQuery.andWhere("e.date = :date", {
+				date: dto.date,
+			});
+		} else if (dto.query_type === QueryType.FEATURE) {
 			const today_date = new Date();
+
 			eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
 				today_date: today_date,
 			});
 		}
+
 		if (dto.is_banner) {
 			eventsQuery = eventsQuery.andWhere("e.is_banner IS TRUE");
 		}
+
 		if (dto.city_id) {
 			eventsQuery = eventsQuery.andWhere("e.city_id = :city_id", {
 				city_id: dto.city_id,
-			});
-		}
-		if (dto.date) {
-			eventsQuery = eventsQuery.andWhere("e.date = :date", {
-				date: dto.date,
 			});
 		}
 		if (dto.format) {
@@ -195,12 +238,18 @@ export class EventsService {
 				type: dto.type,
 			});
 		}
-		if (!dto.is_draft || user.role !== RoleType.ADMIN) {
+
+		if (
+			!dto.is_draft ||
+			(user.role !== RoleType.ADMIN &&
+				user.role !== RoleType.AFFILIATE_MANAGER)
+		) {
 			eventsQuery = eventsQuery.andWhere("e.is_draft IS FALSE");
 			// .orWhere("e.create_by_id = :create_by_id", {
-			// 	create_by_id: user.user_id,
+			//     create_by_id: user.user_id,
 			// });
 		}
+
 		const eventCount = await eventsQuery.getCount();
 
 		eventsQuery = eventsQuery.limit(dto.limit).offset(pageSize);
@@ -240,7 +289,8 @@ export class EventsService {
 	): Promise<EventsEntity[]> {
 		let eventsQuery = this.selectEventQuery(user)
 			.andWhere("e.is_banner IS TRUE")
-			.andWhere("e.is_draft IS FALSE");
+			.andWhere("e.is_draft IS FALSE")
+			.orderBy("e.created_at", "DESC");
 
 		const today_date = new Date();
 		eventsQuery = eventsQuery.andWhere("e.date >= :today_date", {
@@ -352,6 +402,7 @@ export class EventsService {
 				"contacts.phone",
 				"invitation.id",
 				"invitation.is_accepted",
+				"invitation.is_invited",
 				"user.id",
 				"user.avatar",
 				"user.fullName",
@@ -361,6 +412,23 @@ export class EventsService {
 			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
 			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
 			.setParameter("user_id", user.user_id);
+	}
+
+	async eventDates(dto: FilterEventDatesDto) {
+		const datesQuery = this.eventRepository
+			.createQueryBuilder("event")
+			.select("DISTINCT event.date::text", "date")
+			.where("event.is_draft is FALSE");
+
+		if (dto.city_id) {
+			datesQuery.andWhere("event.city_id = :city_id", {
+				city_id: dto.city_id,
+			});
+		}
+
+		const data = await datesQuery.getRawMany<string[]>();
+
+		return data;
 	}
 
 	async create(dto: CreateEventsDto, user: ICurrentUser) {
@@ -430,7 +498,7 @@ export class EventsService {
 			eventInvitations.map((e) => e.user),
 			{
 				title: "Мероприятие",
-				description: `Незадолго до начала мероприятия ${event_title}`,
+				description: `Скоро начнется мероприятие! ${event_title}`,
 				type: NotificationType.WARNING_EVENT,
 				object_id: event_id,
 			},
@@ -580,6 +648,7 @@ export class EventsService {
 				this.eventInvitationRepository.create({
 					user_id: u.id,
 					event_id: foundEvent.id,
+					is_invited: true,
 				}),
 			);
 		});
@@ -638,6 +707,7 @@ export class EventsService {
 		const invitation = this.eventInvitationRepository.create({
 			user_id: user.user_id,
 			event_id: foundEvent.id,
+			is_invited: false,
 		});
 		return await this.eventInvitationRepository.save(invitation);
 	}

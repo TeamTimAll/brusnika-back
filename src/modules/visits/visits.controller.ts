@@ -27,6 +27,7 @@ import { CreateVisitsMetaDataDto } from "./dtos/CreateVisits.dto";
 import { UpdateVisitsMetaDataDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
 import { VisitsService } from "./visits.service";
+import { TimeSlotDto } from "./dtos/time-slot.dto";
 
 @ApiTags("Visits")
 @Controller("/visits")
@@ -57,6 +58,12 @@ export class VisitsController {
 	@ApiErrorResponse(VisitNotFoundError, "'name' visit not found")
 	async getVisits(@User() user: ICurrentUser, @Query("name") _name: string) {
 		return await this.service.readAll(user);
+	}
+
+	@Get("time-slots")
+	async getTimeSlots(@Query() query: TimeSlotDto) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+		return await this.service.getTimeSlots(query);
 	}
 
 	@ApiOperation({ summary: "Get a single visit by ID" })

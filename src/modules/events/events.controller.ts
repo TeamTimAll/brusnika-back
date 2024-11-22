@@ -43,6 +43,7 @@ import { ToggleEventMetaDataDto } from "./dtos/ToggleEvent.dto";
 import { UpdateEventsMetaDataDto } from "./dtos/UpdateEvents.dto";
 import { EventInvitationNotFoundError } from "./errors/EventInvitionNotFound.error";
 import { EventsService } from "./events.service";
+import { FilterEventDatesDto } from "./dtos/event-dates-dto";
 
 @ApiTags("events")
 @Controller("/events")
@@ -76,6 +77,12 @@ export class EventsController {
 	@ApiOkResponse({ type: EventsDto })
 	async userEvents(@User() user: ICurrentUser) {
 		return await this.eventsService.userEvents(user);
+	}
+
+	@Get("event-dates")
+	@HttpCode(HttpStatus.OK)
+	async eventDates(@Query() dto: FilterEventDatesDto) {
+		return await this.eventsService.eventDates(dto);
 	}
 
 	@Get("banner")

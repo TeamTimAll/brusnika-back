@@ -1,5 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import axios from "axios";
 
 import { RoleType } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
@@ -10,6 +11,9 @@ import { UserFillDataDto } from "../user/dtos/UserFillData.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
 import { UserRegisterStatus, UserStatus } from "../user/user.entity";
 import { UserService } from "../user/user.service";
+import { NotificationService } from "../notification/notification.service";
+import { NotificationType } from "../notification/notification.entity";
+import { UserQueueService } from "../queues/user/user.service";
 
 import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
 import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
@@ -29,6 +33,9 @@ import { UserPasswordOrEmailNotCorrectError } from "./errors/UserPasswordOrEmail
 import { VerificationCodeExpiredError } from "./errors/VerificationCodeExpired.error";
 import { VerificationCodeIsNotCorrectError } from "./errors/VerificationCodeIsNotCorrect.error";
 import { VerificationExistsError } from "./errors/VerificationExists.error";
+import { SmsService } from "./sms.service";
+import { KeycloakDto } from "./dtos/keycloack.dto";
+import { IDecodedPayload } from "./types";
 
 @Injectable()
 export class AuthService {
@@ -37,6 +44,9 @@ export class AuthService {
 		private userService: UserService,
 		private agenciesService: AgencyService,
 		private cityService: CityService,
+		private smsService: SmsService,
+		private notificationService: NotificationService,
+		private userQueueService: UserQueueService,
 	) {}
 
 	async agentRegister(body: UserCreateDto): Promise<AuthResponeWithData> {
@@ -60,11 +70,17 @@ export class AuthService {
 		}
 
 		const randomNumber = 111111;
+		// const randomNumber = randomOtp();
 
 		await this.userService.repository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
+
+		// eslint-disable-next-line no-constant-condition
+		if (user.phone && false) {
+			await this.smsService.sendMessage(randomNumber, "user.phone");
+		}
 
 		return {
 			user_id: user.id,
@@ -98,6 +114,75 @@ export class AuthService {
 		};
 	}
 
+	async keycloak(dto: KeycloakDto) {
+		const url =
+			"https://login.brusnika.ru/realms/Staging/protocol/openid-connect/token";
+		const data = new URLSearchParams({
+			grant_type: "authorization_code",
+			client_id: "aquamarine",
+			code: dto.code,
+			redirect_uri: dto.redirectUri,
+			client_secret: "ML48XVCU1lv362574ZTyonqXoHQgrJJh",
+		});
+
+		const headers = {
+			"Content-Type": "application/x-www-form-urlencoded",
+		};
+
+		try {
+			const response = await axios.post(url, data.toString(), {
+				headers,
+			});
+
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+			const token: string = response?.data?.access_token;
+
+			const [, payload] = token.split(".");
+
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			const decodedPayload: IDecodedPayload = JSON.parse(
+				Buffer.from(payload, "base64").toString("utf-8"),
+			);
+
+			const foundUser = await this.userService.readOneByKeycloakIdOrEmail(
+				decodedPayload.sub,
+				decodedPayload.email,
+			);
+
+			if (foundUser) {
+				return {
+					accessToken: this.jwtService.sign({
+						user_id: foundUser.id,
+						role: foundUser.role,
+					}),
+				};
+			}
+
+			const newUser = this.userService.repository.create({
+				email: decodedPayload.email,
+				firstName: decodedPayload.given_name,
+				lastName: decodedPayload.family_name,
+				keycloak_id: decodedPayload.sub,
+				role: RoleType.AFFILIATE_MANAGER,
+				is_verified: true,
+				city_id: 1,
+			});
+
+			const savedUser = await this.userService.repository.save(newUser);
+
+			return {
+				accessToken: this.jwtService.sign({
+					user_id: savedUser.id,
+					role: savedUser.role,
+				}),
+			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			throw new BadRequestException(error.code);
+		}
+	}
+
 	async agentChooseAgency(
 		body: AgentChooseAgencyDto,
 	): Promise<AuthResponeWithTokenDto> {
@@ -107,6 +192,25 @@ export class AuthService {
 			register_status: UserRegisterStatus.FINISHED,
 			agency_id: body.agency_id,
 			workStartDate: body.startWorkDate,
+		});
+
+		const users = await this.userService.repository.find({
+			where: { agency_id: body.agency_id, role: RoleType.HEAD_OF_AGENCY },
+			select: { id: true, firebase_token: true },
+		});
+
+		await this.userQueueService.makeRequest(
+			await this.userQueueService.createFormEntity({
+				...user,
+				agency_id: body.agency_id,
+			}),
+		);
+
+		await this.notificationService.sendToUsers(users, {
+			type: NotificationType.AGENT_REQUEST_FOR_AGENCY,
+			object_id: user.id,
+			title: "К вашему агентству прикрепился новый агент.",
+			description: user.fullName,
 		});
 
 		return {
@@ -133,6 +237,12 @@ export class AuthService {
 				legalName: dto.legalName,
 				phone: dto.phone,
 				title: dto.title,
+				authority_signatory_doc: dto.authority_signatory_doc,
+				company_card_doc: dto.company_card_doc,
+				entry_doc: dto.entry_doc,
+				ownerFullName: dto.ownerFullName,
+				ownerPhone: dto.ownerPhone,
+				tax_registration_doc: dto.tax_registration_doc,
 			},
 			{ user_id: user.id, role: user.role },
 		);
@@ -141,6 +251,13 @@ export class AuthService {
 			temporary_role: temporary_role,
 			agency_id: newAgency.id,
 		});
+
+		await this.userQueueService.makeRequest(
+			await this.userQueueService.createFormEntity({
+				...user,
+				agency_id: newAgency.id,
+			}),
+		);
 
 		return {
 			accessToken: this.jwtService.sign({
@@ -269,11 +386,17 @@ export class AuthService {
 		}
 
 		const randomNumber = 111111;
+		// const randomNumber = randomOtp();
 
 		await this.userService.repository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
+
+		// eslint-disable-next-line no-constant-condition
+		if (user.phone && false) {
+			await this.smsService.sendMessage(randomNumber, "user.phone");
+		}
 
 		return {
 			user_id: user.id,

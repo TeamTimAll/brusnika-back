@@ -4,7 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { decrypt, IEncryptedText } from "../../../lib/crypto";
 
 import { PremiseQueueService } from "./premise.service";
-import { PremiseDto } from "./dto";
+import { PremiseDto, PremisesDto } from "./dto";
 
 @ApiTags("QUEUE")
 @Controller("queue/premise")
@@ -16,6 +16,15 @@ export class PremiseQueueController {
 		const premise = JSON.parse(decrypt(data)) as PremiseDto;
 
 		await this.service.createOrUpdatePremise(premise);
+
+		return { message: "SUCCESS" };
+	}
+
+	@Post("many")
+	async executeMany(@Body() data: IEncryptedText) {
+		const premises = JSON.parse(decrypt(data)) as PremisesDto;
+
+		await this.service.createPremises(premises);
 
 		return { message: "SUCCESS" };
 	}

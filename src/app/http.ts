@@ -35,10 +35,19 @@ export class Http {
 		this.app = await NestFactory.create<NestExpressApplication>(
 			AppModule,
 			new ExpressAdapter(),
-			{ cors: true },
+			{
+				cors: {
+					credentials: true,
+					origin: true,
+				},
+			},
 		);
 		this.app.enable("trust proxy"); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
-		this.app.use(helmet());
+		this.app.use(
+			helmet({
+				crossOriginResourcePolicy: false,
+			}),
+		);
 		this.app.use(compression());
 		this.app.use(
 			morgan(

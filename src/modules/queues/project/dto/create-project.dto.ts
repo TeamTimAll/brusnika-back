@@ -1,9 +1,11 @@
+import { Type } from "class-transformer";
 import {
 	IsDateString,
 	IsNotEmpty,
 	IsNumber,
 	IsOptional,
 	IsString,
+	ValidateNested,
 } from "class-validator";
 
 export class ProjectDto {
@@ -56,4 +58,15 @@ export class ProjectDto {
 	@IsString()
 	@IsNotEmpty()
 	city_ext_id!: string;
+
+	@IsString()
+	@IsOptional()
+	city_id?: number;
+}
+
+export class ProjectsDto {
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => ProjectDto)
+	data!: ProjectDto[];
 }

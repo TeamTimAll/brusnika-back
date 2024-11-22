@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, FindOptionsSelect, ILike, Repository } from "typeorm";
 
@@ -10,7 +10,7 @@ import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadsEntity, LeadState } from "../leads/leads.entity";
 import { PremiseEntity } from "../premises/premises.entity";
 import { ProjectEntity } from "../projects/project.entity";
-import { ClinetQueueService } from "../queues/clients_queue/client_queue.service";
+import { ClientQueueService } from "../queues/client/client.service";
 import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 import { BuildingEntity } from "../buildings/buildings.entity";
@@ -31,7 +31,8 @@ export class ClientService {
 		@InjectRepository(ClientEntity)
 		private clientRepository: Repository<ClientEntity>,
 		private userService: UserService,
-		private clinetQueueService: ClinetQueueService,
+		@Inject(forwardRef(() => ClientQueueService))
+		private clinetQueueService: ClientQueueService,
 	) {}
 
 	get repository(): Repository<ClientEntity> {
@@ -70,7 +71,7 @@ export class ClientService {
 		let client = this.clientRepository.create(dto);
 		client = await this.clientRepository.save(client);
 
-		this.clinetQueueService.send(
+		await this.clinetQueueService.send(
 			await this.clinetQueueService.createFromEntity(client),
 		);
 
@@ -233,6 +234,24 @@ export class ClientService {
 				"p2",
 				"p2.id = l.premise_id",
 			)
+			.leftJoinAndMapOne(
+				"l.manager",
+				UserEntity,
+				"m",
+				"m.id = l.manager_id",
+			)
+			.leftJoinAndMapOne(
+				"l.client",
+				ClientEntity,
+				"c2",
+				"c2.id = l.client_id",
+			)
+			.leftJoinAndMapOne(
+				"l.agent",
+				UserEntity,
+				"a",
+				"a.id = l.manager_id",
+			)
 			.leftJoinAndMapOne("l.agent", UserEntity, "u", "u.id = l.agent_id")
 			.leftJoinAndMapOne(
 				"p2.building",
@@ -262,6 +281,7 @@ export class ClientService {
 				"l.lead_number",
 				"l.state",
 				"l.created_at",
+				"l.updated_at",
 			])
 			.addSelect(["p.id", "p.name"])
 			.addSelect([
@@ -273,7 +293,10 @@ export class ClientService {
 				"p2.price",
 			])
 			.addSelect(["b.id", "b.name"])
-			.addSelect(["u.id", "u.fullName"]);
+			.addSelect(["u.id", "u.fullName"])
+			.addSelect(["m.id", "m.fullName"])
+			.addSelect(["a.id", "a.fullName"])
+			.addSelect(["c2.id", "c2.fullname", "c2.phone_number"]);
 
 		if (dto.sort_by) {
 			queryBuilder = queryBuilder.orderBy(

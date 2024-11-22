@@ -181,7 +181,7 @@ enum LeadState {
 			"project_ext_id": "string",
 			"premise_ext_id": "string",
 			"fee": "number",
-			"lead_number": "number",
+			"lead_number": "string",
 			"state": "LeadState"
 		}
 	},
@@ -268,7 +268,7 @@ enum RoleType {
 	MANAGER           = "MANAGER",            // Менеджер
 	NEW_MEMBER        = "NEW_MEMBER",         // Новый участник
 	HEAD_OF_AGENCY    = "HEAD_OF_AGENCY",     // Руководитель агентства
-	OZK_MANAGER       = "OZK_MANAGER",        // Менеджер
+	OPERATOR          = "OPERATOR",           // Менеджер
 	AFFILIATE_MANAGER = "AFFILIATE_MANAGER",  // Партнерский менеджер
 }
 

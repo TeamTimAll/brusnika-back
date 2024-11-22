@@ -1,4 +1,11 @@
-import { IsNumber, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import {
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from "class-validator";
 
 export class SectionDto {
 	@IsString()
@@ -13,4 +20,11 @@ export class SectionDto {
 	@IsString()
 	@IsOptional()
 	building_ext_id?: string;
+}
+
+export class SectionsDto {
+	@IsNotEmpty()
+	@ValidateNested()
+	@Type(() => SectionDto)
+	data!: SectionDto[];
 }

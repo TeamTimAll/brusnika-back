@@ -1,8 +1,16 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsBoolean, IsOptional } from "class-validator";
+import { IsBoolean, IsEnum, IsOptional } from "class-validator";
 
+import { Order } from "../../../constants";
 import { Limit, Page } from "../../../decorators";
+
+export enum TaskSortBy {
+	CLIENT_FULLNAME = "client_fullname",
+	TASK_TYPE = "task_type",
+	END_DATE = "end_date",
+	PROJECT_NAME = "project_name",
+}
 
 export class ReadAllTasksDto {
 	@ApiPropertyOptional()
@@ -17,5 +25,15 @@ export class ReadAllTasksDto {
 	@Transform(({ value }) => value === "true")
 	@IsBoolean()
 	@IsOptional()
-	is_archive?: boolean;
+	is_archived?: boolean;
+
+	@ApiPropertyOptional({ enum: TaskSortBy })
+	@IsEnum(TaskSortBy)
+	@IsOptional()
+	sort_by?: TaskSortBy;
+
+	@ApiPropertyOptional({ enum: Order })
+	@IsEnum(Order)
+	@IsOptional()
+	order_by?: Order = Order.ASC;
 }

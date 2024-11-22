@@ -54,7 +54,7 @@ export class LeadsDto implements Omit<LeadsEntity, "ext_id"> {
 	current_status!: LeadOpStatus;
 
 	@ApiProperty()
-	lead_number!: number;
+	lead_number!: string;
 
 	@ApiProperty({ enum: LeadState })
 	state!: LeadState;

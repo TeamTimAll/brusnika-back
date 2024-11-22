@@ -1,11 +1,11 @@
 import fs from "fs";
 
-import { Logger } from "@nestjs/common";
+// import { Logger } from "@nestjs/common";
 
 import { ConfigManager } from "../config";
 import { FirebaseConfig, FirebaseService } from "../lib/firebase";
 
-import { RabbitMQClient } from "./RabbitMQ";
+// import { RabbitMQClient } from "./RabbitMQ";
 import { Http } from "./http";
 import { OrmManager } from "./orm";
 import { SwaggerManager } from "./swagger";
@@ -27,7 +27,7 @@ export class Application {
 
 		FirebaseService.init(firebaseConfig);
 
-		await RabbitMQClient.init(new Logger("RabbitMQServer"));
-		await RabbitMQClient.listen();
+		// await RabbitMQClient.init(new Logger("RabbitMQServer"));
+		// await RabbitMQClient.listen();
 	}
 }

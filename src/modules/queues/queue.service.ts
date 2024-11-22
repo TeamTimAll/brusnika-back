@@ -1,6 +1,8 @@
 import { Injectable, Logger } from "@nestjs/common";
+import axios from "axios";
 
 import { BaseDto } from "../../common/base/base_dto";
+import { ConfigManager } from "../../config";
 
 @Injectable()
 export class QueueService {
@@ -8,13 +10,14 @@ export class QueueService {
 
 	constructor() {}
 
-	public send<T extends Pick<BaseDto, "data"> & Partial<BaseDto>>(
-		pattern: string,
+	public async send<T extends Pick<BaseDto, "data"> & Partial<BaseDto>>(
 		data: T,
 	) {
-		console.log(pattern);
-
 		this.logger.log(JSON.stringify(data));
-		return;
+
+		try {
+			return await axios.post(ConfigManager.config.KONTUR_SEND, data);
+		// eslint-disable-next-line no-empty
+		} catch (error) {}
 	}
 }

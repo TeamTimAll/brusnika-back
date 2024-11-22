@@ -47,6 +47,10 @@ export class LeadsService {
 		private readonly notificationsService: NotificationService,
 	) {}
 
+	get repository(): Repository<LeadsEntity> {
+		return this.leadRepository;
+	}
+
 	async create(lead: CreateLeadDto): Promise<LeadsEntity> {
 		const foundPremises = await this.premisesService.readOneWithRelation(
 			lead.premise_id,
@@ -326,22 +330,6 @@ export class LeadsService {
 		const pageSize = (dto.page - 1) * dto.limit;
 
 		const metaData = BaseDto.create<LeadsEntity[]>();
-		if (
-			dto.is_finished &&
-			dto.status &&
-			!(
-				dto.status === LeadOpStatus.WON ||
-				dto.status === LeadOpStatus.FAILED
-			)
-		) {
-			metaData.data = [];
-			metaData.setPagination(0, dto.page, dto.limit);
-			metaData.meta.data = {
-				statuses: Object.values(LeadOpStatus),
-			};
-
-			return metaData;
-		}
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const filter: { agent?: object; state?: any } = {};
@@ -364,87 +352,126 @@ export class LeadsService {
 
 			if (!dto.is_finished) {
 				await Promise.all(
-					Object.values([
-						LeadState.ACTIVE,
-						LeadState.IN_PROGRESS,
-					]).map(async (state) => {
-						const [leads, leadsCount] =
-							await this.leadRepository.findAndCount({
-								select: {
-									project: {
-										id: true,
-										name: true,
-									},
-									client: {
-										id: true,
-										fullname: true,
-										phone_number: true,
-									},
-									agent: {
-										id: true,
-										fullName: true,
-									},
-									manager: {
-										id: true,
-										fullName: true,
-									},
-									premise: {
-										id: true,
-										type: true,
-										rooms: true,
-										floor: true,
-										price: true,
-									},
-									lead_ops: {
-										id: true,
-										status: true,
-									},
-								},
-								where: {
-									project_id: dto.project_id,
-									premise: {
-										type: dto.premise_type,
-									},
-									...filter,
-									state,
-									client: {
-										id: dto.client_id,
-									},
-									current_status: dto.status,
-								},
-								relations: {
-									lead_ops: true,
-									client: true,
-									agent: true,
-									manager: true,
-									premise: true,
-									project: true,
-								},
-								order: {
-									created_at: dto.createdAt ?? "ASC",
-								},
-								take: dto.limit,
-								skip: pageSize,
-							});
-
-						const metaData = BaseDto.create<LeadsEntity[]>();
-
-						metaData.setPagination(leadsCount, dto.page, dto.limit);
-
-						response.push({ state, data: leads });
-						links.push({
-							state,
-							...metaData.getPagination(),
-						});
-					}),
-				);
-			} else {
-				await Promise.all(
-					Object.values([LeadState.COMPLETE, LeadState.FAILED]).map(
+					[LeadState.ACTIVE, LeadState.IN_PROGRESS].map(
 						async (state) => {
 							const [leads, leadsCount] =
 								await this.leadRepository.findAndCount({
 									select: {
+										id: true,
+										is_active: true,
+										created_at: true,
+										updated_at: true,
+										is_has_task: true,
+										client_id: true,
+										agent_id: true,
+										premise_id: true,
+										project_id: true,
+										manager_id: true,
+										comment: true,
+										fee: true,
+										current_status: true,
+										sign_nps_passed: true,
+										lead_number: true,
+										start_date: true,
+										state: true,
+										status_updated_at: true,
+										project: {
+											id: true,
+											name: true,
+										},
+										client: {
+											id: true,
+											fullname: true,
+											phone_number: true,
+										},
+										agent: {
+											id: true,
+											fullName: true,
+										},
+										manager: {
+											id: true,
+											fullName: true,
+										},
+										premise: {
+											id: true,
+											type: true,
+											rooms: true,
+											floor: true,
+											price: true,
+										},
+										lead_ops: {
+											id: true,
+											status: true,
+										},
+									},
+									where: {
+										project_id: dto.project_id,
+										premise: {
+											type: dto.premise_type,
+										},
+										...filter,
+										state,
+										client: {
+											id: dto.client_id,
+										},
+										current_status: dto.status,
+									},
+									relations: {
+										lead_ops: true,
+										client: true,
+										agent: true,
+										manager: true,
+										premise: true,
+										project: true,
+									},
+									order: {
+										created_at: dto.createdAt ?? "ASC",
+									},
+									take: dto.limit,
+									skip: pageSize,
+								});
+
+							const metaData = BaseDto.create<LeadsEntity[]>();
+
+							metaData.setPagination(
+								leadsCount,
+								dto.page,
+								dto.limit,
+							);
+
+							response.push({ state, data: leads });
+							links.push({
+								state,
+								...metaData.getPagination(),
+							});
+						},
+					),
+				);
+			} else {
+				await Promise.all(
+					[LeadState.COMPLETE, LeadState.FAILED].map(
+						async (state) => {
+							const [leads, leadsCount] =
+								await this.leadRepository.findAndCount({
+									select: {
+										id: true,
+										is_active: true,
+										created_at: true,
+										updated_at: true,
+										is_has_task: true,
+										client_id: true,
+										agent_id: true,
+										premise_id: true,
+										project_id: true,
+										manager_id: true,
+										comment: true,
+										fee: true,
+										current_status: true,
+										sign_nps_passed: true,
+										lead_number: true,
+										start_date: true,
+										state: true,
+										status_updated_at: true,
 										project: {
 											id: true,
 											name: true,
@@ -543,6 +570,24 @@ export class LeadsService {
 
 		const [leads, leadsCount] = await this.leadRepository.findAndCount({
 			select: {
+				id: true,
+				is_active: true,
+				created_at: true,
+				updated_at: true,
+				is_has_task: true,
+				client_id: true,
+				agent_id: true,
+				premise_id: true,
+				project_id: true,
+				manager_id: true,
+				comment: true,
+				fee: true,
+				current_status: true,
+				sign_nps_passed: true,
+				lead_number: true,
+				start_date: true,
+				state: true,
+				status_updated_at: true,
 				project: {
 					id: true,
 					name: true,
