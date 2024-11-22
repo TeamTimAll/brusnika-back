@@ -13,7 +13,7 @@ export interface IClient {
 			name: string;
 		};
 		agency: {
-			name: string | null;
+			name?: string | null;
 		};
 		client: {
 			phone: string;

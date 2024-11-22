@@ -124,10 +124,6 @@ export class AuthService {
 			redirect_uri: dto.redirectUri,
 			client_secret: "ML48XVCU1lv362574ZTyonqXoHQgrJJh",
 		});
-		console.log(
-			dto,
-			"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-",
-		);
 
 		const headers = {
 			"Content-Type": "application/x-www-form-urlencoded",
@@ -180,9 +176,8 @@ export class AuthService {
 					role: savedUser.role,
 				}),
 			};
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
-			console.log(error);
-
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			throw new BadRequestException(error.code);
 		}

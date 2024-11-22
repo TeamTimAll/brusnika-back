@@ -357,6 +357,9 @@ export class LeadsService {
 							const [leads, leadsCount] =
 								await this.leadRepository.findAndCount({
 									select: {
+										id: true,
+										is_has_task: true,
+										created_at: true,
 										project: {
 											id: true,
 											name: true,
@@ -436,6 +439,9 @@ export class LeadsService {
 							const [leads, leadsCount] =
 								await this.leadRepository.findAndCount({
 									select: {
+										id: true,
+										is_has_task: true,
+										created_at: true,
 										project: {
 											id: true,
 											name: true,
@@ -534,6 +540,24 @@ export class LeadsService {
 
 		const [leads, leadsCount] = await this.leadRepository.findAndCount({
 			select: {
+				id: true,
+				is_active: true,
+				created_at: true,
+				updated_at: true,
+				is_has_task: true,
+				client_id: true,
+				agent_id: true,
+				premise_id: true,
+				project_id: true,
+				manager_id: true,
+				comment: true,
+				fee: true,
+				current_status: true,
+				sign_nps_passed: true,
+				lead_number: true,
+				start_date: true,
+				state: true,
+				status_updated_at: true,
 				project: {
 					id: true,
 					name: true,

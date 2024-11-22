@@ -130,7 +130,8 @@ export class BookingsService {
 			.select("*")
 			.where(
 				"id NOT IN (SELECT DISTINCT premise_id FROM bookings WHERE premise_id IS NOT NULL)",
-			);
+			)
+			.andWhere("is_sold is FALSE");
 
 		if (filter.type) {
 			query = query.andWhere("p.type = :type", {

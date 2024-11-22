@@ -38,7 +38,7 @@ export class TasksEntity extends BaseEntity {
 	@Column({ nullable: false, type: "text", enum: TaskType })
 	task_type!: TaskType;
 
-	@Column({ type: "integer", nullable: false })
+	@Column({ type: "integer", nullable: true })
 	client_id!: number;
 
 	@ManyToOne(() => ClientEntity, {

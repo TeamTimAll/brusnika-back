@@ -460,6 +460,7 @@ export class UserService {
 				"city_id",
 				"agency",
 				"agency_id",
+				"keycloak_id",
 			],
 			relations: {
 				agency: true,
