@@ -383,8 +383,10 @@ export class NewsService {
 			);
 		}
 
-		if (!payload.is_draft) {
+		if (payload.is_draft === false) {
 			query = query.andWhere("news.is_draft IS FALSE");
+		} else if(payload.is_draft === true) {
+			query = query.andWhere("news.is_draft IS TRUE");
 		}
 
 		return await query.getMany();

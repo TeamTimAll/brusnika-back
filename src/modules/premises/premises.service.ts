@@ -381,6 +381,7 @@ export class PremisesService {
 			"premise.purchase_option",
 			"premise.number",
 			"premise.floor",
+			"premise.feature",
 			"premise.photo",
 			"premise.rooms",
 			"premise.photos",

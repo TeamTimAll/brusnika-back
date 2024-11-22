@@ -12,7 +12,9 @@ export class ReadAllBannerNewsDto {
 	city_id?: number;
 
 	@ApiPropertyOptional()
-	@Transform(({ value }) => value === "true")
+	@Transform(({ value }) =>
+		value === "true" ? true : value === "false" ? false : null,
+	)
 	@IsBoolean()
 	@IsOptional()
 	is_draft?: boolean;
