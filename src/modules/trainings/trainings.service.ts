@@ -204,6 +204,10 @@ export class TrainingsService {
 			);
 		}
 
+		if (dto.is_show) {
+			trainingQuery = trainingQuery.andWhere("trainings.is_show is TRUE");
+		}
+
 		if (dto.category_id) {
 			trainingQuery = trainingQuery.andWhere(
 				"trainings.category_id = :category_id",
@@ -218,6 +222,7 @@ export class TrainingsService {
 					"trainings.is_active IS TRUE",
 				);
 			}
+
 			return trainingQuery.getMany();
 		}
 
@@ -262,10 +267,6 @@ export class TrainingsService {
 					role_access: TrainingAccess.NEW_USER,
 				},
 			);
-		}
-
-		if (dto.is_show) {
-			trainingQuery = trainingQuery.andWhere("trainings.is_show is TRUE");
 		}
 
 		return trainingQuery.getMany();
