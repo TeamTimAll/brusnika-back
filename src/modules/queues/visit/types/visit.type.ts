@@ -4,7 +4,7 @@ export interface IVisit {
 	data: {
 		requestType: string;
 		type: string;
-		project?: string;
+		project?: string | null;
 		premisesKind?: string | null;
 		date: string;
 		name?: string;
