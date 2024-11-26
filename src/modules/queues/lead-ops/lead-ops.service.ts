@@ -18,8 +18,9 @@ export class LeadOpsQueueService {
 				ext_id: ops.ext_id,
 				lead_id: lead.id,
 				status: ops.status,
+				created_at: ops.created_at,
 			})
-			.orUpdate(["lead_id", "status"], ["ext_id"])
+			.orUpdate(["lead_id", "status", "created_at"], ["ext_id"])
 			.execute();
 	}
 

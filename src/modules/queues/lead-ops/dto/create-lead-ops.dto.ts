@@ -10,6 +10,9 @@ export class LeadOpsDto {
 	@IsString()
 	lead_ext_id!: string;
 
+	@IsString()
+	created_at!: Date;
+
 	@IsEnum(LeadOpStatus)
 	status!: LeadOpStatus;
 }
