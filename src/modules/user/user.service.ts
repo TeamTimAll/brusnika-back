@@ -24,6 +24,7 @@ import { CityService } from "../cities/cities.service";
 import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
 import { SettingsRepository } from "../settings/settings.repository";
 import { UserFilterByDateEnum } from "../analytics/types/user-by-date.type";
+import { UserQueueService } from "../queues/user/user.service";
 
 import { NewUserFilterDto, UserSearchDto, UserUpdateTokenDto } from "./dtos";
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
@@ -53,6 +54,7 @@ export class UserService {
 		private userActivityRepository: Repository<UserActivityEntity>,
 		@Inject(forwardRef(() => AgencyService))
 		private agencyService: AgencyService,
+		private userQueueService: UserQueueService,
 		private jwtService: JwtService,
 		@Inject(forwardRef(() => CityService))
 		private cityService: CityService,
@@ -809,6 +811,13 @@ export class UserService {
 			role: userRole,
 			is_verified: dto.is_verified,
 		});
+
+		await this.userQueueService.makeRequest(
+			await this.userQueueService.createFormEntity({
+				...foundUser,
+				agency_id: foundUser.agency_id,
+			}),
+		);
 
 		foundUser.is_verified = dto.is_verified;
 		foundUser.role = userRole;
