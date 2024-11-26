@@ -6,7 +6,7 @@ export interface IVisit {
 		type: string;
 		project?: string;
 		premisesKind?: string | null;
-		date: Date;
+		date: string;
 		name?: string;
 		phone?: string;
 		realtor: {
