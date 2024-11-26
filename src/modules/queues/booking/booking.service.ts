@@ -77,7 +77,7 @@ export class BookingQueueService {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo/",
 			method: "POST",
 			data: {
-				paymentMethod: booking.purchase_option,
+				paymentMethod: booking.purchase_option.toUpperCase(),
 				duration: 10,
 				premiseId: premise?.ext_id,
 				personId: client?.ext_id,
