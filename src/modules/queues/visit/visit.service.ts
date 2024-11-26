@@ -41,7 +41,7 @@ export class VisitQueueService {
 	async timeSlots(slots: IVisitFreeTime) {
 		const data: Pick<BaseDto<IVisitFreeTime>, "data"> = {
 			data: slots,
-		};		
+		};
 
 		return await this.queueService.send(data);
 	}
@@ -75,16 +75,12 @@ export class VisitQueueService {
 	async createFormEntity(visit: VisitsEntity): Promise<IVisit> {
 		let agent: UserEntity | undefined;
 		if (visit.agent_id) {
-			agent = await this.userService.readOne(visit.agent_id, {
-				ext_id: true,
-			});
+			agent = await this.userService.readOne(visit.agent_id);
 		}
 
 		let client: ClientEntity | undefined;
 		if (visit.client_id) {
-			client = await this.clientService.readOne(visit.client_id, {
-				ext_id: true,
-			});
+			client = await this.clientService.readOne(visit.client_id);
 		}
 
 		let project: ProjectEntity | undefined;

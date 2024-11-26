@@ -2,17 +2,27 @@ export interface IUser {
 	url: string;
 	method: string;
 	data: {
-		requestType: string;
-		contourId: string;
-		data: {
-			phone: string | null;
-			name: string | null;
-			surname: string | null;
-			patronymic: string | null;
+		clients: {
+			title: string;
 			email?: string | null;
-			work_region?: string;
-			type: string | null;
-			inn?: string | null;
-		};
+			phone: string | null;
+			person: {
+				firstName: string | null;
+				lastName: string | null;
+				birthday: Date | null;
+			};
+			contactType: {
+				isAgent: boolean;
+				isContractor: boolean;
+				isRealEstateAgency: boolean;
+				isClient: boolean;
+				isAppraiser: boolean;
+				isPartnerOnline: boolean;
+			};
+			realEstateAgency: {
+				id?: string | null;
+			};
+			notSendSms: boolean;
+		}[];
 	};
 }
