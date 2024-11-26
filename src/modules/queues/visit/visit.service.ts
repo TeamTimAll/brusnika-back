@@ -108,7 +108,7 @@ export class VisitQueueService {
 				premisesKind:
 					project?.buildings?.[0]?.premises?.[0]?.type ?? null,
 				realtor: {
-					name: agent?.fullName,
+					name: `${agent?.firstName} ${agent?.lastName}`,
 					phone: agent?.phone,
 					agency: agent?.agency.title,
 				},
