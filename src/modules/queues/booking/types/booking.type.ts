@@ -2,18 +2,12 @@ export interface IBooking {
 	url: string;
 	method: string;
 	data: {
-		requestType: string;
-		contourId: string;
-		contacts: {
-			phone?: string | null;
-			name?: string;
+		paymentMethod: string;
+		duration: number;
+		channel: {
+			agentId?: string | null;
 		};
-		data: {
-			flatIdC: string;
-			payment_method: string;
-			ga_client_id: string;
-			metrika_client_id: string;
-		};
-		referer: string;
+		premiseId?: string | null;
+		personId?: string | null;
 	};
 }
