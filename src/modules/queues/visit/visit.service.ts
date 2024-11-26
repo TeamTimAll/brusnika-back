@@ -101,7 +101,7 @@ export class VisitQueueService {
 			data: {
 				requestType: "create_demo",
 				type: "offline",
-				date: `${visit.date.toISOString().split("T")[0]}T${visit.time}`,
+				date: `${new Date(visit.date).toISOString().split("T")[0]}T${visit.time}`,
 				name: client?.fullname,
 				phone: client?.phone_number,
 				project: project?.name,
