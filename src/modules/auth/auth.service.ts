@@ -224,7 +224,7 @@ export class AuthService {
 			{
 				city_id: dto.city_id,
 				email: dto.email,
-				inn: dto.email,
+				inn: dto.inn,
 				legalName: dto.legalName,
 				phone: dto.phone,
 				title: dto.title,
