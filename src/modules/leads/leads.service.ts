@@ -51,6 +51,10 @@ export class LeadsService {
 		return this.leadRepository;
 	}
 
+	get opsRepository(): Repository<LeadOpsEntity> {
+		return this.leadOpsRepository;
+	}
+
 	async create(lead: CreateLeadDto): Promise<LeadsEntity> {
 		const foundPremises = await this.premisesService.readOneWithRelation(
 			lead.premise_id,

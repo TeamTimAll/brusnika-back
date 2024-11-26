@@ -8,6 +8,7 @@ import { AgencyEntity } from "../../agencies/agencies.entity";
 import { CityEntity } from "../../cities/cities.entity";
 import { UserService } from "../../user/user.service";
 import { UserEntity } from "../../user/user.entity";
+import { ConfigManager } from "../../../config";
 
 import { AgencyDto, AgenciesDto } from "./dto";
 import { IAgency } from "./types";
@@ -100,6 +101,8 @@ export class AgencyQueueService {
 			user = await this.usersService.readOne(agency.create_by_id);
 		}
 
+		const DEBUG = ConfigManager.config.DEBUG;
+
 		return {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo/AgreementWithAgent",
 			method: "POST",
@@ -111,14 +114,19 @@ export class AgencyQueueService {
 				inn: agency.inn,
 				phone: agency.phone,
 				email: agency.email,
-				// taxRegistrationRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.tax_registration_doc}`,
-				// ogrnRef:  `https://test-api-brusnika.teamtim.tech/api/files/${agency.entry_doc}`,
-				// agencyRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.company_card_doc}` ,
-				// basisForSigningRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.authority_signatory_doc}` ,
-				taxRegistrationRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
-				ogrnRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
-				agencyRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
-				basisForSigningRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
+				taxRegistrationRef: DEBUG
+					? `https://api-brusnika.teamtim.tech/api/files/1732600146726.pdf`
+					: agency.tax_registration_doc,
+
+				ogrnRef: DEBUG
+					? `https://api-brusnika.teamtim.tech/api/files/1732600146726.pdf`
+					: agency.entry_doc,
+				agencyRef: DEBUG
+					? `https://api-brusnika.teamtim.tech/api/files/1732600146726.pdf`
+					: agency.company_card_doc,
+				basisForSigningRef: DEBUG
+					? `https://api-brusnika.teamtim.tech/api/files/1732600146726.pdf`
+					: agency.authority_signatory_doc,
 				contactPersonName: user?.firstName,
 				contactPersonPosition: user?.role,
 				contactPersonPhone: user?.phone,

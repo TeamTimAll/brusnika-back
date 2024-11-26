@@ -41,6 +41,8 @@ export interface IConfig {
 	SMS_API_URL: string;
 	// KONTUR_SEND
 	KONTUR_SEND: string;
+	// DEBUG
+	DEBUG: boolean;
 }
 
 export class ConfigManager {
@@ -73,6 +75,7 @@ export class ConfigManager {
 		SMS_API_URL: process.env.SMS_API_URL as string,
 		SMS_API_KEY: process.env.SMS_API_KEY as string,
 		KONTUR_SEND: process.env.KONTUR_SEND as string,
+		DEBUG: (process.env.DEBUG === "true") as unknown as boolean,
 	};
 
 	public static get databaseConfig(): DatabaseConfig {
@@ -107,6 +110,7 @@ export class ConfigManager {
 		SMS_API_URL: Joi.string().optional(),
 		SMS_API_KEY: Joi.string().optional(),
 		KONTUR_SEND: Joi.string().optional(),
+		DEBUG: Joi.boolean().optional(),
 	});
 
 	static init() {
