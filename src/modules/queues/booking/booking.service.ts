@@ -10,6 +10,8 @@ import { PremiseEntity } from "../../premises/premises.entity";
 import { PremisesService } from "../../premises/premises.service";
 import { UserEntity } from "../../user/user.entity";
 import { UserService } from "../../user/user.service";
+import { LeadsService } from "../../leads/leads.service";
+import { LeadsEntity } from "../../leads/leads.entity";
 
 import { BookingDto } from "./dto";
 import { IBooking } from "./types/booking.type";
@@ -23,6 +25,7 @@ export class BookingQueueService {
 		private readonly clientService: ClientService,
 		private readonly premisesService: PremisesService,
 		private readonly queueService: QueueService,
+		private readonly leadsService: LeadsService,
 	) {}
 
 	async createOrUpdateBooking(booking: BookingDto) {
@@ -60,10 +63,17 @@ export class BookingQueueService {
 		}
 
 		let client: ClientEntity | undefined;
+		let lead: LeadsEntity | undefined;
+
 		if (booking.client_id) {
 			client = await this.clientService.readOne(booking.client_id, {
 				ext_id: true,
 			});
+
+			lead = await this.leadsService.readOneByClientId(
+				booking.client_id,
+				{ ext_id: true },
+			);
 		}
 
 		let premise: PremiseEntity | undefined;
@@ -74,7 +84,7 @@ export class BookingQueueService {
 		}
 
 		return {
-			url: "https://1c.tarabanov.tech/crm/hs/ofo/",
+			url: `https://1c.tarabanov.tech/crm/hs/bpm/deal/${lead?.ext_id}/reservation`,
 			method: "POST",
 			data: {
 				paymentMethod: booking.purchase_option.toUpperCase(),

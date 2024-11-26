@@ -827,4 +827,19 @@ export class LeadsService {
 		}
 		return client;
 	}
+
+	async readOneByClientId<T extends FindOptionsSelect<LeadsEntity>>(
+		client_id: number,
+		select?: T,
+	): Promise<LeadsEntity> {
+		const client = await this.leadRepository.findOne({
+			select: select,
+			where: { client_id },
+		});
+		if (!client) {
+			throw new LeadNotFoundError(`client_id: ${client_id}`);
+		}
+
+		return client;
+	}
 }

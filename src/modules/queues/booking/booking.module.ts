@@ -5,6 +5,7 @@ import { PremisesModule } from "../../premises/premises.module";
 import { ClientModule } from "../../client/client.module";
 import { UserModule } from "../../user/user.module";
 import { QueueModule } from "../queue.module";
+import { LeadsModule } from "../../leads/leads.module";
 
 import { BookingQueueService } from "./booking.service";
 import { BookingQueueController } from "./booking.controller";
@@ -16,6 +17,7 @@ import { BookingQueueController } from "./booking.controller";
 		ClientModule,
 		PremisesModule,
 		QueueModule,
+		LeadsModule,
 	],
 	controllers: [BookingQueueController],
 	providers: [BookingQueueService],
