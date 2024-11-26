@@ -54,6 +54,7 @@ export class UserService {
 		private userActivityRepository: Repository<UserActivityEntity>,
 		@Inject(forwardRef(() => AgencyService))
 		private agencyService: AgencyService,
+		@Inject(forwardRef(() => UserQueueService))
 		private userQueueService: UserQueueService,
 		private jwtService: JwtService,
 		@Inject(forwardRef(() => CityService))
