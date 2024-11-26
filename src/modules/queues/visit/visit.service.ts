@@ -89,6 +89,7 @@ export class VisitQueueService {
 				visit.project_id,
 				{
 					ext_id: true,
+					name: true,
 					buildings: { premises: { type: true } },
 				},
 				{ buildings: { premises: true } },
