@@ -104,7 +104,7 @@ export class VisitQueueService {
 				type: "offline",
 				date: `${new Date(visit.date).toISOString().split("T")[0]}T${visit.time}`,
 				name: client?.fullname,
-				phone: client?.phone_number,
+				phone: `+${client?.phone_number}`,
 				project: project?.ext_id,
 				premisesKind:
 					project?.buildings?.[0]?.premises?.[0]?.type ?? null,
