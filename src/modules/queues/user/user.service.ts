@@ -109,7 +109,7 @@ export class UserQueueService {
 					{
 						title: user.fullName,
 						email: user.email,
-						phone: user.phone,
+						phone: `+${user.phone}`,
 						person: {
 							firstName: user.firstName,
 							lastName: user.lastName,
