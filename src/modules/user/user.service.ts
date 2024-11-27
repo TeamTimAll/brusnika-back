@@ -808,17 +808,21 @@ export class UserService {
 			}
 		}
 
-		await this.userRepository.update(foundUser.id, {
-			role: userRole,
-			is_verified: dto.is_verified,
-		});
-
-		await this.userQueueService.makeRequest(
+		const response = await this.userQueueService.makeRequest(
 			await this.userQueueService.createFormEntity({
 				...foundUser,
 				agency_id: foundUser.agency_id,
 			}),
 		);
+
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		const ext_id = response?.data?.successfully[0]?.id as unknown as string;
+
+		await this.userRepository.update(foundUser.id, {
+			role: userRole,
+			is_verified: dto.is_verified,
+			ext_id,
+		});
 
 		foundUser.is_verified = dto.is_verified;
 		foundUser.role = userRole;

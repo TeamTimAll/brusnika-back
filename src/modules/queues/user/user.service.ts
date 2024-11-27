@@ -92,7 +92,7 @@ export class UserQueueService {
 		const data: Pick<BaseDto<IUser>, "data"> = {
 			data: user,
 		};
-		await this.queueService.send(data);
+		return await this.queueService.send(data);
 	}
 
 	async createFormEntity(user: UserEntity): Promise<IUser> {
