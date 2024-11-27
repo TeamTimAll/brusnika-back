@@ -37,6 +37,23 @@ export class ProjectQueueService {
 				price: project.price,
 				city_id: city.id,
 			})
+			.orUpdate(
+				[
+					"name",
+					"photo",
+					"description",
+					"location",
+					"long",
+					"lat",
+					"end_date",
+					"company_link",
+					"building_link",
+					"project_link",
+					"price",
+					"city_id",
+				],
+				["ext_id"],
+			)
 			.execute();
 	}
 
