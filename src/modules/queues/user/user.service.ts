@@ -102,7 +102,7 @@ export class UserQueueService {
 		}
 
 		return {
-			url: "https://1c.tarabanov.tech/crm/hs/ofo",
+			url: "https://bbk.staging.brusnika.tech/v1/clients",
 			method: "POST",
 			data: {
 				clients: [
