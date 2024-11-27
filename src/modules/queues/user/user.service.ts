@@ -56,6 +56,7 @@ export class UserQueueService {
 				temporary_role: user.temporary_role,
 				status: user.status,
 				city_id: city?.id,
+				is_verified: user.is_verified,
 				agency_id: agency?.id,
 			})
 			.orUpdate(
@@ -76,6 +77,7 @@ export class UserQueueService {
 					"status",
 					"city_id",
 					"agency_id",
+					"is_verified",
 				],
 				["ext_id"],
 			)

@@ -819,8 +819,8 @@ export class UserService {
 		const ext_id = response?.data?.successfully[0]?.id as unknown as string;
 
 		await this.userRepository.update(foundUser.id, {
-			role: userRole,
-			is_verified: dto.is_verified,
+			// role: userRole,
+			// is_verified: dto.is_verified,
 			ext_id,
 		});
 

@@ -56,6 +56,10 @@ export class UserDto {
 	@IsOptional()
 	is_email_verified?: boolean;
 
+	@IsBoolean()
+	@IsOptional()
+	is_verified?: boolean;
+
 	@IsEnum(RoleType)
 	@IsOptional()
 	temporary_role?: RoleType;
