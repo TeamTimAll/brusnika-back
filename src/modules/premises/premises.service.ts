@@ -385,7 +385,7 @@ export class PremisesService {
 			"premise.photo",
 			"premise.rooms",
 			"premise.photos",
-			"premise.similiar_apartment_count",
+			"premise.similiarApartmentCount",
 			"premise.mortage_payment",
 			"premise.section_id",
 			"premise.is_sold",
@@ -434,6 +434,8 @@ export class PremisesService {
 		query = query.limit(filter.limit).offset(pageSize);
 
 		const [premises, premiseCount] = await query.getManyAndCount();
+		console.log(premises);
+
 		const metaData = BaseDto.create<PremiseEntity[]>();
 		metaData.setPagination(premiseCount, filter.page, filter.limit);
 		metaData.data = premises;
