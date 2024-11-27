@@ -92,14 +92,14 @@ export class ClientQueueService {
 				},
 				realtor: {
 					agentId: agent.id,
-					phone: agent.phone,
+					phone: `+${agent.phone}`,
 					name: agent.fullName,
 				},
 				agency: {
 					name: agent.agency.title,
 				},
 				client: {
-					phone: client.phone_number,
+					phone: `+${client.phone_number}`,
 					name: client.fullname,
 				},
 				contact:
