@@ -1,10 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { ProjectService } from "../../projects/projects.service";
 import { CityService } from "../../cities/cities.service";
 
 import { ProjectDto, ProjectsDto } from "./dto";
-import { IProject } from "./types";
 
 @Injectable()
 export class ProjectQueueService {
@@ -19,35 +18,10 @@ export class ProjectQueueService {
 			{ id: true },
 		);
 
-		const existingProject = await this.projectService.repository.findOneBy({
-			ext_id: project.ext_id,
-		});
-
-		if (existingProject) {
-			await this.projectService.repository.update(existingProject.id, {
-				...project,
-				city_id: city.id,
-			});
-		} else {
-			await this.projectService.repository.insert({
-				...project,
-				city_id: city.id,
-			});
-		}
-
-		return existingProject;
-	}
-
-	async createProjects({ data: projects }: ProjectsDto) {
-		const preparedValues: IProject[] = [];
-
-		for await (const project of projects) {
-			const city = await this.cityService.readOneByExtId(
-				project.city_ext_id,
-				{ id: true },
-			);
-
-			preparedValues.push({
+		return this.projectService.repository
+			.createQueryBuilder()
+			.insert()
+			.values({
 				ext_id: project.ext_id,
 				photo: project.photo,
 				name: project.name,
@@ -61,17 +35,30 @@ export class ProjectQueueService {
 				project_link: project.project_link,
 				price: project.price,
 				city_id: city.id,
-			});
-		}
+			})
+			.orUpdate(
+				[
+					"name",
+					"photo",
+					"description",
+					"location",
+					"long",
+					"lat",
+					"end_date",
+					"company_link",
+					"building_link",
+					"project_link",
+					"price",
+					"city_id",
+				],
+				["ext_id"],
+			)
+			.execute();
+	}
 
-		if (preparedValues.length > 0) {
-			return this.projectService.repository
-				.createQueryBuilder()
-				.insert()
-				.values(preparedValues)
-				.execute();
-		} else {
-			throw new BadRequestException("No valid project data to insert.");
+	async createProjects({ data: projects }: ProjectsDto) {
+		for await (const project of projects) {
+			await this.createOrUpdateProject(project);
 		}
 	}
 }
