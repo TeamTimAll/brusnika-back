@@ -19,42 +19,23 @@ export class ProjectQueueService {
 			{ id: true },
 		);
 
-		return this.projectService.repository
-			.createQueryBuilder()
-			.insert()
-			.values({
-				ext_id: project.ext_id,
-				photo: project.photo,
-				name: project.name,
-				description: project.description,
-				location: project.location,
-				long: project.long,
-				lat: project.lat,
-				end_date: project.end_date,
-				company_link: project.company_link,
-				building_link: project.building_link,
-				project_link: project.project_link,
-				price: project.price,
+		const existingProject = await this.projectService.repository.findOneBy({
+			ext_id: project.ext_id,
+		});
+
+		if (existingProject) {
+			await this.projectService.repository.update(existingProject.id, {
+				...project,
 				city_id: city.id,
-			})
-			.orUpdate(
-				[
-					"name",
-					"photo",
-					"description",
-					"location",
-					"long",
-					"lat",
-					"end_date",
-					"company_link",
-					"building_link",
-					"project_link",
-					"price",
-					"city_id",
-				],
-				["ext_id"],
-			)
-			.execute();
+			});
+		} else {
+			await this.projectService.repository.insert({
+				...project,
+				city_id: city.id,
+			});
+		}
+
+		return existingProject;
 	}
 
 	async createProjects({ data: projects }: ProjectsDto) {
