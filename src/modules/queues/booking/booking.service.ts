@@ -6,7 +6,7 @@ import { BaseDto } from "../../../common/base/base_dto";
 import { QueueService } from "../queue.service";
 import { BookingsEntity } from "../../bookings/bookings.entity";
 import { ClientEntity } from "../../client/client.entity";
-import { PremiseEntity } from "../../premises/premises.entity";
+import { PremiseEntity, PuchaseOptions } from "../../premises/premises.entity";
 import { PremisesService } from "../../premises/premises.service";
 import { UserEntity } from "../../user/user.entity";
 import { UserService } from "../../user/user.service";
@@ -62,6 +62,23 @@ export class BookingQueueService {
 			});
 		}
 
+		enum PurchaseMappings {
+			FULL = "FULL",
+			MORTGAGE = "MORTGAGE",
+			INSTALLMENT = "INSTALLMENT",
+			BILL = "BILL",
+		}
+
+		const purchaseOptionMap = {
+			[PuchaseOptions.MORTAGE]: PurchaseMappings.MORTGAGE,
+			[PuchaseOptions.INSTALLMENT]: PurchaseMappings.INSTALLMENT,
+			[PuchaseOptions.BILL]: PurchaseMappings.BILL,
+			[PuchaseOptions.FULL_PAYMENT]: PurchaseMappings.FULL,
+		};
+
+		const paymentMethod =
+			purchaseOptionMap[booking.purchase_option] || "UNDEFINED";
+
 		let client: ClientEntity | undefined;
 		let lead: LeadsEntity | undefined;
 
@@ -87,7 +104,7 @@ export class BookingQueueService {
 			url: `https://1c.tarabanov.tech/crm/hs/bpm/deal/${lead?.ext_id}/reservation`,
 			method: "POST",
 			data: {
-				paymentMethod: booking.purchase_option.toUpperCase(),
+				paymentMethod,
 				duration: 10,
 				premiseId: premise?.ext_id,
 				personId: client?.ext_id,
