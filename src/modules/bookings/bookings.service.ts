@@ -76,6 +76,7 @@ export class BookingsService {
 		const booking = this.bookingRepository.create(dto);
 		booking.agent_id = user.user_id;
 		booking.create_by_id = user.user_id;
+		console.log(booking);
 
 		await this.bookingQueueService.makeRequest(
 			await this.bookingQueueService.createFormEntity(booking),
