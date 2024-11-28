@@ -62,7 +62,7 @@ export class TasksService {
 					email: true,
 				},
 				manager: { id: true, fullName: true },
-				lead: { id: true, current_status: true },
+				lead: { id: true, current_status: true, lead_number: true },
 				project: { id: true, name: true },
 			},
 			relations: {
