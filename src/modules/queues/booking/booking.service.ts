@@ -62,6 +62,8 @@ export class BookingQueueService {
 			});
 		}
 
+		console.log(agent);
+
 		enum PurchaseMappings {
 			FULL = "FULL",
 			MORTGAGE = "MORTGAGE",
@@ -78,9 +80,11 @@ export class BookingQueueService {
 
 		const paymentMethod =
 			purchaseOptionMap[booking.purchase_option] || "UNDEFINED";
+		console.log(paymentMethod);
 
 		let client: ClientEntity | undefined;
 		let lead: LeadsEntity | undefined;
+		console.log(client);
 
 		if (booking.client_id) {
 			client = await this.clientService.readOne(booking.client_id, {
