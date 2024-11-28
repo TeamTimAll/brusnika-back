@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -10,6 +10,7 @@ import { ProjectService } from "../projects/projects.service";
 import { Order } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadNotFoundError } from "../leads/errors/LeadNotFound.error";
+import { TaskQueueService } from "../queues/task/task.service";
 
 import {
 	CreateTaskDto,
@@ -29,6 +30,8 @@ export class TasksService {
 		private readonly clientService: ClientService,
 		private readonly leadService: LeadsService,
 		private readonly projectService: ProjectService,
+		@Inject(forwardRef(() => TaskQueueService))
+		private taskQueueService: TaskQueueService,
 	) {}
 
 	get repository(): Repository<TasksEntity> {
@@ -53,6 +56,10 @@ export class TasksService {
 			created_by_id: user.user_id,
 			lead_id: lead.id,
 		});
+
+		await this.taskQueueService.makeRequest(
+			await this.taskQueueService.createFormEntity(task),
+		);
 
 		return await this.taskRepository.save(task);
 	}
