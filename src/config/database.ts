@@ -19,12 +19,12 @@ export class DatabaseConfigManager {
 			password: ConfigManager.config.DB_PASSWORD,
 			database: ConfigManager.config.DB_DATABASE,
 			namingStrategy: new SnakeNamingStrategy(),
-			ssl: ConfigManager.isProduction()
-				? {
-						ca: fs.readFileSync("postgresql.pem").toString(),
-						rejectUnauthorized: true,
-					}
-				: undefined,
+			// ssl: ConfigManager.isProduction()
+			// 	? {
+			// 			ca: fs.readFileSync("postgresql.pem").toString(),
+			// 			rejectUnauthorized: true,
+			// 		}
+			// 	: undefined,
 			logging: true,
 			synchronize: true,
 			entities: [
