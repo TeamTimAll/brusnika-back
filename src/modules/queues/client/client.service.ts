@@ -43,6 +43,7 @@ export class ClientQueueService {
 				.createQueryBuilder()
 				.update()
 				.set({
+					ext_id: client.ext_id,
 					fullname: client.fullname,
 					phone_number: client.phone_number,
 					email: client.email,
