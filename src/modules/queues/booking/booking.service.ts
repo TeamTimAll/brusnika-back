@@ -105,7 +105,7 @@ export class BookingQueueService {
 			method: "POST",
 			data: {
 				paymentMethod,
-				duration: 10,
+				duration: 3,
 				premiseId: premise?.ext_id,
 				personId: client?.ext_id,
 				channel: {
