@@ -28,7 +28,7 @@ export class BuildingQueuervice {
 				number_of_floors: building.number_of_floors,
 				photos: building.photos,
 				project_id: project.id,
-				object_id: building.object_id,
+				object_id: building.ext_id,
 			})
 			.orUpdate(
 				[
