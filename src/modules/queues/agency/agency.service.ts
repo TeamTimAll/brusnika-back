@@ -37,44 +37,54 @@ export class AgencyQueueService {
 			});
 		}
 
-		return this.service.repository
-			.createQueryBuilder()
-			.insert()
-			.values({
-				ext_id: payload.ext_id,
-				authority_signatory_doc: payload.authority_signatory_doc,
-				city_id: city?.id,
-				company_card_doc: payload.company_card_doc,
-				email: payload.email,
-				entry_doc: payload.entry_doc,
-				inn: payload.inn,
-				legalName: payload.legalName,
-				ownerFullName: payload.ownerFullName,
-				ownerPhone: payload.ownerPhone,
-				phone: payload.phone,
-				tax_registration_doc: payload.tax_registration_doc,
-				title: payload.title,
-				create_by_id: user?.id,
-			})
-			.orUpdate(
-				[
-					"authority_signatory_doc",
-					"city_id",
-					"company_card_doc",
-					"email",
-					"entry_doc",
-					"inn",
-					"legal_name",
-					"owner_full_name",
-					"owner_phone",
-					"phone",
-					"tax_registration_doc",
-					"title",
-					"create_by_id",
-				],
-				["ext_id"],
-			)
-			.execute();
+		const inn = payload.inn as unknown as string;
+
+		const agency = await this.service.repository.findOne({
+			where: { inn: inn },
+		});
+
+		if (agency) {
+			return await this.service.repository
+				.createQueryBuilder()
+				.update()
+				.set({
+					authority_signatory_doc: payload.authority_signatory_doc,
+					city_id: city?.id,
+					company_card_doc: payload.company_card_doc,
+					email: payload.email,
+					entry_doc: payload.entry_doc,
+					legalName: payload.legalName,
+					ownerFullName: payload.ownerFullName,
+					ownerPhone: payload.ownerPhone,
+					phone: payload.phone,
+					tax_registration_doc: payload.tax_registration_doc,
+					title: payload.title,
+					create_by_id: user?.id,
+				})
+				.where("id = :id", { id: agency.id })
+				.execute();
+		} else {
+			return await this.service.repository
+				.createQueryBuilder()
+				.insert()
+				.values({
+					ext_id: payload.ext_id,
+					authority_signatory_doc: payload.authority_signatory_doc,
+					city_id: city?.id,
+					company_card_doc: payload.company_card_doc,
+					email: payload.email,
+					entry_doc: payload.entry_doc,
+					inn: payload.inn,
+					legalName: payload.legalName,
+					ownerFullName: payload.ownerFullName,
+					ownerPhone: payload.ownerPhone,
+					phone: payload.phone,
+					tax_registration_doc: payload.tax_registration_doc,
+					title: payload.title,
+					create_by_id: user?.id,
+				})
+				.execute();
+		}
 	}
 
 	async createAgencies({ data: agencies }: AgenciesDto) {
