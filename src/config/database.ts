@@ -11,6 +11,8 @@ export type DatabaseConfig = PostgresConnectionOptions;
 
 export class DatabaseConfigManager {
 	static get config(): DatabaseConfig {
+		console.log('-------------------------configDB-------------------------');
+
 		const databaseConfig: DatabaseConfig = {
 			type: "postgres",
 			host: ConfigManager.config.DB_HOST,
