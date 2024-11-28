@@ -81,6 +81,9 @@ export class BookingsService {
 		await this.bookingQueueService.makeRequest(
 			await this.bookingQueueService.createFormEntity(booking),
 		);
+		console.log(
+			"-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-",
+		);
 
 		const metaData = BaseDto.create<BookingsEntity>();
 		metaData.data = await this.bookingRepository.save(booking);

@@ -87,6 +87,9 @@ export class BookingQueueService {
 				ext_id: true,
 			});
 
+			console.log("TEST TESTTET ");
+			console.log(booking.client);
+
 			lead = await this.leadsService.readOneByClientId(
 				booking.client_id,
 				{ ext_id: true },
