@@ -85,11 +85,15 @@ export class BookingQueueService {
 		let client: ClientEntity | undefined;
 		let lead: LeadsEntity | undefined;
 		console.log(client);
+		console.log(booking.client_id);
 
 		if (booking.client_id) {
+			console.log("111111111111111111111-=-=-=-=-=-=-=-=-=-");
+
 			client = await this.clientService.readOne(booking.client_id, {
 				ext_id: true,
 			});
+			console.log("1222222222222222222222222-=-=-=-=-=-=-=-=-=-");
 
 			console.log("TEST TESTTET ");
 			console.log(booking.client);
@@ -98,6 +102,7 @@ export class BookingQueueService {
 				booking.client_id,
 				{ ext_id: true },
 			);
+			console.log("lllllllllllllllllllead");
 		}
 
 		let premise: PremiseEntity | undefined;
