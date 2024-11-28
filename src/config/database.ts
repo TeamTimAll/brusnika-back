@@ -11,8 +11,6 @@ export type DatabaseConfig = PostgresConnectionOptions;
 
 export class DatabaseConfigManager {
 	static get config(): DatabaseConfig {
-		console.log('-------------------------configDB-------------------------');
-
 		const databaseConfig: DatabaseConfig = {
 			type: "postgres",
 			host: ConfigManager.config.DB_HOST,
@@ -27,7 +25,7 @@ export class DatabaseConfigManager {
 			// 			rejectUnauthorized: true,
 			// 		}
 			// 	: undefined,
-			logging: true,
+			logging: false,
 			synchronize: true,
 			entities: [
 				join(__dirname, "..", "/**/*.entity{.ts,.js}"),
