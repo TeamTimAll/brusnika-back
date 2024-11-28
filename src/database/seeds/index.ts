@@ -33,11 +33,12 @@ async function up(dataSource: DataSource) {
 	// const projects	= await projectSeed.up(dataSource.createQueryBuilder());
 	// const sections	= await sectionSeed.up(dataSource.createQueryBuilder(), buildings);
 	// const premises	= await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
-	const agencies	= await agencySeed.up(dataSource.createQueryBuilder());
+	// const clients	= await clientSeed.up(dataSource.createQueryBuilder(), users.filter(e => e.role === RoleType.AGENT));
+	// const agencies	= await agencySeed.up(dataSource.createQueryBuilder());
 	const buildings	= await buildingSeed.up(dataSource.createQueryBuilder());
 	const premises	= await premiseSeed.up(dataSource.createQueryBuilder());
-	const users		= await userSeed.up(dataSource.createQueryBuilder(), cities, agencies);
-	const clients	= await clientSeed.up(dataSource.createQueryBuilder(), users.filter(e => e.role === RoleType.AGENT));
+	// const users		= await userSeed.up(dataSource.createQueryBuilder(), cities, agencies);
+	const clients	= await clientSeed.up(dataSource.createQueryBuilder());
 	/*const leads		=*/ await leadSeed.up(dataSource.createQueryBuilder(), clients, buildings, premises);
 	// const bookedLeads = leads.filter(l => l.current_status === LeadOpStatus.BOOKED);
 	// const bookedClients = clients.filter(c => c.id === )

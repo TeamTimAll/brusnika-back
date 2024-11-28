@@ -66,10 +66,10 @@ const failedLeads = [
 ];
 
 const leadOpStatusMap = new Map([
-	[LeadOpStatus.WON, successLeads],
+	[LeadOpStatus.CONTRACT_IS_REGISTERED, successLeads],
 	[LeadOpStatus.BOOK_CANCELED, canceledLeads],
 	[LeadOpStatus.LOST_BOOK, lostLeads],
-	[LeadOpStatus.ON_PAUSE, pauseLeads],
+	[LeadOpStatus.PRESENTATION, pauseLeads],
 	[LeadOpStatus.FAILED, failedLeads],
 ]);
 
