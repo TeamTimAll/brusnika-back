@@ -20,6 +20,10 @@ export class BuildingDto {
 	@IsNotEmpty()
 	address!: string;
 
+	@IsString()
+	@IsOptional()
+	object_id?: string;
+
 	@IsNumber()
 	@IsNotEmpty()
 	number_of_floors!: number;
