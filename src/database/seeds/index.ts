@@ -1,7 +1,6 @@
 import { DataSource } from "typeorm";
 
 import { ConfigManager } from "../../config";
-import { RoleType } from "../../constants";
 
 import * as agencySeed from "./agency.seed";
 import * as bookedSeed from "./booked.seed";
@@ -26,7 +25,7 @@ export const dataSource = new DataSource({
 // prettier-ignore
 async function up(dataSource: DataSource) {
 	await settingsSeed.up(dataSource.createQueryBuilder());
-	const cities	= await citySeed.up(dataSource.createQueryBuilder());
+	// const cities	= await citySeed.up(dataSource.createQueryBuilder());
 	// const agencies	= await agencySeed.up(dataSource.createQueryBuilder(), cities);
 	// const projects	= await projectSeed.up(dataSource.createQueryBuilder(), cities);
 	// const buildings	= await buildingSeed.up(dataSource.createQueryBuilder(), projects);
