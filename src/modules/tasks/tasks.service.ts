@@ -51,6 +51,7 @@ export class TasksService {
 		const task = this.taskRepository.create({
 			...payload,
 			created_by_id: user.user_id,
+			lead_id: lead.id,
 		});
 
 		return await this.taskRepository.save(task);
