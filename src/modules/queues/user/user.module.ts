@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 
 import { UserModule } from "../../user/user.module";
 import { AgenciesModule } from "../../agencies/agencies.module";
@@ -9,7 +9,12 @@ import { UserQueueService } from "./user.service";
 import { UserQueueController } from "./user.controller";
 
 @Module({
-	imports: [UserModule, AgenciesModule, CityModule, QueueModule],
+	imports: [
+		forwardRef(() => UserModule),
+		AgenciesModule,
+		CityModule,
+		QueueModule,
+	],
 	controllers: [UserQueueController],
 	providers: [UserQueueService],
 	exports: [UserQueueService],

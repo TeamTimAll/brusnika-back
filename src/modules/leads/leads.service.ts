@@ -51,6 +51,10 @@ export class LeadsService {
 		return this.leadRepository;
 	}
 
+	get opsRepository(): Repository<LeadOpsEntity> {
+		return this.leadOpsRepository;
+	}
+
 	async create(lead: CreateLeadDto): Promise<LeadsEntity> {
 		const foundPremises = await this.premisesService.readOneWithRelation(
 			lead.premise_id,
@@ -821,6 +825,21 @@ export class LeadsService {
 		if (!client) {
 			throw new LeadNotFoundError(`ext_id: ${ext_id}`);
 		}
+		return client;
+	}
+
+	async readOneByClientId<T extends FindOptionsSelect<LeadsEntity>>(
+		client_id: number,
+		select?: T,
+	): Promise<LeadsEntity> {
+		const client = await this.leadRepository.findOne({
+			select: select,
+			where: { client_id },
+		});
+		if (!client) {
+			throw new LeadNotFoundError(`client_id: ${client_id}`);
+		}
+
 		return client;
 	}
 }

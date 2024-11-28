@@ -120,7 +120,8 @@ export class ProjectService {
 	      	'id', building.id,
 	      	'name', building.name,
 	      	'address', building.address,
-	      	'number_of_floors', building.number_of_floors
+	      	'number_of_floors', building.number_of_floors,
+					'object_id', building.object_id
 	  		)::TEXT) AS buildings`,
 				"project.price AS price",
 				"premise.type AS premise_type",
@@ -326,7 +327,7 @@ export class ProjectService {
 			.addSelect([
 				"project.id AS id",
 				"project.name AS name",
-				"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'address', building.address, 'number_of_floors', building.number_of_floors)) AS buildings",
+				"JSON_AGG(JSON_BUILD_OBJECT('id', building.id, 'name', building.name, 'address', building.address, 'number_of_floors', building.number_of_floors, 'object_id', building.object_id)) AS buildings",
 			])
 			.groupBy("project.id")
 			.addGroupBy("building.id");

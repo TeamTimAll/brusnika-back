@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 
 import { UserService } from "../../user/user.service";
 import { CityService } from "../../cities/cities.service";
@@ -15,6 +15,7 @@ import { IUser } from "./types";
 @Injectable()
 export class UserQueueService {
 	constructor(
+		@Inject(forwardRef(() => UserService))
 		private readonly userService: UserService,
 		private readonly cityService: CityService,
 		private readonly agencyService: AgencyService,
@@ -55,6 +56,7 @@ export class UserQueueService {
 				temporary_role: user.temporary_role,
 				status: user.status,
 				city_id: city?.id,
+				is_verified: user.is_verified,
 				agency_id: agency?.id,
 			})
 			.orUpdate(
@@ -75,6 +77,7 @@ export class UserQueueService {
 					"status",
 					"city_id",
 					"agency_id",
+					"is_verified",
 				],
 				["ext_id"],
 			)
@@ -91,36 +94,43 @@ export class UserQueueService {
 		const data: Pick<BaseDto<IUser>, "data"> = {
 			data: user,
 		};
-		await this.queueService.send(data);
+		return await this.queueService.send(data);
 	}
 
 	async createFormEntity(user: UserEntity): Promise<IUser> {
-		let city: CityEntity | undefined;
-		if (user.city_id) {
-			city = await this.cityService.readOne(user.city_id);
-		}
-
 		let agency: AgencyEntity | undefined;
 		if (user.agency_id) {
 			agency = await this.agencyService.readOne(user.agency_id);
 		}
 
 		return {
-			url: "https://1c.tarabanov.tech/crm/hs/ofo",
+			url: "https://bbk.staging.brusnika.tech/v1/clients",
 			method: "POST",
 			data: {
-				requestType: "register_partner",
-				contourId: "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
-				data: {
-					phone: user.phone,
-					name: user.firstName,
-					surname: user.lastName,
-					email: user.email,
-					work_region: city?.name,
-					inn: agency?.inn,
-					patronymic: "test",
-					type: "type",
-				},
+				clients: [
+					{
+						title: user.fullName,
+						email: user.email,
+						phone: `+${user.phone}`,
+						person: {
+							firstName: user.firstName,
+							lastName: user.lastName,
+							birthday: user.birthDate,
+						},
+						contactType: {
+							isAgent: true,
+							isContractor: false,
+							isRealEstateAgency: false,
+							isClient: false,
+							isAppraiser: false,
+							isPartnerOnline: false,
+						},
+						realEstateAgency: {
+							id: agency?.ext_id,
+						},
+						notSendSms: true,
+					},
+				],
 			},
 		};
 	}

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
@@ -9,6 +9,8 @@ import { LeadsService } from "../leads/leads.service";
 import { ProjectService } from "../projects/projects.service";
 import { Order } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { LeadNotFoundError } from "../leads/errors/LeadNotFound.error";
+import { TaskQueueService } from "../queues/task/task.service";
 
 import {
 	CreateTaskDto,
@@ -28,6 +30,8 @@ export class TasksService {
 		private readonly clientService: ClientService,
 		private readonly leadService: LeadsService,
 		private readonly projectService: ProjectService,
+		@Inject(forwardRef(() => TaskQueueService))
+		private taskQueueService: TaskQueueService,
 	) {}
 
 	get repository(): Repository<TasksEntity> {
@@ -39,12 +43,23 @@ export class TasksService {
 		await this.clientService.checkExists(payload.client_id);
 		await this.projectService.checkExists(payload.project_id);
 
-		await this.leadService.readOne(payload.lead_id);
+		const lead = await this.leadService.repository.findOne({
+			where: { lead_number: payload.lead_number },
+		});
+
+		if (!lead) {
+			throw new LeadNotFoundError(`lead_number: ${payload.lead_number}`);
+		}
 
 		const task = this.taskRepository.create({
 			...payload,
 			created_by_id: user.user_id,
+			lead_id: lead.id,
 		});
+
+		await this.taskQueueService.makeRequest(
+			await this.taskQueueService.createFormEntity(task),
+		);
 
 		return await this.taskRepository.save(task);
 	}
@@ -60,7 +75,7 @@ export class TasksService {
 					email: true,
 				},
 				manager: { id: true, fullName: true },
-				lead: { id: true, current_status: true },
+				lead: { id: true, current_status: true, lead_number: true },
 				project: { id: true, name: true },
 			},
 			relations: {

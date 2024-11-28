@@ -30,39 +30,53 @@ export class ClientQueueService {
 				id: true,
 			});
 		}
-		return this.clientService.repository
-			.createQueryBuilder()
-			.insert()
-			.values({
-				ext_id: client.ext_id,
-				fullname: client.fullname,
+
+		const foundClient = await this.clientService.repository.findOne({
+			where: {
 				phone_number: client.phone_number,
-				email: client.email,
-				actived_date: client.actived_date,
-				comment: client.comment,
-				confirmation_type: client.confirmation_type,
-				fixing_type: client.fixing_type,
-				expiration_date: client.expiration_date,
-				node: client.node,
-				agent_id: agent?.id,
-				fixing_type_updated_at: new Date(),
-			})
-			.orUpdate(
-				[
-					"fullname",
-					"phone_number",
-					"email",
-					"actived_date",
-					"comment",
-					"confirmation_type",
-					"fixing_type",
-					"expiration_date",
-					"node",
-					"agent_id",
-				],
-				["ext_id"],
-			)
-			.execute();
+				fullname: client.fullname,
+			},
+		});
+
+		if (foundClient) {
+			return await this.clientService.repository
+				.createQueryBuilder()
+				.update()
+				.set({
+					ext_id: client.ext_id,
+					fullname: client.fullname,
+					phone_number: client.phone_number,
+					email: client.email,
+					actived_date: client.actived_date,
+					comment: client.comment,
+					confirmation_type: client.confirmation_type,
+					fixing_type: client.fixing_type,
+					expiration_date: client.expiration_date,
+					node: client.node,
+					agent_id: agent?.id,
+				})
+				.where("id = :id", { id: foundClient.id })
+				.execute();
+		} else {
+			return await this.clientService.repository
+				.createQueryBuilder()
+				.insert()
+				.values({
+					ext_id: client.ext_id,
+					fullname: client.fullname,
+					phone_number: client.phone_number,
+					email: client.email,
+					actived_date: client.actived_date,
+					comment: client.comment,
+					confirmation_type: client.confirmation_type,
+					fixing_type: client.fixing_type,
+					expiration_date: client.expiration_date,
+					node: client.node,
+					agent_id: agent?.id,
+					fixing_type_updated_at: new Date(),
+				})
+				.execute();
+		}
 	}
 
 	async send(client: IClient) {
@@ -92,14 +106,14 @@ export class ClientQueueService {
 				},
 				realtor: {
 					agentId: agent.id,
-					phone: agent.phone,
+					phone: `+${agent.phone}`,
 					name: agent.fullName,
 				},
 				agency: {
 					name: agent.agency.title,
 				},
 				client: {
-					phone: client.phone_number,
+					phone: `+${client.phone_number}`,
 					name: client.fullname,
 				},
 				contact:

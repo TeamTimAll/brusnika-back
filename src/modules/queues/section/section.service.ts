@@ -1,11 +1,10 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 
 import { BuildingsService } from "../../buildings/buildings.service";
 import { SectionsService } from "../../sections/sections.service";
 import { BuildingEntity } from "../../buildings/buildings.entity";
 
 import { SectionDto, SectionsDto } from "./dto";
-import { ISection } from "./types";
 
 @Injectable()
 export class SectionQueueService {
@@ -38,34 +37,8 @@ export class SectionQueueService {
 	}
 
 	async createSections({ data: sections }: SectionsDto) {
-		const preparedValues: ISection[] = [];
-
 		for await (const section of sections) {
-			let building: Pick<BuildingEntity, "id"> | undefined;
-
-			if (section.building_ext_id) {
-				building = await this.buildingService.readOneByExtId(
-					section.building_ext_id,
-					{ id: true },
-				);
-			}
-
-			preparedValues.push({
-				ext_id: section.ext_id,
-				name: section.name,
-				number_of_floors: section.number_of_floors,
-				building_id: building?.id,
-			});
-		}
-
-		if (preparedValues.length > 0) {
-			return this.sectionService.repostory
-				.createQueryBuilder()
-				.insert()
-				.values(preparedValues)
-				.execute();
-		} else {
-			throw new BadRequestException("No valid project data to insert.");
+			await this.createOrUpdateSection(section);
 		}
 	}
 }

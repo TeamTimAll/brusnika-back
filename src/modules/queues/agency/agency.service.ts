@@ -8,6 +8,7 @@ import { AgencyEntity } from "../../agencies/agencies.entity";
 import { CityEntity } from "../../cities/cities.entity";
 import { UserService } from "../../user/user.service";
 import { UserEntity } from "../../user/user.entity";
+import { ConfigManager } from "../../../config";
 
 import { AgencyDto, AgenciesDto } from "./dto";
 import { IAgency } from "./types";
@@ -36,44 +37,54 @@ export class AgencyQueueService {
 			});
 		}
 
-		return this.service.repository
-			.createQueryBuilder()
-			.insert()
-			.values({
-				ext_id: payload.ext_id,
-				authority_signatory_doc: payload.authority_signatory_doc,
-				city_id: city?.id,
-				company_card_doc: payload.company_card_doc,
-				email: payload.email,
-				entry_doc: payload.entry_doc,
-				inn: payload.inn,
-				legalName: payload.legalName,
-				ownerFullName: payload.ownerFullName,
-				ownerPhone: payload.ownerPhone,
-				phone: payload.phone,
-				tax_registration_doc: payload.tax_registration_doc,
-				title: payload.title,
-				create_by_id: user?.id,
-			})
-			.orUpdate(
-				[
-					"authority_signatory_doc",
-					"city_id",
-					"company_card_doc",
-					"email",
-					"entry_doc",
-					"inn",
-					"legal_name",
-					"owner_full_name",
-					"owner_phone",
-					"phone",
-					"tax_registration_doc",
-					"title",
-					"create_by_id",
-				],
-				["ext_id"],
-			)
-			.execute();
+		const inn = payload.inn as unknown as string;
+
+		const agency = await this.service.repository.findOne({
+			where: { inn: inn },
+		});
+
+		if (agency) {
+			return await this.service.repository
+				.createQueryBuilder()
+				.update()
+				.set({
+					authority_signatory_doc: payload.authority_signatory_doc,
+					city_id: city?.id,
+					company_card_doc: payload.company_card_doc,
+					email: payload.email,
+					entry_doc: payload.entry_doc,
+					legalName: payload.legalName,
+					ownerFullName: payload.ownerFullName,
+					ownerPhone: payload.ownerPhone,
+					phone: payload.phone,
+					tax_registration_doc: payload.tax_registration_doc,
+					title: payload.title,
+					create_by_id: user?.id,
+				})
+				.where("id = :id", { id: agency.id })
+				.execute();
+		} else {
+			return await this.service.repository
+				.createQueryBuilder()
+				.insert()
+				.values({
+					ext_id: payload.ext_id,
+					authority_signatory_doc: payload.authority_signatory_doc,
+					city_id: city?.id,
+					company_card_doc: payload.company_card_doc,
+					email: payload.email,
+					entry_doc: payload.entry_doc,
+					inn: payload.inn,
+					legalName: payload.legalName,
+					ownerFullName: payload.ownerFullName,
+					ownerPhone: payload.ownerPhone,
+					phone: payload.phone,
+					tax_registration_doc: payload.tax_registration_doc,
+					title: payload.title,
+					create_by_id: user?.id,
+				})
+				.execute();
+		}
 	}
 
 	async createAgencies({ data: agencies }: AgenciesDto) {
@@ -100,6 +111,8 @@ export class AgencyQueueService {
 			user = await this.usersService.readOne(agency.create_by_id);
 		}
 
+		const DEBUG = ConfigManager.config.DEBUG;
+
 		return {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo/AgreementWithAgent",
 			method: "POST",
@@ -111,14 +124,19 @@ export class AgencyQueueService {
 				inn: agency.inn,
 				phone: agency.phone,
 				email: agency.email,
-				// taxRegistrationRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.tax_registration_doc}`,
-				// ogrnRef:  `https://test-api-brusnika.teamtim.tech/api/files/${agency.entry_doc}`,
-				// agencyRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.company_card_doc}` ,
-				// basisForSigningRef: `https://test-api-brusnika.teamtim.tech/api/files/${agency.authority_signatory_doc}` ,
-				taxRegistrationRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
-				ogrnRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
-				agencyRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
-				basisForSigningRef: `https://api-brusnika.teamtim.tech/api/files/1732007589874.jpeg`,
+				taxRegistrationRef: DEBUG
+					? `https://api-brusnika.teamtim.tech/api/files/1732600146726.pdf`
+					: agency.tax_registration_doc,
+
+				ogrnRef: DEBUG
+					? `https://api-brusnika.teamtim.tech/api/files/1732600146726.pdf`
+					: agency.entry_doc,
+				agencyRef: DEBUG
+					? `https://api-brusnika.teamtim.tech/api/files/1732600146726.pdf`
+					: agency.company_card_doc,
+				basisForSigningRef: DEBUG
+					? `https://api-brusnika.teamtim.tech/api/files/1732600146726.pdf`
+					: agency.authority_signatory_doc,
 				contactPersonName: user?.firstName,
 				contactPersonPosition: user?.role,
 				contactPersonPhone: user?.phone,

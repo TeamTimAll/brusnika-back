@@ -4,9 +4,9 @@ export interface IVisit {
 	data: {
 		requestType: string;
 		type: string;
-		project?: string;
+		project?: string | null;
 		premisesKind?: string | null;
-		date: Date;
+		date: string;
 		name?: string;
 		phone?: string;
 		realtor: {

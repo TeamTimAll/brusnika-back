@@ -41,7 +41,7 @@ export class VisitQueueService {
 	async timeSlots(slots: IVisitFreeTime) {
 		const data: Pick<BaseDto<IVisitFreeTime>, "data"> = {
 			data: slots,
-		};		
+		};
 
 		return await this.queueService.send(data);
 	}
@@ -75,16 +75,12 @@ export class VisitQueueService {
 	async createFormEntity(visit: VisitsEntity): Promise<IVisit> {
 		let agent: UserEntity | undefined;
 		if (visit.agent_id) {
-			agent = await this.userService.readOne(visit.agent_id, {
-				ext_id: true,
-			});
+			agent = await this.userService.readOne(visit.agent_id);
 		}
 
 		let client: ClientEntity | undefined;
 		if (visit.client_id) {
-			client = await this.clientService.readOne(visit.client_id, {
-				ext_id: true,
-			});
+			client = await this.clientService.readOne(visit.client_id);
 		}
 
 		let project: ProjectEntity | undefined;
@@ -93,6 +89,7 @@ export class VisitQueueService {
 				visit.project_id,
 				{
 					ext_id: true,
+					name: true,
 					buildings: { premises: { type: true } },
 				},
 				{ buildings: { premises: true } },
@@ -105,14 +102,14 @@ export class VisitQueueService {
 			data: {
 				requestType: "create_demo",
 				type: "offline",
-				date: visit.date,
+				date: `${new Date(visit.date).toISOString().split("T")[0]}T${visit.time}`,
 				name: client?.fullname,
-				phone: client?.phone_number,
-				project: project?.name,
+				phone: `+${client?.phone_number}`,
+				project: project?.ext_id,
 				premisesKind:
 					project?.buildings?.[0]?.premises?.[0]?.type ?? null,
 				realtor: {
-					name: agent?.fullName,
+					name: `${agent?.firstName} ${agent?.lastName}`,
 					phone: agent?.phone,
 					agency: agent?.agency.title,
 				},

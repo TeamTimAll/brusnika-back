@@ -13,7 +13,6 @@ import { UserRegisterStatus, UserStatus } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 import { NotificationService } from "../notification/notification.service";
 import { NotificationType } from "../notification/notification.entity";
-import { UserQueueService } from "../queues/user/user.service";
 
 import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
 import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
@@ -46,7 +45,6 @@ export class AuthService {
 		private cityService: CityService,
 		private smsService: SmsService,
 		private notificationService: NotificationService,
-		private userQueueService: UserQueueService,
 	) {}
 
 	async agentRegister(body: UserCreateDto): Promise<AuthResponeWithData> {
@@ -199,13 +197,6 @@ export class AuthService {
 			select: { id: true, firebase_token: true },
 		});
 
-		await this.userQueueService.makeRequest(
-			await this.userQueueService.createFormEntity({
-				...user,
-				agency_id: body.agency_id,
-			}),
-		);
-
 		await this.notificationService.sendToUsers(users, {
 			type: NotificationType.AGENT_REQUEST_FOR_AGENCY,
 			object_id: user.id,
@@ -233,7 +224,7 @@ export class AuthService {
 			{
 				city_id: dto.city_id,
 				email: dto.email,
-				inn: dto.email,
+				inn: dto.inn,
 				legalName: dto.legalName,
 				phone: dto.phone,
 				title: dto.title,
@@ -251,13 +242,6 @@ export class AuthService {
 			temporary_role: temporary_role,
 			agency_id: newAgency.id,
 		});
-
-		await this.userQueueService.makeRequest(
-			await this.userQueueService.createFormEntity({
-				...user,
-				agency_id: newAgency.id,
-			}),
-		);
 
 		return {
 			accessToken: this.jwtService.sign({

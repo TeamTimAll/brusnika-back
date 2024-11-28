@@ -6,6 +6,12 @@ import { BaseDto } from "../../../common/base/base_dto";
 import { QueueService } from "../queue.service";
 import { BookingsEntity } from "../../bookings/bookings.entity";
 import { ClientEntity } from "../../client/client.entity";
+import { PremiseEntity, PuchaseOptions } from "../../premises/premises.entity";
+import { PremisesService } from "../../premises/premises.service";
+import { UserEntity } from "../../user/user.entity";
+import { UserService } from "../../user/user.service";
+import { LeadsService } from "../../leads/leads.service";
+import { LeadsEntity } from "../../leads/leads.entity";
 
 import { BookingDto } from "./dto";
 import { IBooking } from "./types/booking.type";
@@ -15,10 +21,11 @@ export class BookingQueueService {
 	constructor(
 		@Inject(forwardRef(() => BookingsService))
 		private readonly bookingService: BookingsService,
-		// private readonly userService: UserService,
+		private readonly userService: UserService,
 		private readonly clientService: ClientService,
-		// private readonly premisesService: PremisesService,
+		private readonly premisesService: PremisesService,
 		private readonly queueService: QueueService,
+		private readonly leadsService: LeadsService,
 	) {}
 
 	async createOrUpdateBooking(booking: BookingDto) {
@@ -48,44 +55,62 @@ export class BookingQueueService {
 	}
 
 	async createFormEntity(booking: BookingsEntity): Promise<IBooking> {
-		// let agent: UserEntity | undefined;
-		// if (booking.agent_id) {
-		// 	agent = await this.userService.readOne(booking.agent_id, {
-		// 		ext_id: true,
-		// 	});
-		// }
-
-		let client: ClientEntity | undefined;
-		if (booking.client_id) {
-			client = await this.clientService.readOne(booking.client_id, {
+		let agent: UserEntity | undefined;
+		if (booking.agent_id) {
+			agent = await this.userService.readOne(booking.agent_id, {
 				ext_id: true,
 			});
 		}
 
-		// let premise: PremiseEntity | undefined;
-		// if (booking.premise_id) {
-		// 	premise = await this.premisesService.readOne(booking.premise_id, {
-		// 		ext_id: true,
-		// 	});
-		// }
+		enum PurchaseMappings {
+			FULL = "FULL",
+			MORTGAGE = "MORTGAGE",
+			INSTALLMENT = "INSTALLMENT",
+			BILL = "BILL",
+		}
+
+		const purchaseOptionMap = {
+			[PuchaseOptions.MORTAGE]: PurchaseMappings.MORTGAGE,
+			[PuchaseOptions.INSTALLMENT]: PurchaseMappings.INSTALLMENT,
+			[PuchaseOptions.BILL]: PurchaseMappings.BILL,
+			[PuchaseOptions.FULL_PAYMENT]: PurchaseMappings.FULL,
+		};
+
+		const paymentMethod =
+			purchaseOptionMap[booking.purchase_option] || "UNDEFINED";
+
+		let client: ClientEntity | undefined;
+		let lead: LeadsEntity | undefined;
+
+		if (booking.client_id) {
+			client = await this.clientService.readOne(booking.client_id, {
+				ext_id: true,
+			});
+
+			lead = await this.leadsService.readOneByClientId(
+				booking.client_id,
+				{ ext_id: true },
+			);
+		}
+
+		let premise: PremiseEntity | undefined;
+		if (booking.premise_id) {
+			premise = await this.premisesService.readOne(booking.premise_id, {
+				ext_id: true,
+			});
+		}
 
 		return {
-			url: "https://1c.tarabanov.tech/crm/hs/ofo/",
+			url: `https://1c.tarabanov.tech/crm/hs/bpm/deal/${lead?.ext_id}/reservation`,
 			method: "POST",
 			data: {
-				contourId: "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
-				requestType: "reservation_paid",
-				contacts: {
-					name: client?.fullname,
-					phone: client?.phone_number,
+				paymentMethod,
+				duration: 3,
+				premiseId: premise?.ext_id,
+				personId: client?.ext_id,
+				channel: {
+					agentId: agent?.ext_id,
 				},
-				data: {
-					flatIdC: "fafb8ccd-59aa-4509-a520-5d45e14f42c6",
-					ga_client_id: "",
-					metrika_client_id: "",
-					payment_method: booking.purchase_option,
-				},
-				referer: "",
 			},
 		};
 	}
