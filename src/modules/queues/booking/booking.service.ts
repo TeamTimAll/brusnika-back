@@ -83,9 +83,12 @@ export class BookingQueueService {
 		let lead: LeadsEntity | undefined;
 
 		if (booking.client_id) {
+			console.log(booking.client_id);
 			client = await this.clientService.readOne(booking.client_id, {
 				ext_id: true,
 			});
+
+			console.log(booking.client_id);
 
 			lead = await this.leadsService.readOneByClientId(
 				booking.client_id,
