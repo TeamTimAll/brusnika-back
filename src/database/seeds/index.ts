@@ -27,11 +27,15 @@ export const dataSource = new DataSource({
 async function up(dataSource: DataSource) {
 	await settingsSeed.up(dataSource.createQueryBuilder());
 	const cities	= await citySeed.up(dataSource.createQueryBuilder());
-	const agencies	= await agencySeed.up(dataSource.createQueryBuilder(), cities);
-	const projects	= await projectSeed.up(dataSource.createQueryBuilder(), cities);
-	const buildings	= await buildingSeed.up(dataSource.createQueryBuilder(), projects);
-	const sections	= await sectionSeed.up(dataSource.createQueryBuilder(), buildings);
-	const premises	= await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
+	// const agencies	= await agencySeed.up(dataSource.createQueryBuilder(), cities);
+	// const projects	= await projectSeed.up(dataSource.createQueryBuilder(), cities);
+	// const buildings	= await buildingSeed.up(dataSource.createQueryBuilder(), projects);
+	// const projects	= await projectSeed.up(dataSource.createQueryBuilder());
+	// const sections	= await sectionSeed.up(dataSource.createQueryBuilder(), buildings);
+	// const premises	= await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
+	const agencies	= await agencySeed.up(dataSource.createQueryBuilder());
+	const buildings	= await buildingSeed.up(dataSource.createQueryBuilder());
+	const premises	= await premiseSeed.up(dataSource.createQueryBuilder());
 	const users		= await userSeed.up(dataSource.createQueryBuilder(), cities, agencies);
 	const clients	= await clientSeed.up(dataSource.createQueryBuilder(), users.filter(e => e.role === RoleType.AGENT));
 	/*const leads		=*/ await leadSeed.up(dataSource.createQueryBuilder(), clients, buildings, premises);
