@@ -44,9 +44,9 @@ export class CreateTaskDto {
 	project_id!: number;
 
 	@ApiProperty()
-	@IsInt()
+	@IsString()
 	@IsNotEmpty()
-	lead_id!: number;
+	lead_number!: string;
 
 	@ApiProperty()
 	@IsDateString()

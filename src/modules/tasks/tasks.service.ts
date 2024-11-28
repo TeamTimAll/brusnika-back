@@ -39,7 +39,9 @@ export class TasksService {
 		await this.clientService.checkExists(payload.client_id);
 		await this.projectService.checkExists(payload.project_id);
 
-		await this.leadService.readOne(payload.lead_id);
+		await this.leadService.repository.findOne({
+			where: { lead_number: payload.lead_number },
+		});
 
 		const task = this.taskRepository.create({
 			...payload,
