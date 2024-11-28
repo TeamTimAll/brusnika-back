@@ -11,17 +11,33 @@ export class LeadOpsQueueService {
 	async createOrUpdateLeadOps(ops: LeadOpsDto) {
 		const lead = await this.leadService.readOneByExtId(ops.lead_ext_id);
 
-		return this.leadService.opsRepository
-			.createQueryBuilder()
-			.insert()
-			.values({
-				ext_id: ops.ext_id,
-				lead_id: lead.id,
-				status: ops.status,
-				created_at: ops.created_at,
-			})
-			.orUpdate(["lead_id", "status", "created_at"], ["ext_id"])
-			.execute();
+		const foundOps = await this.leadService.leadOpsRepository.findOne({
+			where: { lead_id: lead.id, status: ops.status },
+		});
+
+		if (!foundOps) {
+			return await this.leadService.opsRepository
+				.createQueryBuilder()
+				.insert()
+				.values({
+					ext_id: ops.ext_id,
+					lead_id: lead.id,
+					status: ops.status,
+					created_at: ops.created_at,
+				})
+				.execute();
+		} else {
+			return await this.leadService.opsRepository
+				.createQueryBuilder()
+				.update()
+				.set({
+					lead_id: lead.id,
+					status: ops.status,
+					created_at: ops.created_at,
+				})
+				.where("id = :id", { id: foundOps.id })
+				.execute();
+		}
 	}
 
 	async createLeadOpses({ data: ops }: LeadOpsesDto) {
