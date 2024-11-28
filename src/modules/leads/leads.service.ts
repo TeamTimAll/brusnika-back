@@ -836,7 +836,6 @@ export class LeadsService {
 			select: select,
 			where: { client_id: client_id },
 		});
-		console.log(client);
 
 		if (!client) {
 			throw new LeadNotFoundError(`client_id: ${client_id}`);

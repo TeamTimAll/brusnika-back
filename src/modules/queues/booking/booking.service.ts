@@ -12,6 +12,7 @@ import { UserEntity } from "../../user/user.entity";
 import { UserService } from "../../user/user.service";
 import { LeadsService } from "../../leads/leads.service";
 import { LeadsEntity } from "../../leads/leads.entity";
+import { LeadNotFoundError } from "../../leads/errors/LeadNotFound.error";
 
 import { BookingDto } from "./dto";
 import { IBooking } from "./types/booking.type";
@@ -62,8 +63,6 @@ export class BookingQueueService {
 			});
 		}
 
-		console.log(agent);
-
 		enum PurchaseMappings {
 			FULL = "FULL",
 			MORTGAGE = "MORTGAGE",
@@ -80,29 +79,21 @@ export class BookingQueueService {
 
 		const paymentMethod =
 			purchaseOptionMap[booking.purchase_option] || "UNDEFINED";
-		console.log(paymentMethod);
 
 		let client: ClientEntity | undefined;
-		let lead: LeadsEntity | undefined;
-		console.log(client);
-		console.log(booking.client_id);
-
+		let lead: LeadsEntity | undefined | null;
 		if (booking.client_id) {
-			console.log("111111111111111111111-=-=-=-=-=-=-=-=-=-");
-
 			client = await this.clientService.readOne(booking.client_id, {
 				ext_id: true,
 			});
-			console.log("1222222222222222222222222-=-=-=-=-=-=-=-=-=-");
 
-			console.log("TEST TESTTET ");
-			console.log(booking.client);
+			lead = await this.leadsService.repository.findOne({
+				where: { client_id: booking.client_id },
+			});
 
-			lead = await this.leadsService.readOneByClientId(
-				booking.client_id,
-				{ ext_id: true },
-			);
-			console.log("lllllllllllllllllllead");
+			if (!lead) {
+				throw new LeadNotFoundError("EEEEEEEEEEEE");
+			}
 		}
 
 		let premise: PremiseEntity | undefined;
