@@ -9,6 +9,7 @@ import { LeadsService } from "../leads/leads.service";
 import { ProjectService } from "../projects/projects.service";
 import { Order } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
+import { LeadNotFoundError } from "../leads/errors/LeadNotFound.error";
 
 import {
 	CreateTaskDto,
@@ -39,9 +40,13 @@ export class TasksService {
 		await this.clientService.checkExists(payload.client_id);
 		await this.projectService.checkExists(payload.project_id);
 
-		await this.leadService.repository.findOne({
+		const lead = await this.leadService.repository.findOne({
 			where: { lead_number: payload.lead_number },
 		});
+
+		if (!lead) {
+			throw new LeadNotFoundError(`lead_number: ${payload.lead_number}`);
+		}
 
 		const task = this.taskRepository.create({
 			...payload,
