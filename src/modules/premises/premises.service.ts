@@ -434,7 +434,6 @@ export class PremisesService {
 		query = query.limit(filter.limit).offset(pageSize);
 
 		const [premises, premiseCount] = await query.getManyAndCount();
-		console.log(premises);
 
 		const metaData = BaseDto.create<PremiseEntity[]>();
 		metaData.setPagination(premiseCount, filter.page, filter.limit);
