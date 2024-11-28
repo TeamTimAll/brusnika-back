@@ -174,6 +174,12 @@ export class EventsService {
 				"city",
 				"city.id = e.city_id",
 			)
+			.leftJoinAndMapMany(
+				"e.contacts",
+				EventContactEntity,
+				"contacts",
+				"contacts.event_id = e.id",
+			)
 			.loadRelationCountAndMap("e.likes_count", "e.likes")
 			.loadRelationCountAndMap("e.views_count", "e.views")
 			.select([
@@ -198,6 +204,9 @@ export class EventsService {
 				"e.city_id",
 				"city.id",
 				"city.name",
+				"contacts.id",
+				"contacts.fullname",
+				"contacts.phone",
 			])
 			.addSelect("to_char(e.start_time, 'HH24:MI') AS e_start_time")
 			.addSelect("to_char(e.end_time, 'HH24:MI') AS e_end_time")
