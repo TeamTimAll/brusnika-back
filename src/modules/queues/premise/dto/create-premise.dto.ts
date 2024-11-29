@@ -89,6 +89,19 @@ export class PremiseDto {
 	@IsEnum(PremiseFeature, { each: true })
 	@IsOptional()
 	feature?: PremiseFeature[];
+
+	@IsNumber()
+	@Max(3000)
+	@IsOptional()
+	year?: number;
+
+	@IsNumber()
+	@Max(3000)
+	@IsOptional()
+	quarter?: number;
+
+	@IsOptional()
+	feature_new?: string;
 }
 
 export class PremisesDto {

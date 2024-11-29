@@ -182,5 +182,14 @@ export class PremiseEntity extends BaseEntity {
 		nullable: true,
 		array: true,
 	})
-	feature!: PremiseFeature[];
+	feature!: string[];
+
+	@Column({ type: "integer", nullable: true })
+	year?: number;
+
+	@Column({ type: "integer", nullable: true, default: 1 })
+	quarter?: number;
+
+	@Column({ type: "varchar", nullable: true })
+	feature_new?: string;
 }

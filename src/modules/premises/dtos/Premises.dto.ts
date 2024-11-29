@@ -104,4 +104,13 @@ export class PremiseDto
 
 	@ApiProperty({ enum: PremiseFeature, isArray: true })
 	feature!: PremiseFeature[];
+
+	@ApiProperty()
+	year!: number;
+
+	@ApiProperty()
+	quarter!: number;
+
+	@ApiProperty()
+	feature_new!: string;
 }
