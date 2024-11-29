@@ -24,7 +24,7 @@ import { CityService } from "../cities/cities.service";
 import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
 import { SettingsRepository } from "../settings/settings.repository";
 import { UserFilterByDateEnum } from "../analytics/types/user-by-date.type";
-// import { UserQueueService } from "../queues/user/user.service";
+import { UserQueueService } from "../queues/user/user.service";
 
 import { NewUserFilterDto, UserSearchDto, UserUpdateTokenDto } from "./dtos";
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
@@ -54,8 +54,8 @@ export class UserService {
 		private userActivityRepository: Repository<UserActivityEntity>,
 		@Inject(forwardRef(() => AgencyService))
 		private agencyService: AgencyService,
-		// @Inject(forwardRef(() => UserQueueService))
-		// private userQueueService: UserQueueService,
+		@Inject(forwardRef(() => UserQueueService))
+		private userQueueService: UserQueueService,
 		private jwtService: JwtService,
 		@Inject(forwardRef(() => CityService))
 		private cityService: CityService,
@@ -808,20 +808,20 @@ export class UserService {
 			}
 		}
 
-		// const response = await this.userQueueService.makeRequest(
-		// 	await this.userQueueService.createFormEntity({
-		// 		...foundUser,
-		// 		agency_id: foundUser.agency_id,
-		// 	}),
-		// );
+		const response = await this.userQueueService.makeRequest(
+			await this.userQueueService.createFormEntity({
+				...foundUser,
+				agency_id: foundUser.agency_id,
+			}),
+		);
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		// const ext_id = response?.data?.successfully[0]?.id as unknown as string;
+		const ext_id = response?.data?.successfully[0]?.id as unknown as string;
 
 		await this.userRepository.update(foundUser.id, {
-			role: userRole,
-			is_verified: dto.is_verified,
-			// ext_id,
+			// role: userRole,
+			// is_verified: dto.is_verified,
+			ext_id,
 		});
 
 		foundUser.is_verified = dto.is_verified;

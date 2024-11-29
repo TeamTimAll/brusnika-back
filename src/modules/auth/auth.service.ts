@@ -13,7 +13,6 @@ import { UserRegisterStatus, UserStatus } from "../user/user.entity";
 import { UserService } from "../user/user.service";
 import { NotificationService } from "../notification/notification.service";
 import { NotificationType } from "../notification/notification.entity";
-import { randomOtp } from "../../lib/firebase/random-number";
 
 import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
 import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
@@ -68,25 +67,18 @@ export class AuthService {
 			throw new VerificationExistsError();
 		}
 
-		let randomNumber = 111111;
-		const roles = [
-			RoleType.ADMIN,
-			RoleType.AFFILIATE_MANAGER,
-			RoleType.MANAGER,
-			RoleType.OPERATOR,
-		];
-		if (!roles.includes(user.role)) {
-			randomNumber = randomOtp();
-			await this.smsService.sendMessage(
-				randomNumber,
-				user.phone as unknown as string,
-			);
-		}
+		const randomNumber = 111111;
+		// const randomNumber = randomOtp();
 
 		await this.userService.repository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
+
+		// eslint-disable-next-line no-constant-condition
+		if (user.phone && false) {
+			await this.smsService.sendMessage(randomNumber, "user.phone");
+		}
 
 		return {
 			user_id: user.id,
@@ -377,25 +369,18 @@ export class AuthService {
 			throw new VerificationExistsError();
 		}
 
-		let randomNumber = 111111;
-		const roles = [
-			RoleType.ADMIN,
-			RoleType.AFFILIATE_MANAGER,
-			RoleType.MANAGER,
-			RoleType.OPERATOR,
-		];
-		if (!roles.includes(user.role)) {
-			randomNumber = randomOtp();
-			await this.smsService.sendMessage(
-				randomNumber,
-				user.phone as unknown as string,
-			);
-		}
+		const randomNumber = 111111;
+		// const randomNumber = randomOtp();
 
 		await this.userService.repository.update(user.id, {
 			verification_code: randomNumber,
 			verification_code_sent_date: new Date(),
 		});
+
+		// eslint-disable-next-line no-constant-condition
+		if (user.phone && false) {
+			await this.smsService.sendMessage(randomNumber, "user.phone");
+		}
 
 		return {
 			user_id: user.id,

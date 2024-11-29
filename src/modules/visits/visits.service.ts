@@ -45,9 +45,9 @@ export class VisitsService {
 		let visit = this.visitsRepository.create(dto);
 		visit = await this.visitsRepository.save(visit);
 
-		// await this.visitQueueService.makeRequest(
-		// 	await this.visitQueueService.createFormEntity(visit),
-		// );
+		await this.visitQueueService.makeRequest(
+			await this.visitQueueService.createFormEntity(visit),
+		);
 
 		return visit;
 	}
@@ -62,7 +62,7 @@ export class VisitsService {
 		if (query.debug) {
 			return [
 				{
-					"2024-11-30": [
+					"2024-11-21": [
 						{
 							start: "10:00",
 							end: "11:30",
@@ -90,147 +90,7 @@ export class VisitsService {
 					],
 				},
 				{
-					"2024-12-01": [
-						{
-							start: "10:00",
-							end: "11:30",
-						},
-						{
-							start: "11:30",
-							end: "13:00",
-						},
-						{
-							start: "13:00",
-							end: "14:30",
-						},
-						{
-							start: "14:30",
-							end: "16:00",
-						},
-						{
-							start: "16:00",
-							end: "17:30",
-						},
-						{
-							start: "17:30",
-							end: "19:00",
-						},
-					],
-				},
-				{
-					"2024-12-02": [
-						{
-							start: "10:00",
-							end: "11:30",
-						},
-						{
-							start: "11:30",
-							end: "13:00",
-						},
-						{
-							start: "13:00",
-							end: "14:30",
-						},
-						{
-							start: "14:30",
-							end: "16:00",
-						},
-						{
-							start: "16:00",
-							end: "17:30",
-						},
-						{
-							start: "17:30",
-							end: "19:00",
-						},
-					],
-				},
-				{
-					"2024-12-03": [
-						{
-							start: "10:00",
-							end: "11:30",
-						},
-						{
-							start: "11:30",
-							end: "13:00",
-						},
-						{
-							start: "13:00",
-							end: "14:30",
-						},
-						{
-							start: "14:30",
-							end: "16:00",
-						},
-						{
-							start: "16:00",
-							end: "17:30",
-						},
-						{
-							start: "17:30",
-							end: "19:00",
-						},
-					],
-				},
-				{
-					"2024-12-04": [
-						{
-							start: "10:00",
-							end: "11:30",
-						},
-						{
-							start: "11:30",
-							end: "13:00",
-						},
-						{
-							start: "13:00",
-							end: "14:30",
-						},
-						{
-							start: "14:30",
-							end: "16:00",
-						},
-						{
-							start: "16:00",
-							end: "17:30",
-						},
-						{
-							start: "17:30",
-							end: "19:00",
-						},
-					],
-				},
-				{
-					"2024-12-05": [
-						{
-							start: "10:00",
-							end: "11:30",
-						},
-						{
-							start: "11:30",
-							end: "13:00",
-						},
-						{
-							start: "13:00",
-							end: "14:30",
-						},
-						{
-							start: "14:30",
-							end: "16:00",
-						},
-						{
-							start: "16:00",
-							end: "17:30",
-						},
-						{
-							start: "17:30",
-							end: "19:00",
-						},
-					],
-				},
-				{
-					"2024-12-06": [
+					"2024-11-22": [
 						{
 							start: "10:00",
 							end: "11:30",
