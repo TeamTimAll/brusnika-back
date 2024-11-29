@@ -6,7 +6,7 @@
     "plugins": ["@nestjs/swagger/plugin"],
     "assets": [
       {
-        "include": "firebase.json",
+        "include": "i18n/**/*",
         "watchAssets": true
       }
     ]
