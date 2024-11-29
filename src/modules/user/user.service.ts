@@ -24,7 +24,7 @@ import { CityService } from "../cities/cities.service";
 import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error";
 import { SettingsRepository } from "../settings/settings.repository";
 import { UserFilterByDateEnum } from "../analytics/types/user-by-date.type";
-import { UserQueueService } from "../queues/user/user.service";
+// import { UserQueueService } from "../queues/user/user.service";
 
 import { NewUserFilterDto, UserSearchDto, UserUpdateTokenDto } from "./dtos";
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
@@ -54,8 +54,8 @@ export class UserService {
 		private userActivityRepository: Repository<UserActivityEntity>,
 		@Inject(forwardRef(() => AgencyService))
 		private agencyService: AgencyService,
-		@Inject(forwardRef(() => UserQueueService))
-		private userQueueService: UserQueueService,
+		// @Inject(forwardRef(() => UserQueueService))
+		// private userQueueService: UserQueueService,
 		private jwtService: JwtService,
 		@Inject(forwardRef(() => CityService))
 		private cityService: CityService,

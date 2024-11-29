@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { Between, FindOptionsSelect } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
@@ -9,7 +9,7 @@ import { ClientService } from "../client/client.service";
 import { PremiseNotFoundError } from "../premises/errors/PremiseNotFound.error";
 import { PremiseEntity } from "../premises/premises.entity";
 import { PremisesService } from "../premises/premises.service";
-import { BookingQueueService } from "../queues/booking/booking.service";
+// import { BookingQueueService } from "../queues/booking/booking.service";
 import { SettingsService } from "../settings/settings.service";
 
 import { BookingRepository } from "./booking.repository";
@@ -34,8 +34,8 @@ export class BookingsService {
 		@Inject() private premiseService: PremisesService,
 		@Inject() private clientService: ClientService,
 		@Inject() private settingsService: SettingsService,
-		@Inject(forwardRef(() => BookingQueueService))
-		private bookingQueueService: BookingQueueService,
+		// @Inject(forwardRef(() => BookingQueueService))
+		// private bookingQueueService: BookingQueueService,
 	) {}
 
 	get repository(): BookingRepository {
