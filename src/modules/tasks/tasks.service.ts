@@ -57,9 +57,9 @@ export class TasksService {
 			lead_id: lead.id,
 		});
 
-		await this.taskQueueService.makeRequest(
-			await this.taskQueueService.createFormEntity(task),
-		);
+		// await this.taskQueueService.makeRequest(
+		// 	await this.taskQueueService.createFormEntity(task),
+		// );
 
 		return await this.taskRepository.save(task);
 	}

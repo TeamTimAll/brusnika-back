@@ -45,9 +45,9 @@ export class VisitsService {
 		let visit = this.visitsRepository.create(dto);
 		visit = await this.visitsRepository.save(visit);
 
-		await this.visitQueueService.makeRequest(
-			await this.visitQueueService.createFormEntity(visit),
-		);
+		// await this.visitQueueService.makeRequest(
+		// 	await this.visitQueueService.createFormEntity(visit),
+		// );
 
 		return visit;
 	}
@@ -62,7 +62,7 @@ export class VisitsService {
 		if (query.debug) {
 			return [
 				{
-					"2024-11-21": [
+					"2024-11-29": [
 						{
 							start: "10:00",
 							end: "11:30",
@@ -90,7 +90,7 @@ export class VisitsService {
 					],
 				},
 				{
-					"2024-11-22": [
+					"2024-11-30": [
 						{
 							start: "10:00",
 							end: "11:30",

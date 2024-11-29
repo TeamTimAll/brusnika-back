@@ -63,9 +63,9 @@ export class AgencyService {
 		const agency = this.agencyRepository.create(dto);
 		agency.create_by_id = user.user_id;
 
-		await this.agencyQueueService.makeRequest(
-			await this.agencyQueueService.createFormEntity(agency),
-		);
+		// await this.agencyQueueService.makeRequest(
+		// 	await this.agencyQueueService.createFormEntity(agency),
+		// );
 
 		return await this.agencyRepository.save(agency);
 	}
