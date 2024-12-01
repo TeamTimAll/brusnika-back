@@ -133,6 +133,16 @@ export class PremisesFilterDto {
 	@IsNumberString()
 	min_number?: string;
 
+	@ApiPropertyOptional({ example: "2024" })
+	@IsOptional()
+	@IsNumberString()
+	year?: string;
+
+	@ApiPropertyOptional({ example: "1" })
+	@IsOptional()
+	@IsNumberString()
+	quarter?: string;
+
 	@ApiProperty({ example: "50", required: false })
 	@IsOptional()
 	@IsNumberString()

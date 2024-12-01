@@ -40,8 +40,8 @@ export class PremisesService {
 		private premiseRepository: Repository<PremiseEntity>,
 		@InjectRepository(PremiseSchemaEntity)
 		private premiseSchemaRepository: Repository<PremiseSchemaEntity>,
-		@InjectRepository(SeasonEntity)
-		private seasonRepository: Repository<SeasonEntity>,
+		// @InjectRepository(SeasonEntity)
+		// private seasonRepository: Repository<SeasonEntity>,
 		@InjectRepository(PremiseBasketLinkEntity)
 		private basketLinkRepository: Repository<PremiseBasketLinkEntity>,
 		@Inject()
@@ -163,33 +163,18 @@ export class PremisesService {
 	async readAllSeason(filter: PremisesFilterDto) {
 		const pageSize = (filter.page - 1) * filter.limit;
 		const query = this.getPremiseQuery(filter)
-			.select(["premise.id as id"])
+			.select(["premise.year AS year", "premise.quarter AS season_name"])
+			.distinct(true)
 			.limit(filter.limit)
 			.offset(pageSize)
-			.groupBy("premise.id")
-			.addGroupBy("building.id")
-			.addGroupBy("section.id")
-			.addGroupBy("project.id")
-			.orderBy("project.id", "ASC");
+			.groupBy("premise.year")
+			.addGroupBy("premise.quarter")
+			.orderBy("premise.year", "ASC")
+			.addOrderBy("premise.quarter", "ASC");
+
 		const premises = await query.getRawMany<PremiseEntity>();
-		const premiseIds: number[] = premises.map((e) => e.id);
 
-		premiseIds;
-
-		return this.seasonRepository.find({
-			select: {
-				id: true,
-				created_at: true,
-				updated_at: true,
-				season_name: true,
-				year: true,
-				date: true,
-				premise: {
-					id: false,
-				},
-			},
-			relations: { premise: true },
-		});
+		return premises;
 	}
 
 	getMultiplePremisesByIds(ids: number[], limit: number, page: number) {
@@ -342,6 +327,18 @@ export class PremisesService {
 			if (filter.section_id) {
 				query = query.andWhere("premise.section_id = :section_id", {
 					section_id: filter.section_id,
+				});
+			}
+
+			if (filter.year) {
+				query = query.andWhere("premise.year = :year", {
+					year: filter.year,
+				});
+			}
+
+			if (filter.quarter) {
+				query = query.andWhere("premise.quarter = :quarter", {
+					quarter: filter.quarter,
 				});
 			}
 

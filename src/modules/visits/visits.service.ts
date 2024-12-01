@@ -45,9 +45,9 @@ export class VisitsService {
 		let visit = this.visitsRepository.create(dto);
 		visit = await this.visitsRepository.save(visit);
 
-		// await this.visitQueueService.makeRequest(
-		// 	await this.visitQueueService.createFormEntity(visit),
-		// );
+		await this.visitQueueService.makeRequest(
+			await this.visitQueueService.createFormEntity(visit),
+		);
 
 		return visit;
 	}
