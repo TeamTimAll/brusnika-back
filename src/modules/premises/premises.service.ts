@@ -24,6 +24,15 @@ import { PremiseSchemaEntity } from "./premise_schema.entity";
 import { PremiseEntity } from "./premises.entity";
 import { SeasonEntity } from "./season.entity";
 
+interface PremiseAggregates {
+	min_floor: number;
+	max_floor: number;
+	min_size: number;
+	max_size: number;
+	min_price: number;
+	max_price: number;
+}
+
 @Injectable()
 export class PremisesService {
 	constructor(
@@ -461,9 +470,22 @@ export class PremisesService {
 
 		const [premises, premiseCount] = await query.getManyAndCount();
 
+		const result = await this.premiseRepository
+			.createQueryBuilder("premise")
+			.select([
+				"MIN(premise.floor) AS min_floor",
+				"MAX(premise.floor) AS max_floor",
+				"MIN(premise.size) AS min_size",
+				"MAX(premise.size) AS max_size",
+				"MIN(premise.price) AS min_price",
+				"MAX(premise.price) AS max_price",
+			])
+			.getRawOne<PremiseAggregates>();
+
 		const metaData = BaseDto.create<PremiseEntity[]>();
 		metaData.setPagination(premiseCount, filter.page, filter.limit);
 		metaData.data = premises;
+		metaData.meta.data = { ...result };
 		return metaData;
 	}
 
