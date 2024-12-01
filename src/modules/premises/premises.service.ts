@@ -12,9 +12,10 @@ import { BuildingsService } from "../buildings/buildings.service";
 import { ProjectEntity } from "../projects/project.entity";
 import { SectionEntity } from "../sections/sections.entity";
 import { SectionsService } from "../sections/sections.service";
+import { Order } from "../../constants";
 
 import { CreatePremisesDto } from "./dtos/CreatePremises.dto";
-import { PremisesFilterDto } from "./dtos/PremisesFilter.dto";
+import { PremisesFilterDto, PremiseSortBy } from "./dtos/PremisesFilter.dto";
 import { UpdatePremisesDto } from "./dtos/UpdatePremises.dto";
 import { PremiseBasketLinkEntity } from "./entities";
 import { PremiseNotFoundError } from "./errors/PremiseNotFound.error";
@@ -366,9 +367,31 @@ export class PremisesService {
 			.addGroupBy("section.id")
 			.addGroupBy("project.id")
 			.addGroupBy("season.id")
-			.addGroupBy("premise_schema.id")
-			.orderBy("project.id", "ASC");
+			.addGroupBy("premise_schema.id");
 
+		switch (filter.sort_by) {
+			case PremiseSortBy.PRICE:
+				query.orderBy("premise.price", filter.order_by || Order.ASC);
+				break;
+			case PremiseSortBy.SIZE:
+				query.orderBy("premise.size", filter.order_by || Order.ASC);
+				break;
+			case PremiseSortBy.FLOOR:
+				query.orderBy("premise.floor", filter.order_by || Order.ASC);
+				break;
+			case PremiseSortBy.STATUS:
+				query.orderBy("premise.status", filter.order_by || Order.ASC);
+				break;
+			case PremiseSortBy.NAME:
+				query.orderBy("premise.name", filter.order_by || Order.ASC);
+				break;
+			case PremiseSortBy.BUILDING:
+				query.orderBy("building.name", filter.order_by || Order.ASC);
+				break;
+			default:
+				query.orderBy("premise.id", Order.DESC);
+				break;
+		}
 		query = query.select([
 			"premise.id",
 			"premise.name",

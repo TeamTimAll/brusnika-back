@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
 	IsDateString,
@@ -14,6 +14,16 @@ import {
 	PremisesType,
 	PuchaseOptions,
 } from "../premises.entity";
+import { Order } from "../../../constants";
+
+export enum PremiseSortBy {
+	PRICE = "price",
+	SIZE = "size",
+	FLOOR = "floor",
+	NAME = "name",
+	BUILDING = "building",
+	STATUS = "status",
+}
 
 export class PremisesFilterDto {
 	id?: number;
@@ -137,4 +147,14 @@ export class PremisesFilterDto {
 	@IsOptional()
 	@IsEnum(PuchaseOptions)
 	purchaseOption?: PuchaseOptions;
+
+	@ApiPropertyOptional({ enum: PremiseSortBy })
+	@IsEnum(PremiseSortBy)
+	@IsOptional()
+	sort_by?: PremiseSortBy;
+
+	@ApiPropertyOptional({ enum: Order })
+	@IsEnum(Order)
+	@IsOptional()
+	order_by?: Order = Order.ASC;
 }
