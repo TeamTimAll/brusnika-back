@@ -134,7 +134,7 @@ export class TaskQueueService {
 				description: task.comment,
 				methodCarryng: "OFFLINE",
 				ownerId: manager?.ext_id,
-				premiseKind: lead?.premise.type,
+				premiseKind: lead?.premise?.type,
 				projectId: project?.ext_id,
 				roomsId: null,
 			},

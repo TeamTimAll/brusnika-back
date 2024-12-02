@@ -697,6 +697,14 @@ export class LeadsService {
 					status: true,
 				},
 			},
+			relations: {
+				lead_ops: true,
+				premise: true,
+				manager: true,
+				agent: true,
+				client: true,
+				project: true,
+			},
 		});
 
 		if (!lead) {
