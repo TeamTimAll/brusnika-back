@@ -30,12 +30,12 @@ export class TaskQueueService {
 	async createOrUpdateTask(task: TaskDto) {
 		const foundManager = await this.userService.readOneByExtId(
 			task.manager_ext_id,
-			{ id: true, agent: { id: true } },
+			{ id: true },
 		);
 
 		const foundUser = await this.userService.readOneByExtId(
 			task.created_by_ext_id,
-			{ id: true, agent: { id: true } },
+			{ id: true },
 		);
 
 		const foundClient = await this.clientService.readOneByExtId(
