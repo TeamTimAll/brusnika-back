@@ -25,6 +25,8 @@ import { SettingsNotFoundError } from "../settings/errors/SettingsNotFound.error
 import { SettingsRepository } from "../settings/settings.repository";
 import { UserFilterByDateEnum } from "../analytics/types/user-by-date.type";
 import { UserQueueService } from "../queues/user/user.service";
+import { randomOtp } from "../../lib/firebase/random-number";
+import { SmsService } from "../auth/sms.service";
 
 import { NewUserFilterDto, UserSearchDto, UserUpdateTokenDto } from "./dtos";
 import { AdminLoginAsUserDto } from "./dtos/AdminLoginAsUser.dto";
@@ -63,6 +65,7 @@ export class UserService {
 		private bookingRepository: BookingRepository,
 		@Inject()
 		private readonly settingsRepository: SettingsRepository,
+		private readonly smsService: SmsService,
 	) {}
 
 	get repository(): Repository<UserEntity> {
@@ -620,7 +623,21 @@ export class UserService {
 		}
 
 		// const randomNumber = Math.floor(100000 + Math.random() * 900000);
-		const randomNumber = 111111;
+
+		let randomNumber = 111111;
+		const roles = [
+			RoleType.ADMIN,
+			RoleType.AFFILIATE_MANAGER,
+			RoleType.MANAGER,
+			RoleType.OPERATOR,
+		];
+		if (!roles.includes(user.role)) {
+			randomNumber = randomOtp();
+			await this.smsService.sendMessage(
+				randomNumber,
+				user.phone as unknown as string,
+			);
+		}
 
 		await this.userRepository.update(user.id, {
 			verification_code: randomNumber,
@@ -757,8 +774,20 @@ export class UserService {
 			throw new VerificationExistsError();
 		}
 		// const randomNumber = Math.floor(100000 + Math.random() * 900000);
-		const randomNumber = 111111;
-
+		let randomNumber = 111111;
+		const roles = [
+			RoleType.ADMIN,
+			RoleType.AFFILIATE_MANAGER,
+			RoleType.MANAGER,
+			RoleType.OPERATOR,
+		];
+		if (!roles.includes(user.role)) {
+			randomNumber = randomOtp();
+			await this.smsService.sendMessage(
+				randomNumber,
+				foundUser.phone as unknown as string,
+			);
+		}
 		// todo send sms
 		await this.userRepository.update(foundUser.id, {
 			verification_code: randomNumber,

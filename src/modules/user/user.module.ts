@@ -8,6 +8,7 @@ import { CityModule } from "../cities/cities.module";
 import { SettingsEntity } from "../settings/settings.entity";
 import { SettingsRepository } from "../settings/settings.repository";
 import { UserQueueModule } from "../queues/user/user.module";
+import { SmsService } from "..//auth/sms.service";
 
 import { UserController } from "./user.controller";
 import { UserEntity } from "./user.entity";
@@ -27,7 +28,7 @@ import { UserActivityEntity } from "./entities/user-activity.entity";
 		forwardRef(() => CityModule),
 	],
 	controllers: [UserController],
-	providers: [UserService, BookingRepository, SettingsRepository],
+	providers: [UserService, BookingRepository, SettingsRepository, SmsService],
 	exports: [UserService, BookingRepository, SettingsRepository],
 })
 export class UserModule {}

@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { BuildingsModule } from "../buildings/buildings.module";
 import { SectionsModule } from "../sections/sections.module";
+import { ProjectsModule } from "../projects/projects.module";
 
 import { PremiseSchemaEntity } from "./premise_schema.entity";
 import { PremisesController } from "./premises.controller";
@@ -21,6 +22,7 @@ import { PremiseBasketLinkEntity } from "./entities";
 		]),
 		BuildingsModule,
 		SectionsModule,
+		ProjectsModule,
 	],
 	providers: [PremisesService],
 	controllers: [PremisesController],

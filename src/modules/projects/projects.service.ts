@@ -285,8 +285,10 @@ export class ProjectService {
 			throw new ProjectNotFoundError(`id: ${project_id}`);
 		}
 
+		const { buildings, ...resurs } = dto;
+
 		const newProject = this.projectsRepository.create({
-			...dto,
+			...resurs,
 			id: project.id,
 		});
 

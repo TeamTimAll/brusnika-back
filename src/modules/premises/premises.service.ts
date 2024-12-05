@@ -13,6 +13,7 @@ import { ProjectEntity } from "../projects/project.entity";
 import { SectionEntity } from "../sections/sections.entity";
 import { SectionsService } from "../sections/sections.service";
 import { Order } from "../../constants";
+import { ProjectService } from "../projects/projects.service";
 
 import { CreatePremisesDto } from "./dtos/CreatePremises.dto";
 import { PremisesFilterDto, PremiseSortBy } from "./dtos/PremisesFilter.dto";
@@ -48,6 +49,8 @@ export class PremisesService {
 		private buildingService: BuildingsService,
 		@Inject()
 		private sectionService: SectionsService,
+		@Inject()
+		private projectService: ProjectService,
 	) {}
 
 	get repository(): Repository<PremiseEntity> {
@@ -480,6 +483,194 @@ export class PremisesService {
 		metaData.setPagination(premiseCount, filter.page, filter.limit);
 		metaData.data = premises;
 		metaData.meta.data = { ...result };
+		return metaData;
+	}
+
+	async chess(payload: PremisesFilterDto) {
+		// const { order_by, sort_by } = payload;
+		const pageSize = (payload.page - 1) * payload.limit;
+
+		let queryBuilder = this.projectService.repository
+			.createQueryBuilder("project")
+			.leftJoinAndSelect("project.buildings", "building")
+			.leftJoinAndSelect("building.premises", "premise")
+			.select([
+				"project.id",
+				"project.name",
+				"building.id",
+				"building.name",
+				"premise.id",
+				"premise.name",
+				"premise.size",
+				"premise.price",
+				"premise.floor",
+				"premise.status",
+				"premise.purchase_option",
+				"premise.number",
+				"premise.feature_new",
+				"premise.photo",
+				"premise.rooms",
+				"premise.photos",
+				"premise.quarter",
+				"premise.year",
+				"premise.section_id",
+			]);
+
+		if (payload.project_id) {
+			queryBuilder.where("project.id = :project_id", {
+				project_id: payload.project_id ?? null,
+			});
+		}
+
+		if (payload.endYear) {
+			queryBuilder.andWhere("project.end_date = :end_date", {
+				end_date: payload.endYear,
+			});
+		}
+
+		if (payload.city_id) {
+			queryBuilder.andWhere("project.city_id = :city_id", {
+				city_id: payload.city_id,
+			});
+		}
+
+		if (payload.building_id) {
+			queryBuilder.andWhere("building.id = :building_id", {
+				building_id: payload.building_id,
+			});
+		}
+
+		if (payload.type) {
+			queryBuilder.andWhere("premise.type = :type", {
+				type: payload.type,
+			});
+		}
+
+		if (payload.status) {
+			queryBuilder.andWhere("premise.status = :status", {
+				status: payload.status,
+			});
+		}
+
+		if (payload.section_id) {
+			queryBuilder.andWhere("premise.section_id = :section_id", {
+				section_id: payload.section_id,
+			});
+		}
+
+		if (payload.year) {
+			queryBuilder.andWhere("premise.year = :year", {
+				year: payload.year,
+			});
+		}
+
+		if (payload.quarter) {
+			queryBuilder.andWhere("premise.quarter = :quarter", {
+				quarter: payload.quarter,
+			});
+		}
+
+		if (payload.purchaseOption) {
+			queryBuilder.andWhere(
+				"premise.purchase_option = :purchase_option",
+				{ purchase_option: payload.purchaseOption },
+			);
+		}
+
+		if (payload.rooms) {
+			if (payload.rooms === "4") {
+				queryBuilder = queryBuilder.andWhere(
+					"premise.rooms >= :rooms",
+					{
+						rooms: payload.rooms,
+					},
+				);
+			} else {
+				queryBuilder = queryBuilder.andWhere("premise.rooms = :rooms", {
+					rooms: payload.rooms,
+				});
+			}
+		}
+
+		if (payload.min_floor) {
+			queryBuilder = queryBuilder.andWhere(
+				"premise.floor >= :min_floor",
+				{
+					min_floor: payload.min_floor,
+				},
+			);
+		}
+
+		if (payload.max_floor) {
+			queryBuilder = queryBuilder.andWhere(
+				"premise.floor <= :max_floor",
+				{
+					max_floor: payload.max_floor,
+				},
+			);
+		}
+
+		if (payload.min_number) {
+			queryBuilder = queryBuilder.andWhere(
+				"premise.number >= :min_number",
+				{
+					min_number: payload.min_number,
+				},
+			);
+		}
+
+		if (payload.max_number) {
+			queryBuilder = queryBuilder.andWhere(
+				"premise.number <= :max_number",
+				{
+					max_number: payload.max_number,
+				},
+			);
+		}
+
+		if (payload.min_price) {
+			queryBuilder = queryBuilder.andWhere(
+				"premise.price >= :min_price",
+				{
+					min_price: payload.min_price,
+				},
+			);
+		}
+
+		if (payload.max_price) {
+			queryBuilder = queryBuilder.andWhere(
+				"premise.price <= :max_price",
+				{
+					max_price: payload.max_price,
+				},
+			);
+		}
+
+		if (payload.min_size) {
+			queryBuilder = queryBuilder.andWhere("premise.size >= :min_size", {
+				min_size: payload.min_size,
+			});
+		}
+
+		if (payload.max_size) {
+			queryBuilder = queryBuilder.andWhere("premise.size <= :max_size", {
+				max_size: payload.max_size,
+			});
+		}
+
+		queryBuilder = queryBuilder
+			.andWhere("premise.is_sold is FALSE")
+			.andWhere(
+				"COALESCE((SELECT TRUE FROM bookings b WHERE b.premise_id = premise.id LIMIT 1), FALSE) = FALSE",
+			);
+
+		queryBuilder.take(payload.limit).skip(pageSize);
+
+		const [projects, projectCount] = await queryBuilder.getManyAndCount();
+
+		const metaData = BaseDto.create<ProjectEntity[]>();
+		metaData.setPagination(projectCount, payload.page, payload.limit);
+		metaData.data = projects;
 		return metaData;
 	}
 
