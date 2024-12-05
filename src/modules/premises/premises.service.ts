@@ -161,12 +161,9 @@ export class PremisesService {
 	}
 
 	async readAllSeason(filter: PremisesFilterDto) {
-		const pageSize = (filter.page - 1) * filter.limit;
 		const query = this.getPremiseQuery(filter)
 			.select(["premise.year AS year", "premise.quarter AS season_name"])
 			.distinct(true)
-			.limit(filter.limit)
-			.offset(pageSize)
 			.groupBy("premise.year")
 			.addGroupBy("premise.quarter")
 			.orderBy("premise.year", "ASC")
