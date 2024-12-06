@@ -320,7 +320,7 @@ export class AuthService {
 	): Promise<AuthResponeWithData | AuthResponeWithTokenDto> {
 		const user = await this.userService.readOneWithRelation(dto.user_id);
 
-		if (ConfigManager.config.DEMO) {
+		if (ConfigManager.config.DEMO && user.phone === "72222222222") {
 			return {
 				accessToken: this.jwtService.sign({
 					user_id: user.id,
