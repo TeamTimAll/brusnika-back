@@ -494,6 +494,7 @@ export class PremisesService {
 			.createQueryBuilder("project")
 			.leftJoinAndSelect("project.buildings", "building")
 			.leftJoinAndSelect("building.premises", "premise")
+			.leftJoinAndSelect("premise.section", "section")
 			.select([
 				"project.id",
 				"project.name",
@@ -514,6 +515,8 @@ export class PremisesService {
 				"premise.quarter",
 				"premise.year",
 				"premise.section_id",
+				"section.id",
+				"section.name",
 			]);
 
 		if (payload.project_id) {
