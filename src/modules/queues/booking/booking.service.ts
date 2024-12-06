@@ -12,6 +12,7 @@ import { UserEntity } from "../../user/user.entity";
 import { UserService } from "../../user/user.service";
 import { LeadsService } from "../../leads/leads.service";
 import { LeadsEntity } from "../../leads/leads.entity";
+import { LeadNotFoundError } from "../../leads/errors/LeadNotFound.error";
 
 import { BookingDto } from "./dto";
 import { IBooking } from "./types/booking.type";
@@ -80,17 +81,19 @@ export class BookingQueueService {
 			purchaseOptionMap[booking.purchase_option] || "UNDEFINED";
 
 		let client: ClientEntity | undefined;
-		let lead: LeadsEntity | undefined;
-
+		let lead: LeadsEntity | undefined | null;
 		if (booking.client_id) {
 			client = await this.clientService.readOne(booking.client_id, {
 				ext_id: true,
 			});
 
-			lead = await this.leadsService.readOneByClientId(
-				booking.client_id,
-				{ ext_id: true },
-			);
+			lead = await this.leadsService.repository.findOne({
+				where: { client_id: booking.client_id },
+			});
+
+			if (!lead) {
+				throw new LeadNotFoundError("EEEEEEEEEEEE");
+			}
 		}
 
 		let premise: PremiseEntity | undefined;

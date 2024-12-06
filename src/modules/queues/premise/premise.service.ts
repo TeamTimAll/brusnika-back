@@ -78,7 +78,7 @@ export class PremiseQueueService {
 					"feature",
 					"feature_new",
 					"year",
-					'quarter'
+					"quarter",
 				] as Array<keyof PremiseDto>,
 				["ext_id"],
 			)

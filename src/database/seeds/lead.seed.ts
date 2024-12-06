@@ -32,17 +32,14 @@ type ILeadOpsEntity = Omit<
 >;
 
 const successLeads = [
-	LeadOpStatus.OPEN,
 	LeadOpStatus.INTEREST_IN_PURCHASING,
 	LeadOpStatus.PRESENTATION,
 	LeadOpStatus.BOOKED,
 	LeadOpStatus.REQUEST_FOR_CONTRACT,
 	LeadOpStatus.CONTRACT_IS_REGISTERED,
-	LeadOpStatus.WON,
 ];
 
 const canceledLeads = [
-	LeadOpStatus.OPEN,
 	LeadOpStatus.INTEREST_IN_PURCHASING,
 	LeadOpStatus.PRESENTATION,
 	LeadOpStatus.BOOKED,
@@ -50,7 +47,6 @@ const canceledLeads = [
 ];
 
 const lostLeads = [
-	LeadOpStatus.OPEN,
 	LeadOpStatus.INTEREST_IN_PURCHASING,
 	LeadOpStatus.PRESENTATION,
 	LeadOpStatus.BOOKED,
@@ -58,26 +54,22 @@ const lostLeads = [
 ];
 
 const pauseLeads = [
-	LeadOpStatus.OPEN,
 	LeadOpStatus.INTEREST_IN_PURCHASING,
 	LeadOpStatus.PRESENTATION,
-	LeadOpStatus.ON_PAUSE,
 ];
 
 const failedLeads = [
-	LeadOpStatus.OPEN,
 	LeadOpStatus.INTEREST_IN_PURCHASING,
 	LeadOpStatus.PRESENTATION,
 	LeadOpStatus.BOOKED,
 	LeadOpStatus.REQUEST_FOR_CONTRACT,
-	LeadOpStatus.FAILED,
 ];
 
 const leadOpStatusMap = new Map([
-	[LeadOpStatus.WON, successLeads],
+	[LeadOpStatus.CONTRACT_IS_REGISTERED, successLeads],
 	[LeadOpStatus.BOOK_CANCELED, canceledLeads],
 	[LeadOpStatus.LOST_BOOK, lostLeads],
-	[LeadOpStatus.ON_PAUSE, pauseLeads],
+	[LeadOpStatus.PRESENTATION, pauseLeads],
 	[LeadOpStatus.FAILED, failedLeads],
 ]);
 
@@ -88,20 +80,19 @@ function createLead(
 	premise_id: number,
 ): ILeadsEntity {
 	const current_status = faker.helpers.arrayElement([
-		LeadOpStatus.WON,
 		LeadOpStatus.BOOK_CANCELED,
 		LeadOpStatus.LOST_BOOK,
-		LeadOpStatus.ON_PAUSE,
-		LeadOpStatus.FAILED,
+		LeadOpStatus.CONTRACT_IS_REGISTERED,
+		LeadOpStatus.PRESENTATION,
 	]);
 	let state = LeadState.ACTIVE;
-	if (current_status === LeadOpStatus.FAILED) {
+	if (current_status === LeadOpStatus.BOOK_CANCELED) {
 		state = LeadState.FAILED;
 	}
-	if (current_status === LeadOpStatus.WON) {
+	if (current_status === LeadOpStatus.CONTRACT_IS_REGISTERED) {
 		state = LeadState.COMPLETE;
 	}
-	if (current_status === LeadOpStatus.ON_PAUSE) {
+	if (current_status === LeadOpStatus.PRESENTATION) {
 		state = LeadState.IN_PROGRESS;
 	}
 	const lead: ILeadsEntity = {

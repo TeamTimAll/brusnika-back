@@ -264,6 +264,7 @@ export class ClientService {
 				"c.fullname",
 				"c.phone_number",
 				"c.actived_date",
+				"c.created_at",
 				"c.comment",
 				"c.fixing_type",
 				"c.expiration_date",

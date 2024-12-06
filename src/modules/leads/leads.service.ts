@@ -697,6 +697,14 @@ export class LeadsService {
 					status: true,
 				},
 			},
+			relations: {
+				lead_ops: true,
+				premise: true,
+				manager: true,
+				agent: true,
+				client: true,
+				project: true,
+			},
 		});
 
 		if (!lead) {
@@ -834,8 +842,9 @@ export class LeadsService {
 	): Promise<LeadsEntity> {
 		const client = await this.leadRepository.findOne({
 			select: select,
-			where: { client_id },
+			where: { client_id: client_id },
 		});
+
 		if (!client) {
 			throw new LeadNotFoundError(`client_id: ${client_id}`);
 		}

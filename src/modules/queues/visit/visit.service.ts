@@ -111,7 +111,7 @@ export class VisitQueueService {
 				realtor: {
 					name: `${agent?.firstName} ${agent?.lastName}`,
 					phone: agent?.phone,
-					agency: agent?.agency.title,
+					agency: agent?.agency?.title,
 				},
 			},
 		};

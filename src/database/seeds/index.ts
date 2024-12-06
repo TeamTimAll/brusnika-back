@@ -1,7 +1,6 @@
 import { DataSource } from "typeorm";
 
 import { ConfigManager } from "../../config";
-import { RoleType } from "../../constants";
 
 import * as agencySeed from "./agency.seed";
 import * as bookedSeed from "./booked.seed";
@@ -26,14 +25,19 @@ export const dataSource = new DataSource({
 // prettier-ignore
 async function up(dataSource: DataSource) {
 	await settingsSeed.up(dataSource.createQueryBuilder());
-	const cities	= await citySeed.up(dataSource.createQueryBuilder());
-	const agencies	= await agencySeed.up(dataSource.createQueryBuilder(), cities);
-	const projects	= await projectSeed.up(dataSource.createQueryBuilder(), cities);
-	const buildings	= await buildingSeed.up(dataSource.createQueryBuilder(), projects);
-	const sections	= await sectionSeed.up(dataSource.createQueryBuilder(), buildings);
-	const premises	= await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
-	const users		= await userSeed.up(dataSource.createQueryBuilder(), cities, agencies);
-	const clients	= await clientSeed.up(dataSource.createQueryBuilder(), users.filter(e => e.role === RoleType.AGENT));
+	// const cities	= await citySeed.up(dataSource.createQueryBuilder());
+	// const agencies	= await agencySeed.up(dataSource.createQueryBuilder(), cities);
+	// const projects	= await projectSeed.up(dataSource.createQueryBuilder(), cities);
+	// const buildings	= await buildingSeed.up(dataSource.createQueryBuilder(), projects);
+	// const projects	= await projectSeed.up(dataSource.createQueryBuilder());
+	// const sections	= await sectionSeed.up(dataSource.createQueryBuilder(), buildings);
+	// const premises	= await premiseSeed.up(dataSource.createQueryBuilder(), buildings, sections);
+	// const clients	= await clientSeed.up(dataSource.createQueryBuilder(), users.filter(e => e.role === RoleType.AGENT));
+	// const agencies	= await agencySeed.up(dataSource.createQueryBuilder());
+	const buildings	= await buildingSeed.up(dataSource.createQueryBuilder());
+	const premises	= await premiseSeed.up(dataSource.createQueryBuilder());
+	// const users		= await userSeed.up(dataSource.createQueryBuilder(), cities, agencies);
+	const clients	= await clientSeed.up(dataSource.createQueryBuilder());
 	/*const leads		=*/ await leadSeed.up(dataSource.createQueryBuilder(), clients, buildings, premises);
 	// const bookedLeads = leads.filter(l => l.current_status === LeadOpStatus.BOOKED);
 	// const bookedClients = clients.filter(c => c.id === )
