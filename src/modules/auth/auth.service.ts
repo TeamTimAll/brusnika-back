@@ -14,6 +14,7 @@ import { UserService } from "../user/user.service";
 import { NotificationService } from "../notification/notification.service";
 import { NotificationType } from "../notification/notification.entity";
 import { randomOtp } from "../../lib/firebase/random-number";
+import { ConfigManager } from "../../config";
 
 import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
 import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
@@ -318,6 +319,15 @@ export class AuthService {
 		dto: UserLoginVerifyCodeDto,
 	): Promise<AuthResponeWithData | AuthResponeWithTokenDto> {
 		const user = await this.userService.readOneWithRelation(dto.user_id);
+
+		if (ConfigManager.config.DEMO) {
+			return {
+				accessToken: this.jwtService.sign({
+					user_id: user.id,
+					role: user.role,
+				}),
+			};
+		}
 
 		if (!user.verification_code_sent_date) {
 			throw new NoVerificationCodeSentError();
