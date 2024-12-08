@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Post, UseInterceptors } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { ApiErrorResponse } from "../../decorators/api_error_response";
@@ -7,6 +7,7 @@ import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { UserCreateMetaDataDto } from "../user/dtos/UserCreate.dto";
 import { UserFillDataMetaDataDto } from "../user/dtos/UserFillData.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
+import { ConfigManager } from "../../config";
 
 import { AuthService } from "./auth.service";
 import { AgentChooseAgencyMetaDataDto } from "./dtos/AgentChooseAgency.dto";
@@ -76,6 +77,11 @@ export class AuthController {
 	@Post("/agent")
 	createAccount(@Body() dto: UserCreateMetaDataDto) {
 		return this.authService.agentRegister(dto.data);
+	}
+
+	@Get("/config")
+	config() {
+		return ConfigManager.config;
 	}
 
 	@ApiOkResponse({ type: AuthResponeWithData })
