@@ -473,9 +473,14 @@ export class EventsService {
 		const eventDate = new Date(
 			`${newEvent.date}T${newEvent.start_time}:00.000Z`,
 		);
-		if (eventDate.getTime() > Date.now()) {
+
+		const twoHoursBefore = new Date(
+			eventDate.getTime() - 2 * 60 * 60 * 1000,
+		);
+
+		if (twoHoursBefore.getTime() > Date.now()) {
 			new CronJob(
-				new Date(`${newEvent.date}T${newEvent.start_time}:00.000Z`), // Added :00 because time does not included
+				twoHoursBefore,
 				() => this.sendWarning(newEvent.id, newEvent.title),
 				null,
 				true,
