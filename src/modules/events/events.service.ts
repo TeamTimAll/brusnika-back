@@ -761,16 +761,11 @@ export class EventsService {
 				`event_id: ${foundEvent.id}, user_id: ${user.user_id}`,
 			);
 		}
-		if (dto.is_accepted) {
-			await this.notificationService.readNotification(
-				foundNotification.id,
-				user,
-			);
-		} else {
-			await this.notificationService.repository.delete(
-				foundNotification.id,
-			);
-		}
+		await this.notificationService.deleteNotification(
+			foundNotification.id,
+			user,
+		);
+
 		await this.eventInvitationRepository.update(foundInvitation.id, {
 			is_accepted: dto.is_accepted,
 		});
