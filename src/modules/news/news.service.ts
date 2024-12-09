@@ -131,7 +131,7 @@ export class NewsService {
 
 		await this.notificationService.sendToUsers(userTokens, {
 			title: "Новости",
-			description: `Новые новости созданы ${news.title}`,
+			description: news.title,
 			type: NotificationType.CREATED_NEWS,
 			object_id: news.id,
 		});
