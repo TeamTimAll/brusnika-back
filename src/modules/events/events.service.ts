@@ -506,8 +506,8 @@ export class EventsService {
 		await this.notificationService.sendToUsers(
 			eventInvitations.map((e) => e.user),
 			{
-				title: "Мероприятие",
-				description: `Скоро начнется мероприятие! ${event_title}`,
+				title: "Скоро начнется мероприятие!",
+				description: event_title,
 				type: NotificationType.WARNING_EVENT,
 				object_id: event_id,
 			},
@@ -663,8 +663,8 @@ export class EventsService {
 		});
 
 		await this.notificationService.sendToUsers(users, {
-			title: "Мероприятие",
-			description: `Вас пригласили на мероприятие ${foundEvent.title}`,
+			title: "Вас пригласили на мероприятие",
+			description: foundEvent.title,
 			type: NotificationType.EVENT,
 			object_id: foundEvent.id,
 		});
