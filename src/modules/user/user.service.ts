@@ -198,7 +198,9 @@ export class UserService {
 			});
 		}
 
-		if (!dto.is_verified) {
+		if (dto.is_verified) {
+			userQuery = userQuery.andWhere("u.is_verified is TRUE");
+		} else if (dto.is_verified === false) {
 			userQuery = userQuery.andWhere("u.is_verified is FALSE");
 		}
 
