@@ -198,10 +198,10 @@ export class UserService {
 			});
 		}
 
-		if (dto.is_verified) {
-			userQuery = userQuery.andWhere("u.is_verified is TRUE");
-		} else if (dto.is_verified === false) {
-			userQuery = userQuery.andWhere("u.is_verified is FALSE");
+		if (dto.is_verified !== undefined) {
+			userQuery = userQuery.andWhere("u.is_verified = :is_verified", {
+				is_verified: dto.is_verified,
+			});
 		}
 
 		userQuery = userQuery.limit(dto.limit).offset(pageSize);

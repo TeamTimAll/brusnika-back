@@ -75,7 +75,7 @@ export class UserFilterDto {
 
 	@ApiPropertyOptional()
 	@Transform(({ value }) =>
-		value === "true" ? true : value === "false" ? false : null,
+		value === "true" ? true : value === "false" ? false : undefined,
 	)
 	@IsBoolean()
 	@IsOptional()
