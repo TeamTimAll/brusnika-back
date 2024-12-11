@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsSelect, Repository } from "typeorm";
 
@@ -25,7 +25,8 @@ export class VisitsService {
 		@Inject() private projectService: ProjectService,
 		@Inject() private clientService: ClientService,
 		@Inject() private userService: UserService,
-		@Inject() private visitQueueService: VisitQueueService,
+		@Inject(forwardRef(() => VisitQueueService))
+		private readonly visitQueueService: VisitQueueService,
 	) {}
 
 	get repository(): Repository<VisitsEntity> {

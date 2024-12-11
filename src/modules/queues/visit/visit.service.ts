@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 
 import { UserEntity } from "modules/user/user.entity";
 
@@ -10,18 +10,81 @@ import { ProjectService } from "../../projects/projects.service";
 import { UserService } from "../../user/user.service";
 import { VisitsEntity } from "../../visits/visits.entity";
 import { QueueService } from "../queue.service";
+import { VisitsService } from "../../visits/visits.service";
 
 import { VisitStatusChangeDto } from "./dto/VisitStatusChange.dto";
 import { IVisit, IVisitFreeTime } from "./types";
+import { VisitQueueDto } from "./dto/VisitQueue.dto";
 
 @Injectable()
 export class VisitQueueService {
 	constructor(
 		private readonly queueService: QueueService,
+		@Inject(forwardRef(() => VisitsService))
+		private readonly visitService: VisitsService,
 		private readonly userService: UserService,
 		private readonly clientService: ClientService,
 		private readonly projectService: ProjectService,
 	) {}
+
+	async createOrUpdateVisit(visit: VisitQueueDto) {
+		let project: Pick<ProjectEntity, "id"> | undefined;
+
+		if (visit.project_ext_id) {
+			project = await this.projectService.readOneByExtId(
+				visit.project_ext_id,
+				{ id: true },
+			);
+		}
+
+		let agent: Pick<UserEntity, "id"> | undefined;
+		if (visit.agent_ext_id) {
+			agent = await this.userService.readOneByExtId(visit.agent_ext_id, {
+				id: true,
+			});
+		}
+
+		let client: Pick<ClientEntity, "id"> | undefined;
+		if (visit.client_ext_id) {
+			client = await this.userService.readOneByExtId(
+				visit.client_ext_id,
+				{
+					id: true,
+				},
+			);
+		}
+
+		return this.visitService.repository
+			.createQueryBuilder()
+			.insert()
+			.values({
+				ext_id: visit.ext_id,
+				project_id: project?.id,
+				agent_id: agent?.id,
+				client_id: client?.id,
+				request_date: visit.request_date,
+				request_time: visit.request_time,
+				note: visit.note,
+				date: visit.date,
+				time: visit.time,
+				status: visit.status,
+			})
+			.orUpdate(
+				[
+					"project_id",
+					"agent_id",
+					"client_id",
+					"request_date",
+					"request_time",
+					"note",
+					"date",
+					"time",
+					"status",
+				],
+				["ext_id"],
+			)
+			.execute();
+	}
 
 	async makeRequest(visit: IVisit) {
 		const data: Pick<BaseDto<IVisit>, "data"> = {
