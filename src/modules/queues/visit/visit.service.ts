@@ -37,11 +37,14 @@ export class VisitQueueService {
 			);
 		}
 
-		let agent: Pick<UserEntity, "id"> | undefined;
+		let agent: Pick<UserEntity, "id"> | undefined | null;
 		if (visit.agent_ext_id) {
-			agent = await this.userService.readOneByExtId(visit.agent_ext_id, {
-				id: true,
-			});
+			agent = await this.userService.readOneByExtWithoutErrorId(
+				visit.agent_ext_id,
+				{
+					id: true,
+				},
+			);
 		}
 
 		let client: Pick<ClientEntity, "id"> | undefined;
