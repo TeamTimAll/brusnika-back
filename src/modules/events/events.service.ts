@@ -473,9 +473,14 @@ export class EventsService {
 		const eventDate = new Date(
 			`${newEvent.date}T${newEvent.start_time}:00.000Z`,
 		);
-		if (eventDate.getTime() > Date.now()) {
+
+		const twoHoursBefore = new Date(
+			eventDate.getTime() - 2 * 60 * 60 * 1000,
+		);
+
+		if (twoHoursBefore.getTime() > Date.now()) {
 			new CronJob(
-				new Date(`${newEvent.date}T${newEvent.start_time}:00.000Z`), // Added :00 because time does not included
+				twoHoursBefore,
 				() => this.sendWarning(newEvent.id, newEvent.title),
 				null,
 				true,
@@ -756,16 +761,11 @@ export class EventsService {
 				`event_id: ${foundEvent.id}, user_id: ${user.user_id}`,
 			);
 		}
-		if (dto.is_accepted) {
-			await this.notificationService.readNotification(
-				foundNotification.id,
-				user,
-			);
-		} else {
-			await this.notificationService.repository.delete(
-				foundNotification.id,
-			);
-		}
+		await this.notificationService.deleteNotification(
+			foundNotification.id,
+			user,
+		);
+
 		await this.eventInvitationRepository.update(foundInvitation.id, {
 			is_accepted: dto.is_accepted,
 		});

@@ -66,7 +66,7 @@ export class NotificationService {
 			CASE
 					WHEN n.type = :created_news THEN JSON_BUILD_OBJECT('id', news.id)
 					WHEN n.type = :end_lead THEN JSON_BUILD_OBJECT('id', leads.id)
-					ELSE JSON_BUILD_OBJECT('id', events.id, 'photo', events.photo)
+					ELSE JSON_BUILD_OBJECT('id', events.id, 'photo', events.photo, 'name', events.title)
 			END AS object`;
 
 		query.select([
@@ -139,6 +139,22 @@ export class NotificationService {
 			is_read: true,
 		});
 		foundNotification.is_read = true;
+		return foundNotification;
+	}
+
+	async deleteNotification(notification_id: number, user: ICurrentUser) {
+		const foundNotification = await this.notificationUserRepository.findOne(
+			{
+				where: {
+					notification_id: notification_id,
+					user_id: user.user_id,
+				},
+			},
+		);
+		if (!foundNotification) {
+			throw new NotificationNotFoundError(`id: ${notification_id}`);
+		}
+		await this.notificationUserRepository.delete(foundNotification.id);
 		return foundNotification;
 	}
 

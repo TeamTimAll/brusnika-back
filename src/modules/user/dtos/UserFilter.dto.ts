@@ -74,7 +74,9 @@ export class UserFilterDto {
 	is_new?: boolean;
 
 	@ApiPropertyOptional()
-	@Transform(({ value }) => value === "true")
+	@Transform(({ value }) =>
+		value === "true" ? true : value === "false" ? false : undefined,
+	)
 	@IsBoolean()
 	@IsOptional()
 	is_verified?: boolean;
