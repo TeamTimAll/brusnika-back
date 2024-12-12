@@ -485,7 +485,17 @@ export class UserService {
 	}
 
 	async me(user_id: number) {
-		const foundUser = await this.readOneWithRelation(user_id);
+		let foundUser = await this.readOneWithRelation(user_id);
+
+		if (!foundUser.city_id) {
+			await this.userRepository.update(
+				{ id: foundUser.id },
+				{ city_id: 4 },
+			);
+		}
+
+		foundUser = await this.readOneWithRelation(user_id);
+
 		const userCreatedCount = await this.bookingRepository.count({
 			where: {
 				create_by_id: user_id,
