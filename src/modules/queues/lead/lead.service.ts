@@ -26,9 +26,9 @@ export class LeadQueueService {
 		);
 
 		const agent = await this.userService.readOneByExtId(lead.agent_ext_id);
-		let manager: Pick<UserEntity, "id"> | undefined;
+		let manager: Pick<UserEntity, "id"> | undefined | null;
 		if (lead.manager_ext_id) {
-			manager = await this.userService.readOneByExtId(
+			manager = await this.userService.readOneByExtWithoutErrorId(
 				lead.manager_ext_id,
 				{ id: true },
 			);
