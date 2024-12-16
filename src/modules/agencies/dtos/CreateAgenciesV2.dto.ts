@@ -126,6 +126,13 @@ export class CreateAgenciesV2Dto {
 		required: false,
 	})
 	@IsOptional()
+	@IsBoolean()
+	debug?: boolean;
+
+	@ApiProperty({
+		required: false,
+	})
+	@IsOptional()
 	@IsInt()
 	termCount?: number;
 
