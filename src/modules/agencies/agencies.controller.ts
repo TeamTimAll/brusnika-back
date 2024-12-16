@@ -11,7 +11,6 @@ import {
 	Query,
 	UseGuards,
 	UseInterceptors,
-	Version,
 } from "@nestjs/common";
 import {
 	ApiBearerAuth,
@@ -33,7 +32,6 @@ import { AgencyService } from "./agencies.service";
 import { AgencyArrayMetaDataDto, AgencyMetaDataDto } from "./dtos/Agencies.dto";
 import { CreateAgenciesMetaDataDto } from "./dtos/CreateAgencies.dto";
 import { UpdateAgenciesMetaDataDto } from "./dtos/UpdateAgencies.dto";
-import { CreateAgenciesV2MetaDataDto } from "./dtos/CreateAgenciesV2.dto";
 
 @ApiTags("Agencies")
 @Controller("/agencies")
@@ -68,37 +66,6 @@ export class AgencyController {
 		@User() user: ICurrentUser,
 	) {
 		const res = await this.service.create(dto.data, user);
-		return res;
-	}
-
-	@Version("2")
-	@Post()
-	@ApiOperation({
-		description: `### Agency yasash.
-		\n Ruxsat etilgan foydalanuvchilar rollari - *Hammasi*
-		\n Json body haqida qisqacha:
-		\n - **title** - sarlavhasi
-		\n - **city_id** - shahar id'si
-		\n - **legalName** - qonuniy nomi
-		\n - **inn** - INN
-		\n - **phone** - telefon raqami
-		\n - **email** - email
-		\n - **ownerFullName** - egasini to'liq F.I.SH'i
-		\n - **ownerPhone** - egasini telefon raqami
-		\n - **entry_doc** - dokumenti
-		\n - **company_card_doc** - korxona karta raqami dokumenti
-		\n - **tax_registration_doc** - soliq ro'yxatidan o'tkazish dokumenti
-		\n - **authority_signatory_doc** - vakolatli organ imzolagan hujjat dokumenti`,
-	})
-	@ApiDtoResponse(AgencyMetaDataDto, HttpStatus.CREATED)
-	@ApiErrorResponse(CityNotFoundError, "'id' city not found")
-	@ApiBearerAuth()
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	async createV2(
-		@Body() dto: CreateAgenciesV2MetaDataDto,
-		@User() user: ICurrentUser,
-	) {
-		const res = await this.service.createV2(dto.data, user);
 		return res;
 	}
 

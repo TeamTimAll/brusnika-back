@@ -173,11 +173,6 @@ export class AgencyQueueService {
 			city = await this.citiesService.readOne(agency.city_id);
 		}
 
-		let user: UserEntity | undefined;
-		if (agency.create_by_id) {
-			user = await this.usersService.readOne(agency.create_by_id);
-		}
-
 		const BASE_URL = ConfigManager.config.BASE_URL;
 
 		return {
@@ -186,8 +181,8 @@ export class AgencyQueueService {
 			data: {
 				contourId: "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
 				city: city?.name,
-				agency: agency.title,
-				organizationalLegalForm: agency.legalName,
+				agency: agency.legalName,
+				organizationalLegalForm: agency.organizationalLegalForm,
 				inn: agency.inn,
 				phone: agency.phone,
 				email: agency.email,
@@ -195,9 +190,9 @@ export class AgencyQueueService {
 				ogrnRef: `${BASE_URL}/${agency.entry_doc}`,
 				agencyRef: `${BASE_URL}/${agency.company_card_doc}`,
 				basisForSigningRef: `${BASE_URL}/${agency.authority_signatory_doc}`,
-				contactPersonName: user?.firstName,
-				contactPersonPosition: user?.role,
-				contactPersonPhone: user?.phone,
+				contactPersonName: agency.contactPersonName,
+				contactPersonPosition: agency.contactPersonPosition,
+				contactPersonPhone: agency.contactPersonPosition,
 				citiesWork: agency.citiesWork ?? [],
 				agencyFull: agency.title ?? "testagency LLC",
 				okved: agency.okved ?? "711111111",

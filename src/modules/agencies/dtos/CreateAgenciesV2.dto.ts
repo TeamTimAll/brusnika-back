@@ -60,7 +60,7 @@ export class CreateAgenciesV2Dto {
 	})
 	@IsOptional()
 	@IsString()
-	ownerFullName?: string;
+	contactPersonName?: string;
 
 	@ApiProperty({
 		default: "78652385693",
@@ -69,7 +69,21 @@ export class CreateAgenciesV2Dto {
 	})
 	@IsOptional()
 	@IsMobilePhone()
-	ownerPhone?: string;
+	contactPersonPhone?: string;
+
+	@ApiProperty({
+		required: false,
+	})
+	@IsOptional()
+	@IsString()
+	contactPersonPosition?: string;
+
+	@ApiProperty({
+		required: false,
+	})
+	@IsOptional()
+	@IsString()
+	organizationalLegalForm?: string;
 
 	@ApiProperty({
 		default: "",

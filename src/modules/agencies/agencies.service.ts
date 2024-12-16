@@ -74,7 +74,8 @@ export class AgencyService {
 	async createV2(dto: CreateAgenciesV2Dto, user: ICurrentUser) {
 		// Check city exist or not
 		await this.cityService.readOne(dto.city_id);
-		const agency = this.agencyRepository.create(dto);
+		const { debug, ...data } = dto;
+		const agency = this.agencyRepository.create(data);
 		agency.create_by_id = user.user_id;
 
 		if (!dto.debug) {

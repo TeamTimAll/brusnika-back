@@ -45,6 +45,18 @@ export class AgencyEntity extends BaseEntity {
 	ownerPhone!: string | null;
 
 	@Column({ nullable: true, type: "varchar" })
+	contactPersonPhone!: string | null;
+
+	@Column({ nullable: true, type: "varchar" })
+	contactPersonName!: string | null;
+
+	@Column({ nullable: true, type: "varchar" })
+	contactPersonPosition!: string | null;
+
+	@Column({ nullable: true, type: "varchar" })
+	organizationalLegalForm!: string | null;
+
+	@Column({ nullable: true, type: "varchar" })
 	entry_doc!: string | null;
 
 	@Column({ nullable: true, type: "varchar" })

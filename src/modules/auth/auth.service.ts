@@ -17,7 +17,10 @@ import { randomOtp } from "../../lib/firebase/random-number";
 import { ConfigManager } from "../../config";
 
 import { AgentChooseAgencyDto } from "./dtos/AgentChooseAgency.dto";
-import { AgentRegisterAgencyDto } from "./dtos/AgentRegisterAgency.dto";
+import {
+	AgentRegisterAgencyDto,
+	AgentRegisterAgencyV2Dto,
+} from "./dtos/AgentRegisterAgency.dto";
 import { AgentRequestAgencyDto } from "./dtos/AgentRequestAgency.dto";
 import {
 	AuthResponeWithData,
@@ -243,6 +246,62 @@ export class AuthService {
 				ownerFullName: dto.ownerFullName,
 				ownerPhone: dto.ownerPhone,
 				tax_registration_doc: dto.tax_registration_doc,
+			},
+			{ user_id: user.id, role: user.role },
+		);
+		await this.userService.repository.update(user.id, {
+			register_status: UserRegisterStatus.FINISHED,
+			temporary_role: temporary_role,
+			agency_id: newAgency.id,
+		});
+
+		return {
+			accessToken: this.jwtService.sign({
+				user_id: user.id,
+				role: user.role,
+			}),
+		};
+	}
+
+	async agentRegisterAgencyV2(
+		dto: AgentRegisterAgencyV2Dto,
+	): Promise<AuthResponeWithTokenDto> {
+		const user = await this.userService.readOneWithRelation(dto.user_id);
+		let temporary_role = RoleType.AGENT;
+		if (dto.isOwner) {
+			temporary_role = RoleType.HEAD_OF_AGENCY;
+		}
+		const newAgency = await this.agenciesService.createV2(
+			{
+				title: dto.title,
+				city_id: dto.city_id,
+				legalName: dto.legalName,
+				inn: dto.inn,
+				phone: dto.phone,
+				email: dto.email,
+				contactPersonName: dto.contactPersonName,
+				contactPersonPhone: dto.contactPersonPhone,
+				contactPersonPosition: dto.contactPersonPosition,
+				organizationalLegalForm: dto.organizationalLegalForm,
+				authority_signatory_doc: dto.authority_signatory_doc,
+				company_card_doc: dto.company_card_doc,
+				entry_doc: dto.entry_doc,
+				tax_registration_doc: dto.tax_registration_doc,
+				registrationAgencyDate: dto.registrationAgencyDate,
+				vatAvailability: dto.vatAvailability,
+				termCount: dto.termCount,
+				termUnit: dto.termUnit,
+				employees: dto.employees,
+				okved: dto.okved,
+				site: dto.site,
+				amountDealsMonth: dto.amountDealsMonth,
+				citiesWork: dto.citiesWork,
+				agreementsAnotherDeveloper: dto.agreementsAnotherDeveloper,
+				associations: dto.associations,
+				reasonAgreements: dto.reasonAgreements,
+				signer: dto.signer,
+				basisForSigning: dto.basisForSigning,
+				debug: dto.debug,
 			},
 			{ user_id: user.id, role: user.role },
 		);
