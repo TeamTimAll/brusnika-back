@@ -131,7 +131,7 @@ export class VisitQueueService {
 			data: {
 				requestType: "schedule",
 				type: "offline",
-				project: "58dab450-25e4-11e9-b797-4fe75fbf4950",
+				project: project?.ext_id,
 				premisesKind:
 					project?.buildings?.[0]?.premises?.[0]?.type ?? null,
 			},

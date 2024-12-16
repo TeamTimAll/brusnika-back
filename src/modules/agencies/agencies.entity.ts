@@ -66,6 +66,48 @@ export class AgencyEntity extends BaseEntity {
 	@Column({ nullable: true, type: "integer" })
 	create_by_id?: number;
 
+	@Column({ type: "text", nullable: true })
+	registrationAgencyDate?: string;
+
+	@Column({ type: "boolean", nullable: true })
+	vatAvailability?: boolean;
+
+	@Column({ type: "int", nullable: true })
+	termCount?: number;
+
+	@Column({ type: "int", nullable: true })
+	employees?: number;
+
+	@Column({ type: "text", nullable: true })
+	termUnit?: string;
+
+	@Column({ type: "text", nullable: true })
+	okved?: string;
+
+	@Column({ type: "text", nullable: true })
+	site?: string;
+
+	@Column({ type: "text", nullable: true })
+	amountDealsMonth?: string;
+
+	@Column({ type: "simple-array", nullable: true })
+	citiesWork?: string[];
+
+	@Column({ type: "text", nullable: true })
+	reasonAgreements?: string;
+
+	@Column({ type: "simple-array", nullable: true })
+	agreementsAnotherDeveloper?: string[];
+
+	@Column({ type: "simple-array", nullable: true })
+	associations?: string[];
+
+	@Column({ type: "text", nullable: true })
+	signer?: string;
+
+	@Column({ type: "text", nullable: true })
+	basisForSigning?: string;
+
 	// @Column({ nullable: true, type: 'varchar' })
 	// description!: string;
 
