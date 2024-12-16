@@ -1,5 +1,5 @@
-import winston from "winston";
-import winstonDailyRotateFile from "winston-daily-rotate-file";
+// import winston from "winston";
+// import winstonDailyRotateFile from "winston-daily-rotate-file";
 
 import { IPrompt } from "../prompt/prompt";
 
@@ -23,52 +23,52 @@ export interface IInfo {
 	timestamp: string;
 }
 
-export const transports = {
-	console: new winston.transports.Console({
-		level: "silly",
-		format: winston.format.combine(
-			winston.format.timestamp({
-				format: "YYYY-MM-DD HH:mm:ss",
-			}),
-			winston.format.colorize({
-				colors: {
-					info: "blue",
-					debug: "yellow",
-					error: "red",
-				},
-			}),
-			winston.format.printf((_info) => {
-				const info = _info as IInfo;
-				return `${info.timestamp} [${info.level}] [${
-					info.service_name ? info.service_name : info.context
-				}] [${
-					info.action ? info.action : OperationConditionEnum.INFO
-				}] ${
-					info.message
-						? (info.message as string)
-						: info.meta.error_massage
-							? info.meta.error_massage
-							: "DEFAULT_MESSAGE"
-				}`;
-			}),
-		),
-	}),
-	combinedFile: new winstonDailyRotateFile({
-		dirname: "logs",
-		filename: "combined",
-		extension: ".log",
-		level: "info",
-	}),
-	errorFile: new winstonDailyRotateFile({
-		dirname: "logs",
-		filename: "error",
-		extension: ".log",
-		level: "error",
-	}),
-	fatalFile: new winstonDailyRotateFile({
-		dirname: "logs",
-		filename: "fatal",
-		extension: ".log",
-		level: "fatal",
-	}),
-};
+// export const transports = {
+// 	console: new winston.transports.Console({
+// 		level: "silly",
+// 		format: winston.format.combine(
+// 			winston.format.timestamp({
+// 				format: "YYYY-MM-DD HH:mm:ss",
+// 			}),
+// 			winston.format.colorize({
+// 				colors: {
+// 					info: "blue",
+// 					debug: "yellow",
+// 					error: "red",
+// 				},
+// 			}),
+// 			winston.format.printf((_info) => {
+// 				const info = _info as IInfo;
+// 				return `${info.timestamp} [${info.level}] [${
+// 					info.service_name ? info.service_name : info.context
+// 				}] [${
+// 					info.action ? info.action : OperationConditionEnum.INFO
+// 				}] ${
+// 					info.message
+// 						? (info.message as string)
+// 						: info.meta.error_massage
+// 							? info.meta.error_massage
+// 							: "DEFAULT_MESSAGE"
+// 				}`;
+// 			}),
+// 		),
+// 	}),
+// 	combinedFile: new winstonDailyRotateFile({
+// 		dirname: "logs",
+// 		filename: "combined",
+// 		extension: ".log",
+// 		level: "info",
+// 	}),
+// 	errorFile: new winstonDailyRotateFile({
+// 		dirname: "logs",
+// 		filename: "error",
+// 		extension: ".log",
+// 		level: "error",
+// 	}),
+// 	fatalFile: new winstonDailyRotateFile({
+// 		dirname: "logs",
+// 		filename: "fatal",
+// 		extension: ".log",
+// 		level: "fatal",
+// 	}),
+// };
