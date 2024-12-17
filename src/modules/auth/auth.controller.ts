@@ -1,4 +1,10 @@
-import { Body, Controller, Get, Post, UseInterceptors } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Post,
+	UseInterceptors,
+	Version,
+} from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import { ApiErrorResponse } from "../../decorators/api_error_response";
@@ -7,11 +13,13 @@ import { AgencyNotFoundError } from "../agencies/errors/AgencyNotFound.error";
 import { UserCreateMetaDataDto } from "../user/dtos/UserCreate.dto";
 import { UserFillDataMetaDataDto } from "../user/dtos/UserFillData.dto";
 import { UserNotFoundError } from "../user/errors/UserNotFound.error";
-import { ConfigManager } from "../../config";
 
 import { AuthService } from "./auth.service";
 import { AgentChooseAgencyMetaDataDto } from "./dtos/AgentChooseAgency.dto";
-import { AgentRegisterAgencyMetaDataDto } from "./dtos/AgentRegisterAgency.dto";
+import {
+	AgentRegisterAgencyMetaDataDto,
+	AgentRegisterAgencyV2MetaDataDto,
+} from "./dtos/AgentRegisterAgency.dto";
 import { AgentRequestAgencyMetaDataDto } from "./dtos/AgentRequestAgency.dto";
 import {
 	AuthResponeWithData,
@@ -79,11 +87,6 @@ export class AuthController {
 		return this.authService.agentRegister(dto.data);
 	}
 
-	@Get("/config")
-	config() {
-		return ConfigManager.config;
-	}
-
 	@ApiOkResponse({ type: AuthResponeWithData })
 	@ApiErrorResponse(UserEmailAlreadyExistsError)
 	@Post("/agent/register/fill_data")
@@ -108,6 +111,13 @@ export class AuthController {
 	@Post("/agent/register/register_agency")
 	agentRegisterAgency(@Body() dto: AgentRegisterAgencyMetaDataDto) {
 		return this.authService.agentRegisterAgency(dto.data);
+	}
+
+	@Version("2")
+	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })
+	@Post("/agent/register/register_agency")
+	agentRegisterAgencyV2(@Body() dto: AgentRegisterAgencyV2MetaDataDto) {
+		return this.authService.agentRegisterAgencyV2(dto.data);
 	}
 
 	@ApiOkResponse({ type: AuthResponeWithTokenMetaDataDto })

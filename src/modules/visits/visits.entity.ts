@@ -7,6 +7,7 @@ import { UserEntity } from "../user/user.entity";
 
 export enum VisitStatus {
 	OPEN = "open",
+	ASSIGNED = "assigned",
 	SUCCESS = "success",
 	FAIL = "fail",
 }

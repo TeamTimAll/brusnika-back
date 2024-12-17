@@ -13,6 +13,7 @@ import { CounterAgent } from "./dtos/AgencySync.dto";
 import { CreateAgenciesDto } from "./dtos/CreateAgencies.dto";
 import { UpdateAgenciesDto } from "./dtos/UpdateAgencies.dto";
 import { AgencyNotFoundError } from "./errors/AgencyNotFound.error";
+import { CreateAgenciesV2Dto } from "./dtos/CreateAgenciesV2.dto";
 
 @Injectable()
 export class AgencyService {
@@ -66,6 +67,22 @@ export class AgencyService {
 		await this.agencyQueueService.makeRequest(
 			await this.agencyQueueService.createFormEntity(agency),
 		);
+
+		return await this.agencyRepository.save(agency);
+	}
+
+	async createV2(dto: CreateAgenciesV2Dto, user: ICurrentUser) {
+		// Check city exist or not
+		await this.cityService.readOne(dto.city_id);
+		const { debug, ...data } = dto;
+		const agency = this.agencyRepository.create(data);
+		agency.create_by_id = user.user_id;
+
+		if (!dto.debug) {
+			await this.agencyQueueService.makeRequest(
+				await this.agencyQueueService.createFormEntityV2(agency),
+			);
+		}
 
 		return await this.agencyRepository.save(agency);
 	}

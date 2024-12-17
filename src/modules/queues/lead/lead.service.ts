@@ -6,6 +6,7 @@ import { UserEntity } from "../../user/user.entity";
 import { ProjectService } from "../../projects/projects.service";
 import { PremisesService } from "../../premises/premises.service";
 import { LeadsService } from "../../leads/leads.service";
+import { LeadOpStatus } from "../../leads/lead_ops.entity";
 
 import { LeadDto, LeadsDto } from "./dto";
 import { ILead } from "./types";
@@ -26,9 +27,9 @@ export class LeadQueueService {
 		);
 
 		const agent = await this.userService.readOneByExtId(lead.agent_ext_id);
-		let manager: Pick<UserEntity, "id"> | undefined;
+		let manager: Pick<UserEntity, "id"> | undefined | null;
 		if (lead.manager_ext_id) {
-			manager = await this.userService.readOneByExtId(
+			manager = await this.userService.readOneByExtWithoutErrorId(
 				lead.manager_ext_id,
 				{ id: true },
 			);
@@ -54,7 +55,8 @@ export class LeadQueueService {
 				premise_id: premise.id,
 				comment: lead.comment,
 				fee: lead.fee,
-				current_status: lead.current_status,
+				current_status:
+					lead.current_status.toLowerCase() as LeadOpStatus,
 				lead_number: lead.lead_number,
 				state: lead.state,
 			})

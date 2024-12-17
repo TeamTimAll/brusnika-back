@@ -1,35 +1,26 @@
 import { LoggerService } from "@nestjs/common";
-import { WinstonModule } from "nest-winston";
-import winston from "winston";
+import * as winston from "winston";
+// import LokiTransport from "winston-loki";
 
-import { transports } from "../lib/logger/logger";
+export const logger = winston.createLogger({
+	level: "info",
+	format: winston.format.json(),
+	transports: [
+		// new LokiTransport({
+		// 	host: "http://loki:3100",
+		// 	labels: { app: "nestjs-app" },
+		// }),
+	],
+});
 
-export class AppLogger {
-	static init() {
-		return WinstonModule.createLogger({
-			format: winston.format.combine(
-				winston.format.timestamp({
-					format: "YYYY-MM-DD HH:mm:ss",
-				}),
-				winston.format.errors({ stack: true }),
-				winston.format.splat(),
-				winston.format.json(),
-			),
-			transports: [
-				transports.console,
-				transports.combinedFile,
-				transports.errorFile,
-				transports.fatalFile,
-			],
-		});
+export class CustomLogger implements LoggerService {
+	log(message: string) {
+		logger.info(message);
 	}
-
-	static initStream(logger: LoggerService) {
-		return {
-			write: function (message: string): void {
-				// To remove the last newline character, used the `slice` function.
-				logger.log(message.slice(0, -1));
-			},
-		};
+	error(message: string, trace: string) {
+		logger.error(message, { trace });
+	}
+	warn(message: string) {
+		logger.warn(message);
 	}
 }

@@ -41,6 +41,7 @@ export interface IConfig {
 	SMS_API_URL: string;
 	// KONTUR_SEND
 	KONTUR_SEND: string;
+	BASE_URL: string;
 	// DEBUG
 	DEBUG: boolean;
 	DEMO: boolean;
@@ -76,6 +77,7 @@ export class ConfigManager {
 		SMS_API_URL: process.env.SMS_API_URL as string,
 		SMS_API_KEY: process.env.SMS_API_KEY as string,
 		KONTUR_SEND: process.env.KONTUR_SEND as string,
+		BASE_URL: process.env.BASE_URL as string,
 		DEBUG: (process.env.DEBUG === "true") as unknown as boolean,
 		DEMO: (process.env.DEMO === "true") as unknown as boolean,
 	};
@@ -114,6 +116,7 @@ export class ConfigManager {
 		KONTUR_SEND: Joi.string().optional(),
 		DEBUG: Joi.boolean().optional(),
 		DEMO: Joi.boolean().optional(),
+		BASE_URL: Joi.string().optional(),
 	});
 
 	static init() {

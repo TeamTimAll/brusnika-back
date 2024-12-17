@@ -166,4 +166,62 @@ export class AgencyQueueService {
 			},
 		};
 	}
+
+	async createFormEntityV2(agency: AgencyEntity): Promise<IAgency> {
+		let city: CityEntity | undefined;
+		if (agency.city_id) {
+			city = await this.citiesService.readOne(agency.city_id);
+		}
+
+		const BASE_URL = ConfigManager.config.BASE_URL;
+
+		return {
+			url: "https://1c.tarabanov.tech/crm/hs/ofo/AgreementWithAgent",
+			method: "POST",
+			data: {
+				contourId: "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
+				city: city?.name,
+				agency: agency.legalName,
+				organizationalLegalForm: agency.organizationalLegalForm,
+				inn: agency.inn,
+				phone: agency.phone,
+				email: agency.email,
+				taxRegistrationRef: `${BASE_URL}/${agency.tax_registration_doc}`,
+				ogrnRef: `${BASE_URL}/${agency.entry_doc}`,
+				agencyRef: `${BASE_URL}/${agency.company_card_doc}`,
+				basisForSigningRef: `${BASE_URL}/${agency.authority_signatory_doc}`,
+				contactPersonName: agency.contactPersonName,
+				contactPersonPosition: agency.contactPersonPosition,
+				contactPersonPhone: agency.contactPersonPosition,
+				citiesWork: agency.citiesWork ?? [],
+				agencyFull: agency.title ?? "testagency LLC",
+				okved: agency.okved ?? "711111111",
+				registrationAgencyDate:
+					agency.registrationAgencyDate || "2024-11-18",
+				vatAvailability: agency.vatAvailability ?? true,
+				agencyWorkingTerm: {
+					count: agency.termCount ?? 10,
+					unit: agency.termUnit ?? "MONTH",
+				},
+				employees: agency.employees ?? 10,
+				reasonAgreements: agency.reasonAgreements ?? "pochemu...",
+				agreementsAnotherDeveloper: {
+					availability: agency.agreementsAnotherDeveloper?.length
+						? true
+						: false,
+					developerList: agency.agreementsAnotherDeveloper ?? [
+						"test",
+					],
+				},
+				associations: {
+					availability: agency.associations?.length ? true : false,
+					associationList: agency.associations ?? ["test"],
+				},
+				amountDealsMonth: agency.amountDealsMonth ?? "LESS_THAN_10",
+				signer: agency.signer ?? "test",
+				basisForSigning: agency.basisForSigning ?? "test",
+				siteLinks: agency.site ? [agency.site] : [],
+			},
+		};
+	}
 }

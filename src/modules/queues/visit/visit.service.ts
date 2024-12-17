@@ -8,9 +8,11 @@ import { ClientService } from "../../client/client.service";
 import { ProjectEntity } from "../../projects/project.entity";
 import { ProjectService } from "../../projects/projects.service";
 import { UserService } from "../../user/user.service";
-import { VisitsEntity } from "../../visits/visits.entity";
+import { VisitsEntity, VisitStatus } from "../../visits/visits.entity";
 import { QueueService } from "../queue.service";
 import { VisitsService } from "../../visits/visits.service";
+import { NotificationService } from "../../notification/notification.service";
+import { NotificationType } from "../../notification/notification.entity";
 
 import { VisitStatusChangeDto } from "./dto/VisitStatusChange.dto";
 import { IVisit, IVisitFreeTime } from "./types";
@@ -25,36 +27,69 @@ export class VisitQueueService {
 		private readonly userService: UserService,
 		private readonly clientService: ClientService,
 		private readonly projectService: ProjectService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async createOrUpdateVisit(visit: VisitQueueDto) {
-		let project: Pick<ProjectEntity, "id"> | undefined;
+		let project: Pick<ProjectEntity, "id" | "name"> | undefined;
 
 		if (visit.project_ext_id) {
 			project = await this.projectService.readOneByExtId(
 				visit.project_ext_id,
-				{ id: true },
+				{ id: true, name: true },
 			);
 		}
 
-		let agent: Pick<UserEntity, "id"> | undefined | null;
+		let agent: Pick<UserEntity, "id" | "firebase_token"> | undefined | null;
 		if (visit.agent_ext_id) {
 			agent = await this.userService.readOneByExtWithoutErrorId(
 				visit.agent_ext_id,
 				{
 					id: true,
+					firebase_token: true,
 				},
 			);
 		}
 
-		let client: Pick<ClientEntity, "id"> | undefined;
+		let client: Pick<ClientEntity, "id" | "fullname"> | undefined;
 		if (visit.client_ext_id) {
-			client = await this.userService.readOneByExtId(
+			client = await this.clientService.readOneByExtId(
 				visit.client_ext_id,
 				{
 					id: true,
+					fullname: true,
 				},
 			);
+		}
+
+		let foundVisit:
+			| Pick<VisitsEntity, "id" | "status" | "created_at">
+			| undefined
+			| null;
+		if (visit.ext_id) {
+			foundVisit = await this.visitService.readOneByExtWithoutErrorId(
+				visit.ext_id,
+				{
+					id: true,
+					status: true,
+					created_at: true,
+				},
+			);
+
+			if (
+				visit.status !== foundVisit?.status &&
+				foundVisit?.status === VisitStatus.ASSIGNED
+			) {
+				if (agent && agent.firebase_token) {
+					const formattedDate = `${foundVisit.created_at.getDate().toString().padStart(2, "0")}.${(foundVisit.created_at.getMonth() + 1).toString().padStart(2, "0")}.${foundVisit.created_at.getFullYear()}`;
+
+					await this.notificationService.sendToUsers([agent], {
+						type: NotificationType.VISIT_ASSIGNED,
+						description: `Клиент ${client?.fullname} записан на показ по проекту "${project?.name}" на ${formattedDate}`,
+						title: "Показ",
+					});
+				}
+			}
 		}
 
 		return this.visitService.repository
@@ -131,7 +166,7 @@ export class VisitQueueService {
 			data: {
 				requestType: "schedule",
 				type: "offline",
-				project: "58dab450-25e4-11e9-b797-4fe75fbf4950",
+				project: project?.ext_id,
 				premisesKind:
 					project?.buildings?.[0]?.premises?.[0]?.type ?? null,
 			},

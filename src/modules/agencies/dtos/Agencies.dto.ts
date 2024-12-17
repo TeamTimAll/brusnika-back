@@ -59,6 +59,60 @@ export class AgencyDto implements IAgencyDto {
 
 	@ApiProperty()
 	is_active!: boolean;
+	
+	@ApiProperty()
+	agreementsAnotherDeveloper?: string[] | undefined;
+
+	@ApiProperty()
+	amountDealsMonth?: string | undefined;
+
+	@ApiProperty()
+	associations?: string[] | undefined;
+
+	@ApiProperty()
+	basisForSigning?: string | undefined;
+
+	@ApiProperty()
+	citiesWork?: string[] | undefined;
+
+	@ApiProperty()
+	contactPersonName!: string | null;
+
+	@ApiProperty()
+	contactPersonPhone!: string | null;
+
+	@ApiProperty()
+	contactPersonPosition!: string | null;
+
+	@ApiProperty()
+	employees?: number;
+
+	@ApiProperty()
+	okved!: string;
+
+	@ApiProperty()
+	registrationAgencyDate?: string;
+
+	@ApiProperty()
+	vatAvailability?: boolean;
+
+	@ApiProperty()
+	termCount!: number;
+
+	@ApiProperty()
+	termUnit!: string;
+
+	@ApiProperty()
+	organizationalLegalForm!: string | null;
+
+	@ApiProperty()
+	reasonAgreements?: string | undefined;
+
+	@ApiProperty()
+	signer?: string | undefined;
+	
+	@ApiProperty()
+	site?: string | undefined;
 }
 
 export class AgencyMetaDataDto<T = AgencyDto>

@@ -10,6 +10,7 @@ import { VisitsEntity, VisitStatus } from "../../modules/visits/visits.entity";
 import { EventInvitationEntity } from "../events/entities/event-invition.entity";
 import { EventsService } from "../events/events.service";
 import { VisitsService } from "../visits/visits.service";
+import { UserService } from "../user/user.service";
 
 import { CalendarDto } from "./dto/Calendar.dto";
 
@@ -19,6 +20,7 @@ export class CalendarService {
 	private visitsService!: VisitsService;
 	@Inject()
 	private eventsService!: EventsService;
+	private usersService!: UserService;
 
 	async getCalendar(user: ICurrentUser, dto: CalendarDto) {
 		let visitsQueryBuilder = this.visitsService.repository
@@ -34,11 +36,34 @@ export class CalendarService {
 			])
 			.leftJoin("projects", "p", "p.id = v.project_id")
 			.leftJoin("clients", "c", "c.id = v.client_id")
-			.where("v.agent_id = :agent_id", {
-				agent_id: user.user_id,
-			})
 			.andWhere("v.status != :status", { status: VisitStatus.FAIL })
 			.orderBy("v.date", "ASC");
+
+		if (user.role === RoleType.HEAD_OF_AGENCY) {
+			const foundHead = await this.usersService.readOne(user.user_id, {
+				agency_id: true,
+			});
+
+			const agents = await this.usersService.repository.find({
+				where: { agency_id: foundHead.agency_id },
+				select: { id: true },
+			});
+
+			const ids = agents.map((agent) => agent.id);
+
+			visitsQueryBuilder = visitsQueryBuilder.andWhere(
+				"v.agent_id IN (:...ids)",
+				{ ids },
+			);
+		} else {
+			visitsQueryBuilder = visitsQueryBuilder.andWhere(
+				"v.agent_id = :agent_id",
+				{
+					agent_id: user.user_id,
+				},
+			);
+		}
+
 		let eventsQueryBuilder = this.eventsService.repository
 			.createQueryBuilder("e")
 			.select([
