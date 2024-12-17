@@ -295,6 +295,18 @@ export class VisitsService {
 		return booking;
 	}
 
+	async readOneByExtWithoutErrorId<T extends FindOptionsSelect<VisitsEntity>>(
+		ext_id: string,
+		select?: T,
+	): Promise<PickBySelect<VisitsEntity, T> | null> {
+		const booking = await this.visitsRepository.findOne({
+			select: select,
+			where: { ext_id: ext_id },
+		});
+
+		return booking;
+	}
+
 	async update(
 		id: number,
 		dto: Partial<UpdateVisitsDto>,

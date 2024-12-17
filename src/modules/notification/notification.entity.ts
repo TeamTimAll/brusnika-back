@@ -8,6 +8,8 @@ export enum NotificationType {
 	WARNING_EVENT = "warning_event",
 	CREATED_NEWS = "created_news",
 	END_LEAD = "end_lead",
+	VISIT_ASSIGNED = "visit_assigned",
+	UPDATE_CLIENT = "update_client",
 	AGENT_REQUEST_FOR_AGENCY = "agent_request_for_agency",
 }
 

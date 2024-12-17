@@ -410,6 +410,7 @@ export class PremisesService {
 			"premise.purchase_option",
 			"premise.number",
 			"premise.floor",
+			"premise.link",
 			"premise.feature",
 			"premise.ext_id",
 			"premise.feature_new",

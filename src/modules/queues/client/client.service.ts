@@ -10,6 +10,8 @@ import {
 } from "../../client/client.entity";
 import { BaseDto } from "../../../common/base/base_dto";
 import { QueueService } from "../queue.service";
+import { NotificationService } from "../../notification/notification.service";
+import { NotificationType } from "../../notification/notification.entity";
 
 import { ClientDto } from "./dto";
 import { IClient } from "./types/client.type";
@@ -21,13 +23,15 @@ export class ClientQueueService {
 		@Inject(forwardRef(() => ClientService))
 		private readonly clientService: ClientService,
 		private readonly queueService: QueueService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async createOrUpdateClient(client: ClientDto) {
-		let agent: Pick<UserEntity, "id"> | undefined;
+		let agent: Pick<UserEntity, "id" | "firebase_token"> | undefined;
 		if (client.agent_ext_id) {
 			agent = await this.userService.readOneByExtId(client.agent_ext_id, {
 				id: true,
+				firebase_token: true,
 			});
 		}
 
@@ -39,6 +43,14 @@ export class ClientQueueService {
 		});
 
 		if (foundClient) {
+			if (agent && agent.firebase_token) {
+				await this.notificationService.sendToUsers([agent], {
+					type: NotificationType.UPDATE_CLIENT,
+					description: `У клиента ${foundClient.fullname} изменился статус закрепления`,
+					title: "Закрепления",
+				});
+			}
+
 			return await this.clientService.repository
 				.createQueryBuilder()
 				.update()
