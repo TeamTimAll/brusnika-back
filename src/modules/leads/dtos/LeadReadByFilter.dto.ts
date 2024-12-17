@@ -41,7 +41,6 @@ export class LeadReadByFilterDto {
 
 	@ApiProperty({ required: false, enum: LeadOpStatus })
 	@IsOptional()
-	@Transform(({ value }) => (value as string).toLowerCase())
 	@IsEnum(LeadOpStatus)
 	status?: LeadOpStatus;
 

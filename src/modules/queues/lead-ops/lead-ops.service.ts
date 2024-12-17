@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 import { LeadsService } from "../../leads/leads.service";
+import { LeadOpStatus } from "../../leads/lead_ops.entity";
 
 import { LeadOpsDto, LeadOpsesDto } from "./dto";
 
@@ -22,7 +23,7 @@ export class LeadOpsQueueService {
 				.values({
 					ext_id: ops.ext_id,
 					lead_id: lead.id,
-					status: ops.status,
+					status: ops.status.toLowerCase() as LeadOpStatus,
 					created_at: ops.created_at,
 				})
 				.execute();
@@ -32,7 +33,7 @@ export class LeadOpsQueueService {
 				.update()
 				.set({
 					lead_id: lead.id,
-					status: ops.status,
+					status: ops.status.toLowerCase() as LeadOpStatus,
 					created_at: ops.created_at,
 				})
 				.where("id = :id", { id: foundOps.id })
