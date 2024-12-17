@@ -411,6 +411,7 @@ export class PremisesService {
 			"premise.number",
 			"premise.floor",
 			"premise.feature",
+			"premise.ext_id",
 			"premise.feature_new",
 			"premise.photo",
 			"premise.rooms",
