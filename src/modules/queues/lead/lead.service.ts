@@ -59,6 +59,7 @@ export class LeadQueueService {
 					lead.current_status.toLowerCase() as LeadOpStatus,
 				lead_number: lead.lead_number,
 				state: lead.state,
+				start_date: lead.start_date
 			})
 			.orUpdate(
 				[
@@ -72,6 +73,7 @@ export class LeadQueueService {
 					"current_status",
 					"lead_number",
 					"state",
+					"start_date"
 				],
 				["ext_id"],
 			)
@@ -117,6 +119,7 @@ export class LeadQueueService {
 				project_id: project.id,
 				state: lead.state,
 				comment: lead.comment,
+				start_date: lead.start_date
 			});
 		}
 
