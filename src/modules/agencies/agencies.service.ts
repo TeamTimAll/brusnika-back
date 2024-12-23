@@ -108,6 +108,7 @@ export class AgencyService {
 		// const counterAgencies = (await counterAgenciesResponse.json()) as
 		// 	| CounterAgent[]
 		// 	| undefined;
+		
 		const counterAgencies: CounterAgent[] = [
 			{
 				id: "9f938798-3438-491b-9e02-25751a7eff14",

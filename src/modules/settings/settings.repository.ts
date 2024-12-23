@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeepPartial, Repository } from "typeorm";
+import { Repository } from "typeorm";
 
 import { SettingsEntity } from "./settings.entity";
+import { UpdateSettingsDto } from "./dto/UpdateSettings.dto";
 
 @Injectable()
 export class SettingsRepository {
@@ -16,14 +17,11 @@ export class SettingsRepository {
 		return settings;
 	}
 
-	merge(
-		mergeIntoEntity: SettingsEntity,
-		...entityLikes: DeepPartial<SettingsEntity>[]
-	): SettingsEntity {
-		return this.repository.merge(mergeIntoEntity, ...entityLikes);
-	}
-
-	save(entity: SettingsEntity) {
-		return this.repository.save(entity);
+	async update(params: {id: number, dto: UpdateSettingsDto})
+	{
+		return await this.repository.save({
+			id: params.id,
+			...params.dto
+		})
 	}
 }
