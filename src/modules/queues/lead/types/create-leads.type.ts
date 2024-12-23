@@ -13,4 +13,5 @@ export interface ILead {
 	project_id: number;
 	fee: number;
 	state: LeadState;
+	start_date: Date;
 }

@@ -1,4 +1,5 @@
 import {
+	IsDate,
 	IsEnum,
 	IsNotEmpty,
 	IsNumber,
@@ -46,6 +47,9 @@ export class LeadDto {
 
 	@IsEnum(LeadState)
 	state!: LeadState;
+
+	@IsDate()
+	start_date!: Date;
 }
 
 export class LeadsDto {
