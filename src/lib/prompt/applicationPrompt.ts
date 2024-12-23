@@ -366,7 +366,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "user_already_registered_to_event_error",
 		promptLabels: {
 			en: "User already registered to event error",
-			ru: "Ошибка пользователь уже зарегистрирован на событие",
+			ru: "Пользователь уже записан на мероприятие",
 			uz: "User already registered to event error",
 		},
 	},

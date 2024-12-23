@@ -22,7 +22,6 @@ export class SettingsService {
 
 	async update(dto: UpdateSettingsDto) {
 		const settings = await this.read();
-		const mergedSettings = this.settingsRepository.merge(settings, dto);
-		return await this.settingsRepository.save(mergedSettings);
+		return await this.settingsRepository.update({id: settings.id, dto});
 	}
 }

@@ -173,7 +173,7 @@ export class AgencyQueueService {
 			city = await this.citiesService.readOne(agency.city_id);
 		}
 
-		const BASE_URL = ConfigManager.config.BASE_URL;
+		const BASE_URL = ConfigManager.config.BASE_URL + "/api/files";
 
 		return {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo/AgreementWithAgent",

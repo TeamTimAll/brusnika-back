@@ -400,11 +400,12 @@ export class AuthService {
 
 		// If agent registration is finished, an access token needs to be sent.
 		if (
-			user.is_phone_verified &&
+			// user.is_phone_verified &&
 			user.register_status === UserRegisterStatus.FINISHED
 		) {
 			await this.userService.repository.update(user.id, {
-				verification_code_sent_date: null,
+				verification_code: null,
+				verification_code_sent_date: null
 			});
 			return {
 				accessToken: this.jwtService.sign({
@@ -420,8 +421,11 @@ export class AuthService {
 			await this.userService.repository.update(user.id, {
 				is_phone_verified: true,
 				register_status: UserRegisterStatus.FILL_DATA,
+				verification_code: null,
+				verification_code_sent_date: null
 			});
 		}
+
 		return {
 			user_id: user.id,
 			message: "verified",

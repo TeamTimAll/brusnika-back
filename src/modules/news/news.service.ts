@@ -444,6 +444,18 @@ export class NewsService {
 			throw new NewsNotFoundError(`id: ${id}`);
 		}
 
+		const notifications = await this.notificationService.repository.find({
+			where: {
+				object_id: foundEvent.id,
+				type: NotificationType.CREATED_NEWS
+			}
+		});
+
+		if(notifications.length)
+		{
+			await this.notificationService.repository.delete(notifications.map(n => n.id))
+		}
+
 		await this.newsRepository.delete(id);
 
 		return foundEvent;

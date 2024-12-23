@@ -798,6 +798,24 @@ export class EventsService {
 		if (!foundEvent) {
 			throw new EventsNotFoundError(`id: ${id}`);
 		}
+
+		const notifications = await this.notificationService.repository.find({
+			where: {
+				object_id: foundEvent.id,
+				type: In([
+					NotificationType.EVENT,
+					NotificationType.CREATED_EVENT,
+					NotificationType.WARNING_EVENT,
+					NotificationType.VISIT_ASSIGNED
+				])
+			}
+		});
+
+		if(notifications.length)
+		{
+			await this.notificationService.repository.delete(notifications.map(n => n.id))
+		}
+
 		await this.eventRepository.delete(id);
 		return foundEvent;
 	}
