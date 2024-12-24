@@ -15,6 +15,8 @@ export class ClientQueueController {
 	async execute(@Body() data: IEncryptedText) {
 		const client = JSON.parse(decrypt(data)) as ClientDto;
 
+		console.log(client)
+
 		await this.service.createOrUpdateClient(client);
 
 		return { message: "SUCCESS" };

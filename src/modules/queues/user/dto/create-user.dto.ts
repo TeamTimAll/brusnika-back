@@ -43,7 +43,7 @@ export class UserDto {
 	workStartDate!: Date | null;
 
 	@IsString()
-	avatar!: string | null;
+	avatar?: string | null;
 
 	@IsEnum(UserRegisterStatus)
 	register_status!: UserRegisterStatus;

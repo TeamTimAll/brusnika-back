@@ -29,6 +29,7 @@ export class UserQueueService {
 				id: true,
 			});
 		}
+
 		let agency: Pick<AgencyEntity, "id"> | undefined;
 		if (user.agency_ext_id) {
 			agency = await this.agencyService.readOneByExtId(
@@ -36,6 +37,7 @@ export class UserQueueService {
 				{ id: true },
 			);
 		}
+
 		return this.userService.repository
 			.createQueryBuilder()
 			.insert()

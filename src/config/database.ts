@@ -1,4 +1,4 @@
-// import fs from "fs";
+import fs from "fs";
 import { join } from "path";
 
 import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
@@ -19,12 +19,12 @@ export class DatabaseConfigManager {
 			password: ConfigManager.config.DB_PASSWORD,
 			database: ConfigManager.config.DB_DATABASE,
 			namingStrategy: new SnakeNamingStrategy(),
-			// ssl: ConfigManager.isProduction()
-			// 	? {
-			// 			ca: fs.readFileSync("postgresql.pem").toString(),
-			// 			rejectUnauthorized: true,
-			// 		}
-			// 	: undefined,
+			ssl: ConfigManager.isProduction()
+				?   {
+						ca: fs.readFileSync("postgresql.pem").toString(),
+						rejectUnauthorized: true,
+					}
+				: undefined,
 			logging: false,
 			synchronize: true,
 			entities: [
