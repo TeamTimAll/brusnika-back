@@ -28,66 +28,70 @@ export class ClientQueueService {
 
 	async createOrUpdateClient(client: ClientDto) {
 		let agent: Pick<UserEntity, "id" | "firebase_token"> | undefined;
-		if (client.agent_ext_id) {
-			agent = await this.userService.readOneByExtId(client.agent_ext_id, {
-				id: true,
-				firebase_token: true,
-			});
-		}
-
-		const foundClient = await this.clientService.repository.findOne({
-			where: {
-				phone_number: client.phone_number,
-				fullname: client.fullname,
-			},
-		});
-
-		if (foundClient) {
-			if (agent && agent.firebase_token) {
-				await this.notificationService.sendToUsers([agent], {
-					type: NotificationType.UPDATE_CLIENT,
-					description: `У клиента ${foundClient.fullname} изменился статус закрепления`,
-					title: "Закрепления",
+		try {
+			if (client.agent_ext_id) {
+				agent = await this.userService.readOneByExtId(client.agent_ext_id, {
+					id: true,
+					firebase_token: true,
 				});
 			}
-
-			return await this.clientService.repository
-				.createQueryBuilder()
-				.update()
-				.set({
-					ext_id: client.ext_id,
-					fullname: client.fullname,
+	
+			const foundClient = await this.clientService.repository.findOne({
+				where: {
 					phone_number: client.phone_number,
-					email: client.email,
-					actived_date: client.actived_date,
-					comment: client.comment,
-					confirmation_type: client.confirmation_type,
-					fixing_type: client.fixing_type,
-					expiration_date: client.expiration_date,
-					node: client.node,
-					agent_id: agent?.id,
-				})
-				.where("id = :id", { id: foundClient.id })
-				.execute();
-		} else {
-			return await this.clientService.repository
-				.createQueryBuilder()
-				.insert()
-				.values({
-					ext_id: client.ext_id,
 					fullname: client.fullname,
-					phone_number: client.phone_number,
-					email: client.email,
-					actived_date: client.actived_date,
-					comment: client.comment,
-					confirmation_type: client.confirmation_type,
-					fixing_type: client.fixing_type,
-					expiration_date: client.expiration_date,
-					node: client.node,
-					agent_id: agent?.id,
-					fixing_type_updated_at: new Date(),
-				})
-				.execute();
+				},
+			});
+	
+			if (foundClient) {
+				if (agent && agent.firebase_token) {
+					await this.notificationService.sendToUsers([agent], {
+						type: NotificationType.UPDATE_CLIENT,
+						description: `У клиента ${foundClient.fullname} изменился статус закрепления`,
+						title: "Закрепления",
+					});
+				}
+	
+				return await this.clientService.repository
+					.createQueryBuilder()
+					.update()
+					.set({
+						ext_id: client.ext_id,
+						fullname: client.fullname,
+						phone_number: client.phone_number,
+						email: client.email,
+						actived_date: client.actived_date,
+						comment: client.comment,
+						confirmation_type: client.confirmation_type,
+						fixing_type: client.fixing_type,
+						expiration_date: client.expiration_date,
+						node: client.node,
+						agent_id: agent?.id,
+					})
+					.where("id = :id", { id: foundClient.id })
+					.execute();
+			} else {
+				return await this.clientService.repository
+					.createQueryBuilder()
+					.insert()
+					.values({
+						ext_id: client.ext_id,
+						fullname: client.fullname,
+						phone_number: client.phone_number,
+						email: client.email,
+						actived_date: client.actived_date,
+						comment: client.comment,
+						confirmation_type: client.confirmation_type,
+						fixing_type: client.fixing_type,
+						expiration_date: client.expiration_date,
+						node: client.node,
+						agent_id: agent?.id,
+						fixing_type_updated_at: new Date(),
+					})
+					.execute();
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 

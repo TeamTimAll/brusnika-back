@@ -13,7 +13,7 @@ export class LeadOpsQueueService {
 		const lead = await this.leadService.readOneByExtId(ops.lead_ext_id);
 
 		const foundOps = await this.leadService.leadOpsRepository.findOne({
-			where: { lead_id: lead.id, status: ops.status },
+			where: { lead_id: lead.id, status: ops.status.toLowerCase() as LeadOpStatus },
 		});
 
 		if (!foundOps) {
