@@ -39,7 +39,7 @@ export class ClientQueueService {
 			const foundClient = await this.clientService.repository.findOne({
 				where: {
 					phone_number: client.phone_number,
-					fullname: client.fullname,
+					// fullname: client.fullname,
 				},
 			});
 	
