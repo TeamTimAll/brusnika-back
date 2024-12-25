@@ -26,6 +26,7 @@ export class LeadQueueService {
 			lead.client_ext_id,
 		);
 
+
 		const agent = await this.userService.readOneByExtId(lead.agent_ext_id);
 		let manager: Pick<UserEntity, "id"> | undefined | null;
 		if (lead.manager_ext_id) {
@@ -34,10 +35,21 @@ export class LeadQueueService {
 				{ id: true },
 			);
 		}
-		const project = await this.projectService.readOneByExtId(
-			lead.project_ext_id,
-			{ id: true },
-		);
+		let project: any = {id: 114};
+		if(lead.project_ext_id)
+		{
+			try {
+				const projectCheck = await this.projectService.readOneByExtId(
+					lead.project_ext_id,
+					{ id: true },
+				);
+				if(projectCheck) project = projectCheck
+			} catch (error) {
+				console.log("not found project");
+			}
+	
+		}
+	
 		const premise = await this.premiseService.readOneByExtId(
 			lead.premise_ext_id,
 			{ id: true },
