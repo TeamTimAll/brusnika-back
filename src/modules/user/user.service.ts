@@ -46,6 +46,8 @@ import { UserPhoneNotVerifiedError } from "./errors/UserPhoneNotVerified.error";
 import { IUserDailyStatistics, IUserStatisticsByCity } from "./types";
 import { UserEntity } from "./user.entity";
 import { UserChangeRoleRule } from "./user.rule";
+import { ConfigManager } from "../../config";
+import axios from "axios";
 
 @Injectable()
 export class UserService {
@@ -469,6 +471,7 @@ export class UserService {
 				"agency",
 				"agency_id",
 				"keycloak_id",
+				"ext_id"
 			],
 			relations: {
 				agency: true,
@@ -605,7 +608,47 @@ export class UserService {
 			}
 		}
 		await this.userRepository.update(id, dto);
-		return this.readOneWithRelation(id);
+
+		const updatedUser = await this.readOneWithRelation(id);
+
+		try {
+			const crmData = {
+				url: `https://bbk.staging.brusnika.tech/v1/client/${updatedUser.ext_id}`,
+				method: "PUT",
+				data: {
+					title: updatedUser.fullName,
+					phone: `+${updatedUser.phone}`,
+					email: updatedUser.email,
+					initiator: "Brusnika.CRM",
+					person:{
+						firstName: updatedUser.firstName,
+						lastName: updatedUser.lastName,
+						birthday: updatedUser.birthDate,
+					},
+					contactType:{
+						isAgent: user.role === "AGENT",
+						isContractor:false,
+						isRealEstateAgency:false,
+						isClient:false,
+						isAppraiser:false,
+						isPartnerOnline:false
+					},
+					realEstateAgency:{
+						id: updatedUser.agency?.ext_id
+					},
+					notSendSms:true,
+					phoneIsValid: true,
+					emailIsValid: true,
+					isSent: true
+				},
+			}
+			console.log(JSON.stringify(crmData));
+			await axios.post(ConfigManager.config.KONTUR_SEND, {data: crmData});
+		} catch (error) {
+			console.log("error not changed crm");
+		}
+
+		return updatedUser;
 	}
 
 	async updateToken(
