@@ -179,7 +179,7 @@ export class AgencyQueueService {
 			url: "https://1c.tarabanov.tech/crm/hs/ofo/AgreementWithAgent",
 			method: "POST",
 			data: {
-				contourId: "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
+				contourId: city?.ext_id ? String(city?.ext_id) : "36cba4b9-1ef1-11e8-90e9-901b0ededf35",
 				city: city?.name,
 				agency: agency.legalName,
 				organizationalLegalForm: agency.organizationalLegalForm,
