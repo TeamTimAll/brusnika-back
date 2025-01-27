@@ -43,14 +43,14 @@ export class VisitsService {
 		if (typeof dto.agent_id !== "undefined") {
 			await this.userService.checkExists(dto.agent_id);
 		}
-		let visit = this.visitsRepository.create(dto);
-		visit = await this.visitsRepository.save(visit);
+
+		const visit = this.visitsRepository.create(dto);
 
 		await this.visitQueueService.makeRequest(
 			await this.visitQueueService.createFormEntity(visit),
 		);
 
-		return visit;
+		return await this.visitsRepository.save(visit);
 	}
 
 	async readAll(user: ICurrentUser): Promise<VisitsEntity[]> {

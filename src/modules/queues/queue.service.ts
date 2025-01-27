@@ -17,7 +17,7 @@ export class QueueService {
 
 		try {
 			return await axios.post(ConfigManager.config.KONTUR_SEND, data);
-		} catch (error) {
+		} catch (error: any) {
 			throw new BadRequestException(error.message);
 		}
 	}
