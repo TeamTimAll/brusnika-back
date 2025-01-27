@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import axios from "axios";
 
 import { BaseDto } from "../../common/base/base_dto";
@@ -17,7 +17,8 @@ export class QueueService {
 
 		try {
 			return await axios.post(ConfigManager.config.KONTUR_SEND, data);
-		// eslint-disable-next-line no-empty
-		} catch (error) {}
+		} catch (error) {
+			throw new BadRequestException(error.message);
+		}
 	}
 }
