@@ -16,8 +16,23 @@ export class QueueService {
 		this.logger.log(JSON.stringify(data));
 
 		try {
-			return await axios.post(ConfigManager.config.KONTUR_SEND, data);
+			const response = await axios.post(ConfigManager.config.KONTUR_SEND, data);
+			if (response && response.data) {
+				const responseData: any = response.data;
+
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				if (responseData.response && responseData.response.error) {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					throw new BadRequestException(responseData.response.error);
+				}
+			}
+
+			return response;
 		} catch (error: any) {
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+
 			throw new BadRequestException(error.message);
 		}
 	}

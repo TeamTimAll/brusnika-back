@@ -44,8 +44,7 @@ export class VisitsController {
 		@Body() dto: CreateVisitsMetaDataDto,
 	) {
 		dto.data.agent_id = user.user_id;
-		const res = this.service.create(dto.data);
-		return res;
+		return this.service.create(dto.data);
 	}
 
 	@ApiQuery({
