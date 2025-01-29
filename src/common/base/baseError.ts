@@ -38,6 +38,7 @@ export class BaseError extends Error {
 			prompt = new DefaultPrompt(message);
 		}
 
+		console.log(prompt, prompt.promptLabels);
 		this.id = prompt.promptId;
 		this.meta = meta;
 		this.status = status;
