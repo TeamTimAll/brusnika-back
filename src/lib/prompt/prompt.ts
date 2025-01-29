@@ -6,6 +6,7 @@ export type IPromptType = "postgres" | "application";
 export enum PromptType {
 	POSTGRES = 1,
 	APPLICATION = 2,
+	EXTERNAL = 3
 }
 
 export interface PromptLabel {

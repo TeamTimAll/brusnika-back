@@ -31,7 +31,7 @@ export class QueueService {
 						0,
 						{ message: responseData.response.error },
 						HttpStatus.BAD_REQUEST,
-						PromptType.APPLICATION,
+						PromptType.EXTERNAL,
 						undefined,
 						responseData.response.error,
 					);
@@ -50,7 +50,7 @@ export class QueueService {
 				0,
 				{ message: error.message },
 				HttpStatus.BAD_REQUEST,
-				PromptType.APPLICATION,
+				PromptType.EXTERNAL,
 				undefined,
 				error.message,
 			);
