@@ -24,23 +24,22 @@ export interface IPrompt<ID = number> {
 }
 
 export class DefaultPrompt implements IPrompt {
-	public message: string = "Default prompt message";
+	public message: string;
 
-	constructor(message?: string) {
-		if (message) {
-			this.message = message;
-		}
+	constructor(message: string = "Default prompt message") {
+		this.message = message;
+		this.promptLabels = {
+			ru: this.message,
+			uz: this.message,
+			en: this.message,
+		};
 	}
 
 	promptId: number = 0;
 	promptType: IPromptType = "application";
 	promptCode: string = "default_prompt_code";
 	promptCondition: string = "default_prompt_condition";
-	promptLabels: PromptLabel = {
-		ru: this.message,
-		uz: this.message,
-		en: this.message,
-	};
+	promptLabels: PromptLabel;
 }
 
 export type IPromptMap<T extends number = number> = {
