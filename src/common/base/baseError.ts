@@ -1,7 +1,7 @@
 import { HttpStatus } from "@nestjs/common";
 
 import {
-	DefaultPrompt,
+	DefaultPrompt, IPrompt,
 	PromptLabel,
 	PromptType,
 } from "../../lib/prompt/prompt";
@@ -24,15 +24,18 @@ export class BaseError extends Error {
 		status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
 		promptType: PromptType = PromptType.APPLICATION,
 		code?: string,
+		message?: string,
 	) {
 		super();
 
 		const promptReader = new PromptReader(promptType);
-		let prompt = new DefaultPrompt();
+		let prompt: IPrompt;
 		if (promptType === PromptType.APPLICATION) {
 			prompt = promptReader.getPromptById(id);
 		} else if (promptType === PromptType.POSTGRES) {
 			prompt = promptReader.getPromptByCode(code ?? "");
+		} else {
+			prompt = new DefaultPrompt(message);
 		}
 
 		this.id = prompt.promptId;
