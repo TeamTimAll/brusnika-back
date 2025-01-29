@@ -24,10 +24,12 @@ export interface IPrompt<ID = number> {
 }
 
 export class DefaultPrompt implements IPrompt {
-	private readonly message!: string;
+	public message: string = "Default prompt message";
 
-	constructor(message: string = "Default prompt message") {
-		this.message = message;
+	constructor(message?: string) {
+		if (message) {
+			this.message = message;
+		}
 	}
 
 	promptId: number = 0;
