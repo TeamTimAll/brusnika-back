@@ -17,6 +17,7 @@ export class QueueService {
 
 		try {
 			const response = await axios.post(ConfigManager.config.KONTUR_SEND, data);
+			console.log(response);
 			if (response && response.data) {
 				this.logger.log(JSON.stringify(response));
 				this.logger.log(JSON.stringify(response.data));
@@ -32,6 +33,8 @@ export class QueueService {
 
 			return response;
 		} catch (error: any) {
+			console.log(error);
+
 			if (error instanceof BadRequestException) {
 				throw error;
 			}
