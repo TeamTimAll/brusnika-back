@@ -19,9 +19,6 @@ export class QueueService {
 			const response = await axios.post(ConfigManager.config.KONTUR_SEND, data);
 			console.log(response);
 			if (response && response.data) {
-				this.logger.log(JSON.stringify(response));
-				this.logger.log(JSON.stringify(response.data));
-
 				const responseData: any = response.data;
 
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
