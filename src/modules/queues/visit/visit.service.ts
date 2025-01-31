@@ -152,10 +152,7 @@ export class VisitQueueService {
 		if (project_id) {
 			project = await this.projectService.readOne(
 				project_id,
-				{
-					ext_id: true,
-					buildings: { premises: { type: true } },
-				},
+				undefined,
 				{ buildings: { premises: true } },
 			);
 		}
@@ -188,11 +185,7 @@ export class VisitQueueService {
 		if (visit.project_id) {
 			project = await this.projectService.readOne(
 				visit.project_id,
-				{
-					ext_id: true,
-					name: true,
-					buildings: { premises: { type: true } },
-				},
+				undefined,
 				{ buildings: { premises: true } },
 			);
 		}

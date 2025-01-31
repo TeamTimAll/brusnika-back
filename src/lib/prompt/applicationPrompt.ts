@@ -91,7 +91,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "method_not_found_error",
 		promptLabels: {
 			en: "Method not found error",
-			ru: "Ошибка метод не найдено",
+			ru: "Ошибка метод не найден",
 			uz: "Method not found error",
 		},
 	},
@@ -124,7 +124,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "file_not_found_error",
 		promptLabels: {
 			en: "File not found error",
-			ru: "Ошибка «Файл не найдено»",
+			ru: "Ошибка «Файл не найден»",
 			uz: "File not found error",
 		},
 	},
@@ -201,7 +201,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "user_not_found_error",
 		promptLabels: {
 			en: "User not found error",
-			ru: "Пользователь не найдено",
+			ru: "Пользователь не найден",
 			uz: "User not found error",
 		},
 	},
@@ -212,7 +212,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "city_not_found_error",
 		promptLabels: {
 			en: "City not found error",
-			ru: "Город не найдено",
+			ru: "Город не найден",
 			uz: "City not found error",
 		},
 	},
@@ -234,7 +234,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "project_not_found_error",
 		promptLabels: {
 			en: "Project not found error",
-			ru: "Проект не найдено",
+			ru: "Проект не найден",
 			uz: "Project not found error",
 		},
 	},
@@ -245,7 +245,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "building_not_found_error",
 		promptLabels: {
 			en: "Building not found error",
-			ru: "Здание не найдено",
+			ru: "Здание не найден",
 			uz: "Building not found error",
 		},
 	},
@@ -256,7 +256,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "premise_not_found_error",
 		promptLabels: {
 			en: "Premise not found error",
-			ru: "Помещение не найдено",
+			ru: "Помещение не найден",
 			uz: "Premise not found error",
 		},
 	},
@@ -278,7 +278,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "premises_basket_not_found_error",
 		promptLabels: {
 			en: "Premises basket not found error",
-			ru: "Корзина помещений не найдено",
+			ru: "Корзина помещений не найдена",
 			uz: "Premises basket not found error",
 		},
 	},
@@ -300,7 +300,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "client_not_found_error",
 		promptLabels: {
 			en: "Client not found error",
-			ru: "Клиент не найдено",
+			ru: "Клиент не найден",
 			uz: "Client not found error",
 		},
 	},
@@ -311,7 +311,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "booking_not_found_error",
 		promptLabels: {
 			en: "Booking not found error",
-			ru: "Бронирование не найдено",
+			ru: "Бронирование отсутствует",
 			uz: "Booking not found error",
 		},
 	},
@@ -322,7 +322,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "visit_not_found_error",
 		promptLabels: {
 			en: "Visit not found error",
-			ru: "Визит не найдено",
+			ru: "Визит не найден",
 			uz: "Visit not found error",
 		},
 	},
@@ -333,7 +333,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "events_not_found_error",
 		promptLabels: {
 			en: "Events not found error",
-			ru: "Ошибка события не найдено",
+			ru: "Ошибка событие не найдено",
 			uz: "Events not found error",
 		},
 	},
@@ -387,9 +387,9 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCode: "",
 		promptCondition: "event_invition_not_found_error",
 		promptLabels: {
-			en: "Event invition not found error",
+			en: "Event invitation not found error",
 			ru: "Ошибка мероприятие не найдено.",
-			uz: "Event invition not found error",
+			uz: "Event invitation not found error",
 		},
 	},
 	[ApplicationPromptID.USER_EMAIL_ALREADY_EXISTS_ERROR]: {
@@ -465,7 +465,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "lead_not_found_error",
 		promptLabels: {
 			en: "Lead not found error",
-			ru: "Ошибка лида не найдено",
+			ru: "Ошибка, лид не найден",
 			uz: "Lead not found error",
 		},
 	},
@@ -509,7 +509,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "section_not_found_error",
 		promptLabels: {
 			en: "Section not found error",
-			ru: "Ошибка «Раздел не найдено»",
+			ru: "Ошибка «Раздел не найден»",
 			uz: "Section not found error",
 		},
 	},
@@ -531,7 +531,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "comment_not_found_error",
 		promptLabels: {
 			en: "Comment not found error",
-			ru: "Ошибка «Комментарий не найдено»",
+			ru: "Ошибка «Комментарий не найден»",
 			uz: "Comment not found error",
 		},
 	},
@@ -564,7 +564,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "contact_not_found_error",
 		promptLabels: {
 			en: "Contact not found error",
-			ru: "Ошибка «Контакт не найдено»",
+			ru: "Ошибка «Контакт не найден»",
 			uz: "Contact not found error",
 		},
 	},
@@ -575,7 +575,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "contact_work_schedule_not_found_error",
 		promptLabels: {
 			en: "Contact work schedule not found error",
-			ru: "Ошибка «Контактный график работы не найдено»",
+			ru: "Ошибка «Контактный график работы не найден»",
 			uz: "Contact work schedule not found error",
 		},
 	},
@@ -586,7 +586,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "contact_address_not_found_error",
 		promptLabels: {
 			en: "Contact address not found error",
-			ru: "Контактный адрес не найдено ошибка",
+			ru: "Контактный адрес не найдена ошибка",
 			uz: "Contact address not found error",
 		},
 	},
@@ -641,7 +641,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "banner_not_found_error",
 		promptLabels: {
 			en: "Banner not found error",
-			ru: "Ошибка «Баннер не найдено»",
+			ru: "Ошибка «Баннер не найден»",
 			uz: "Banner not found error",
 		},
 	},
@@ -652,7 +652,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "exchange_request_not_found_error",
 		promptLabels: {
 			en: "Exchange Request not found error",
-			ru: "Ошибка заяфка на обмен не найдено»",
+			ru: "Ошибка заявка на обмен не найдена»",
 			uz: "Exchange Request not found error",
 		},
 	},
@@ -663,7 +663,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCondition: "call_request_not_found_error",
 		promptLabels: {
 			en: "Call Request not found error",
-			ru: "Ошибка Заявка на звонок не найдено»",
+			ru: "Ошибка Заявка на звонок не найдена",
 			uz: "Call Request not found error",
 		},
 	},
