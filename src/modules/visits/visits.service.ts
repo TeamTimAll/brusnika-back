@@ -44,6 +44,8 @@ export class VisitsService {
 			await this.userService.checkExists(dto.agent_id);
 		}
 
+		dto.date = dto.date.replace(/[+-]\d{2}:\d{2}$/, "Z");
+
 		const visit = this.visitsRepository.create(dto);
 
 		await this.visitQueueService.makeRequest(

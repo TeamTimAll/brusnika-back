@@ -58,8 +58,7 @@ export class ProjectsController {
 	@HttpCode(HttpStatus.CREATED)
 	@ApiErrorResponse(CityNotFoundError, "id: 1")
 	async createProject(@Body() dto: CreateProjectMetaDataDto) {
-		const res = await this.projectsService.create(dto.data);
-		return res;
+		return await this.projectsService.create(dto.data);
 	}
 
 	@Roles([RoleType.AFFILIATE_MANAGER, RoleType.ADMIN])

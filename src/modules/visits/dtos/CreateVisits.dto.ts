@@ -32,7 +32,7 @@ export class CreateVisitsDto {
 
 	@ApiProperty({ required: true, description: "Date of booking" })
 	@IsDateString()
-	date!: Date;
+	date!: string;
 
 	@ApiProperty({
 		required: true,

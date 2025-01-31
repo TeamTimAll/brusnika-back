@@ -321,7 +321,7 @@ export const ApplicationPrompts: IPromptMap<ApplicationPromptID> = {
 		promptCode: "",
 		promptCondition: "visit_not_found_error",
 		promptLabels: {
-			en: "Visit not found error",
+			en: ";Visit not found error",
 			ru: "Визит не найден",
 			uz: "Visit not found error",
 		},
