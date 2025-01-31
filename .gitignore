@@ -86,7 +86,6 @@ db-data
 # Local History
 .history
 node_modules
-.env
 
 tsconfig.build.tsbuildinfo
 
@@ -100,3 +99,5 @@ media/*
 !media/premise_parking_default_image.jpg
 !media/premise_storeroom_default_image.jpg
 !media/premise_schema_default_image.png
+
+src/config/database.ts
