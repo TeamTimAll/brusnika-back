@@ -134,7 +134,7 @@ export class UserController {
 	@Roles([
 		RoleType.ADMIN,
 		RoleType.HEAD_OF_AGENCY,
-		RoleType.AFFILIATE_MANAGER,
+		// RoleType.AFFILIATE_MANAGER,
 	])
 	@Post("/update")
 	@ApiOperation({ description: "### User ma'lumotlarini o'zgartirish." })
