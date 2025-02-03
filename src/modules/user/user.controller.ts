@@ -54,7 +54,8 @@ import {
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(TransformInterceptor)
 export class UserController {
-	constructor(private userService: UserService) {}
+	constructor(private userService: UserService) {
+	}
 
 	@Get()
 	@ApiOperation({
