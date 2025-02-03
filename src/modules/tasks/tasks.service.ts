@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, In } from "typeorm";
+import { Repository } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { UserService } from "../user/user.service";
@@ -11,9 +11,9 @@ import { Order } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadNotFoundError } from "../leads/errors/LeadNotFound.error";
 import { TaskQueueService } from "../queues/task/task.service";
-import { UserEntity } from "../user/user.entity";
-import { NotificationType } from "../notification/notification.entity";
-import { NotificationService } from "../notification/notification.service";
+// import { UserEntity } from "../user/user.entity";
+// import { NotificationType } from "../notification/notification.entity";
+// import { NotificationService } from "../notification/notification.service";
 
 import {
 	CreateTaskDto,
@@ -35,7 +35,7 @@ export class TasksService {
 		private readonly projectService: ProjectService,
 		@Inject(forwardRef(() => TaskQueueService))
 		private taskQueueService: TaskQueueService,
-		private readonly notificationService: NotificationService,
+		// private readonly notificationService: NotificationService,
 	) {}
 
 	get repository(): Repository<TasksEntity> {
@@ -171,7 +171,7 @@ export class TasksService {
 			comment: payload.comment,
 		});
 
-		const userTokens = (await this.userService.repository.find({
+		/*const userTokens = (await this.userService.repository.find({
 			select: { id: true, firebase_token: true },
 			where: {
 				id: In([task.manager_id]),
@@ -183,7 +183,7 @@ export class TasksService {
 			description: `Статус сделки по #${task.id} изменился`,
 			type: NotificationType.TASK_STATE_CHANGE,
 			object_id: task.id,
-		});
+		});*/
 
 		return await this.taskRepository.save(updatedTask);
 	}

@@ -11,6 +11,8 @@ import { UserEntity } from "../../user/user.entity";
 import { ProjectEntity } from "../../projects/project.entity";
 import { LeadsEntity } from "../../leads/leads.entity";
 import { LeadsService } from "../../leads/leads.service";
+import { NotificationService } from "../../notification/notification.service";
+import { NotificationType } from "../../notification/notification.entity";
 
 import { TaskDto, TasksDto } from "./dto";
 import { ITask } from "./types";
@@ -25,12 +27,13 @@ export class TaskQueueService {
 		private readonly projectService: ProjectService,
 		private readonly leadsService: LeadsService,
 		private readonly queueService: QueueService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async createOrUpdateTask(task: TaskDto) {
 		const foundManager = await this.userService.readOneByExtId(
 			task.manager_ext_id,
-			{ id: true },
+			{ id: true, firebase_token: true },
 		);
 
 		const foundUser = await this.userService.readOneByExtId(
@@ -45,7 +48,7 @@ export class TaskQueueService {
 
 		const foundProject = await this.projectService.readOneByExtId(
 			task.project_ext_id,
-			{ id: true },
+			{ id: true, name: true },
 		);
 
 		const foundLead = await this.leadsService.readOneByExtId(
@@ -53,7 +56,7 @@ export class TaskQueueService {
 			{ id: true },
 		);
 
-		return this.taskService.repository
+		const result = await this.taskService.repository
 			.createQueryBuilder()
 			.insert()
 			.values({
@@ -84,7 +87,25 @@ export class TaskQueueService {
 				],
 				["ext_id"],
 			)
+			.returning("*")
 			.execute();
+
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+		const taskId = result.raw[0]?.id;
+
+		if (taskId && foundManager.firebase_token) {
+			const userTokens = [foundManager];
+
+			await this.notificationService.sendToUsers(userTokens, {
+				title: "Сделки",
+				description: `Статус сделки по #${taskId} изменился`,
+				type: NotificationType.TASK_STATE_CHANGE,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+				object_id: taskId,
+			});
+		}
+
+		return result;
 	}
 
 	async createTasks({ data: tasks }: TasksDto) {

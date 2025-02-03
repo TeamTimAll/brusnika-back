@@ -35,14 +35,14 @@ export class ClientQueueService {
 					firebase_token: true,
 				});
 			}
-	
+
 			const foundClient = await this.clientService.repository.findOne({
 				where: {
 					phone_number: client.phone_number,
 					// fullname: client.fullname,
 				},
 			});
-	
+
 			if (foundClient) {
 				if (agent && agent.firebase_token) {
 					await this.notificationService.sendToUsers([agent], {
@@ -51,7 +51,7 @@ export class ClientQueueService {
 						title: "Закрепления",
 					});
 				}
-	
+
 				return await this.clientService.repository
 					.createQueryBuilder()
 					.update()
@@ -91,7 +91,7 @@ export class ClientQueueService {
 					.execute();
 			}
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	}
 

@@ -6,6 +6,7 @@ import { QueueModule } from "../queue.module";
 import { TasksModule } from "../../tasks/tasks.module";
 import { ProjectsModule } from "../../projects/projects.module";
 import { LeadsModule } from "../../leads/leads.module";
+import { NotificationModule } from "../../notification/notification.module";
 
 import { TaskQueueService } from "./task.service";
 import { TaskQueueController } from "./task.controller";
@@ -18,6 +19,7 @@ import { TaskQueueController } from "./task.controller";
 		ProjectsModule,
 		QueueModule,
 		LeadsModule,
+		NotificationModule,
 	],
 	controllers: [TaskQueueController],
 	providers: [TaskQueueService],
