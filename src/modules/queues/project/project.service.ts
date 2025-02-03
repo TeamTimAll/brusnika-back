@@ -60,7 +60,7 @@ export class ProjectQueueService {
 				],
 				["ext_id"]  // Поля для проверки уникальности
 			)
-			.returning(["id", "created_at", "updated_at"]) // Возвращаем ключевые поля
+			.returning(["id", "created_at", "updated_at", "name"]) // Возвращаем ключевые поля
 			.execute();
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
