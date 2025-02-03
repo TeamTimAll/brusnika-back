@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import {
 	Brackets,
 	FindOptionsRelations,
-	FindOptionsSelect,
+	FindOptionsSelect, In,
 	Repository,
 } from "typeorm";
 
@@ -13,12 +13,17 @@ import { BaseDto } from "../../common/base/base_dto";
 import { CityService } from "../cities/cities.service";
 import { PremiseEntity, PremisesType } from "../premises/premises.entity";
 import { BuildingsService } from "../buildings/buildings.service";
+import { UserEntity } from "../user/user.entity";
+import { UserService } from "../user/user.service";
+import { NotificationType } from "../notification/notification.entity";
+import { NotificationService } from "../notification/notification.service";
 
 import { CreateProjectDto } from "./dto/CreateProject.dto";
 import { ProjectSearchDto } from "./dto/ProjectSearch.dto";
 import { UpdateProjectDto } from "./dto/UpdateProject.dto";
 import { ProjectNotFoundError } from "./errors/ProjectNotFound.error";
 import { ProjectEntity } from "./project.entity";
+
 
 type PremisesTypeKeys = keyof typeof PremisesType;
 
@@ -64,6 +69,8 @@ export class ProjectService {
 		private cityService: CityService,
 		@Inject(forwardRef(() => BuildingsService))
 		private buildingService: BuildingsService,
+		private readonly notificationService: NotificationService,
+		private readonly userService: UserService,
 	) {}
 
 	get repository(): Repository<ProjectEntity> {
@@ -243,17 +250,30 @@ export class ProjectService {
 
 		await this.buildingService.createMany(newBuilding);
 
+		const userTokens = (await this.userService.repository.find({
+			select: { id: true, firebase_token: true },
+			where: {
+				role: In(["AGENT", "HEAD_OF_AGENCY"]),
+			}
+		})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
+
+		await this.notificationService.sendToUsers(userTokens, {
+			title: "Проекты",
+			description: `Новый проект "${project.name}" теперь доступен`,
+			type: NotificationType.PROJECT_ASSIGNABLE,
+			object_id: project.id,
+		});
+
 		return project;
 	}
 
 	async getOneProject(id: number): Promise<ProjectEntity | null> {
-		const project = await this.projectsRepository.findOne({
+		return await this.projectsRepository.findOne({
 			where: { id },
 			relations: {
 				buildings: true,
 			},
 		});
-		return project;
 	}
 
 	async getUniqueEndDates(): Promise<UniqueEndDateResponse[]> {

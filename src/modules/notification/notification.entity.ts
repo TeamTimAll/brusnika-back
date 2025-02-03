@@ -11,6 +11,7 @@ export enum NotificationType {
 	VISIT_ASSIGNED = "visit_assigned",
 	UPDATE_CLIENT = "update_client",
 	AGENT_REQUEST_FOR_AGENCY = "agent_request_for_agency",
+	PROJECT_ASSIGNABLE = "project_assignable",
 }
 
 @Entity("notification")

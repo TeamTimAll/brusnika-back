@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 import { BaseEntity } from "../../common/base/base.entity";
-import { BuildingEntity } from "../../modules/buildings/buildings.entity";
+import { BuildingEntity } from "../buildings/buildings.entity";
 import { VisitsEntity } from "../visits/visits.entity";
 import { CityEntity } from "../cities/cities.entity";
 
