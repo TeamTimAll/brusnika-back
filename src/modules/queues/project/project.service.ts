@@ -60,7 +60,7 @@ export class ProjectQueueService {
 				],
 				["ext_id"]  // Поля для проверки уникальности
 			)
-			.returning(["id", "created_at", "updated_at", "name"]) // Возвращаем ключевые поля
+			.returning("*")
 			.execute();
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -85,6 +85,8 @@ export class ProjectQueueService {
 				});
 			}
 		}
+
+		return result;
 	}
 
 	async createProjects({ data: projects }: ProjectsDto) {
