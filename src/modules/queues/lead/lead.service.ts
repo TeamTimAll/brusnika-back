@@ -43,13 +43,15 @@ export class LeadQueueService {
 					lead.project_ext_id,
 					{ id: true },
 				);
-				if(projectCheck) project = projectCheck
+				if(projectCheck) {
+					project = projectCheck;
+				}
 			} catch (error) {
 				console.log("not found project");
 			}
-	
+
 		}
-	
+
 		const premise = await this.premiseService.readOneByExtId(
 			lead.premise_ext_id,
 			{ id: true },
