@@ -65,7 +65,7 @@ export class UserQueueService {
 				[
 					"first_name",
 					"last_name",
-					"role",
+					// "role",
 					"email",
 					"username",
 					"password",
@@ -77,7 +77,7 @@ export class UserQueueService {
 					"is_email_verified",
 					"temporary_role",
 					"status",
-					"city_id",
+					// "city_id",
 					"agency_id",
 					"is_verified",
 				],

@@ -13,6 +13,7 @@ import { BuildingsModule } from "../buildings/buildings.module";
 import { ProjectEntity } from "./project.entity";
 import { ProjectsController } from "./projects.controller";
 import { ProjectService } from "./projects.service";
+import { NotificationModule } from "../notification/notification.module";
 
 @Module({
 	imports: [
@@ -22,6 +23,7 @@ import { ProjectService } from "./projects.service";
 		TypeOrmModule.forFeature([ProjectEntity, CityEntity]),
 		CityModule,
 		UserModule,
+		NotificationModule,
 		forwardRef(() => BuildingsModule),
 	],
 	controllers: [ProjectsController],

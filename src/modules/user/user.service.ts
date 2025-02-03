@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from "@nestjs/common";
+import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Between, Brackets, FindOptionsSelect, Repository } from "typeorm";
@@ -578,9 +578,7 @@ export class UserService {
 
 	async createUser(userRegisterDto: UserCreateDto): Promise<UserEntity> {
 		const user: UserEntity = this.userRepository.create(userRegisterDto);
-		const savedUser: UserEntity = await this.userRepository.save(user);
-
-		return savedUser;
+		return await this.userRepository.save(user);
 	}
 
 	async updateUser(dto: UserUpdateRoleDto): Promise<UserEntity> {
