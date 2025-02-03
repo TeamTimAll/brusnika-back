@@ -207,7 +207,7 @@ export class ClientService {
 				phone_number: dto.phone_number,
 			},
 			order: {
-				created_at: 'DESC',
+				created_at: "DESC",
 			},
 		});
 	}

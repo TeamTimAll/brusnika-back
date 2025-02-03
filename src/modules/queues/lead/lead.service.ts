@@ -47,7 +47,7 @@ export class LeadQueueService {
 					project = projectCheck;
 				}
 			} catch (error) {
-				console.log("not found project");
+				console.error("not found project");
 			}
 
 		}
