@@ -61,8 +61,7 @@ export class NewsController {
 		@Body() dto: CreateNewsMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		const res = await this.service.create(dto.data, user);
-		return res;
+		return await this.service.create(dto.data, user);
 	}
 
 	@Post("toggle-like")

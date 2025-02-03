@@ -51,9 +51,7 @@ export class TasksController {
 		@Body() dto: CreateTaskMetaDataDto,
 		@User() user: ICurrentUser,
 	) {
-		const res = await this.service.create(dto.data, user);
-
-		return res;
+		return await this.service.create(dto.data, user);
 	}
 
 	@Put("finish/:id")

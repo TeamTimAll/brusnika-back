@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, In } from "typeorm";
 
 import { BaseDto } from "../../common/base/base_dto";
 import { UserService } from "../user/user.service";
@@ -11,6 +11,9 @@ import { Order } from "../../constants";
 import { ICurrentUser } from "../../interfaces/current-user.interface";
 import { LeadNotFoundError } from "../leads/errors/LeadNotFound.error";
 import { TaskQueueService } from "../queues/task/task.service";
+import { UserEntity } from "../user/user.entity";
+import { NotificationType } from "../notification/notification.entity";
+import { NotificationService } from "../notification/notification.service";
 
 import {
 	CreateTaskDto,
@@ -18,7 +21,7 @@ import {
 	ReadAllTasksDto,
 	TaskSortBy,
 } from "./dto";
-import { TaskNotFoundError } from "./errors/task-not-found.error";
+import { TaskNotFoundError } from "./errors";
 import { TasksEntity, TaskStatus } from "./tasks.entity";
 
 @Injectable()
@@ -32,6 +35,7 @@ export class TasksService {
 		private readonly projectService: ProjectService,
 		@Inject(forwardRef(() => TaskQueueService))
 		private taskQueueService: TaskQueueService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	get repository(): Repository<TasksEntity> {
@@ -165,6 +169,20 @@ export class TasksService {
 		const updatedTask = this.taskRepository.merge(task, {
 			status: TaskStatus.CLOSE,
 			comment: payload.comment,
+		});
+
+		const userTokens = (await this.userService.repository.find({
+			select: { id: true, firebase_token: true },
+			where: {
+				id: In([task.manager_id]),
+			},
+		})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
+
+		await this.notificationService.sendToUsers(userTokens, {
+			title: "Сделки",
+			description: `Статус сделки по #${task.id} изменился`,
+			type: NotificationType.TASK_STATE_CHANGE,
+			object_id: task.id,
 		});
 
 		return await this.taskRepository.save(updatedTask);
