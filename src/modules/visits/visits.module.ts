@@ -5,7 +5,7 @@ import { UserModule } from "../user/user.module";
 import { ClientModule } from "../client/client.module";
 import { ProjectsModule } from "../projects/projects.module";
 import { VisitQueueModule } from "../queues/visit/visit.module";
-import { NotificationModule } from "../notification/notification.module";
+// import { NotificationModule } from "../notification/notification.module";
 
 import { VisitsController } from "./visits.controller";
 import { VisitsEntity } from "./visits.entity";
@@ -18,7 +18,7 @@ import { VisitsService } from "./visits.service";
 		ProjectsModule,
 		ClientModule,
 		forwardRef(() => VisitQueueModule),
-		NotificationModule,
+		// NotificationModule,
 	],
 	providers: [VisitsService],
 	controllers: [VisitsController],

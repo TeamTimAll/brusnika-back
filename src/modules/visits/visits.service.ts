@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsSelect, In, Repository } from "typeorm";
+import { FindOptionsSelect, /*In,*/ Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 import { PickBySelect } from "interfaces/pick_by_select";
@@ -9,14 +9,14 @@ import { ClientService } from "../client/client.service";
 import { ProjectService } from "../projects/projects.service";
 import { VisitQueueService } from "../queues/visit/visit.service";
 import { UserService } from "../user/user.service";
-import { UserEntity } from "../user/user.entity";
-import { NotificationType } from "../notification/notification.entity";
-import { NotificationService } from "../notification/notification.service";
 
+// import { UserEntity } from "../user/user.entity";
+// import { NotificationType } from "../notification/notification.entity";
+// import { NotificationService } from "../notification/notification.service";
 import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
 import { UpdateVisitsDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
-import { VisitsEntity, VisitStatus } from "./visits.entity";
+import { VisitsEntity, /*VisitStatus*/ } from "./visits.entity";
 import { TimeSlotDto } from "./dtos/time-slot.dto";
 
 @Injectable()
@@ -29,7 +29,7 @@ export class VisitsService {
 		@Inject() private userService: UserService,
 		@Inject(forwardRef(() => VisitQueueService))
 		private readonly visitQueueService: VisitQueueService,
-		private readonly notificationService: NotificationService,
+		// private readonly notificationService: NotificationService,
 	) {}
 
 	get repository(): Repository<VisitsEntity> {
@@ -55,7 +55,7 @@ export class VisitsService {
 			await this.visitQueueService.createFormEntity(visit),
 		);
 
-		const userTokens = (await this.userService.repository.find({
+		/*const userTokens = (await this.userService.repository.find({
 			select: { id: true, firebase_token: true },
 			where: {
 				id: In([visit.agent_id]),
@@ -69,7 +69,7 @@ export class VisitsService {
 			description: `Клиент ${visit.client.fullname} записался на показ по проекту ${visit.project.name} на ${formattedDate}`,
 			type: NotificationType.VISIT_ASSIGNED,
 			object_id: visit.id,
-		});
+		});*/
 
 		return await this.visitsRepository.save(visit);
 	}
@@ -320,12 +320,10 @@ export class VisitsService {
 		ext_id: string,
 		select?: T,
 	): Promise<PickBySelect<VisitsEntity, T> | null> {
-		const booking = await this.visitsRepository.findOne({
+		return await this.visitsRepository.findOne({
 			select: select,
 			where: { ext_id: ext_id },
 		});
-
-		return booking;
 	}
 
 	async update(
@@ -346,7 +344,7 @@ export class VisitsService {
 		const mergedCity = this.visitsRepository.merge(foundVisit, dto);
 		foundVisit = await this.visitsRepository.save(mergedCity);
 
-		if (foundVisit.status === VisitStatus.FAIL) {
+		/*if (foundVisit.status === VisitStatus.FAIL) {
 			const userTokens = (await this.userService.repository.find({
 				select: { id: true, firebase_token: true },
 				where: {
@@ -362,7 +360,7 @@ export class VisitsService {
 				type: NotificationType.TASK_STATE_CHANGE,
 				object_id: foundVisit.id,
 			});
-		}
+		}*/
 
 		return foundVisit;
 	}
