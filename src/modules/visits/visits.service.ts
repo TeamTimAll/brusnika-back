@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsSelect, Repository } from "typeorm";
+import { FindOptionsSelect, In, Repository } from "typeorm";
 
 import { ICurrentUser } from "interfaces/current-user.interface";
 import { PickBySelect } from "interfaces/pick_by_select";
@@ -9,11 +9,14 @@ import { ClientService } from "../client/client.service";
 import { ProjectService } from "../projects/projects.service";
 import { VisitQueueService } from "../queues/visit/visit.service";
 import { UserService } from "../user/user.service";
+import { UserEntity } from "../user/user.entity";
+import { NotificationType } from "../notification/notification.entity";
+import { NotificationService } from "../notification/notification.service";
 
 import { CreateVisitsDto } from "./dtos/CreateVisits.dto";
 import { UpdateVisitsDto } from "./dtos/UpdateVisits.dto";
 import { VisitNotFoundError } from "./errors/VisitsNotFound.error";
-import { VisitsEntity } from "./visits.entity";
+import { VisitsEntity, VisitStatus } from "./visits.entity";
 import { TimeSlotDto } from "./dtos/time-slot.dto";
 
 @Injectable()
@@ -21,12 +24,12 @@ export class VisitsService {
 	constructor(
 		@InjectRepository(VisitsEntity)
 		private visitsRepository: Repository<VisitsEntity>,
-
 		@Inject() private projectService: ProjectService,
 		@Inject() private clientService: ClientService,
 		@Inject() private userService: UserService,
 		@Inject(forwardRef(() => VisitQueueService))
 		private readonly visitQueueService: VisitQueueService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	get repository(): Repository<VisitsEntity> {
@@ -51,6 +54,22 @@ export class VisitsService {
 		await this.visitQueueService.makeRequest(
 			await this.visitQueueService.createFormEntity(visit),
 		);
+
+		const userTokens = (await this.userService.repository.find({
+			select: { id: true, firebase_token: true },
+			where: {
+				id: In([visit.agent_id]),
+			},
+		})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
+
+		const formattedDate = `${visit.date.getDay()}.${visit.date.getMonth() + 1}.${visit.date.getFullYear()}`;
+
+		await this.notificationService.sendToUsers(userTokens, {
+			title: "Запись на показ",
+			description: `Клиент ${visit.client.fullname} записался на показ по проекту ${visit.project.name} на ${formattedDate}`,
+			type: NotificationType.VISIT_ASSIGNED,
+			object_id: visit.id,
+		});
 
 		return await this.visitsRepository.save(visit);
 	}
@@ -326,6 +345,24 @@ export class VisitsService {
 
 		const mergedCity = this.visitsRepository.merge(foundVisit, dto);
 		foundVisit = await this.visitsRepository.save(mergedCity);
+
+		if (foundVisit.status === VisitStatus.FAIL) {
+			const userTokens = (await this.userService.repository.find({
+				select: { id: true, firebase_token: true },
+				where: {
+					id: In([foundVisit.agent_id]),
+				},
+			})) as Array<Pick<UserEntity, "id" | "firebase_token">>;
+
+			const formattedDate = `${foundVisit.date.getDay()}.${foundVisit.date.getMonth() + 1}.${foundVisit.date.getFullYear()}`;
+
+			await this.notificationService.sendToUsers(userTokens, {
+				title: "Отмена записи на показ",
+				description: `Запись ${foundVisit.client.fullname} по проекту ${foundVisit.project.name} на ${formattedDate} отменен`,
+				type: NotificationType.TASK_STATE_CHANGE,
+				object_id: foundVisit.id,
+			});
+		}
 
 		return foundVisit;
 	}
